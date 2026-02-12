@@ -2,13 +2,15 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
 
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
+<meta name="theme-color" content="#0b0b0c"> <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/icon-192.png">
+
 <style>
-/* -----------------------------------------------------------
-   【修改指南：全域變數】
-   ----------------------------------------------------------- */
 :root {
   --bg-color: #0b0b0c;          
   --card-bg: rgba(25, 27, 31, 0.95); 
@@ -16,112 +18,101 @@
   --text-sub: #a4b0be;          
   --primary-color: #00cec9;     
   --border-color: rgba(255, 255, 255, 0.1); 
-  --transition: all 0.3s ease;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* -----------------------------------------------------------
-   【佈局：正常長網頁模式】
-   不再鎖定高度，讓內容自由延伸。
+   【RWD 佈局優化】
    ----------------------------------------------------------- */
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
 html, body {
   width: 100%;
   margin: 0; padding: 0;
-  background-color: var(--bg-color); /* 網頁底色 */
+  background-color: var(--bg-color);
   color: var(--text-main);
-  font-family: 'PingFang TC', system-ui, sans-serif;
-  /* 移除 overflow: hidden，讓頁面可以正常上下捲動 */
-  overflow-y: auto; 
+  font-family: 'PingFang TC', -apple-system, sans-serif;
+  overflow-x: hidden; /* 防止橫向溢出 */
 }
 
-/* 整個網頁的主容器 */
+/* 讓網頁像 App 的長型容器 */
 .page-wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; /* 保證頁面至少跟螢幕一樣高 */
-  max-width: 500px;  /* 限制內容寬度，讓它在手機/電腦上都像 App 感 */
-  margin: 0 auto;    /* 居中顯示 */
+  min-height: 100vh;
+  width: 100%;
+  max-width: 500px; /* 【RWD】電腦看時維持手機比例，手機看時則全寬 */
+  margin: 0 auto;
   background: var(--card-bg);
-  border-left: 1px solid var(--border-color);
-  border-right: 1px solid var(--border-color);
+  /* 【PWA 留白】針對 iPhone 全螢幕底部的安全區域留白 */
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-/* -----------------------------------------------------------
-   【第一部分：頁首 Header】
-   固定在頂部 (或隨頁面捲走，目前設定隨頁面走較符合正常網頁)
-   ----------------------------------------------------------- */
+/* --- [1. 頁首 Header] --- */
 .app-header {
-  padding: 20px;
-  background: rgba(0,0,0,0.5);
-  backdrop-filter: blur(10px);
+  padding: calc(20px + env(safe-area-inset-top)) 20px 15px; /* 【PWA】避開劉海區 */
+  background: rgba(11, 11, 12, 0.8);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  position: sticky; /* 讓頁首捲動時黏在頂部 */
+  top: 0;
+  z-index: 100;
   border-bottom: 1px solid var(--border-color);
   text-align: center;
 }
 
-/* 跑馬燈組件 */
+/* 跑馬燈樣式 (維持原本) */
 .marquee-row {
   display: flex; align-items: center;
   background: rgba(0,0,0,0.4); padding: 6px 12px;
-  border-radius: 8px; margin-bottom: 15px; overflow: hidden;
+  border-radius: 8px; margin-bottom: 12px; overflow: hidden;
 }
-.v-tag {
-  background: var(--primary-color); color: #000;
-  font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px;
-}
-.mq-text {
-  display: inline-block; animation: mq 12s linear infinite;
-  font-size: 12px; color: var(--text-sub); white-space: nowrap;
-}
+.v-tag { background: var(--primary-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px; }
+.mq-text { display: inline-block; animation: mq 12s linear infinite; font-size: 12px; color: var(--text-sub); white-space: nowrap; }
 @keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-/* -----------------------------------------------------------
-   【第二部分：內容區 Main】
-   卡片直向排列，全展開。
-   ----------------------------------------------------------- */
+/* --- [2. 內容區 Main] --- */
 .app-main {
-  flex: 1; /* 撐開中間空間 */
+  flex: 1;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px; /* 卡片之間的距離 */
+  display: grid; /* 【RWD 建議】改用 Grid 佈局在平板上更彈性 */
+  grid-template-columns: 1fr; 
+  gap: 16px;
 }
 
-/* 直式大卡片樣式 */
+/* 入口卡片：App 感強化 */
 .action-btn {
   display: flex; 
-  align-items: flex-end; /* 文字放在底部 */
-  height: 180px;         /* 修改指南：卡片的高度 */
+  align-items: flex-end;
+  height: 160px; /* 固定高度，讓卡片整齊 */
   text-decoration: none; 
-  border-radius: 20px;
+  border-radius: 24px;
   position: relative; 
   overflow: hidden;
   border: 1px solid var(--border-color);
-  /* 預設套用圖 2 櫻花圖背景 */
   background: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg') center/cover;
+  /* 增加陰影讓卡片更立體 */
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
   transition: var(--transition);
 }
 
-.action-btn:active { transform: scale(0.97); }
+/* 觸控回饋：像按鈕一樣縮小 */
+.action-btn:active { transform: scale(0.96); opacity: 0.8; }
 
-/* 文字漸層遮罩層 */
 .btn-overlay {
-  width: 100%; 
-  padding: 20px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  width: 100%; padding: 20px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
 }
 .btn-title { color: #fff; font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
 
-/* -----------------------------------------------------------
-   【第三部分：頁尾 Footer】
-   捲到最下面才會看到的底部。
-   ----------------------------------------------------------- */
+/* --- [3. 頁尾 Footer] --- */
 .app-footer {
-  padding: 30px 20px;
+  padding: 40px 20px;
   text-align: center;
   border-top: 1px solid var(--border-color);
-  background: rgba(0,0,0,0.3);
+  background: rgba(0,0,0,0.4);
 }
-
-.copyright { font-size: 11px; opacity: 0.4; }
+.copyright { font-size: 11px; opacity: 0.3; line-height: 1.8; }
 
 </style>
 </head>
@@ -134,48 +125,34 @@ html, body {
     <div class="marquee-row">
       <span class="v-tag">v1.2</span>
       <div style="flex:1; overflow:hidden;">
-        <div class="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源整合入口 ｜ 瀏覽最新更新內容...</div>
+        <div class="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源整合入口 ｜ 點擊「加入主畫面」體驗 App 模式...</div>
       </div>
     </div>
-    <h1 style="font-size: 1.5rem; margin: 0; color: #fff;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+    <h1 style="font-size: 1.4rem; margin: 0; color: #fff; letter-spacing: 2px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
   </header>
 
   <main class="app-main">
-    
     <a href="./blog/" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">部落格</div></div>
     </a>
-
     <a href="./tol/" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">工具庫</div></div>
     </a>
-
     <a href="./p/#Music" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">音樂頻道</div></div>
     </a>
-
     <a href="./p/#Shorts" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">短影音</div></div>
     </a>
-
-    <a href="./p/#Keep" class="action-btn">
-      <div class="btn-overlay"><div class="btn-title">Ⲙⳝ 記事</div></div>
-    </a>
-
-    <a href="./p/#Editor" class="action-btn">
-      <div class="btn-overlay"><div class="btn-title">編輯器</div></div>
-    </a>
-
     <a href="./p/#wiki" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">支援中心</div></div>
     </a>
-
   </main>
 
   <footer class="app-footer">
     <div class="copyright">
       &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.<br>
-      本站資源由 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 製作提供
+      Optimized for Mobile PWA Experience
     </div>
   </footer>
 
