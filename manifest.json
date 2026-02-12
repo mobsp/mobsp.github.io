@@ -4,21 +4,30 @@
   "description": "莫比空間：全方位數位資源整合與導航入口",
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#0b0b0c",
+  "background_color": "#050508",
   "theme_color": "#0b0b0c",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "assets/brand/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "src": "https://files.catbox.moe/59lwyy.png",
+      "sizes": "96x96",
+      "type": "image/png"
     },
     {
-      "src": "assets/brand/icon-512.png",
-      "sizes": "512x512",
+      "src": "https://files.catbox.moe/9npjwq.png",
+      "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "https://files.catbox.moe/8yessc.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "https://files.catbox.moe/asc8hr.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ]
 }
