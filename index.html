@@ -1,99 +1,171 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <style>
-        /* 這裡只列出需要微調的樣式，其餘保持你原本的 App 佈局 */
-        .v-tag { 
-            transition: all 0.3s; 
-            text-transform: uppercase;
-        }
-        /* 定義不同分類的顏色 */
-        .tag-important { background: #ff7675 !important; color: white; }
-        .tag-update { background: #55efc4 !important; color: #000; }
-        .tag-default { background: var(--primary-color); color: #000; }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0b0c">
+
+<style>
+:root {
+  --bg-color: #0b0b0c;          
+  --card-bg: rgba(25, 27, 31, 0.95); 
+  --text-main: #f1f2f6;         
+  --primary-color: #00cec9;     
+  --border-color: rgba(255, 255, 255, 0.1); 
+  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* 基礎佈局：確保不會 white-screen */
+html, body {
+  width: 100%; height: 100dvh; overflow: hidden;
+  position: fixed; margin: 0; padding: 0;
+  background-color: var(--bg-color); color: var(--text-main);
+  font-family: 'PingFang TC', system-ui, sans-serif;
+}
+
+.page-wrapper { display: flex; flex-direction: column; height: 100dvh; max-width: 500px; margin: 0 auto; }
+
+/* 固定頁首 */
+.app-header {
+  flex-shrink: 0; padding: calc(20px + env(safe-area-inset-top)) 20px 15px;
+  background: rgba(11, 11, 12, 0.9); backdrop-filter: blur(15px);
+  border-bottom: 1px solid var(--border-color); z-index: 100;
+}
+
+.marquee-row {
+  display: flex; align-items: center; background: rgba(0,0,0,0.4);
+  padding: 5px 10px; border-radius: 8px; margin-bottom: 10px; overflow: hidden;
+}
+
+/* 小標籤樣式 */
+.v-tag { background: var(--primary-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 5px; border-radius: 4px; margin-right: 8px; white-space: nowrap; }
+.tag-important { background: #ff7675 !important; color: white; }
+.tag-update { background: #55efc4 !important; color: #000; }
+
+.mq-box { flex: 1; overflow: hidden; white-space: nowrap; }
+.mq-text { display: inline-block; animation: mq 15s linear infinite; font-size: 11px; opacity: 0.8; }
+@keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+/* 中間滑塊 */
+.app-main {
+  flex: 1; display: flex; align-items: center; overflow-x: auto;
+  scroll-snap-type: x mandatory; padding: 0 30px; gap: 20px; scrollbar-width: none;
+}
+.app-main::-webkit-scrollbar { display: none; }
+
+.action-btn {
+  flex: 0 0 85%; height: 80%; scroll-snap-align: center; text-decoration: none;
+  border-radius: 35px; position: relative; overflow: hidden; border: 1px solid var(--border-color);
+  background: #1e272e url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg') center/cover;
+}
+
+.btn-overlay { position: absolute; bottom: 0; width: 100%; padding: 40px 25px 30px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); }
+.btn-title { color: #fff; font-size: 1.8rem; font-weight: 800; }
+
+/* 固定頁尾 */
+.app-footer {
+  flex-shrink: 0; padding: 15px 20px calc(15px + env(safe-area-inset-bottom));
+  background: rgba(11, 11, 12, 0.9); border-top: 1px solid var(--border-color); text-align: center;
+}
+.copyright { font-size: 10px; opacity: 0.3; }
+</style>
 </head>
+
 <body>
-
 <div class="page-wrapper">
-    <header class="app-header">
-        <div class="marquee-row">
-            <span class="v-tag" id="version-tag">LOADING</span>
-            <div class="mq-box">
-                <div class="mq-text" id="remote-notice">同步中...</div>
-            </div>
-        </div>
-        <h1 style="font-size: 1.3rem; margin: 0; text-align: center; letter-spacing: 3px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠𝔢</h1>
-    </header>
-
+  <header class="app-header">
+    <div class="marquee-row">
+      <span class="v-tag" id="v-tag">LOADING</span>
+      <div class="mq-box">
+        <div class="mq-text" id="mq-text">正在同步 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 數據中...</div>
+      </div>
     </div>
+    <h1 style="font-size: 1.3rem; margin: 0; text-align: center; letter-spacing: 3px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+  </header>
+
+  <main class="app-main">
+    <a href="./blog/" class="action-btn"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
+    <a href="./tol/" class="action-btn"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
+    <a href="./p/#Music" class="action-btn"><div class="btn-overlay"><div class="btn-title">音樂頻道</div></div></a>
+    <a href="./p/#Shorts" class="action-btn"><div class="btn-overlay"><div class="btn-title">短影音</div></div></a>
+  </main>
+
+  <footer class="app-footer">
+    <div class="copyright">&copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.</div>
+  </footer>
+</div>
 
 <script>
-const NOTICE_URL = 'https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/data/notice.md';
+// 強制使用 RAW 網址，避免抓到 GitHub 的網頁結構
+const MD_URL = 'https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/data/notice.md';
 
-async function autoUpdateNotice() {
-    const noticeEl = document.getElementById('remote-notice');
-    const versionEl = document.getElementById('version-tag');
+async function loadNotice() {
+    const vTag = document.getElementById('v-tag');
+    const mqText = document.getElementById('mq-text');
 
     try {
-        const response = await fetch(NOTICE_URL, { cache: "no-cache" });
-        const rawText = await response.text();
-        const lines = rawText.split('\n').filter(l => l.trim() !== '');
+        // 設定超時控制，如果 5 秒沒反應就放棄，避免網頁一直卡住
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
 
-        // --- 1. 版本號邏輯 ---
-        const baseVersion = lines[0].startsWith('#') ? lines[0].replace('#', '').trim() : "v1.0";
-        const contentBody = lines.slice(1).join('\n'); // 真正的公告內容
+        const response = await fetch(MD_URL, { 
+            cache: 'no-cache',
+            signal: controller.signal 
+        });
         
-        let finalVersion = baseVersion;
-        const savedContent = localStorage.getItem('last_notice_content');
-        const savedVersion = localStorage.getItem('current_display_version');
+        if (!response.ok) throw new Error('Fetch Error');
+        const raw = await response.text();
+        const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
 
-        if (savedContent && savedContent !== contentBody) {
-            // 如果內容變了，但基礎版本號沒變，就自動 +0.1
-            if (savedVersion && savedVersion.startsWith(baseVersion.split('.')[0])) {
-                let currentNum = parseFloat(savedVersion.replace('v', ''));
-                finalVersion = 'v' + (currentNum + 0.1).toFixed(1);
-            } else {
-                finalVersion = baseVersion;
-            }
-        } else if (savedVersion) {
-            finalVersion = savedVersion;
+        // --- 版本號邏輯 ---
+        let baseVer = lines[0].startsWith('#') ? lines[0].replace('#', '') : "v1.0";
+        let contentBody = lines.slice(1).join('|'); 
+        
+        let lastContent = localStorage.getItem('mob_last_content');
+        let currentVer = localStorage.getItem('mob_curr_ver') || baseVer;
+
+        if (lastContent && lastContent !== contentBody) {
+            let verNum = parseFloat(currentVer.replace('v', ''));
+            currentVer = 'v' + (verNum + 0.1).toFixed(1);
         }
+        
+        localStorage.setItem('mob_last_content', contentBody);
+        localStorage.setItem('mob_curr_ver', currentVer);
 
-        localStorage.setItem('last_notice_content', contentBody);
-        localStorage.setItem('current_display_version', finalVersion);
-
-        // --- 2. 隨機抽取與分類解析 ---
+        // --- 隨機抽取一句 ---
         const quotes = lines.slice(1);
-        const randomLine = quotes[Math.floor(Math.random() * quotes.length)].trim();
+        const randomItem = quotes[Math.floor(Math.random() * quotes.length)];
         
-        // 解析 [分類] 文字
-        const categoryMatch = randomLine.match(/\[(.*?)\]/);
+        // 解析分類 [XXX]
         let category = "NEWS";
-        let cleanText = randomLine;
-
-        if (categoryMatch) {
-            category = categoryMatch[1];
-            cleanText = randomLine.replace(categoryMatch[0], '').trim();
-            
-            // 根據分類換顏色
-            versionEl.className = 'v-tag'; // 重置
-            if (category.includes('重要')) versionEl.classList.add('tag-important');
-            else if (category.includes('更新')) versionEl.classList.add('tag-update');
-            else versionEl.classList.add('tag-default');
+        let displayMsg = randomItem;
+        const catMatch = randomItem.match(/\[(.*?)\]/);
+        
+        if (catMatch) {
+            category = catMatch[1];
+            displayMsg = randomItem.replace(catMatch[0], '');
+            // 變換顏色
+            vTag.classList.remove('tag-important', 'tag-update');
+            if (category.includes('重要')) vTag.classList.add('tag-important');
+            if (category.includes('更新')) vTag.classList.add('tag-update');
         }
 
-        // 3. 渲染
-        versionEl.innerText = `${finalVersion} | ${category}`;
-        noticeEl.innerText = cleanText;
+        vTag.innerText = `${currentVer} | ${category}`;
+        mqText.innerText = displayMsg;
 
-    } catch (e) {
-        versionEl.innerText = "v1.0";
-        noticeEl.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源空間";
+    } catch (err) {
+        console.log("Using default fallback", err);
+        vTag.innerText = "v1.0 | INFO";
+        mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ！請左右滑動探索資源。";
     }
 }
 
-window.onload = autoUpdateNotice;
+// 確保 DOM 載入後才執行，避免抓不到 Element
+document.addEventListener('DOMContentLoaded', loadNotice);
 </script>
 </body>
 </html>
