@@ -7,88 +7,61 @@
 
 <style>
 /* -----------------------------------------------------------
-   【修改指南：全域變數設定】
+   【修改指南：全域變數】
    ----------------------------------------------------------- */
 :root {
-  --bg-color: #0b0b0c;          /* 網頁底色 */
-  --card-bg: rgba(25, 27, 31, 0.9); /* 主容器背景 */
-  --text-main: #f1f2f6;         /* 主文字色 */
-  --text-sub: #a4b0be;          /* 副文字色 */
-  --primary-color: #00cec9;     /* 品牌主色 (莫比藍) */
-  --border-color: rgba(255, 255, 255, 0.1); /* 邊框顏色 */
-  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); /* 動畫曲線 */
+  --bg-color: #0b0b0c;          
+  --card-bg: rgba(25, 27, 31, 0.95); 
+  --text-main: #f1f2f6;         
+  --text-sub: #a4b0be;          
+  --primary-color: #00cec9;     
+  --border-color: rgba(255, 255, 255, 0.1); 
+  --transition: all 0.3s ease;
 }
 
 /* -----------------------------------------------------------
-   【修改指南：基礎佈局限制】
+   【佈局：正常長網頁模式】
+   不再鎖定高度，讓內容自由延伸。
    ----------------------------------------------------------- */
 html, body {
-  width: 100%; height: 100dvh; 
-  overflow: hidden; /* 禁止全頁捲動，改由內部 Main 區塊捲動 */
-  position: fixed; margin: 0; padding: 0;
+  width: 100%;
+  margin: 0; padding: 0;
+  background-color: var(--bg-color); /* 網頁底色 */
+  color: var(--text-main);
+  font-family: 'PingFang TC', system-ui, sans-serif;
+  /* 移除 overflow: hidden，讓頁面可以正常上下捲動 */
+  overflow-y: auto; 
 }
 
-body {
-  font-family: 'PingFang TC', system-ui, sans-serif;
-  background: radial-gradient(circle at center, #1e272e 0%, #0b0b0c 100%);
-  color: var(--text-main);
-  display: flex; align-items: center; justify-content: center;
+/* 整個網頁的主容器 */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* 保證頁面至少跟螢幕一樣高 */
+  max-width: 500px;  /* 限制內容寬度，讓它在手機/電腦上都像 App 感 */
+  margin: 0 auto;    /* 居中顯示 */
+  background: var(--card-bg);
+  border-left: 1px solid var(--border-color);
+  border-right: 1px solid var(--border-color);
 }
 
 /* -----------------------------------------------------------
-   【元件：拆分後的三部分容器】
+   【第一部分：頁首 Header】
+   固定在頂部 (或隨頁面捲走，目前設定隨頁面走較符合正常網頁)
    ----------------------------------------------------------- */
-.notice-card {
-  background: var(--card-bg);
-  backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-  border-radius: 32px;
-  max-width: 400px; width: 85%;
-  height: 80vh; /* 稍微拉高一點，給滑塊更多空間 */
-  display: flex;
-  flex-direction: column; /* 重要：讓 Header, Main, Footer 垂直排列 */
-  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-  border: 1px solid var(--border-color);
-  overflow: hidden;
-}
-
-/* --- [第一部分：頁首 Header] --- */
-/* 固定在上方，不會隨滑塊捲動 */
 .app-header {
-  padding: 25px 20px 15px;
-  flex-shrink: 0; /* 禁止壓縮高度 */
-  border-bottom: 1px solid var(--border-color); /* 增加細線區隔內容 */
-}
-
-/* --- [第二部分：內容區 Main] --- */
-/* 這是唯一可以上下捲動的區塊 */
-.app-main {
-  flex: 1;             /* 自動佔滿中間剩下的所有空間 */
-  overflow-y: auto;    /* 開啟垂直捲動 */
-  scroll-snap-type: y mandatory; /* 強制對齊效果 */
-  padding: 15px;       /* 內部留白 */
-  scrollbar-width: none;
-}
-.app-main::-webkit-scrollbar { display: none; }
-
-/* --- [第三部分：頁尾 Footer] --- */
-/* 固定在下方，不會隨滑動消失 */
-.app-footer {
-  padding: 15px;
-  flex-shrink: 0;      /* 禁止壓縮高度 */
-  border-top: 1px solid var(--border-color); /* 增加細線區隔 */
-  background: rgba(0,0,0,0.2); /* 稍微加深底色，增加層次感 */
+  padding: 20px;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
   text-align: center;
 }
 
-/* -----------------------------------------------------------
-   【細節元件樣式】
-   ----------------------------------------------------------- */
-
-/* 跑馬燈列 */
+/* 跑馬燈組件 */
 .marquee-row {
   display: flex; align-items: center;
-  background: rgba(0,0,0,0.3); padding: 6px 12px;
-  border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+  background: rgba(0,0,0,0.4); padding: 6px 12px;
+  border-radius: 8px; margin-bottom: 15px; overflow: hidden;
 }
 .v-tag {
   background: var(--primary-color); color: #000;
@@ -100,45 +73,71 @@ body {
 }
 @keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-/* 直式滑塊按鈕 */
+/* -----------------------------------------------------------
+   【第二部分：內容區 Main】
+   卡片直向排列，全展開。
+   ----------------------------------------------------------- */
+.app-main {
+  flex: 1; /* 撐開中間空間 */
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* 卡片之間的距離 */
+}
+
+/* 直式大卡片樣式 */
 .action-btn {
-  display: flex; align-items: flex-end;
-  height: 85%; /* 每一張卡片佔中間內容區的 85% 高度 */
-  min-height: 200px; /* 最小高度限制 */
-  margin-bottom: 15px;
-  scroll-snap-align: center; /* 停下的時候對齊中央 */
-  text-decoration: none; border-radius: 24px;
-  position: relative; overflow: hidden;
+  display: flex; 
+  align-items: flex-end; /* 文字放在底部 */
+  height: 180px;         /* 修改指南：卡片的高度 */
+  text-decoration: none; 
+  border-radius: 20px;
+  position: relative; 
+  overflow: hidden;
   border: 1px solid var(--border-color);
+  /* 預設套用圖 2 櫻花圖背景 */
   background: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg') center/cover;
   transition: var(--transition);
 }
-.action-btn:active { transform: scale(0.96); }
 
-/* 文字遮罩層 */
+.action-btn:active { transform: scale(0.97); }
+
+/* 文字漸層遮罩層 */
 .btn-overlay {
-  width: 100%; padding: 20px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  width: 100%; 
+  padding: 20px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
 }
-.btn-title { color: #fff; font-size: 1.2rem; font-weight: 700; }
+.btn-title { color: #fff; font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
 
-.copyright { font-size: 10px; opacity: 0.4; letter-spacing: 0.5px; }
+/* -----------------------------------------------------------
+   【第三部分：頁尾 Footer】
+   捲到最下面才會看到的底部。
+   ----------------------------------------------------------- */
+.app-footer {
+  padding: 30px 20px;
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  background: rgba(0,0,0,0.3);
+}
+
+.copyright { font-size: 11px; opacity: 0.4; }
 
 </style>
 </head>
 
 <body>
 
-<div class="notice-card">
+<div class="page-wrapper">
   
   <header class="app-header">
     <div class="marquee-row">
       <span class="v-tag">v1.2</span>
       <div style="flex:1; overflow:hidden;">
-        <div class="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源空間 ｜ 上下滑動切換服務入口...</div>
+        <div class="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源整合入口 ｜ 瀏覽最新更新內容...</div>
       </div>
     </div>
-    <h1 style="font-size: 1.3rem; margin: 0; text-align: center; letter-spacing: 1.5px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+    <h1 style="font-size: 1.5rem; margin: 0; color: #fff;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
   </header>
 
   <main class="app-main">
@@ -159,6 +158,14 @@ body {
       <div class="btn-overlay"><div class="btn-title">短影音</div></div>
     </a>
 
+    <a href="./p/#Keep" class="action-btn">
+      <div class="btn-overlay"><div class="btn-title">Ⲙⳝ 記事</div></div>
+    </a>
+
+    <a href="./p/#Editor" class="action-btn">
+      <div class="btn-overlay"><div class="btn-title">編輯器</div></div>
+    </a>
+
     <a href="./p/#wiki" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">支援中心</div></div>
     </a>
@@ -167,7 +174,8 @@ body {
 
   <footer class="app-footer">
     <div class="copyright">
-      &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.
+      &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.<br>
+      本站資源由 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 製作提供
     </div>
   </footer>
 
