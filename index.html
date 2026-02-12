@@ -5,169 +5,220 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
 
+<meta name="description" content="莫比空間官方入口公告頁，整合 Blog、Tools、Shorts、Music、App 等資源入口。" />
+<link rel="canonical" href="https://mobsp.github.io/" />
+
+<script>
+  // 自動套用設定頁儲存的字體與模式
+  (function applyGlobalSettings() {
+      const theme = localStorage.getItem('mobi_theme');
+      const font = localStorage.getItem('mobi_font');
+      if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+      if (font) document.documentElement.style.fontSize = font + 'px';
+  })();
+</script>
+
 <style>
 :root {
+  /* 莫比空間品牌配色系統 - 星空深色調 */
   --bg-color: #0b0b0c;          
+  --card-bg: rgba(25, 27, 31, 0.85);
   --text-main: #f1f2f6;
   --text-sub: #a4b0be;
-  --primary-color: #00cec9;     
-  --border-color: rgba(255, 255, 255, 0.1);
-  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --primary-color: #00cec9;     /* 莫比藍 */
+  --primary-hover: #81ecec;
+  --accent-color: #a29bfe;      /* 霓虹紫 */
+  --shadow: 0 20px 50px rgba(0,0,0,0.6);
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+/* 強制頁面固定不滑動 */
+html, body {
+  width: 100%;
+  height: 100dvh; 
+  overflow: hidden; 
+  position: fixed;
+  margin: 0;
+  padding: 0;
+}
 
 body {
-  margin: 0; padding: 0;
-  background-color: #000;
+  font-family: 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+  /* 營造深邃空間感 */
+  background: radial-gradient(circle at center, #1e272e 0%, #0b0b0c 100%);
   color: var(--text-main);
-  font-family: 'PingFang TC', system-ui, sans-serif;
-  display: flex; justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.6;
 }
 
-.app-container {
-  width: 100%; max-width: 500px; height: 100dvh;
-  background: var(--bg-color);
-  display: flex; flex-direction: column;
-  position: relative; overflow: hidden;
+/* 入場動畫 */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- Header --- */
-header {
-  height: 60px; padding: 0 20px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--border-color);
-}
-header h1 { font-size: 1.2rem; margin: 0; color: #fff; letter-spacing: 1px; }
-header .icon-group img { width: 22px; height: 22px; filter: invert(1); margin-left: 18px; opacity: 0.8; }
-
-/* --- 跑馬燈區塊 (依需求修改) --- */
-.marquee-row {
-    display: flex; align-items: center;
-    padding: 12px 20px;
-    background: rgba(255,255,255,0.02);
-}
-.version-tag {
-    background: #2c2c2e;
-    color: var(--text-sub);
-    font-size: 11px; padding: 4px 10px;
-    border-radius: 50px; border: 1px solid var(--border-color);
-    white-space: nowrap; margin-right: 12px;
-}
-.marquee-box { flex: 1; overflow: hidden; white-space: nowrap; }
-.marquee-text {
-    display: inline-block;
-    animation: marquee 12s linear infinite;
-    font-size: 13px; color: var(--text-main);
-}
-@keyframes marquee {
-    0% { transform: translateX(100%); }
-    100% { transform: translateX(-100%); }
+.notice-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 40px 30px;
+  border-radius: 32px;
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* --- 卡片滑塊區 (依圖1樣式) --- */
-.slider-container { padding: 20px 0; }
-.section-label { padding: 0 20px 15px; font-size: 1rem; font-weight: 600; }
-
-.card-scroller {
-    display: flex; overflow-x: auto;
-    padding: 0 20px; gap: 14px;
-    scroll-snap-type: x mandatory;
-}
-.card-scroller::-webkit-scrollbar { display: none; }
-
-.mobi-card {
-    flex: 0 0 160px; /* 卡片寬度放大 */
-    height: 200px;   /* 高度增加，符合圖1比例 */
-    scroll-snap-align: start;
-    position: relative;
-    border-radius: 20px;
-    overflow: hidden;
-    text-decoration: none;
-    border: 1px solid var(--border-color);
-    transition: var(--transition);
-    /* 圖2 櫻花底圖套用 */
-    background-image: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg'); 
-    background-size: cover;
-    background-position: center;
+h1 {
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+  letter-spacing: 1px;
+  background: linear-gradient(to right, #fff, var(--primary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.mobi-card:active { transform: scale(0.96); }
-
-/* 卡片文字遮罩層 */
-.card-overlay {
-    position: absolute; bottom: 0; width: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(5px);
-    padding: 12px 5px;
-    text-align: center;
-    border-top: 1px solid rgba(255,255,255,0.1);
+.badge {
+  font-size: 11px;
+  background: var(--primary-color);
+  color: #000;
+  padding: 4px 16px;
+  border-radius: 50px;
+  display: inline-block;
+  margin-bottom: 15px;
+  font-weight: 800;
+  text-transform: uppercase;
 }
-.card-title { font-size: 14px; color: #fff; font-weight: 500; }
 
-/* --- 底部標籤列 --- */
-nav.tab-bar {
-  height: 75px; background: #000;
-  border-top: 1px solid var(--border-color);
-  display: grid; grid-template-columns: repeat(5, 1fr);
-  padding-bottom: env(safe-area-inset-bottom);
+.content-text {
+  margin-bottom: 30px;
+  color: var(--text-sub);
+  font-size: 0.95rem;
 }
-.tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #8e8e93; gap: 5px; }
-.tab-item img { width: 24px; height: 24px; filter: invert(0.5); }
-.tab-item span { font-size: 10px; }
-.tab-item.active { color: var(--primary-color); }
-.tab-item.active img { filter: invert(1) sepia(1) saturate(5) hue-rotate(150deg); }
 
+.content-text strong {
+  color: var(--primary-color);
+}
+
+/* 按鈕群組排版優化 */
+.action-group {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.action-btn {
+  text-decoration: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  padding: 14px 10px;
+  border-radius: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  background: var(--primary-color);
+  color: #000;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 206, 201, 0.4);
+  border-color: var(--primary-color);
+}
+
+.footer {
+  margin-top: 35px;
+  font-size: 12px;
+  opacity: 0.5;
+  letter-spacing: 0.5px;
+}
+
+/* 自定義公告彈窗 (Snackbar 樣式) */
+#custom-modal {
+  display: none;
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--primary-color);
+  color: #000;
+  padding: 12px 30px;
+  border-radius: 50px;
+  z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  animation: fadeInUp 0.5s ease;
+}
 </style>
 </head>
 
 <body>
-<div class="app-container">
-    <header>
-        <h1>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
-        <div class="icon-group">
-            <img src="https://mobsp.github.io/assets/icon/svg/search.svg">
-            <img src="https://mobsp.github.io/assets/icon/svg/settings.svg">
-        </div>
-    </header>
 
-    <main style="flex:1; overflow-y:auto;">
-        <div class="marquee-row">
-            <div class="version-tag">System Update · v1.2</div>
-            <div class="marquee-box">
-                <div class="marquee-text">📢 莫比空間資源整合更新：部落格、工具庫與多媒體頻道已全面同步。</div>
-            </div>
-        </div>
-
-        <div class="slider-container">
-            <div class="section-label">服務與入口</div>
-            <div class="card-scroller">
-                <a href="./blog/" class="mobi-card">
-                    <div class="card-overlay"><div class="card-title">部落格</div></div>
-                </a>
-                <a href="./tol/" class="mobi-card">
-                    <div class="card-overlay"><div class="card-title">工具庫</div></div>
-                </a>
-                <a href="./p/#Music" class="mobi-card">
-                    <div class="card-overlay"><div class="card-title">音樂頻道</div></div>
-                </a>
-                <a href="./p/#Shorts" class="mobi-card">
-                    <div class="card-overlay"><div class="card-title">短影音</div></div>
-                </a>
-                <a href="./p/#wiki" class="mobi-card">
-                    <div class="card-overlay"><div class="card-title">支援中心</div></div>
-                </a>
-            </div>
-        </div>
-    </main>
-
-    <nav class="tab-bar">
-        <a href="#" class="tab-item active"><img src="https://mobsp.github.io/assets/icon/svg/home.svg"><span>主頁</span></a>
-        <a href="./blog/" class="tab-item"><img src="https://mobsp.github.io/assets/icon/svg/bullhorn.svg"><span>部落格</span></a>
-        <a href="./tol/" class="tab-item"><img src="https://mobsp.github.io/assets/icon/svg/receipt.svg"><span>工具庫</span></a>
-        <a href="./p/#Music" class="tab-item"><img src="https://mobsp.github.io/assets/icon/svg/music_note_1.svg"><span>多媒體</span></a>
-        <a href="./p/#Settings" class="tab-item"><img src="https://mobsp.github.io/assets/icon/svg/settings.svg"><span>設定</span></a>
-    </nav>
+<div id="custom-modal" onclick="this.style.display='none'">
+  📢 歡迎來到莫比空間！
 </div>
+
+<div class="notice-card">
+  <div class="badge">System Update · v1.2</div>
+  <h1>莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+
+  <div class="content-text">
+    <p>整合教學、音樂與工具資源</p>
+    <p>本站資源由 <strong> Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ </strong> 製作提供</p>
+  </div>
+
+  <div class="action-group">
+    <a href="./blog/" class="action-btn">部落格</a>
+    <a href="./tol/" class="action-btn">工具庫</a>
+    <a href="./p/#Music" class="action-btn">音樂頻道</a>
+    <a href="./p/#Shorts" class="action-btn">短影音</a>
+    <a href="./p/#Keep" class="action-btn">Ⲙⳝ 記事</a>
+    <a href="./p/#Editor" class="action-btn">編輯器</a>
+    <a href="./p/#wiki" class="action-btn">支援中心</a>
+    <a href="./p/#Settings" class="action-btn">全域設定</a>
+  </div>
+
+  <div class="footer">
+    &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.
+  </div>
+</div>
+
+<script>
+/* 1. 優雅的公告提醒 */
+window.onload = () => {
+  if (!localStorage.getItem("mobispace_notice_v1.2")) {
+    const modal = document.getElementById('custom-modal');
+    modal.style.display = 'block';
+    setTimeout(() => { 
+      modal.style.opacity = '0';
+      setTimeout(() => modal.style.display = 'none', 500);
+    }, 4000);
+    localStorage.setItem("mobispace_notice_v1.2", "seen");
+  }
+};
+
+/* 2. 主題管理 */
+const applyTheme = () => {
+  const theme = localStorage.getItem("mobi_theme");
+  if (theme === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+      document.documentElement.style.colorScheme = 'dark';
+  }
+};
+applyTheme();
+</script>
+
 </body>
 </html>
