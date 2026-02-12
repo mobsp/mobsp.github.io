@@ -8,133 +8,140 @@
 <style>
 :root {
   --bg-color: #0b0b0c;          
-  --card-bg: rgba(25, 27, 31, 0.85);
+  --card-bg: rgba(25, 27, 31, 0.9);
   --text-main: #f1f2f6;
   --text-sub: #a4b0be;
   --primary-color: #00cec9;     
   --shadow: 0 20px 50px rgba(0,0,0,0.6);
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* 鎖定頁面 */
 html, body {
   width: 100%; height: 100dvh; overflow: hidden; position: fixed; margin: 0; padding: 0;
 }
 
 body {
-  font-family: 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
+  font-family: 'PingFang TC', system-ui, sans-serif;
   background: radial-gradient(circle at center, #1e272e 0%, #0b0b0c 100%);
   color: var(--text-main);
   display: flex; align-items: center; justify-content: center;
 }
 
+/* 主容器卡片 */
 .notice-card {
   background: var(--card-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  padding: 40px 20px; /* 縮小左右內距讓滑塊更貼近邊緣 */
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
   border-radius: 32px;
-  max-width: 450px;
-  width: 90%;
-  text-align: center;
+  max-width: 400px;
+  width: 85%;
+  height: 75vh; /* 給予固定高度以便內部直向捲動 */
+  display: flex;
+  flex-direction: column;
   box-shadow: var(--shadow);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow: hidden;
 }
 
-.badge {
-  font-size: 11px; background: var(--primary-color); color: #000;
-  padding: 4px 16px; border-radius: 50px; display: inline-block; margin-bottom: 15px;
-  font-weight: 800; text-transform: uppercase;
-}
+/* 頂部固定區 */
+.card-header { padding: 25px 20px 10px; flex-shrink: 0; }
 
-h1 {
-  margin-bottom: 20px; font-size: 1.6rem;
-  background: linear-gradient(to right, #fff, var(--primary-color));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+/* 跑馬燈 */
+.marquee-row {
+  display: flex; align-items: center;
+  background: rgba(0,0,0,0.3); padding: 6px 12px;
+  border-radius: 10px; margin-bottom: 15px; overflow: hidden;
 }
+.v-tag {
+  background: var(--primary-color); color: #000;
+  font-size: 10px; font-weight: 900; padding: 2px 6px;
+  border-radius: 4px; margin-right: 10px;
+}
+.mq-box { flex: 1; overflow: hidden; white-space: nowrap; }
+.mq-text {
+  display: inline-block; animation: mq 10s linear infinite;
+  font-size: 12px; color: var(--text-sub);
+}
+@keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-/* --- 改版重點：卡片滑塊容器 --- */
+/* --- 直式滑塊區 --- */
 .action-group {
-  display: flex;               /* 改為橫向排列 */
-  overflow-x: auto;            /* 開啟橫向滑動 */
-  scroll-snap-type: x mandatory; /* 強制分頁對齊效果 */
-  gap: 15px;                   /* 卡片間距 */
-  padding: 10px 20px;          /* 給予一點溢出空間感 */
-  margin-top: 20px;
-  scrollbar-width: none;       /* 隱藏捲軸 (Firefox) */
+  flex: 1;
+  overflow-y: auto;           /* 改為垂直捲動 */
+  scroll-snap-type: y mandatory; /* 垂直分頁對齊 */
+  display: flex;
+  flex-direction: column;
+  padding: 0 15px;
+  scrollbar-width: none;
 }
-
-.action-group::-webkit-scrollbar {
-  display: none;               /* 隱藏捲軸 (Chrome/Safari) */
-}
+.action-group::-webkit-scrollbar { display: none; }
 
 .action-btn {
-  flex: 0 0 85%;               /* 每個卡片寬度佔容器的 85% */
-  scroll-snap-align: center;   /* 滑動停止時自動對齊中心 */
+  flex: 0 0 90%;             /* 每一張卡片佔據容器高度的 90% */
+  min-height: 90%;           /* 確保高度 */
+  margin-bottom: 15px;
+  scroll-snap-align: center; /* 滑動時自動對齊中心 */
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--text-main);
-  height: 120px;               /* 固定高度 */
   border-radius: 24px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+  display: flex; align-items: flex-end; /* 文字靠下 */
+  border: 1px solid rgba(255,255,255,0.05);
   transition: var(--transition);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  
+  /* 圖2 櫻花背景 */
+  background: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg') center/cover;
 }
 
-.action-btn:active {
-  transform: scale(0.95);
-  background: var(--primary-color);
-  color: #000;
+.action-btn:active { transform: scale(0.98); }
+
+.btn-overlay {
+  width: 100%;
+  background: linear-gradient(transparent, rgba(0,0,0,0.8));
+  padding: 20px;
+  text-align: left;
 }
 
-/* 提示使用者可以滑動的小點或提示 */
-.scroll-hint {
-  font-size: 10px;
-  color: var(--text-sub);
-  margin-top: 15px;
-  opacity: 0.6;
-}
+.btn-title { color: #fff; font-size: 1.2rem; font-weight: 700; }
 
-.footer { margin-top: 30px; font-size: 12px; opacity: 0.5; }
-
+.footer { padding: 15px; font-size: 11px; opacity: 0.3; text-align: center; }
 </style>
 </head>
 
 <body>
 
 <div class="notice-card">
-  <div class="badge">System Update · v1.2</div>
-  <h1>莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
-
-  <div class="content-text">
-    <p>左右滑動探索資源入口</p>
+  <div class="card-header">
+    <div class="marquee-row">
+      <span class="v-tag">v1.2</span>
+      <div class="mq-box"><div class="mq-text">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源整合入口，請上下滑動切換入口...</div></div>
+    </div>
+    <h1 style="font-size: 1.3rem; margin: 0; text-align: center;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
   </div>
 
   <div class="action-group">
-    <a href="./blog/" class="action-btn">部落格</a>
-    <a href="./tol/" class="action-btn">工具庫</a>
-    <a href="./p/#Music" class="action-btn">音樂頻道</a>
-    <a href="./p/#Shorts" class="action-btn">短影音</a>
-    <a href="./p/#Keep" class="action-btn">Ⲙⳝ 記事</a>
-    <a href="./p/#Editor" class="action-btn">編輯器</a>
-    <a href="./p/#wiki" class="action-btn">支援中心</a>
-    <a href="./p/#Settings" class="action-btn">全域設定</a>
+    <a href="./blog/" class="action-btn">
+      <div class="btn-overlay"><div class="btn-title">部落格</div></div>
+    </a>
+    <a href="./tol/" class="action-btn">
+      <div class="btn-overlay"><div class="btn-title">工具庫</div></div>
+    </a>
+    <a href="./p/#Music" class="action-btn">
+      <div class="btn-overlay"><div class="btn-title">音樂頻道</div></div>
+    </a>
+    <a href="./p/#Shorts" class="action-btn">
+      <div class="btn-overlay"><div class="btn-title">短影音</div></div>
+    </a>
+    <a href="./p/#wiki" class="action-btn">
+      <div class="btn-overlay"><div class="btn-title">支援中心</div></div>
+    </a>
   </div>
-
-  <div class="scroll-hint">〈 左右滑動切換入口 〉</div>
 
   <div class="footer">
     &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.
   </div>
 </div>
-
-<script>
-  // 主題與公告邏輯維持原樣...
-</script>
 
 </body>
 </html>
