@@ -7,161 +7,123 @@
 
 <style>
 /* -----------------------------------------------------------
-   【修改指南：全域變數】
-   在這裡修改顏色，全站的色調會跟著連動。
+   【修改指南：全域變數設定】
    ----------------------------------------------------------- */
 :root {
-  --bg-color: #00cec9;          /* 整個網頁的最底層背景色 */
-  --card-bg: rgba(25, 27, 31, 0.9); /* 中央大卡片的背景色 (含 0.9 透明度) */
-  --text-main: #f1f2f6;         /* 主要文字顏色 */
-  --text-sub: #a4b0be;          /* 次要/說明文字顏色 */
-  --primary-color: #00cec9;     /* 莫比藍 (品牌主色調，如標籤、跑馬燈背景) */
-  --shadow: 0 20px 50px rgba(0,0,0,0.6); /* 卡片陰影：讓卡片看起來浮起來 */
-  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); /* 滑動/按壓的平滑動畫曲線 */
+  --bg-color: #0b0b0c;          /* 網頁底色 */
+  --card-bg: rgba(25, 27, 31, 0.9); /* 主容器背景 */
+  --text-main: #f1f2f6;         /* 主文字色 */
+  --text-sub: #a4b0be;          /* 副文字色 */
+  --primary-color: #00cec9;     /* 品牌主色 (莫比藍) */
+  --border-color: rgba(255, 255, 255, 0.1); /* 邊框顏色 */
+  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1); /* 動畫曲線 */
 }
 
 /* -----------------------------------------------------------
-   【修改指南：頁面鎖定】
-   確保在手機上不會亂捲動，讓頁面像 App 一樣固定。
+   【修改指南：基礎佈局限制】
    ----------------------------------------------------------- */
 html, body {
-  width: 100%; 
-  height: 100dvh; 
-  overflow: hidden; /* 徹底禁止網頁出現捲軸 */
-  position: fixed;  /* 防止手機瀏覽器頂部網址列伸縮干擾佈局 */
-  margin: 0; 
-  padding: 0;
+  width: 100%; height: 100dvh; 
+  overflow: hidden; /* 禁止全頁捲動，改由內部 Main 區塊捲動 */
+  position: fixed; margin: 0; padding: 0;
 }
 
 body {
   font-family: 'PingFang TC', system-ui, sans-serif;
-  /* 背景漸層：由中央的星空灰向外擴散到全黑 */
   background: radial-gradient(circle at center, #1e272e 0%, #0b0b0c 100%);
   color: var(--text-main);
-  display: flex;       /* 使用 Flex 佈局 */
-  align-items: center; /* 垂直置中 */
-  justify-content: center; /* 水平置中 */
+  display: flex; align-items: center; justify-content: center;
 }
 
 /* -----------------------------------------------------------
-   【元件：中央大卡片容器】
-   控制中央那個半透明方塊的大小與圓角。
+   【元件：拆分後的三部分容器】
    ----------------------------------------------------------- */
 .notice-card {
   background: var(--card-bg);
-  backdrop-filter: blur(25px);         /* 毛玻璃效果：背景模糊程度 */
-  -webkit-backdrop-filter: blur(25px); /* 蘋果裝置專用的毛玻璃寫法 */
-  border-radius: 32px;                 /* 圓角弧度 */
-  max-width: 400px;                    /* 電腦上看時的最大寬度 */
-  width: 85%;                          /* 手機上看時佔螢幕寬度的比例 */
-  height: 75vh;                        /* 高度佔螢幕的 75%，太高會塞不下跑馬燈 */
+  backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+  border-radius: 32px;
+  max-width: 400px; width: 85%;
+  height: 80vh; /* 稍微拉高一點，給滑塊更多空間 */
   display: flex;
-  flex-direction: column;              /* 讓內部元素由上而下排列 */
-  box-shadow: var(--shadow);
-  border: 1px solid rgba(255, 255, 255, 0.1); /* 微細白邊：增加質感 */
-  overflow: hidden;                    /* 隱藏超出邊框的內容 */
-}
-
-/* -----------------------------------------------------------
-   【元件：頂部標題區】
-   包含跑馬燈與大標題。
-   ----------------------------------------------------------- */
-.card-header { 
-  padding: 25px 20px 10px; 
-  flex-shrink: 0; /* 禁止這塊被內容擠壓縮小 */
-}
-
-/* 跑馬燈容器 */
-.marquee-row {
-  display: flex; 
-  align-items: center;
-  background: rgba(0,0,0,0.3); /* 跑馬燈的小黑底 */
-  padding: 6px 12px;
-  border-radius: 10px; 
-  margin-bottom: 15px; 
-  overflow: hidden; /* 超出跑馬燈範圍的字要隱藏 */
-}
-
-/* 版本號標籤 */
-.v-tag {
-  background: var(--primary-color); 
-  color: #000;
-  font-size: 10px; 
-  font-weight: 900; 
-  padding: 2px 6px;
-  border-radius: 4px; 
-  margin-right: 10px; /* 跟文字的距離 */
-}
-
-/* 跑馬燈文字動畫 */
-.mq-box { flex: 1; overflow: hidden; white-space: nowrap; }
-.mq-text {
-  display: inline-block; 
-  animation: mq 10s linear infinite; /* 速度建議：10s 代表跑一圈要10秒，數字愈大愈慢 */
-  font-size: 12px; 
-  color: var(--text-sub);
-}
-
-/* 跑馬燈動畫軌跡：從最右側滾到最左側 */
-@keyframes mq { 
-  0% { transform: translateX(100%); } 
-  100% { transform: translateX(-100%); } 
-}
-
-/* -----------------------------------------------------------
-   【元件：直式捲動滑塊】
-   這是核心功能，控制上下滑動的「卡感」。
-   ----------------------------------------------------------- */
-.action-group {
-  flex: 1;                    /* 佔滿剩下的空間 */
-  overflow-y: auto;           /* 開啟垂直捲動 */
-  scroll-snap-type: y mandatory; /* 修改指南：這是關鍵，讓滑動會「自動對齊」卡片中心 */
-  display: flex;
-  flex-direction: column;     /* 強制內部卡片由上往下排 */
-  padding: 0 15px;
-  scrollbar-width: none;      /* 隱藏 Firefox 捲軸 */
-}
-.action-group::-webkit-scrollbar { display: none; } /* 隱藏 Chrome/Safari 捲軸 */
-
-/* 單張按鈕卡片樣式 */
-.action-btn {
-  flex: 0 0 90%;             /* 修改指南：卡片高度，0.9 代表佔捲動區的 90% */
-  min-height: 90%;           /* 確保每一張卡片都夠大 */
-  margin-bottom: 15px;       /* 卡片與卡片之間的垂直間距 */
-  scroll-snap-align: center; /* 修改指南：停止滑動時，卡片要對齊在哪裡 (center 是正中央) */
-  text-decoration: none;     /* 移除超連結下劃線 */
-  border-radius: 24px;
-  position: relative;
+  flex-direction: column; /* 重要：讓 Header, Main, Footer 垂直排列 */
+  box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+  border: 1px solid var(--border-color);
   overflow: hidden;
-  display: flex; 
-  align-items: flex-end;     /* 讓文字(標題)靠底部對齊 */
-  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* --- [第一部分：頁首 Header] --- */
+/* 固定在上方，不會隨滑塊捲動 */
+.app-header {
+  padding: 25px 20px 15px;
+  flex-shrink: 0; /* 禁止壓縮高度 */
+  border-bottom: 1px solid var(--border-color); /* 增加細線區隔內容 */
+}
+
+/* --- [第二部分：內容區 Main] --- */
+/* 這是唯一可以上下捲動的區塊 */
+.app-main {
+  flex: 1;             /* 自動佔滿中間剩下的所有空間 */
+  overflow-y: auto;    /* 開啟垂直捲動 */
+  scroll-snap-type: y mandatory; /* 強制對齊效果 */
+  padding: 15px;       /* 內部留白 */
+  scrollbar-width: none;
+}
+.app-main::-webkit-scrollbar { display: none; }
+
+/* --- [第三部分：頁尾 Footer] --- */
+/* 固定在下方，不會隨滑動消失 */
+.app-footer {
+  padding: 15px;
+  flex-shrink: 0;      /* 禁止壓縮高度 */
+  border-top: 1px solid var(--border-color); /* 增加細線區隔 */
+  background: rgba(0,0,0,0.2); /* 稍微加深底色，增加層次感 */
+  text-align: center;
+}
+
+/* -----------------------------------------------------------
+   【細節元件樣式】
+   ----------------------------------------------------------- */
+
+/* 跑馬燈列 */
+.marquee-row {
+  display: flex; align-items: center;
+  background: rgba(0,0,0,0.3); padding: 6px 12px;
+  border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+}
+.v-tag {
+  background: var(--primary-color); color: #000;
+  font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px;
+}
+.mq-text {
+  display: inline-block; animation: mq 12s linear infinite;
+  font-size: 12px; color: var(--text-sub); white-space: nowrap;
+}
+@keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+/* 直式滑塊按鈕 */
+.action-btn {
+  display: flex; align-items: flex-end;
+  height: 85%; /* 每一張卡片佔中間內容區的 85% 高度 */
+  min-height: 200px; /* 最小高度限制 */
+  margin-bottom: 15px;
+  scroll-snap-align: center; /* 停下的時候對齊中央 */
+  text-decoration: none; border-radius: 24px;
+  position: relative; overflow: hidden;
+  border: 1px solid var(--border-color);
+  background: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg') center/cover;
   transition: var(--transition);
-  
-  /* 修改指南：在這裡換背景圖網址 */
-  background: url('https://files.catbox.moe/fcrfl4.jpeg') center/cover;
 }
+.action-btn:active { transform: scale(0.96); }
 
-/* 按下去的縮放回饋感 */
-.action-btn:active { transform: scale(0.98); }
-
-/* 卡片底部的黑色漸層遮罩 (確保白字在亮色圖片上也能看清) */
+/* 文字遮罩層 */
 .btn-overlay {
-  width: 100%;
-  background: linear-gradient(transparent, rgba(0,0,0,0.8)); /* 從透明過渡到 80% 黑 */
-  padding: 20px;
-  text-align: left;
+  width: 100%; padding: 20px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.85));
 }
-
 .btn-title { color: #fff; font-size: 1.2rem; font-weight: 700; }
 
-/* 底部版權宣告 */
-.footer { 
-  padding: 15px; 
-  font-size: 11px; 
-  opacity: 0.3; 
-  text-align: center; 
-}
+.copyright { font-size: 10px; opacity: 0.4; letter-spacing: 0.5px; }
+
 </style>
 </head>
 
@@ -169,17 +131,17 @@ body {
 
 <div class="notice-card">
   
-  <div class="card-header">
+  <header class="app-header">
     <div class="marquee-row">
       <span class="v-tag">v1.2</span>
-      <div class="mq-box">
-        <div class="mq-text">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源整合入口，請上下滑動切換入口...</div>
+      <div style="flex:1; overflow:hidden;">
+        <div class="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源空間 ｜ 上下滑動切換服務入口...</div>
       </div>
     </div>
-    <h1 style="font-size: 1.3rem; margin: 0; text-align: center;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</h1>
-  </div>
+    <h1 style="font-size: 1.3rem; margin: 0; text-align: center; letter-spacing: 1.5px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+  </header>
 
-  <div class="action-group">
+  <main class="app-main">
     
     <a href="./blog/" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">部落格</div></div>
@@ -200,12 +162,15 @@ body {
     <a href="./p/#wiki" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">支援中心</div></div>
     </a>
-    
-  </div>
 
-  <div class="footer">
-    &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.
-  </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="copyright">
+      &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.
+    </div>
+  </footer>
+
 </div>
 
 </body>
