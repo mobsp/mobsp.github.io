@@ -9,26 +9,12 @@
     <link rel="apple-touch-startup-image" href="https://files.catbox.moe/jk7vkg.jpeg">
 
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
-    <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器，為您打造極簡高效的導航體驗。">
+    <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
     <meta name="keywords" content="莫比空間, Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ, Mobispace, 工具庫, 資源整合, 網誌, PWA, 數位導航">
-    <meta name="author" content="MobiSpace">
-
+    
     <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合導航">
     <meta property="og:description" content="整合網誌、工具庫與多媒體服務的數位空間，立即體驗 App 感十足的入口。">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://mobsp.github.io/">
     <meta property="og:image" content="https://files.catbox.moe/8yessc.png">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "MobiSpace",
-      "alternateName": "莫比空間",
-      "url": "https://mobsp.github.io/",
-      "description": "提供部落格、工具庫與多媒體服務的整合導航入口"
-    }
-    </script>
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -43,6 +29,15 @@
             --border-color: rgba(255, 255, 255, 0.1); 
             --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
+
+        /* 啟動畫面遮罩樣式 */
+        #fake-splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050508 url('https://files.catbox.moe/jk7vkg.jpeg') center/cover no-repeat;
+            z-index: 99999; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+        #fake-splash.fade-out { opacity: 0; visibility: hidden; }
 
         /* 佈局重置 */
         html, body {
@@ -71,7 +66,7 @@
             padding: 5px 10px; border-radius: 8px; margin-bottom: 10px; overflow: hidden;
         }
 
-        .v-tag { background: var(--primary-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 5px; border-radius: 4px; margin-right: 8px; white-space: nowrap; transition: 0.3s; }
+        .v-tag { background: var(--primary-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 5px; border-radius: 4px; margin-right: 8px; white-space: nowrap; }
         .tag-important { background: #ff7675 !important; color: white; }
         .tag-update { background: #55efc4 !important; color: #000; }
 
@@ -105,91 +100,71 @@
 </head>
 
 <body>
+<div id="fake-splash" aria-hidden="true"></div>
+
 <div class="page-wrapper">
     <header class="app-header">
-        <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間 - 資源整合與數位導航入口</h1>
-        
+        <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間</h1>
         <nav class="marquee-row">
-            <span class="v-tag" id="v-tag">LOADING</span>
+            <span class="v-tag" id="v-tag">SYNC</span>
             <div class="mq-box">
-                <div class="mq-text" id="mq-text" role="status">正在同步 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 雲端公告系統...</div>
+                <div class="mq-text" id="mq-text">正在讀取最新公告...</div>
             </div>
         </nav>
         <div style="font-size: 1.3rem; font-weight: bold; text-align: center; letter-spacing: 3px;" aria-hidden="true">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
     </header>
 
-    <main class="app-main" role="main">
-        <h2 class="visually-hidden">數位服務入口清單</h2>
-        
-        <a href="./blog/" class="action-btn" aria-label="前往莫比部落格">
-            <div class="btn-overlay"><div class="btn-title">部落格</div></div>
-        </a>
-        <a href="./tol/" class="action-btn" aria-label="前往工具庫">
-            <div class="btn-overlay"><div class="btn-title">工具庫</div></div>
-        </a>
-        <a href="./p/#Music" class="action-btn" aria-label="進入音樂頻道">
-            <div class="btn-overlay"><div class="btn-title">音樂頻道</div></div>
-        </a>
-        <a href="./p/#Shorts" class="action-btn" aria-label="瀏覽短影音">
-            <div class="btn-overlay"><div class="btn-title">短影音</div></div>
-        </a>
-        <a href="./p/#wiki" class="action-btn" aria-label="查閱支援中心">
-            <div class="btn-overlay"><div class="btn-title">支援中心</div></div>
-        </a>
+    <main class="app-main">
+        <a href="./blog/" class="action-btn"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
+        <a href="./tol/" class="action-btn"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
+        <a href="./p/#Music" class="action-btn"><div class="btn-overlay"><div class="btn-title">音樂頻道</div></div></a>
+        <a href="./p/#Shorts" class="action-btn"><div class="btn-overlay"><div class="btn-title">短影音</div></div></a>
+        <a href="./p/#wiki" class="action-btn"><div class="btn-overlay"><div class="btn-title">支援中心</div></div></a>
     </main>
 
-    <footer class="app-footer" role="contentinfo">
-        <div class="copyright">
-            &copy; 2024–2026 <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong> Ⓒ All Rights Reserved.<br>
-            您的數位資源導航入口
-        </div>
+    <footer class="app-footer">
+        <div class="copyright">&copy; 2026 <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong> Ⓒ All Rights Reserved.</div>
     </footer>
 </div>
 
 <script>
-/**
- * Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 自動公告與版本偵測系統
- */
-const MD_URL = 'https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/data/notice.md';
+// 1. 處理啟動畫面消失邏輯
+window.addEventListener('load', () => {
+    const splash = document.getElementById('fake-splash');
+    // 預留 1.2 秒讓使用者看星空圖，然後淡出
+    setTimeout(() => {
+        splash.classList.add('fade-out');
+        setTimeout(() => splash.remove(), 600);
+    }, 1200);
+});
 
+// 2. 公告系統
+const MD_URL = 'https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/data/notice.md';
 async function initNoticeSystem() {
     const vTag = document.getElementById('v-tag');
     const mqText = document.getElementById('mq-text');
-
     try {
         const response = await fetch(MD_URL, { cache: 'no-cache' });
-        if (!response.ok) throw new Error('Network response was not ok');
-        
         const raw = await response.text();
         const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-
         let baseVer = lines[0].startsWith('#') ? lines[0].replace('#', '') : "v1.0";
-        let contentHash = lines.slice(1).join(''); 
-        
+        let contentHash = lines.slice(1).join('');
         let savedContent = localStorage.getItem('mob_last_content');
         let currentVer = localStorage.getItem('mob_curr_ver') || baseVer;
 
         if (savedContent && savedContent !== contentHash) {
             if (currentVer.startsWith(baseVer.split('.')[0])) {
-                let verNum = parseFloat(currentVer.replace('v', ''));
-                currentVer = 'v' + (verNum + 0.1).toFixed(1);
-            } else {
-                currentVer = baseVer;
-            }
-        } else if (!savedContent || !currentVer.startsWith(baseVer.split('.')[0])) {
-            currentVer = baseVer;
+                currentVer = 'v' + (parseFloat(currentVer.replace('v', '')) + 0.1).toFixed(1);
+            } else { currentVer = baseVer; }
         }
-        
         localStorage.setItem('mob_last_content', contentHash);
         localStorage.setItem('mob_curr_ver', currentVer);
 
         const quotes = lines.slice(1);
         const randomItem = quotes[Math.floor(Math.random() * quotes.length)];
-        
         let category = "NEWS";
         let displayMsg = randomItem;
         const catMatch = randomItem.match(/\[(.*?)\]/);
-        
         if (catMatch) {
             category = catMatch[1];
             displayMsg = randomItem.replace(catMatch[0], '').trim();
@@ -197,16 +172,14 @@ async function initNoticeSystem() {
             if (category.includes('重要')) vTag.classList.add('tag-important');
             else if (category.includes('更新')) vTag.classList.add('tag-update');
         }
-
         vTag.innerText = `${currentVer} | ${category}`;
         mqText.innerText = displayMsg;
-
     } catch (err) {
         vTag.innerText = "v1.0 | INFO";
         mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源整合空間。";
     }
 }
-document.addEventListener('DOMContentLoaded', initNoticeSystem);
+initNoticeSystem();
 </script>
 </body>
 </html>
