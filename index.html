@@ -1,171 +1,99 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-<title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0b0b0c">
-
-<style>
-:root {
-  --bg-color: #0b0b0c;          
-  --card-bg: rgba(25, 27, 31, 0.95); 
-  --text-main: #f1f2f6;         
-  --primary-color: #00cec9;     
-  --border-color: rgba(255, 255, 255, 0.1); 
-  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-/* -----------------------------------------------------------
-   【修改指南：固定視窗佈局】
-   要讓頭尾固定，中間滑動，body 必須禁止捲動。
-   ----------------------------------------------------------- */
-html, body {
-  width: 100%; height: 100dvh; 
-  overflow: hidden; /* 禁止全頁捲動 */
-  position: fixed; margin: 0; padding: 0;
-  background-color: var(--bg-color);
-  color: var(--text-main);
-  font-family: 'PingFang TC', system-ui, sans-serif;
-}
-
-/* 頁面主容器：撐滿整個螢幕 */
-.page-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100dvh; /* 高度鎖定為螢幕高度 */
-  max-width: 500px;
-  margin: 0 auto;
-  position: relative;
-}
-
-/* -----------------------------------------------------------
-   【第一部分：固定頁首 Header】
-   ----------------------------------------------------------- */
-.app-header {
-  flex-shrink: 0; /* 禁止被內容擠壓縮小 */
-  padding: calc(20px + env(safe-area-inset-top)) 20px 15px; /* 適應 iPhone 瀏海 */
-  background: rgba(11, 11, 12, 0.9);
-  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-  border-bottom: 1px solid var(--border-color);
-  z-index: 100;
-}
-
-/* 跑馬燈樣式 */
-.marquee-row {
-  display: flex; align-items: center;
-  background: rgba(0,0,0,0.4); padding: 5px 10px;
-  border-radius: 8px; margin-bottom: 10px; overflow: hidden;
-}
-.v-tag { background: var(--primary-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 5px; border-radius: 4px; margin-right: 8px; }
-.mq-text { display: inline-block; animation: mq 12s linear infinite; font-size: 11px; white-space: nowrap; opacity: 0.8; }
-@keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-/* -----------------------------------------------------------
-   【第二部分：核心內容區 - 左右滑動大卡片】
-   ----------------------------------------------------------- */
-.app-main {
-  flex: 1;             /* 佔滿中間所有空間 */
-  display: flex;       /* 改為橫向排列 */
-  align-items: center; /* 卡片垂直置中 */
-  overflow-x: auto;    /* 開啟左右捲動 */
-  scroll-snap-type: x mandatory; /* 修改指南：關鍵！讓滑動會「自動對齊」卡片中心 */
-  padding: 0 30px;     /* 左右留白，讓使用者滑動時能看到前後卡片 */
-  gap: 20px;           /* 卡片之間的距離 */
-  scrollbar-width: none;
-}
-.app-main::-webkit-scrollbar { display: none; } /* 隱藏捲軸 */
-
-/* 直長式大卡片按鈕 */
-.action-btn {
-  flex: 0 0 85%;       /* 修改指南：卡片寬度，0.85 代表佔中間區的 85% */
-  height: 80%;         /* 修改指南：卡片高度，可根據喜好調整 (例如 70% ~ 90%) */
-  scroll-snap-align: center; /* 停止滑動時，卡片精準對齊螢幕中心 */
-  text-decoration: none;
-  border-radius: 35px; /* 大圓角增加 App 感 */
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--border-color);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-  transition: var(--transition);
-  
-  /* 預設櫻花背景圖 */
-  background: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg') center/cover;
-}
-
-/* 觸控時卡片會微縮 */
-.action-btn:active { transform: scale(0.96); }
-
-/* 卡片底部的標題遮罩 */
-.btn-overlay {
-  position: absolute; bottom: 0; width: 100%;
-  padding: 40px 25px 30px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.9));
-}
-.btn-title { color: #fff; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px; }
-
-/* -----------------------------------------------------------
-   【第三部分：固定頁尾 Footer】
-   ----------------------------------------------------------- */
-.app-footer {
-  flex-shrink: 0; /* 禁止被內容擠壓縮小 */
-  padding: 15px 20px calc(15px + env(safe-area-inset-bottom)); /* 適應 iPhone 底部安全區 */
-  background: rgba(11, 11, 12, 0.9);
-  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-  border-top: 1px solid var(--border-color);
-  text-align: center;
-}
-.copyright { font-size: 10px; opacity: 0.3; letter-spacing: 1px; }
-
-</style>
+    <style>
+        /* 這裡只列出需要微調的樣式，其餘保持你原本的 App 佈局 */
+        .v-tag { 
+            transition: all 0.3s; 
+            text-transform: uppercase;
+        }
+        /* 定義不同分類的顏色 */
+        .tag-important { background: #ff7675 !important; color: white; }
+        .tag-update { background: #55efc4 !important; color: #000; }
+        .tag-default { background: var(--primary-color); color: #000; }
+    </style>
 </head>
-
 <body>
 
 <div class="page-wrapper">
-  
-  <header class="app-header">
-    <div class="marquee-row">
-      <span class="v-tag">PWA v1.2</span>
-      <div style="flex:1; overflow:hidden;"><div class="mq-text">請左右滑動切換入口服務 ｜ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源持續更新中...</div></div>
+    <header class="app-header">
+        <div class="marquee-row">
+            <span class="v-tag" id="version-tag">LOADING</span>
+            <div class="mq-box">
+                <div class="mq-text" id="remote-notice">同步中...</div>
+            </div>
+        </div>
+        <h1 style="font-size: 1.3rem; margin: 0; text-align: center; letter-spacing: 3px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠𝔢</h1>
+    </header>
+
     </div>
-    <h1 style="font-size: 1.3rem; margin: 0; text-align: center; letter-spacing: 3px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
-  </header>
 
-  <main class="app-main">
-    
-    <a href="./blog/" class="action-btn">
-      <div class="btn-overlay"><div class="btn-title">部落格</div></div>
-    </a>
+<script>
+const NOTICE_URL = 'https://raw.githubusercontent.com/用戶名/儲存庫名/main/notice.md';
 
-    <a href="./tol/" class="action-btn">
-      <div class="btn-overlay"><div class="btn-title">工具庫</div></div>
-    </a>
+async function autoUpdateNotice() {
+    const noticeEl = document.getElementById('remote-notice');
+    const versionEl = document.getElementById('version-tag');
 
-    <a href="./p/#Music" class="action-btn">
-      <div class="btn-overlay"><div class="btn-title">音樂頻道</div></div>
-    </a>
+    try {
+        const response = await fetch(NOTICE_URL, { cache: "no-cache" });
+        const rawText = await response.text();
+        const lines = rawText.split('\n').filter(l => l.trim() !== '');
 
-    <a href="./p/#Shorts" class="action-btn">
-      <div class="btn-overlay"><div class="btn-title">短影音</div></div>
-    </a>
+        // --- 1. 版本號邏輯 ---
+        const baseVersion = lines[0].startsWith('#') ? lines[0].replace('#', '').trim() : "v1.0";
+        const contentBody = lines.slice(1).join('\n'); // 真正的公告內容
+        
+        let finalVersion = baseVersion;
+        const savedContent = localStorage.getItem('last_notice_content');
+        const savedVersion = localStorage.getItem('current_display_version');
 
-    <a href="./p/#wiki" class="action-btn">
-      <div class="btn-overlay"><div class="btn-title">支援中心</div></div>
-    </a>
+        if (savedContent && savedContent !== contentBody) {
+            // 如果內容變了，但基礎版本號沒變，就自動 +0.1
+            if (savedVersion && savedVersion.startsWith(baseVersion.split('.')[0])) {
+                let currentNum = parseFloat(savedVersion.replace('v', ''));
+                finalVersion = 'v' + (currentNum + 0.1).toFixed(1);
+            } else {
+                finalVersion = baseVersion;
+            }
+        } else if (savedVersion) {
+            finalVersion = savedVersion;
+        }
 
-  </main>
+        localStorage.setItem('last_notice_content', contentBody);
+        localStorage.setItem('current_display_version', finalVersion);
 
-  <footer class="app-footer">
-    <div class="copyright">
-      &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.
-    </div>
-  </footer>
+        // --- 2. 隨機抽取與分類解析 ---
+        const quotes = lines.slice(1);
+        const randomLine = quotes[Math.floor(Math.random() * quotes.length)].trim();
+        
+        // 解析 [分類] 文字
+        const categoryMatch = randomLine.match(/\[(.*?)\]/);
+        let category = "NEWS";
+        let cleanText = randomLine;
 
-</div>
+        if (categoryMatch) {
+            category = categoryMatch[1];
+            cleanText = randomLine.replace(categoryMatch[0], '').trim();
+            
+            // 根據分類換顏色
+            versionEl.className = 'v-tag'; // 重置
+            if (category.includes('重要')) versionEl.classList.add('tag-important');
+            else if (category.includes('更新')) versionEl.classList.add('tag-update');
+            else versionEl.classList.add('tag-default');
+        }
 
+        // 3. 渲染
+        versionEl.innerText = `${finalVersion} | ${category}`;
+        noticeEl.innerText = cleanText;
+
+    } catch (e) {
+        versionEl.innerText = "v1.0";
+        noticeEl.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源空間";
+    }
+}
+
+window.onload = autoUpdateNotice;
+</script>
 </body>
 </html>
