@@ -8,12 +8,11 @@
 <style>
 :root {
   --bg-color: #0b0b0c;          
-  --card-bg: #1c1c1e;
   --text-main: #f1f2f6;
   --text-sub: #a4b0be;
   --primary-color: #00cec9;     
-  --border-color: rgba(255, 255, 255, 0.08);
-  --transition: all 0.2s ease;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -22,7 +21,7 @@ body {
   margin: 0; padding: 0;
   background-color: #000;
   color: var(--text-main);
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: 'PingFang TC', system-ui, sans-serif;
   display: flex; justify-content: center;
 }
 
@@ -39,74 +38,85 @@ header {
   display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid var(--border-color);
 }
-header h1 { font-size: 1.2rem; margin: 0; color: var(--primary-color); }
-header .icon-group img { width: 22px; height: 22px; filter: invert(1); margin-left: 15px; }
+header h1 { font-size: 1.2rem; margin: 0; color: #fff; letter-spacing: 1px; }
+header .icon-group img { width: 22px; height: 22px; filter: invert(1); margin-left: 18px; opacity: 0.8; }
 
-/* --- 跑馬燈公告區 --- */
-.marquee-container {
+/* --- 跑馬燈區塊 (依需求修改) --- */
+.marquee-row {
     display: flex; align-items: center;
-    background: rgba(255,255,255,0.03);
-    padding: 10px 15px; margin: 10px 0;
+    padding: 12px 20px;
+    background: rgba(255,255,255,0.02);
 }
-.marquee-badge {
-    background: var(--primary-color);
-    color: #000; font-size: 10px; font-weight: bold;
-    padding: 2px 8px; border-radius: 4px;
-    white-space: nowrap; margin-right: 10px;
+.version-tag {
+    background: #2c2c2e;
+    color: var(--text-sub);
+    font-size: 11px; padding: 4px 10px;
+    border-radius: 50px; border: 1px solid var(--border-color);
+    white-space: nowrap; margin-right: 12px;
 }
-.marquee-content {
-    flex: 1; overflow: hidden; white-space: nowrap;
-}
-.marquee-content p {
-    display: inline-block; padding-left: 100%;
-    animation: marquee 15s linear infinite;
-    margin: 0; font-size: 0.9rem; color: var(--text-sub);
+.marquee-box { flex: 1; overflow: hidden; white-space: nowrap; }
+.marquee-text {
+    display: inline-block;
+    animation: marquee 12s linear infinite;
+    font-size: 13px; color: var(--text-main);
 }
 @keyframes marquee {
-    0% { transform: translateX(0); }
+    0% { transform: translateX(100%); }
     100% { transform: translateX(-100%); }
 }
 
-/* --- 卡片滑塊區 --- */
-.slider-section { padding: 10px 0; }
-.section-title { padding: 0 20px 15px; font-size: 0.9rem; color: var(--text-main); }
+/* --- 卡片滑塊區 (依圖1樣式) --- */
+.slider-container { padding: 20px 0; }
+.section-label { padding: 0 20px 15px; font-size: 1rem; font-weight: 600; }
 
-.slider-wrapper {
+.card-scroller {
     display: flex; overflow-x: auto;
-    padding: 0 20px 20px; gap: 12px;
+    padding: 0 20px; gap: 14px;
     scroll-snap-type: x mandatory;
 }
-.slider-wrapper::-webkit-scrollbar { display: none; }
+.card-scroller::-webkit-scrollbar { display: none; }
 
-.service-card {
-    flex: 0 0 140px; scroll-snap-align: start;
-    background: var(--card-bg); border-radius: 16px;
-    overflow: hidden; text-decoration: none;
+.mobi-card {
+    flex: 0 0 160px; /* 卡片寬度放大 */
+    height: 200px;   /* 高度增加，符合圖1比例 */
+    scroll-snap-align: start;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    text-decoration: none;
     border: 1px solid var(--border-color);
     transition: var(--transition);
+    /* 圖2 櫻花底圖套用 */
+    background-image: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg'); 
+    background-size: cover;
+    background-position: center;
 }
-.service-card:active { transform: scale(0.95); }
-.card-img {
-    width: 100%; height: 90px;
-    background-image: url('https://mobsp.github.io/assets/brand/mobsp-icon.svg'); /* 預設圖 */
-    background-size: cover; background-position: center;
-    /* 這裡套用櫻花背景圖 */
-    background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg'); 
-}
-.card-info { padding: 10px; text-align: center; }
-.card-name { font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
 
-/* --- 底部導覽 --- */
+.mobi-card:active { transform: scale(0.96); }
+
+/* 卡片文字遮罩層 */
+.card-overlay {
+    position: absolute; bottom: 0; width: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    padding: 12px 5px;
+    text-align: center;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+.card-title { font-size: 14px; color: #fff; font-weight: 500; }
+
+/* --- 底部標籤列 --- */
 nav.tab-bar {
-  height: 70px; background: rgba(15, 15, 16, 0.95);
+  height: 75px; background: #000;
   border-top: 1px solid var(--border-color);
   display: grid; grid-template-columns: repeat(5, 1fr);
+  padding-bottom: env(safe-area-inset-bottom);
 }
-.tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: var(--text-sub); gap: 4px; }
-.tab-item img { width: 22px; height: 22px; filter: invert(0.6); }
+.tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: #8e8e93; gap: 5px; }
+.tab-item img { width: 24px; height: 24px; filter: invert(0.5); }
 .tab-item span { font-size: 10px; }
 .tab-item.active { color: var(--primary-color); }
-.tab-item.active img { filter: invert(1) sepia(1) saturate(5) hue-rotate(130deg); }
+.tab-item.active img { filter: invert(1) sepia(1) saturate(5) hue-rotate(150deg); }
 
 </style>
 </head>
@@ -122,31 +132,30 @@ nav.tab-bar {
     </header>
 
     <main style="flex:1; overflow-y:auto;">
-        <div class="marquee-container">
-            <div class="marquee-badge">v1.2 Update</div>
-            <div class="marquee-content">
-                <p>📢 歡迎來到莫比空間！本站整合教學、音樂與工具資源，持續更新中... 歡迎多加利用！</p>
+        <div class="marquee-row">
+            <div class="version-tag">System Update · v1.2</div>
+            <div class="marquee-box">
+                <div class="marquee-text">📢 莫比空間資源整合更新：部落格、工具庫與多媒體頻道已全面同步。</div>
             </div>
         </div>
 
-        <div class="slider-section">
-            <div class="section-title">服務與入口</div>
-            <div class="slider-wrapper">
-                <a href="./blog/" class="service-card">
-                    <div class="card-img" style="background-image: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg');"></div>
-                    <div class="card-info"><div class="card-name">部落格</div></div>
+        <div class="slider-container">
+            <div class="section-label">服務與入口</div>
+            <div class="card-scroller">
+                <a href="./blog/" class="mobi-card">
+                    <div class="card-overlay"><div class="card-title">部落格</div></div>
                 </a>
-                <a href="./tol/" class="service-card">
-                    <div class="card-img"></div>
-                    <div class="card-info"><div class="card-name">工具庫</div></div>
+                <a href="./tol/" class="mobi-card">
+                    <div class="card-overlay"><div class="card-title">工具庫</div></div>
                 </a>
-                <a href="./p/#Music" class="service-card">
-                    <div class="card-img"></div>
-                    <div class="card-info"><div class="card-name">音樂頻道</div></div>
+                <a href="./p/#Music" class="mobi-card">
+                    <div class="card-overlay"><div class="card-title">音樂頻道</div></div>
                 </a>
-                <a href="./p/#Shorts" class="service-card">
-                    <div class="card-img"></div>
-                    <div class="card-info"><div class="card-name">短影音</div></div>
+                <a href="./p/#Shorts" class="mobi-card">
+                    <div class="card-overlay"><div class="card-title">短影音</div></div>
+                </a>
+                <a href="./p/#wiki" class="mobi-card">
+                    <div class="card-overlay"><div class="card-title">支援中心</div></div>
                 </a>
             </div>
         </div>
