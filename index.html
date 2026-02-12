@@ -5,23 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
 
-<meta name="description" content="莫比空間官方入口，Line App 佈局風格。" />
-<link rel="canonical" href="https://mobsp.github.io/" />
-
-<script>
-  (function applyGlobalSettings() {
-      const theme = localStorage.getItem('mobi_theme');
-      const font = localStorage.getItem('mobi_font');
-      if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
-      if (font) document.documentElement.style.fontSize = font + 'px';
-  })();
-</script>
-
 <style>
 :root {
   --bg-color: #0b0b0c;          
-  --card-bg: rgba(25, 27, 31, 0.95);
-  --item-bg: #161a22;
+  --card-bg: #1c1c1e;
   --text-main: #f1f2f6;
   --text-sub: #a4b0be;
   --primary-color: #00cec9;     
@@ -32,287 +19,146 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
 body {
-  margin: 0;
-  padding: 0;
-  background-color: #000; /* 電腦版背景 */
+  margin: 0; padding: 0;
+  background-color: #000;
   color: var(--text-main);
-  font-family: 'PingFang TC', 'Microsoft JhengHei', system-ui, sans-serif;
-  display: flex;
-  justify-content: center;
+  font-family: system-ui, -apple-system, sans-serif;
+  display: flex; justify-content: center;
 }
 
-/* App 容器容器化 */
 .app-container {
-  width: 100%;
-  max-width: 500px;
-  height: 100dvh;
+  width: 100%; max-width: 500px; height: 100dvh;
   background: var(--bg-color);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  box-shadow: 0 0 100px rgba(0,0,0,0.8);
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
 }
 
-/* --- 頂部標頭 Header --- */
+/* --- Header --- */
 header {
-  height: 60px;
-  padding: 0 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--bg-color);
+  height: 60px; padding: 0 20px;
+  display: flex; align-items: center; justify-content: space-between;
   border-bottom: 1px solid var(--border-color);
-  position: sticky;
-  top: 0;
-  z-index: 100;
+}
+header h1 { font-size: 1.2rem; margin: 0; color: var(--primary-color); }
+header .icon-group img { width: 22px; height: 22px; filter: invert(1); margin-left: 15px; }
+
+/* --- 跑馬燈公告區 --- */
+.marquee-container {
+    display: flex; align-items: center;
+    background: rgba(255,255,255,0.03);
+    padding: 10px 15px; margin: 10px 0;
+}
+.marquee-badge {
+    background: var(--primary-color);
+    color: #000; font-size: 10px; font-weight: bold;
+    padding: 2px 8px; border-radius: 4px;
+    white-space: nowrap; margin-right: 10px;
+}
+.marquee-content {
+    flex: 1; overflow: hidden; white-space: nowrap;
+}
+.marquee-content p {
+    display: inline-block; padding-left: 100%;
+    animation: marquee 15s linear infinite;
+    margin: 0; font-size: 0.9rem; color: var(--text-sub);
+}
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
 }
 
-header .logo-group { display: flex; align-items: center; gap: 10px; }
-header img.brand-logo { width: 28px; height: 28px; }
-header h1 { 
-    font-size: 1.2rem; 
-    margin: 0; 
-    background: linear-gradient(to right, #fff, var(--primary-color));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+/* --- 卡片滑塊區 --- */
+.slider-section { padding: 10px 0; }
+.section-title { padding: 0 20px 15px; font-size: 0.9rem; color: var(--text-main); }
+
+.slider-wrapper {
+    display: flex; overflow-x: auto;
+    padding: 0 20px 20px; gap: 12px;
+    scroll-snap-type: x mandatory;
 }
+.slider-wrapper::-webkit-scrollbar { display: none; }
 
-header .icon-group { display: flex; gap: 18px; }
-header .icon-group img { width: 22px; height: 22px; filter: invert(1); opacity: 0.8; cursor: pointer; }
-
-/* --- 中間捲動區 Main --- */
-main {
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 80px; /* 留給 Tab Bar 的空間 */
+.service-card {
+    flex: 0 0 140px; scroll-snap-align: start;
+    background: var(--card-bg); border-radius: 16px;
+    overflow: hidden; text-decoration: none;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
 }
-
-/* 隱藏捲軸 */
-main::-webkit-scrollbar { display: none; }
-main { -ms-overflow-style: none; scrollbar-width: none; }
-
-/* 橫幅公告區 */
-.hero-banner {
-    padding: 25px 20px;
-    background: linear-gradient(180deg, var(--bg-color) 0%, #161a22 100%);
+.service-card:active { transform: scale(0.95); }
+.card-img {
+    width: 100%; height: 90px;
+    background-image: url('https://mobsp.github.io/assets/brand/mobsp-icon.svg'); /* 預設圖 */
+    background-size: cover; background-position: center;
+    /* 這裡套用櫻花背景圖 */
+    background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg'); 
 }
-.badge {
-  font-size: 10px;
-  background: var(--primary-color);
-  color: #000;
-  padding: 2px 10px;
-  border-radius: 4px;
-  font-weight: 800;
-  margin-bottom: 8px;
-  display: inline-block;
-}
-.hero-banner p { color: var(--text-sub); font-size: 0.9rem; margin: 5px 0; }
+.card-info { padding: 10px; text-align: center; }
+.card-name { font-size: 0.85rem; color: var(--text-main); font-weight: 500; }
 
-/* 服務清單列表 */
-.service-section { margin-top: 10px; }
-.section-title {
-    padding: 15px 20px 8px;
-    font-size: 0.8rem;
-    color: var(--text-sub);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.action-item {
-  display: flex;
-  align-items: center;
-  padding: 16px 20px;
-  text-decoration: none;
-  color: var(--text-main);
-  background: transparent;
-  border-bottom: 1px solid var(--border-color);
-  transition: var(--transition);
-}
-
-.action-item:active {
-  background: rgba(255, 255, 255, 0.05);
-  transform: scale(0.98);
-}
-
-.action-item .item-icon {
-  width: 24px;
-  height: 24px;
-  margin-right: 15px;
-  filter: invert(1); /* 讓黑色圖示變白 */
-}
-
-.action-item .item-info { flex: 1; }
-.action-item .item-name { font-size: 1rem; font-weight: 500; }
-.action-item .arrow-right { 
-    width: 16px; 
-    height: 16px; 
-    opacity: 0.3; 
-    filter: invert(1);
-}
-
-/* --- 底部導覽列 Tab Bar --- */
+/* --- 底部導覽 --- */
 nav.tab-bar {
-  height: 70px;
-  background: rgba(15, 15, 16, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  height: 70px; background: rgba(15, 15, 16, 0.95);
   border-top: 1px solid var(--border-color);
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+  display: grid; grid-template-columns: repeat(5, 1fr);
 }
-
-.tab-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  color: var(--text-sub);
-  gap: 5px;
-}
-
-.tab-item img { width: 22px; height: 22px; filter: invert(0.7); transition: var(--transition); }
+.tab-item { display: flex; flex-direction: column; align-items: center; justify-content: center; text-decoration: none; color: var(--text-sub); gap: 4px; }
+.tab-item img { width: 22px; height: 22px; filter: invert(0.6); }
 .tab-item span { font-size: 10px; }
+.tab-item.active { color: var(--primary-color); }
+.tab-item.active img { filter: invert(1) sepia(1) saturate(5) hue-rotate(130deg); }
 
-.tab-item:hover, .tab-item.active { color: var(--primary-color); }
-.tab-item:hover img, .tab-item.active img { filter: invert(1) sepia(1) saturate(5) hue-rotate(130deg); }
-
-/* Snackbar 樣式 */
-#custom-modal {
-  display: none;
-  position: fixed;
-  bottom: 85px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--primary-color);
-  color: #000;
-  padding: 10px 25px;
-  border-radius: 50px;
-  z-index: 1000;
-  font-weight: bold;
-  font-size: 13px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-}
 </style>
 </head>
 
 <body>
-
 <div class="app-container">
-    <div id="custom-modal" onclick="this.style.display='none'">
-        📢 歡迎來到莫比空間！
-    </div>
-
     <header>
-        <div class="logo-group">
-            <img src="https://mobsp.github.io/assets/brand/mobsp-icon.svg" alt="Logo" class="brand-logo">
-            <h1>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
-        </div>
+        <h1>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
         <div class="icon-group">
-            <img src="https://mobsp.github.io/assets/icon/svg/search.svg" alt="Search">
-            <a href="./p/#Settings"><img src="https://mobsp.github.io/assets/icon/svg/settings.svg" alt="Settings"></a>
+            <img src="https://mobsp.github.io/assets/icon/svg/search.svg">
+            <img src="https://mobsp.github.io/assets/icon/svg/settings.svg">
         </div>
     </header>
 
-    <main>
-        <div class="hero-banner">
-            <div class="badge">System Update · v1.2</div>
-            <p>整合教學、音樂與工具資源</p>
-            <p style="font-size: 0.8rem;">本站資源由 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 製作提供</p>
+    <main style="flex:1; overflow-y:auto;">
+        <div class="marquee-container">
+            <div class="marquee-badge">v1.2 Update</div>
+            <div class="marquee-content">
+                <p>📢 歡迎來到莫比空間！本站整合教學、音樂與工具資源，持續更新中... 歡迎多加利用！</p>
+            </div>
         </div>
 
-        <div class="service-section">
+        <div class="slider-section">
             <div class="section-title">服務與入口</div>
-            
-            <a href="./blog/" class="action-item">
-                <img src="https://mobsp.github.io/assets/icon/svg/bullhorn.svg" class="item-icon">
-                <div class="item-info"><div class="item-name">部落格</div></div>
-                <img src="https://mobsp.github.io/assets/icon/svg/circle_chev_right.svg" class="arrow-right">
-            </a>
-
-            <a href="./tol/" class="action-item">
-                <img src="https://mobsp.github.io/assets/icon/svg/receipt.svg" class="item-icon">
-                <div class="item-info"><div class="item-name">工具庫</div></div>
-                <img src="https://mobsp.github.io/assets/icon/svg/circle_chev_right.svg" class="arrow-right">
-            </a>
-
-            <a href="./p/#Music" class="action-item">
-                <img src="https://mobsp.github.io/assets/icon/svg/music_note_1.svg" class="item-icon">
-                <div class="item-info"><div class="item-name">音樂頻道</div></div>
-                <img src="https://mobsp.github.io/assets/icon/svg/circle_chev_right.svg" class="arrow-right">
-            </a>
-
-            <a href="./p/#Shorts" class="action-item">
-                <img src="https://mobsp.github.io/assets/icon/svg/youtube.svg" class="item-icon">
-                <div class="item-info"><div class="item-name">短影音</div></div>
-                <img src="https://mobsp.github.io/assets/icon/svg/circle_chev_right.svg" class="arrow-right">
-            </a>
-
-            <a href="./p/#Keep" class="action-item">
-                <img src="https://mobsp.github.io/assets/icon/svg/sticky_note.svg" class="item-icon">
-                <div class="item-info"><div class="item-name">Ⲙⳝ 記事</div></div>
-                <img src="https://mobsp.github.io/assets/icon/svg/circle_chev_right.svg" class="arrow-right">
-            </a>
-
-            <a href="./p/#Editor" class="action-item">
-                <img src="https://mobsp.github.io/assets/icon/svg/edit.svg" class="item-icon">
-                <div class="item-info"><div class="item-name">編輯器</div></div>
-                <img src="https://mobsp.github.io/assets/icon/svg/circle_chev_right.svg" class="arrow-right">
-            </a>
-
-            <a href="./p/#wiki" class="action-item">
-                <img src="https://mobsp.github.io/assets/icon/svg/circle_info.svg" class="item-icon">
-                <div class="item-info"><div class="item-name">支援中心</div></div>
-                <img src="https://mobsp.github.io/assets/icon/svg/circle_chev_right.svg" class="arrow-right">
-            </a>
-        </div>
-
-        <div style="text-align: center; padding: 40px 0; opacity: 0.3; font-size: 12px;">
-            &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.
+            <div class="slider-wrapper">
+                <a href="./blog/" class="service-card">
+                    <div class="card-img" style="background-image: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg');"></div>
+                    <div class="card-info"><div class="card-name">部落格</div></div>
+                </a>
+                <a href="./tol/" class="service-card">
+                    <div class="card-img"></div>
+                    <div class="card-info"><div class="card-name">工具庫</div></div>
+                </a>
+                <a href="./p/#Music" class="service-card">
+                    <div class="card-img"></div>
+                    <div class="card-info"><div class="card-name">音樂頻道</div></div>
+                </a>
+                <a href="./p/#Shorts" class="service-card">
+                    <div class="card-img"></div>
+                    <div class="card-info"><div class="card-name">短影音</div></div>
+                </a>
+            </div>
         </div>
     </main>
 
     <nav class="tab-bar">
-        <a href="#" class="tab-item active">
-            <img src="https://mobsp.github.io/assets/icon/svg/home.svg" alt="Home">
-            <span>主頁</span>
-        </a>
-        <a href="./blog/" class="tab-item">
-            <img src="https://mobsp.github.io/assets/icon/svg/bullhorn.svg" alt="Blog">
-            <span>部落格</span>
-        </a>
-        <a href="./tol/" class="tab-item">
-            <img src="https://mobsp.github.io/assets/icon/svg/receipt.svg" alt="Tools">
-            <span>工具庫</span>
-        </a>
-        <a href="./p/#Music" class="tab-item">
-            <img src="https://mobsp.github.io/assets/icon/svg/music_note_1.svg" alt="Music">
-            <span>多媒體</span>
-        </a>
-        <a href="./p/#Settings" class="tab-item">
-            <img src="https://mobsp.github.io/assets/icon/svg/settings.svg" alt="Settings">
-            <span>設定</span>
-        </a>
+        <a href="#" class="tab-item active"><img src="https://mobsp.github.io/assets/icon/svg/home.svg"><span>主頁</span></a>
+        <a href="./blog/" class="tab-item"><img src="https://mobsp.github.io/assets/icon/svg/bullhorn.svg"><span>部落格</span></a>
+        <a href="./tol/" class="tab-item"><img src="https://mobsp.github.io/assets/icon/svg/receipt.svg"><span>工具庫</span></a>
+        <a href="./p/#Music" class="tab-item"><img src="https://mobsp.github.io/assets/icon/svg/music_note_1.svg"><span>多媒體</span></a>
+        <a href="./p/#Settings" class="tab-item"><img src="https://mobsp.github.io/assets/icon/svg/settings.svg"><span>設定</span></a>
     </nav>
 </div>
-
-<script>
-/* 1. 優雅的公告提醒 */
-window.onload = () => {
-  if (!localStorage.getItem("mobispace_notice_v1.2")) {
-    const modal = document.getElementById('custom-modal');
-    modal.style.display = 'block';
-    setTimeout(() => { 
-      modal.style.opacity = '0';
-      setTimeout(() => modal.style.display = 'none', 500);
-    }, 4000);
-    localStorage.setItem("mobispace_notice_v1.2", "seen");
-  }
-};
-</script>
-
 </body>
 </html>
