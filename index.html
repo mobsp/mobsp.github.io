@@ -7,112 +7,118 @@
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
-<meta name="theme-color" content="#0b0b0c"> <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/icon-192.png">
+<meta name="theme-color" content="#0b0b0c">
 
 <style>
 :root {
   --bg-color: #0b0b0c;          
   --card-bg: rgba(25, 27, 31, 0.95); 
   --text-main: #f1f2f6;         
-  --text-sub: #a4b0be;          
   --primary-color: #00cec9;     
   --border-color: rgba(255, 255, 255, 0.1); 
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /* -----------------------------------------------------------
-   【RWD 佈局優化】
+   【修改指南：固定視窗佈局】
+   要讓頭尾固定，中間滑動，body 必須禁止捲動。
    ----------------------------------------------------------- */
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
 html, body {
-  width: 100%;
-  margin: 0; padding: 0;
+  width: 100%; height: 100dvh; 
+  overflow: hidden; /* 禁止全頁捲動 */
+  position: fixed; margin: 0; padding: 0;
   background-color: var(--bg-color);
   color: var(--text-main);
-  font-family: 'PingFang TC', -apple-system, sans-serif;
-  overflow-x: hidden; /* 防止橫向溢出 */
+  font-family: 'PingFang TC', system-ui, sans-serif;
 }
 
-/* 讓網頁像 App 的長型容器 */
+/* 頁面主容器：撐滿整個螢幕 */
 .page-wrapper {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  width: 100%;
-  max-width: 500px; /* 【RWD】電腦看時維持手機比例，手機看時則全寬 */
+  height: 100dvh; /* 高度鎖定為螢幕高度 */
+  max-width: 500px;
   margin: 0 auto;
-  background: var(--card-bg);
-  /* 【PWA 留白】針對 iPhone 全螢幕底部的安全區域留白 */
-  padding-bottom: env(safe-area-inset-bottom);
+  position: relative;
 }
 
-/* --- [1. 頁首 Header] --- */
+/* -----------------------------------------------------------
+   【第一部分：固定頁首 Header】
+   ----------------------------------------------------------- */
 .app-header {
-  padding: calc(20px + env(safe-area-inset-top)) 20px 15px; /* 【PWA】避開劉海區 */
-  background: rgba(11, 11, 12, 0.8);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  position: sticky; /* 讓頁首捲動時黏在頂部 */
-  top: 0;
-  z-index: 100;
+  flex-shrink: 0; /* 禁止被內容擠壓縮小 */
+  padding: calc(20px + env(safe-area-inset-top)) 20px 15px; /* 適應 iPhone 瀏海 */
+  background: rgba(11, 11, 12, 0.9);
+  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
   border-bottom: 1px solid var(--border-color);
-  text-align: center;
+  z-index: 100;
 }
 
-/* 跑馬燈樣式 (維持原本) */
+/* 跑馬燈樣式 */
 .marquee-row {
   display: flex; align-items: center;
-  background: rgba(0,0,0,0.4); padding: 6px 12px;
-  border-radius: 8px; margin-bottom: 12px; overflow: hidden;
+  background: rgba(0,0,0,0.4); padding: 5px 10px;
+  border-radius: 8px; margin-bottom: 10px; overflow: hidden;
 }
-.v-tag { background: var(--primary-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px; }
-.mq-text { display: inline-block; animation: mq 12s linear infinite; font-size: 12px; color: var(--text-sub); white-space: nowrap; }
+.v-tag { background: var(--primary-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 5px; border-radius: 4px; margin-right: 8px; }
+.mq-text { display: inline-block; animation: mq 12s linear infinite; font-size: 11px; white-space: nowrap; opacity: 0.8; }
 @keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-/* --- [2. 內容區 Main] --- */
+/* -----------------------------------------------------------
+   【第二部分：核心內容區 - 左右滑動大卡片】
+   ----------------------------------------------------------- */
 .app-main {
-  flex: 1;
-  padding: 20px;
-  display: grid; /* 【RWD 建議】改用 Grid 佈局在平板上更彈性 */
-  grid-template-columns: 1fr; 
-  gap: 16px;
+  flex: 1;             /* 佔滿中間所有空間 */
+  display: flex;       /* 改為橫向排列 */
+  align-items: center; /* 卡片垂直置中 */
+  overflow-x: auto;    /* 開啟左右捲動 */
+  scroll-snap-type: x mandatory; /* 修改指南：關鍵！讓滑動會「自動對齊」卡片中心 */
+  padding: 0 30px;     /* 左右留白，讓使用者滑動時能看到前後卡片 */
+  gap: 20px;           /* 卡片之間的距離 */
+  scrollbar-width: none;
 }
+.app-main::-webkit-scrollbar { display: none; } /* 隱藏捲軸 */
 
-/* 入口卡片：App 感強化 */
+/* 直長式大卡片按鈕 */
 .action-btn {
-  display: flex; 
-  align-items: flex-end;
-  height: 160px; /* 固定高度，讓卡片整齊 */
-  text-decoration: none; 
-  border-radius: 24px;
-  position: relative; 
+  flex: 0 0 85%;       /* 修改指南：卡片寬度，0.85 代表佔中間區的 85% */
+  height: 80%;         /* 修改指南：卡片高度，可根據喜好調整 (例如 70% ~ 90%) */
+  scroll-snap-align: center; /* 停止滑動時，卡片精準對齊螢幕中心 */
+  text-decoration: none;
+  border-radius: 35px; /* 大圓角增加 App 感 */
+  position: relative;
   overflow: hidden;
   border: 1px solid var(--border-color);
-  background: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg') center/cover;
-  /* 增加陰影讓卡片更立體 */
-  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5);
   transition: var(--transition);
+  
+  /* 預設櫻花背景圖 */
+  background: url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg') center/cover;
 }
 
-/* 觸控回饋：像按鈕一樣縮小 */
-.action-btn:active { transform: scale(0.96); opacity: 0.8; }
+/* 觸控時卡片會微縮 */
+.action-btn:active { transform: scale(0.96); }
 
+/* 卡片底部的標題遮罩 */
 .btn-overlay {
-  width: 100%; padding: 20px;
-  background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  position: absolute; bottom: 0; width: 100%;
+  padding: 40px 25px 30px;
+  background: linear-gradient(transparent, rgba(0,0,0,0.9));
 }
-.btn-title { color: #fff; font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
+.btn-title { color: #fff; font-size: 1.8rem; font-weight: 800; letter-spacing: 2px; }
 
-/* --- [3. 頁尾 Footer] --- */
+/* -----------------------------------------------------------
+   【第三部分：固定頁尾 Footer】
+   ----------------------------------------------------------- */
 .app-footer {
-  padding: 40px 20px;
-  text-align: center;
+  flex-shrink: 0; /* 禁止被內容擠壓縮小 */
+  padding: 15px 20px calc(15px + env(safe-area-inset-bottom)); /* 適應 iPhone 底部安全區 */
+  background: rgba(11, 11, 12, 0.9);
+  backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
   border-top: 1px solid var(--border-color);
-  background: rgba(0,0,0,0.4);
+  text-align: center;
 }
-.copyright { font-size: 11px; opacity: 0.3; line-height: 1.8; }
+.copyright { font-size: 10px; opacity: 0.3; letter-spacing: 1px; }
 
 </style>
 </head>
@@ -123,36 +129,39 @@ html, body {
   
   <header class="app-header">
     <div class="marquee-row">
-      <span class="v-tag">v1.2</span>
-      <div style="flex:1; overflow:hidden;">
-        <div class="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源整合入口 ｜ 點擊「加入主畫面」體驗 App 模式...</div>
-      </div>
+      <span class="v-tag">PWA v1.2</span>
+      <div style="flex:1; overflow:hidden;"><div class="mq-text">請左右滑動切換入口服務 ｜ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 資源持續更新中...</div></div>
     </div>
-    <h1 style="font-size: 1.4rem; margin: 0; color: #fff; letter-spacing: 2px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+    <h1 style="font-size: 1.3rem; margin: 0; text-align: center; letter-spacing: 3px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
   </header>
 
   <main class="app-main">
+    
     <a href="./blog/" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">部落格</div></div>
     </a>
+
     <a href="./tol/" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">工具庫</div></div>
     </a>
+
     <a href="./p/#Music" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">音樂頻道</div></div>
     </a>
+
     <a href="./p/#Shorts" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">短影音</div></div>
     </a>
+
     <a href="./p/#wiki" class="action-btn">
       <div class="btn-overlay"><div class="btn-title">支援中心</div></div>
     </a>
+
   </main>
 
   <footer class="app-footer">
     <div class="copyright">
-      &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.<br>
-      Optimized for Mobile PWA Experience
+      &copy; 2024–2026 莫比空間 Ⓒ All Rights Reserved.
     </div>
   </footer>
 
