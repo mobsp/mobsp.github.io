@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: null
 ---
 <!DOCTYPE html>
 <html lang="zh-TW">
@@ -11,31 +11,62 @@ layout: default
     <style>
         :root { --bg-body: #000; --bg-container: #111; --accent: #00cec9; --text-main: #fff; --text-sub: #aaa; --border: #262626; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg-body); color: var(--text-main); height: 100dvh; overflow: hidden; }
-        #app { max-width: 480px; margin: 0 auto; background: var(--bg-container); height: 100%; display: flex; flex-direction: column; }
         
-        /* 固定頁首 */
-        .header { flex-shrink: 0; padding: 15px; background: #111; border-bottom: 1px solid var(--border); }
+        /* 鎖定全螢幕高度，禁止 body 捲動 */
+        body { 
+            font-family: -apple-system, sans-serif; 
+            background: var(--bg-body); 
+            color: var(--text-main); 
+            height: 100dvh; 
+            overflow: hidden; 
+        }
+        
+        #app { 
+            max-width: 480px; margin: 0 auto; 
+            background: var(--bg-container); 
+            height: 100%; 
+            display: flex; flex-direction: column; 
+        }
+        
+        /* 1. 固定頁首 */
+        .header { 
+            flex-shrink: 0; 
+            padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
+            background: #111; 
+            border-bottom: 1px solid var(--border); 
+        }
         .mobi-bar { display: flex; align-items: center; background: #222; padding: 8px 15px; border-radius: 20px; font-size: 13px; color: var(--text-sub); }
 
-        /* 捲動列表區 */
-        #list-view { flex: 1; overflow-y: auto; padding: 20px 15px 100px; }
-        .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; padding-left: 5px; }
-
-        /* 自動生成的卡片樣式 */
-        .post-card { 
-            display: flex; gap: 15px; padding: 15px; background: #1a1a1a; 
-            border-radius: 15px; margin-bottom: 12px; text-decoration: none; 
-            color: inherit; border: 1px solid transparent; transition: 0.3s;
+        /* 2. 中間捲動區 */
+        #list-view { 
+            flex: 1; 
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch;
+            padding: 20px 15px 100px; 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://files.catbox.moe/jk7vkg.jpeg') center/cover;
         }
-        .post-card:active { background: #222; border-color: var(--accent); }
+        .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; }
+
+        /* 卡片樣式 */
+        .post-card { 
+            display: flex; gap: 15px; padding: 15px; background: rgba(255,255,255,0.05); 
+            border-radius: 15px; margin-bottom: 12px; text-decoration: none; 
+            color: inherit; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px);
+        }
         .post-img { width: 85px; height: 85px; border-radius: 12px; background: #333; flex-shrink: 0; object-fit: cover; }
         .post-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .post-title { font-size: 15px; font-weight: 600; line-height: 1.4; color: #fff; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .post-meta { font-size: 11px; color: var(--text-sub); display: flex; justify-content: space-between; }
+        .post-title { font-size: 15px; font-weight: 600; line-height: 1.4; color: #fff; }
+        .post-meta { font-size: 11px; color: var(--text-sub); }
 
-        /* 底部導覽 */
-        .nav { flex-shrink: 0; height: 60px; background: #111; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; }
+        /* 3. 固定頁尾 */
+        .nav { 
+            flex-shrink: 0; 
+            height: calc(60px + env(safe-area-inset-bottom)); 
+            background: #111; 
+            border-top: 1px solid var(--border); 
+            display: flex; justify-content: space-around; align-items: center; 
+            padding-bottom: env(safe-area-inset-bottom);
+        }
         .nav-a { color: var(--text-sub); text-decoration: none; font-size: 10px; text-align: center; }
         .nav-a.active { color: var(--accent); }
     </style>
@@ -45,28 +76,23 @@ layout: default
         <header class="header">
             <div class="mobi-bar">
                 <i class="fa-solid fa-magnifying-glass" style="margin-right: 10px;"></i>
-                <span>搜尋 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 文章...</span>
+                <span>搜尋 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 趨勢文章...</span>
             </div>
         </header>
 
         <main id="list-view">
-            <h2 class="section-title">最新文章</h2>
+            <h2 class="section-title">最新精選文章</h2>
             
             {% for post in site.posts %}
             <a href="{{ post.url }}" class="post-card">
                 <img src="{{ post.image | default: 'https://files.catbox.moe/8yessc.png' }}" class="post-img">
                 <div class="post-info">
                     <div class="post-title">{{ post.title }}</div>
-                    <div class="post-meta">
-                        <span>{{ post.date | date: "%Y/%m/%d" }}</span>
-                        <span>閱讀更多 <i class="fa-solid fa-chevron-right" style="font-size: 8px;"></i></span>
-                    </div>
+                    <div class="post-meta">{{ post.date | date: "%Y/%m/%d" }}</div>
                 </div>
             </a>
             {% endfor %}
-            {% if site.posts.size == 0 %}
-            <p style="text-align: center; color: #555; margin-top: 50px;">目前尚無文章，請在 _posts 資料夾新增 .md 檔案。</p>
-            {% endif %}
+
         </main>
 
         <nav class="nav">
