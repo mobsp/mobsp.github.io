@@ -1,168 +1,80 @@
+---
+layout: default
+---
 <!DOCTYPE html>
-<html lang="zh-TW" data-theme="dark">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比部落格</title>
-    
-    <link rel="icon" href="https://files.catbox.moe/8yessc.png" type="image/png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比日誌</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        :root {
-            --bg-body: #000000; --bg-container: #111111;
-            --text-main: #ffffff; --text-sub: #aaaaaa;
-            --accent-color: #00cec9; --nav-bg: #111111;
-            --border-color: #262626;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        :root { --bg-body: #000; --bg-container: #111; --accent: #00cec9; --text-main: #fff; --text-sub: #aaa; --border: #262626; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg-body); color: var(--text-main); height: 100dvh; overflow: hidden; }
+        #app { max-width: 480px; margin: 0 auto; background: var(--bg-container); height: 100%; display: flex; flex-direction: column; }
         
-        body { 
-            font-family: -apple-system, sans-serif; 
-            background-color: var(--bg-body); 
-            color: var(--text-main); 
-            height: 100dvh; overflow: hidden; 
-        }
-        
-        #app-container { 
-            max-width: 480px; margin: 0 auto; 
-            background-color: var(--bg-container); 
-            height: 100%; display: flex; flex-direction: column; 
-        }
+        /* 固定頁首 */
+        .header { flex-shrink: 0; padding: 15px; background: #111; border-bottom: 1px solid var(--border); }
+        .mobi-bar { display: flex; align-items: center; background: #222; padding: 8px 15px; border-radius: 20px; font-size: 13px; color: var(--text-sub); }
 
-        /* 頁首跑馬燈區塊 */
-        .app-header { 
-            flex-shrink: 0;
-            padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
-            background: var(--nav-bg);
-            border-bottom: 1px solid var(--border-color);
-        }
-        .marquee-row {
-            display: flex; align-items: center; background: #222;
-            padding: 6px 12px; border-radius: 20px; gap: 10px;
-        }
-        /* 版本號一致化樣式 */
-        .version-tag { 
-            background: var(--accent-color); 
-            color: #000; 
-            font-size: 10px; 
-            font-weight: 900; 
-            padding: 2px 6px; 
-            border-radius: 4px; 
-            white-space: nowrap; 
-        }
-        .mq-container { flex: 1; overflow: hidden; white-space: nowrap; font-size: 12px; }
-        /* 修正：強制文字為白色 */
-        .mq-content { 
-            display: inline-block; 
-            animation: marquee 15s linear infinite; 
-            color: #ffffff !important; 
-        }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        /* 捲動列表區 */
+        #list-view { flex: 1; overflow-y: auto; padding: 20px 15px 100px; }
+        .section-title { font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; padding-left: 5px; }
 
-        /* 中間捲動區 */
-        #main-view { 
-            flex: 1; overflow-y: auto; 
-            -webkit-overflow-scrolling: touch;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
-                        url('https://files.catbox.moe/jk7vkg.jpeg') center/cover no-repeat;
+        /* 自動生成的卡片樣式 */
+        .post-card { 
+            display: flex; gap: 15px; padding: 15px; background: #1a1a1a; 
+            border-radius: 15px; margin-bottom: 12px; text-decoration: none; 
+            color: inherit; border: 1px solid transparent; transition: 0.3s;
         }
-
-        /* 卡片滑塊 */
-        .section-label { padding: 20px 15px 10px; font-weight: bold; font-size: 1.1rem; color: #fff; }
-        .horizontal-slider { 
-            display: flex; gap: 15px; padding: 0 15px 20px; 
-            overflow-x: auto; scroll-snap-type: x mandatory; 
-        }
-        .horizontal-slider::-webkit-scrollbar { display: none; }
-        .mid-card { 
-            min-width: 200px; height: 140px; 
-            border-radius: 15px; flex-shrink: 0; scroll-snap-align: start;
-            display: flex; align-items: flex-end; padding: 15px;
-            background-size: cover; background-position: center;
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #fff;
-        }
-
-        /* 列表區塊 */
-        .list-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
-        /* 修正：使用 post 路徑 */
-        .more-btn { 
-            font-size: 12px; 
-            color: var(--accent-color); 
-            text-decoration: none; 
-            border: 1px solid var(--accent-color); 
-            padding: 2px 8px; 
-            border-radius: 12px; 
-        }
-        
-        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); }
-        .row-img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; background: #222; }
-        .row-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0; }
-        .row-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: #ffffff; }
+        .post-card:active { background: #222; border-color: var(--accent); }
+        .post-img { width: 85px; height: 85px; border-radius: 12px; background: #333; flex-shrink: 0; object-fit: cover; }
+        .post-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .post-title { font-size: 15px; font-weight: 600; line-height: 1.4; color: #fff; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .post-meta { font-size: 11px; color: var(--text-sub); display: flex; justify-content: space-between; }
 
         /* 底部導覽 */
-        .bottom-nav { 
-            flex-shrink: 0;
-            height: calc(60px + env(safe-area-inset-bottom)); 
-            background-color: var(--nav-bg); 
-            border-top: 1px solid var(--border-color); 
-            display: flex; justify-content: space-around; align-items: center; 
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 10px; }
-        .nav-item.active { color: var(--accent-color); }
+        .nav { flex-shrink: 0; height: 60px; background: #111; border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; }
+        .nav-a { color: var(--text-sub); text-decoration: none; font-size: 10px; text-align: center; }
+        .nav-a.active { color: var(--accent); }
     </style>
 </head>
 <body>
-
-    <div id="app-container">
-        <header class="app-header">
-            <div class="marquee-row">
-                <span class="version-tag">V1.0</span>
-                <div class="mq-container">
-                    <div class="mq-content">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！最新技術文章持續更新中...</div>
-                </div>
-                <button onclick="location.href='../'" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:5px;">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                </button>
+    <div id="app">
+        <header class="header">
+            <div class="mobi-bar">
+                <i class="fa-solid fa-magnifying-glass" style="margin-right: 10px;"></i>
+                <span>搜尋 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 文章...</span>
             </div>
         </header>
 
-        <main id="main-view">
+        <main id="list-view">
+            <h2 class="section-title">最新文章</h2>
             
-            <div class="section-label">最新精選</div>
-            <div class="horizontal-slider">
-                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.8)), url('https://files.catbox.moe/jk7vkg.jpeg');">
-                    <span style="font-size: 13px;">開發日誌：介面優化篇</span>
+            {% for post in site.posts %}
+            <a href="{{ post.url }}" class="post-card">
+                <img src="{{ post.image | default: 'https://files.catbox.moe/8yessc.png' }}" class="post-img">
+                <div class="post-info">
+                    <div class="post-title">{{ post.title }}</div>
+                    <div class="post-meta">
+                        <span>{{ post.date | date: "%Y/%m/%d" }}</span>
+                        <span>閱讀更多 <i class="fa-solid fa-chevron-right" style="font-size: 8px;"></i></span>
+                    </div>
                 </div>
-                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.8)), url('https://files.catbox.moe/8yessc.png');">
-                    <span style="font-size: 13px;">PWA 設定完全手冊</span>
-                </div>
-            </div>
-
-            <div class="list-header">
-                <span style="font-weight: bold; color:#fff;">熱門隨機</span>
-                <a href="../p/#post" class="more-btn">顯示更多</a>
-            </div>
-
-            <div class="article-row">
-                <img src="https://files.catbox.moe/8yessc.png" class="row-img">
-                <div class="row-info">
-                    <div class="row-title">解決 Web App 文字色彩顯示異常問題</div>
-                    <div style="font-size: 11px; color: var(--text-sub);">2026/02/13 · 莫比空間</div>
-                </div>
-            </div>
-
+            </a>
+            {% endfor %}
+            {% if site.posts.size == 0 %}
+            <p style="text-align: center; color: #555; margin-top: 50px;">目前尚無文章，請在 _posts 資料夾新增 .md 檔案。</p>
+            {% endif %}
         </main>
 
-        <nav class="bottom-nav">
-            <a href="../" class="nav-item"><i class="fa-solid fa-house"></i><span>首頁</span></a>
-            <a href="../p/#Music" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
-            <a href="../p/#Shorts" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
-            <a href="../p/#wiki" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援</span></a>
+        <nav class="nav">
+            <a href="/" class="nav-a"><i class="fa-solid fa-house"></i><br>首頁</a>
+            <a href="/blog/" class="nav-a active"><i class="fa-solid fa-pen-nib"></i><br>日誌</a>
+            <a href="/p/#Music" class="nav-a"><i class="fa-solid fa-music"></i><br>音樂</a>
+            <a href="/p/#wiki" class="nav-a"><i class="fa-solid fa-circle-info"></i><br>支援</a>
         </nav>
     </div>
-
 </body>
 </html>
