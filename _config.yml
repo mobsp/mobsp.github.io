@@ -1,0 +1,19 @@
+# 網站基本設定
+title: Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ
+description: 莫比空間的數位日誌
+
+# 關鍵：SEO 友善網址設定 (像 Blogger 一樣)
+# 這會把 _posts/2026-02-13-hello.md 
+# 變成 /blog/2026/02/13/hello/
+permalink: /blog/:year/:month/:day/:title/
+
+# 排除不需要處理的檔案
+exclude:
+  - README.md
+  - node_modules/
+  - .sass-cache/
+  - .jekyll-cache/
+  - .jekyll-metadata
+
+# Markdown 解析引擎
+markdown: kramdown
