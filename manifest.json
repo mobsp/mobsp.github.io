@@ -3,6 +3,7 @@
   "short_name": "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ",
   "description": "莫比空間：全方位數位資源整合與導航入口",
   "start_url": "/index.html",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#050508",
   "theme_color": "#0b0b0c",
@@ -18,6 +19,12 @@
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "https://files.catbox.moe/9npjwq.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable" 
     },
     {
       "src": "https://files.catbox.moe/8yessc.png",
