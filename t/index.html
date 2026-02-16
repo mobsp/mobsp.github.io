@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ⲙⳝ 莫比空間 - 跑馬燈實時同步</title>
+    <style>
+        body { background: #0a0a0a; color: #e0e0e0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        
+        h2 { color: #00d4ff; text-shadow: 0 0 10px rgba(0,212,255,0.5); font-weight: 300; }
+
+        /* 跑馬燈外框 */
+        .marquee-container {
+            width: 90%;
+            max-width: 800px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 0;
+            border-radius: 4px;
+            border-left: 4px solid #00d4ff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        /* 滾動動畫 */
+        .marquee-content {
+            display: inline-block;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: marquee 25s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* 公告樣式 */
+        .notice-item { margin-right: 60px; font-size: 1.1rem; letter-spacing: 1px; }
+        .notice-type { 
+            background: #00d4ff; 
+            color: #000; 
+            padding: 2px 8px; 
+            border-radius: 3px; 
+            font-weight: bold; 
+            margin-right: 12px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Ⲙⳝ 莫比空間：管理層公告系統</h2>
+    
+    <div class="marquee-container">
+        <div id="marquee" class="marquee-content">📡 正在建立加密連線並抓取雲端數據...</div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
+        const SUPABASE_KEY = 'EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNTc3NjEsImV4cCI6MjA4NjgzMzc2MX0.qq5kIBhi5kCIwprwNcraYvgYilxxwJanrKfnXdlRBuA';
+
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function startSystem() {
+            const marqueeEl = document.getElementById('marquee');
+            
+            try {
+                // 從資料庫抓取最新的公告
+                const { data, error } = await _supabase
+                    .from('notices')
+                    .select('type, message')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (data && data.length > 0) {
+                    // 將資料組合後放入跑馬燈
+                    marqueeEl.innerHTML = data.map(item => `
+                        <span class="notice-item">
+                            <span class="notice-type">${item.type}</span>${item.message}
+                        </span>
+                    `).join('');
+                } else {
+                    marqueeEl.innerHTML = "目前暫無活動公告。";
+                }
+            } catch (err) {
+                console.error(err);
+                marqueeEl.innerHTML = "❌ 系統連線失敗，請檢查資料庫權限設定。";
+            }
+        }
+
+        startSystem();
+    </script>
+</body>
+</html>
