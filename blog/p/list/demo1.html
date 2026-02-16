@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub 終極旗艦級教程 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <style>
+        :root {
+            --accent: #00cec9;
+            --bg: #050505;
+            --card: #111;
+            --text: #e0e0e0;
+        }
+        body {
+            font-family: -apple-system, system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1, h2 { color: var(--accent); }
+        h1 { font-size: 2.5rem; text-align: center; margin-bottom: 40px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        h2 { margin-top: 40px; display: flex; align-items: center; }
+        h2::before { content: "◈"; margin-right: 10px; font-size: 0.8em; }
+        
+        .hero-img { width: 100%; border-radius: 15px; margin: 20px 0; border: 1px solid #333; }
+        
+        .step-card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid var(--accent);
+        }
+        
+        code {
+            background: #222;
+            color: #ff7675;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        
+        .code-block {
+            background: #000;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-x: auto;
+            border: 1px solid #222;
+            color: #55efc4;
+            margin: 15px 0;
+        }
+
+        .highlight { color: var(--accent); font-weight: bold; }
+        
+        .diagram-box {
+            text-align: center;
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .diagram-box p { color: #333; font-size: 0.8rem; margin-top: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>GitHub 終極旗艦教程</h1>
+    <p>歡迎來到數位協作的巔峰。這份指南將帶領你從零開始，掌握全球最強大的開發者平台 —— <span class="highlight">GitHub</span>。</p>
+
+    <img class="hero-img" src="https://images.unsplash.com/photo-1618401471353-b98aadebc25a?q=80&w=1000&auto=format&fit=crop" alt="GitHub Logo">
+
+    <h2>1. 核心觀念：什麼是 Git 與 GitHub？</h2>
+    <div class="step-card">
+        <p>很多新手會搞混，其實兩者截然不同：</p>
+        <ul>
+            <li><strong>Git：</strong> 是一個安裝在你電腦裡的「時光機」（版本控制系統）。</li>
+            <li><strong>GitHub：</strong> 是一個在雲端存放你時光機紀錄的「社交平台」。</li>
+        </ul>
+    </div>
+    
+    
+
+    <h2>2. 第一步：建立你的雲端基地 (Repository)</h2>
+    <p>Repository (簡稱 Repo) 是存放專案的地方。建立時有幾個旗艦級建議：</p>
+    <ul>
+        <li><strong>README.md：</strong> 專案的臉面，必須勾選建立。</li>
+        <li><strong>.gitignore：</strong> 告訴 Git 哪些檔案不要上傳（如密碼、暫存檔）。</li>
+        <li><strong>License：</strong> 決定別人能不能使用你的程式碼。</li>
+    </ul>
+
+    <h2>3. 必殺指令：開發者的一天</h2>
+    <p>要在本地與雲端同步，這四行指令是你的靈魂：</p>
+    <div class="code-block">
+        # 1. 將更改加入待處理區<br>
+        git add .<br><br>
+        # 2. 存入時光機並註解<br>
+        git commit -m "修正了啟動畫面 Bug"<br><br>
+        # 3. 推送到雲端 GitHub<br>
+        git push origin main<br><br>
+        # 4. 從雲端抓取最新進度<br>
+        git pull origin main
+    </div>
+
+    
+
+    <h2>4. 團隊協作：分支 (Branch) 策略</h2>
+    <div class="step-card">
+        <p>永遠不要直接在 <code>main</code> 分支開發！</p>
+        <p>正確流程：<strong>建立分支 -> 修改 -> Pull Request (PR) -> 合併</strong>。這能確保你的主程式永遠處於可運行狀態。</p>
+    </div>
+
+    <h2>5. 旗艦級功能：GitHub Pages</h2>
+    <p>這也是 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 目前運行的基礎。只要在 Repo 的設定中開啟 <strong>Pages</strong> 功能，你的 HTML 就能瞬間變成全球可訪問的網站。</p>
+
+    <h2>結論</h2>
+    <p>掌握 GitHub 不只是掌握技術，更是掌握了與世界工程師對話的語言。現在就去建立你的第一個專案吧！</p>
+
+    <footer style="margin-top: 60px; text-align: center; opacity: 0.5; font-size: 0.8rem;">
+        &copy; 2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間技術部
+    </footer>
+</div>
+
+</body>
+</html>
