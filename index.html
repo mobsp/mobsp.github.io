@@ -85,14 +85,22 @@
         }
         .app-main::-webkit-scrollbar { display: none; }
 
-        /* 卡片滑塊：套用 ms-logo.JPEG */
+        /* 通用卡片樣式 */
         .action-btn {
             flex: 0 0 85%; height: 70%; scroll-snap-align: center; text-decoration: none;
             border-radius: 40px; position: relative; overflow: hidden; border: 1px solid var(--border-color);
-            background: #1e272e url('https://mobsp.github.io/assets/brand/ms-logo.JPEG') center/cover;
+            background-color: #1e272e; background-position: center; background-size: cover;
             box-shadow: 0 25px 50px rgba(0,0,0,0.5); transition: var(--transition);
         }
         .action-btn:active { transform: scale(0.95); filter: brightness(0.8); }
+
+        /* 個別卡片預覽圖套用 */
+        .btn-blog { background-image: url('https://mobsp.github.io/assets/brand/ms-blog.JPEG'); }
+        .btn-tools { background-image: url('https://mobsp.github.io/assets/brand/ms-tools.JPEG'); }
+        .btn-music { background-image: url('https://mobsp.github.io/assets/brand/ms-music.JPEG'); }
+        .btn-shorts { background-image: url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG'); }
+        .btn-wiki { background-image: url('https://mobsp.github.io/assets/brand/ms-wiki.JPEG'); }
+        .btn-logo { background-image: url('https://mobsp.github.io/assets/brand/ms-logo.JPEG'); }
 
         .btn-overlay { position: absolute; bottom: 0; width: 100%; padding: 50px 30px 40px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); }
         .btn-title { color: #fff; font-size: 1.85rem; font-weight: 800; letter-spacing: 3px; }
@@ -121,11 +129,14 @@
     </header>
 
     <main class="app-main">
-        <a href="./blog/" class="action-btn" aria-label="前往部落格"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
-        <a href="./tol/" class="action-btn" aria-label="前往工具庫"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
-        <a href="./p/#Music" class="action-btn" aria-label="前往音樂頻道"><div class="btn-overlay"><div class="btn-title">音樂頻道</div></div></a>
-        <a href="./p/#Shorts" class="action-btn" aria-label="前往短影音"><div class="btn-overlay"><div class="btn-title">短影音</div></div></a>
-        <a href="./p/#wiki" class="action-btn" aria-label="前往支援中心"><div class="btn-overlay"><div class="btn-title">支援中心</div></div></a>
+        <a href="./blog/" class="action-btn btn-blog" aria-label="前往部落格"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
+        <a href="./tol/" class="action-btn btn-tools" aria-label="前往工具庫"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
+        <a href="./p/#Music" class="action-btn btn-music" aria-label="前往音樂頻道"><div class="btn-overlay"><div class="btn-title">音樂頻道</div></div></a>
+        <a href="./p/#Shorts" class="action-btn btn-shorts" aria-label="前往Shorts"><div class="btn-overlay"><div class="btn-title">Shorts</div></div></a>
+        <a href="./p/#wiki" class="action-btn btn-wiki" aria-label="前往支援中心"><div class="btn-overlay"><div class="btn-title">支援中心</div></div></a>
+        
+        <a href="./p/#History" class="action-btn btn-logo" aria-label="查看歷史紀錄"><div class="btn-overlay"><div class="btn-title">歷史紀錄</div></div></a>
+        <a href="./p/#Settings" class="action-btn btn-logo" aria-label="開啟設定"><div class="btn-overlay"><div class="btn-title">設定</div></div></a>
     </main>
 
     <footer class="app-footer">
