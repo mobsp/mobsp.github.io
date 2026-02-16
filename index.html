@@ -4,17 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     
-    <link rel="icon" href="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG" type="image/jpeg">
-    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG">
+    <link rel="icon" href="assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="assets/brand/ms-logo1.JPEG">
 
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-startup-image" href="https://mobsp.github.io/assets/brand/ms-guide.JPEG">
+    <link rel="apple-touch-startup-image" href="assets/brand/ms-guide.JPEG">
 
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
     <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
     
     <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合導航">
-    <meta property="og:image" content="https://files.catbox.moe/8yessc.png">
+    <meta property="og:image" content="assets/brand/ms-logo1.JPEG">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -32,7 +32,7 @@
 
         #fake-splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050508 url('https://mobsp.github.io/assets/brand/ms-guide.JPEG') center/cover no-repeat;
+            background: #050508 url('assets/brand/ms-guide.JPEG') center/cover no-repeat;
             z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s;
         }
@@ -93,12 +93,13 @@
         }
         .action-btn:active { transform: scale(0.95); filter: brightness(0.8); }
 
-        .btn-blog { background-image: url('https://mobsp.github.io/assets/brand/ms-blog.JPEG'); }
-        .btn-tools { background-image: url('https://mobsp.github.io/assets/brand/ms-tools.JPEG'); }
-        .btn-music { background-image: url('https://mobsp.github.io/assets/brand/ms-music.JPEG'); }
-        .btn-shorts { background-image: url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG'); }
-        .btn-wiki { background-image: url('https://mobsp.github.io/assets/brand/ms-wiki.JPEG'); }
-        .btn-logo { background-image: url('https://mobsp.github.io/assets/brand/ms-logo.JPEG'); }
+        /* 修正路徑 */
+        .btn-blog { background-image: url('assets/brand/ms-blog.JPEG'); }
+        .btn-tools { background-image: url('assets/brand/ms-tools.JPEG'); }
+        .btn-music { background-image: url('assets/brand/ms-music.JPEG'); }
+        .btn-shorts { background-image: url('assets/brand/ms-shorts.JPEG'); }
+        .btn-wiki { background-image: url('assets/brand/ms-wiki.JPEG'); }
+        .btn-logo { background-image: url('assets/brand/ms-logo.JPEG'); }
 
         .btn-overlay { position: absolute; bottom: 0; width: 100%; padding: 50px 30px 40px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); }
         .btn-title { color: #fff; font-size: 1.85rem; font-weight: 800; letter-spacing: 3px; }
