@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>文章標題 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
     
+    <link rel="icon" href="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG">
+
     <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 技術指南：深入探討 GitHub 旗艦級開發流程與 PWA 技術實踐。">
     <meta property="og:title" content="GitHub 終極旗艦級教程 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
     <meta property="og:description" content="掌握全球最強大的開發者平台，從零到一的完整指南。">
-    <meta property="og:image" content="https://files.catbox.moe/8yessc.png">
+    <meta property="og:image" content="https://mobsp.github.io/assets/brand/ms-post.JPEG">
     <meta property="og:type" content="article">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,7 +29,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s; }
 
-        /* --- 固定頁首 (仿 Line Today) --- */
+        /* --- 固定頁首 --- */
         .app-header {
             flex-shrink: 0; height: calc(50px + var(--safe-top)); padding-top: var(--safe-top);
             background: var(--header-bg); border-bottom: 1px solid var(--border);
@@ -34,22 +37,22 @@
         }
         .header-title { font-weight: bold; font-size: 16px; letter-spacing: 1px; color: var(--accent); }
 
-        /* --- 滾動內容區 --- */
+        /* --- 內容區 --- */
         .scroll-view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px 15px 100px; }
         .article-cat { color: var(--accent); font-size: 13px; font-weight: bold; margin-bottom: 8px; }
         .article-title { font-size: 24px; line-height: 1.4; margin-bottom: 12px; }
         .article-info { font-size: 12px; color: var(--sub); margin-bottom: 20px; display: flex; justify-content: space-between; }
         
-        .main-content { font-size: 16px; line-height: 1.8; } /* 動態控制此字體 */
-        .main-content img { width: calc(100% + 30px); margin-left: -15px; margin-block: 20px; }
+        .main-content { font-size: 16px; line-height: 1.8; }
+        /* 所有文章預覽圖設定 */
+        .main-content img.featured-img { width: calc(100% + 30px); margin-left: -15px; margin-block: 20px; border-radius: 0; }
         
-        /* --- 分享區塊 (Line Style) --- */
+        /* --- 分享區塊 --- */
         .share-section { margin-block: 40px; text-align: center; }
         .share-icons { display: flex; justify-content: center; gap: 25px; margin-top: 15px; }
         .share-icons i { font-size: 24px; color: var(--sub); cursor: pointer; }
-        .share-icons i:hover { color: var(--accent); }
 
-        /* --- 固定頁尾導覽 --- */
+        /* --- 固定頁尾 --- */
         .app-footer {
             flex-shrink: 0; height: calc(55px + var(--safe-bottom)); padding-bottom: var(--safe-bottom);
             background: var(--header-bg); border-top: 1px solid var(--border);
@@ -57,7 +60,7 @@
         }
         .footer-item { color: var(--text); font-size: 20px; cursor: pointer; width: 50px; text-align: center; }
 
-        /* --- 彈出視窗 (Modal) --- */
+        /* --- 彈出視窗 --- */
         .modal {
             position: fixed; inset: 0; background: var(--bg); z-index: 2000;
             display: none; flex-direction: column; transform: translateY(100%); transition: transform 0.3s ease;
@@ -65,11 +68,11 @@
         .modal.active { display: flex; transform: translateY(0); }
         .modal-header { height: calc(50px + var(--safe-top)); padding-top: var(--safe-top); display: flex; align-items: center; padding-inline: 15px; border-bottom: 1px solid var(--border); }
         
-        /* 搜尋頁樣式 */
         #search-input { flex: 1; background: var(--surface); border: none; padding: 8px 15px; border-radius: 20px; color: var(--text); outline: none; margin-left: 15px; }
         .search-results { padding: 15px; overflow-y: auto; }
+        .search-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); }
+        .search-item img { width: 30px; height: 30px; border-radius: 5px; margin-right: 12px; }
 
-        /* 設定頁樣式 */
         .settings-row { padding: 25px 20px; border-bottom: 1px solid var(--border); }
         .preview-text { font-size: 16px; margin-top: 10px; padding: 10px; background: var(--surface); border-radius: 8px; }
         input[type="range"] { width: 100%; accent-color: var(--accent); margin-block: 15px; }
@@ -84,22 +87,23 @@
     </header>
 
     <main class="scroll-view">
-        <div class="article-cat">技術發布</div>
-        <h1 class="article-title">GitHub 終極旗艦級教程：從零到一掌握數位協作巔峰</h1>
+        <div class="article-cat">最新發布</div>
+        <h1 class="article-title">GitHub 終極旗艦級教程：數位協作巔峰指南</h1>
         <div class="article-info">
             <span>莫比空間 · 2026/02/16</span>
-            <span><i class="fa-regular fa-eye"></i> 12,842</span>
+            <span><i class="fa-regular fa-eye"></i> 15,230</span>
         </div>
 
         <div class="main-content" id="article-body">
-            <img src="https://images.unsplash.com/photo-1618401471353-b98aadebc25a?auto=format&fit=crop&w=1000" alt="GitHub">
-            <p>這是您的文章內容區。透過下方的設定按鈕，讀者可以隨時調整這裡的字體大小與深淺模式...</p>
+            <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="featured-img" alt="Featured Image">
+            
+            <p>歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ。這是一篇通用的文章頁面，您現在可以透過下方的導覽列進行搜尋與設定。</p>
             <br>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at porttitor sem.  Aliquam erat volutpat.</p>
+            <p>這套系統模擬了 Line Today 的操作體驗，支持深淺色模式切換以及字體大小即時預覽調整。</p>
         </div>
 
         <div class="share-section">
-            <p style="font-size: 13px; color: var(--sub);">分享給好友</p>
+            <p style="font-size: 13px; color: var(--sub);">分享文章</p>
             <div class="share-icons">
                 <i class="fa-brands fa-line" onclick="shareTo('line')"></i>
                 <i class="fa-brands fa-facebook" onclick="shareTo('facebook')"></i>
@@ -118,7 +122,7 @@
     <div id="search-modal" class="modal">
         <div class="modal-header">
             <i class="fa-solid fa-xmark" onclick="closeModal('search-modal')"></i>
-            <input type="text" id="search-input" placeholder="搜尋文章..." oninput="doSearch(this.value)">
+            <input type="text" id="search-input" placeholder="搜尋全站文章..." oninput="doSearch(this.value)">
         </div>
         <div class="search-results" id="search-results">
             <p style="color:var(--sub); text-align:center; margin-top:50px;">輸入關鍵字開始搜尋</p>
@@ -128,21 +132,21 @@
     <div id="settings-modal" class="modal">
         <div class="modal-header">
             <i class="fa-solid fa-xmark" onclick="closeModal('settings-modal')"></i>
-            <div style="margin-left:20px; font-weight:bold;">文章設定</div>
+            <div style="margin-left:20px; font-weight:bold;">閱讀設定</div>
         </div>
         <div class="settings-row">
-            <label>字體大小預覽</label>
-            <div class="preview-text" id="font-preview">這是一段預覽文字。</div>
+            <label>字體大小調整 (預覽)</label>
+            <div class="preview-text" id="font-preview">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 內容文字預覽</div>
             <input type="range" id="font-slider" min="14" max="24" value="16" oninput="updateFontSize(this.value)">
         </div>
         <div class="settings-row" style="display:flex; justify-content:space-between; align-items:center;">
-            <span>深色模式</span>
+            <span>深色模式開關</span>
             <input type="checkbox" id="theme-toggle" checked onclick="toggleTheme()">
         </div>
     </div>
 
     <script>
-        // --- 彈窗控制 ---
+        // --- 彈窗邏輯 ---
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
@@ -160,22 +164,24 @@
             localStorage.setItem('article-theme', theme);
         }
 
-        // --- 搜尋邏輯 (API 整合) ---
+        // --- 搜尋功能整合 ---
         async function doSearch(query) {
             const resultsBox = document.getElementById('search-results');
-            if(query.length < 2) return;
+            if(query.length < 1) { resultsBox.innerHTML = ''; return; }
             
-            // 呼叫您之前的 GitHub API 邏輯
             const API_URL = `https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p/list`;
-            const res = await fetch(API_URL);
-            const files = await res.json();
-            
-            const matches = files.filter(f => f.name.toLowerCase().includes(query.toLowerCase()));
-            resultsBox.innerHTML = matches.map(f => `
-                <div style="padding:15px; border-bottom:1px solid var(--border);" onclick="location.href='https://mobsp.github.io/blog/p/list/${f.name}'">
-                    <i class="fa-solid fa-file-lines" style="color:var(--accent); margin-right:10px;"></i> ${f.name.replace('.html','')}
-                </div>
-            `).join('');
+            try {
+                const res = await fetch(API_URL);
+                const files = await res.json();
+                const matches = files.filter(f => f.name.toLowerCase().includes(query.toLowerCase()) && f.name.endsWith('.html'));
+                
+                resultsBox.innerHTML = matches.map(f => `
+                    <div class="search-item" onclick="location.href='https://mobsp.github.io/blog/p/list/${f.name}'">
+                        <img src="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG" alt="icon">
+                        <span>${f.name.replace('.html','').toUpperCase()}</span>
+                    </div>
+                `).join('');
+            } catch(e) { console.error("搜尋錯誤", e); }
         }
 
         // --- 分享功能 ---
@@ -187,14 +193,12 @@
         function shareTo(platform) {
             const url = encodeURIComponent(window.location.href);
             const text = encodeURIComponent(document.title);
-            let shareUrl = '';
-            if(platform === 'line') shareUrl = `https://line.me/R/msg/text/?${text}%20${url}`;
-            if(platform === 'facebook') shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
-            if(platform === 'copy') { navigator.clipboard.writeText(window.location.href); alert('已複製連結'); return; }
-            window.open(shareUrl, '_blank');
+            if(platform === 'line') window.open(`https://line.me/R/msg/text/?${text}%20${url}`, '_blank');
+            if(platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+            if(platform === 'copy') { navigator.clipboard.writeText(window.location.href); alert('連結已複製'); }
         }
 
-        // --- 初始化 ---
+        // --- 初始化狀態 ---
         window.onload = () => {
             const savedSize = localStorage.getItem('article-font-size') || 16;
             const savedTheme = localStorage.getItem('article-theme') || 'dark';
