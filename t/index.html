@@ -1,210 +1,200 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比部落格</title>
     
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="https://files.catbox.moe/8yessc.png">
-    <link rel="apple-touch-startup-image" href="https://mobsp.github.io/assets/brand/ms-guide.JPEG">
-
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
-    <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
+    <link rel="icon" href="https://files.catbox.moe/8yessc.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合導航">
-    <meta property="og:image" content="https://files.catbox.moe/8yessc.png">
-
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="theme-color" content="#0b0b0c">
-
     <style>
         :root {
-            --bg-color: #0b0b0c;          
-            --card-bg: rgba(25, 27, 31, 0.95); 
-            --text-main: #f1f2f6;         
-            --primary-color: #00cec9;     
-            --border-color: rgba(255, 255, 255, 0.1); 
-            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            --bg-body: #000000; --bg-container: #111111;
+            --text-main: #ffffff; --text-sub: #aaaaaa;
+            --accent-color: #00cec9; --nav-bg: #111111;
+            --border-color: #262626;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, sans-serif; 
+            background-color: var(--bg-body); 
+            height: 100dvh; overflow: hidden; 
         }
 
-        /* 優化後的啟動畫面遮罩 */
-        #fake-splash {
+        /* --- 啟動畫面優化樣式 --- */
+        #ms-splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050508 url('https://mobsp.github.io/assets/brand/ms-guide.JPEG') center/cover no-repeat;
-            z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease, visibility 0.8s;
+            background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover no-repeat;
+            z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s;
         }
-        #fake-splash::after {
-            content: "LOADING...";
-            position: absolute; bottom: 15%; color: white; letter-spacing: 5px; font-size: 12px; opacity: 0.5;
+        /* 啟動畫面中央載入提示 */
+        #ms-splash::after {
+            content: ""; width: 24px; height: 24px; 
+            border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--accent-color);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            position: absolute; bottom: 15%;
         }
-        #fake-splash.fade-out { opacity: 0; visibility: hidden; }
-
-        /* 佈局重置 */
-        html, body {
-            width: 100%; height: 100dvh; overflow: hidden;
-            position: fixed; margin: 0; padding: 0;
-            background-color: var(--bg-color); color: var(--text-main);
-            font-family: 'PingFang TC', system-ui, -apple-system, sans-serif;
-            touch-action: manipulation;
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #ms-splash.hide { opacity: 0; visibility: hidden; }
+        
+        #app-container { 
+            max-width: 480px; margin: 0 auto; 
+            background-color: var(--bg-container); 
+            height: 100%; display: flex; flex-direction: column; 
+            opacity: 0; transform: scale(1.02); transition: all 0.6s ease;
         }
+        /* 當啟動畫面消失時，App 內容漸顯 */
+        body.loaded #app-container { opacity: 1; transform: scale(1); }
 
-        .visually-hidden {
-            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-            overflow: hidden; clip: rect(0,0,0,0); border: 0;
-        }
-
-        .page-wrapper { display: flex; flex-direction: column; height: 100dvh; max-width: 500px; margin: 0 auto; }
-
-        .app-header {
+        /* 1. 頁首：跑馬燈系統 */
+        .app-header { 
             flex-shrink: 0;
-            padding: calc(20px + env(safe-area-inset-top)) 20px 15px; 
-            background: rgba(11, 11, 12, 0.85);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
+            background: var(--nav-bg);
             border-bottom: 1px solid var(--border-color);
-            z-index: 100;
         }
-
         .marquee-row {
-            display: flex; align-items: center; background: rgba(255,255,255,0.05);
-            padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+            display: flex; align-items: center; background: #222;
+            padding: 6px 12px; border-radius: 20px; gap: 10px;
+        }
+        .version-tag { background: var(--accent-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+        .mq-container { flex: 1; overflow: hidden; white-space: nowrap; font-size: 12px; }
+        .mq-content { display: inline-block; animation: marquee 15s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* 2. 中間捲動區 */
+        #main-view { 
+            flex: 1; overflow-y: auto; 
+            -webkit-overflow-scrolling: touch;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), 
+                        url('https://files.catbox.moe/jk7vkg.jpeg') center/cover no-repeat;
         }
 
-        .v-tag { background: var(--primary-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap; }
-        .tag-important { background: #ff7675 !important; color: white; }
-        .tag-update { background: #55efc4 !important; color: #000; }
-
-        .mq-box { flex: 1; overflow: hidden; white-space: nowrap; }
-        .mq-text { display: inline-block; animation: mq 18s linear infinite; font-size: 11px; opacity: 0.8; }
-        @keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-
-        .app-main {
-            flex: 1; display: flex; align-items: center; overflow-x: auto;
-            scroll-snap-type: x mandatory; padding: 0 40px; gap: 25px; scrollbar-width: none;
+        .section-label { padding: 20px 15px 10px; font-weight: bold; font-size: 1.1rem; }
+        .horizontal-slider { 
+            display: flex; gap: 15px; padding: 0 15px 20px; 
+            overflow-x: auto; scroll-snap-type: x mandatory; 
         }
-        .app-main::-webkit-scrollbar { display: none; }
-
-        .action-btn {
-            flex: 0 0 85%; height: 70%; scroll-snap-align: center; text-decoration: none;
-            border-radius: 40px; position: relative; overflow: hidden; border: 1px solid var(--border-color);
-            background: #1e272e url('https://mobsp.github.io/assets/brand/cherry-blossom.jpg') center/cover;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5); transition: var(--transition);
+        .horizontal-slider::-webkit-scrollbar { display: none; }
+        .mid-card { 
+            min-width: 200px; height: 140px; background: #333; 
+            border-radius: 15px; flex-shrink: 0; scroll-snap-align: start;
+            display: flex; align-items: flex-end; padding: 15px;
+            background-size: cover; background-position: center;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .action-btn:active { transform: scale(0.95); filter: brightness(0.8); }
 
-        .btn-overlay { position: absolute; bottom: 0; width: 100%; padding: 50px 30px 40px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); }
-        .btn-title { color: #fff; font-size: 1.85rem; font-weight: 800; letter-spacing: 3px; }
+        .list-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
+        .more-btn { font-size: 12px; color: var(--accent-color); text-decoration: none; border: 1px solid var(--accent-color); padding: 2px 8px; border-radius: 12px; }
+        
+        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); }
+        .row-img { width: 80px; height: 80px; border-radius: 10px; object-fit: cover; background: #222; }
+        .row-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 2px 0; }
+        .row-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: #eee; }
 
-        .app-footer {
-            flex-shrink: 0; padding: 15px 20px calc(20px + env(safe-area-inset-bottom));
-            background: rgba(11, 11, 12, 0.9); border-top: 1px solid var(--border-color); text-align: center;
+        /* 3. 固定頁尾 */
+        .bottom-nav { 
+            flex-shrink: 0;
+            height: calc(60px + env(safe-area-inset-bottom)); 
+            background-color: var(--nav-bg); 
+            border-top: 1px solid var(--border-color); 
+            display: flex; justify-content: space-around; align-items: center; 
+            padding-bottom: env(safe-area-inset-bottom);
         }
-        .copyright { font-size: 10px; opacity: 0.4; line-height: 1.6; letter-spacing: 1px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 10px; }
+        .nav-item.active { color: var(--accent-color); }
     </style>
 </head>
-
 <body>
-<div id="fake-splash" aria-hidden="true"></div>
 
-<div class="page-wrapper">
-    <header class="app-header">
-        <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間</h1>
-        <nav class="marquee-row">
-            <span class="v-tag" id="v-tag">SYNCING</span>
-            <div class="mq-box">
-                <div class="mq-text" id="mq-text">正在讀取最新公告，請稍候...</div>
+    <div id="ms-splash" aria-hidden="true"></div>
+
+    <div id="app-container">
+        <header class="app-header">
+            <div class="marquee-row">
+                <span class="version-tag">BLOG V1.0</span>
+                <div class="mq-container">
+                    <div class="mq-content">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！最新技術文章持續更新中...</div>
+                </div>
+                <button onclick="location.href='https://mobsp.github.io/'" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:5px;">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
             </div>
+        </header>
+
+        <main id="main-view">
+            <div class="section-label">最新精選</div>
+            <div class="horizontal-slider">
+                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.8)), url('https://files.catbox.moe/jk7vkg.jpeg');">
+                    <span style="font-size: 13px;">莫比空間開發日誌</span>
+                </div>
+                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.8)), url('https://files.catbox.moe/8yessc.png');">
+                    <span style="font-size: 13px;">PWA 技術實踐指南</span>
+                </div>
+                <div class="mid-card" style="background: #222; border: 1px dashed #444; justify-content: center; align-items: center;">
+                    <span style="font-size: 12px; color: #666;">即將推出...</span>
+                </div>
+            </div>
+
+            <div class="list-header">
+                <span style="font-weight: bold;">熱門文章</span>
+                <a href="../p/#wiki" class="more-btn">顯示更多</a>
+            </div>
+
+            <div class="article-row">
+                <img src="https://files.catbox.moe/8yessc.png" class="row-img">
+                <div class="row-info">
+                    <div class="row-title">如何優化你的 GitHub Pages 載入速度？</div>
+                    <div style="font-size: 11px; color: var(--text-sub);">2026/02/13 · 莫比空間</div>
+                </div>
+            </div>
+            
+            <div class="article-row">
+                <div class="row-img" style="display:flex; align-items:center; justify-content:center; background:#1a1a1a;">
+                    <i class="fa-solid fa-file-code" style="opacity:0.3;"></i>
+                </div>
+                <div class="row-info">
+                    <div class="row-title">仿 Line App 介面設計心得分享</div>
+                    <div style="font-size: 11px; color: var(--text-sub);">2026/02/12 · 技術分享</div>
+                </div>
+            </div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="../" class="nav-item"><i class="fa-solid fa-house"></i><span>首頁</span></a>
+            <a href="../p/#explore" class="nav-item"><i class="fa-solid fa-compass"></i><span>探索</span></a>
+            <a href="../p/#Shorts" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
+            <a href="../p/#wiki" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援</span></a>
         </nav>
-        <div style="font-size: 1.4rem; font-weight: 900; text-align: center; letter-spacing: 5px; color: var(--primary-color);" aria-hidden="true">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
-    </header>
+    </div>
 
-    <main class="app-main">
-        <a href="./blog/" class="action-btn" aria-label="前往部落格"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
-        <a href="./tol/" class="action-btn" aria-label="前往工具庫"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
-        <a href="./p/#Music" class="action-btn" aria-label="前往音樂頻道"><div class="btn-overlay"><div class="btn-title">音樂頻道</div></div></a>
-        <a href="./p/#Shorts" class="action-btn" aria-label="前往短影音"><div class="btn-overlay"><div class="btn-title">短影音</div></div></a>
-        <a href="./p/#wiki" class="action-btn" aria-label="前往支援中心"><div class="btn-overlay"><div class="btn-title">支援中心</div></div></a>
-    </main>
+    <script>
+        // 啟動畫面邏輯
+        window.addEventListener('load', () => {
+            const splash = document.getElementById('ms-splash');
+            
+            // 預留一點緩衝時間讓佈局渲染
+            setTimeout(() => {
+                splash.classList.add('hide');
+                document.body.classList.add('loaded');
+                
+                // 徹底移除 DOM 以節省內存
+                setTimeout(() => splash.remove(), 800);
+            }, 1200);
+        });
 
-    <footer class="app-footer">
-        <div class="copyright">&copy; 2026 <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong><br>資源整合與數位服務入口網</div>
-    </footer>
-</div>
-
-<script>
-// 1. 優化後的啟動畫面控制
-document.addEventListener('DOMContentLoaded', () => {
-    const splash = document.getElementById('fake-splash');
-    
-    // 監聽資源載入完成
-    window.onload = () => {
+        // 安全機制：若資源載入過慢，3秒後強制移除啟動畫面
         setTimeout(() => {
-            splash.classList.add('fade-out');
-            setTimeout(() => splash.remove(), 800);
-        }, 1000); // 縮短至1秒，提升操作流暢感
-    };
-
-    // 安全退場機制：如果 window.onload 失敗，3秒後強制關閉
-    setTimeout(() => {
-        if (document.getElementById('fake-splash')) {
-            splash.classList.add('fade-out');
-            setTimeout(() => splash.remove(), 800);
-        }
-    }, 3000);
-});
-
-// 2. 公告系統優化版
-const MD_URL = 'https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/data/notice.md';
-async function initNoticeSystem() {
-    const vTag = document.getElementById('v-tag');
-    const mqText = document.getElementById('mq-text');
-    
-    try {
-        const response = await fetch(MD_URL, { cache: 'no-cache' });
-        if (!response.ok) throw new Error('Network Error');
-        
-        const raw = await response.text();
-        const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        if (lines.length === 0) return;
-
-        let baseVer = lines[0].startsWith('#') ? lines[0].replace('#', '') : "v1.0";
-        let contentHash = lines.slice(1).join('');
-        let savedContent = localStorage.getItem('mob_last_content');
-        let currentVer = localStorage.getItem('mob_curr_ver') || baseVer;
-
-        if (savedContent && savedContent !== contentHash) {
-            let verNum = parseFloat(currentVer.replace('v', ''));
-            currentVer = 'v' + (isNaN(verNum) ? baseVer : (verNum + 0.1).toFixed(1));
-        }
-        
-        localStorage.setItem('mob_last_content', contentHash);
-        localStorage.setItem('mob_curr_ver', currentVer);
-
-        const quotes = lines.slice(1);
-        const randomItem = quotes[Math.floor(Math.random() * quotes.length)];
-        
-        let category = "NEWS";
-        let displayMsg = randomItem;
-        const catMatch = randomItem.match(/\[(.*?)\]/);
-        
-        if (catMatch) {
-            category = catMatch[1];
-            displayMsg = randomItem.replace(catMatch[0], '').trim();
-            vTag.classList.remove('tag-important', 'tag-update');
-            if (category.includes('重要')) vTag.classList.add('tag-important');
-            else if (category.includes('更新')) vTag.classList.add('tag-update');
-        }
-        
-        vTag.innerText = `${currentVer} | ${category}`;
-        mqText.innerText = displayMsg;
-    } catch (err) {
-        vTag.innerText = "v1.0 | INFO";
-        mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ，享受您的數位空間。";
-    }
-}
-
-initNoticeSystem();
-</script>
+            const splash = document.getElementById('ms-splash');
+            if (splash) {
+                splash.classList.add('hide');
+                document.body.classList.add('loaded');
+                setTimeout(() => splash.remove(), 800);
+            }
+        }, 3000);
+    </script>
 </body>
 </html>
