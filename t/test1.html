@@ -4,72 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | Shorts</title>
-
-    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         :root { --accent-color: #00cec9; --icon-shadow: 0 2px 8px rgba(0,0,0,0.5); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; font-family: -apple-system, sans-serif; height: 100%; width: 100%; overflow-x: hidden; }
+        body, html { margin: 0; padding: 0; font-family: -apple-system, sans-serif; height: 100%; background: #000; color: #fff; }
 
         /* 啟動畫面 */
-        #splash-screen {
-            position: fixed; inset: 0; z-index: 10000;
-            background: #000 url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG') center/cover no-repeat;
-            transition: opacity 0.5s ease;
-        }
+        #splash-screen { position: fixed; inset: 0; z-index: 10000; background: #000 url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG') center/cover no-repeat; transition: opacity 0.5s; }
         #splash-screen.hide { opacity: 0; pointer-events: none; }
 
-        /* 主導航 */
+        /* 主導航與標籤 (Line Voom 風格) */
         .nav-bar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: inherit; border-bottom: 1px solid rgba(128,128,128,0.2); }
         .profile-header { display: flex; flex-direction: column; align-items: center; padding: 25px 0; background: inherit; }
         .profile-avatar { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(128,128,128,0.3); }
-        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; } /* 修正圖片變形 */
-
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .tabs { display: flex; border-bottom: 1px solid rgba(128,128,128,0.2); position: sticky; top: 45px; z-index: 90; background: inherit; }
         .tab-item { flex: 1; text-align: center; padding: 12px; font-weight: bold; color: #999; cursor: pointer; position: relative; }
         .tab-item.active { color: inherit; }
         .tab-item.active::after { content: ''; position: absolute; bottom: 0; left: 35%; width: 30%; height: 2px; background: currentColor; }
 
-        /* 視圖樣式 */
-        #feed-view { display: block; background: #000; color: #fff; }
+        /* 視圖顯示 */
+        #feed-view { display: block; background: #000; }
         #grid-view { display: none; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #fff; }
-        .feed-item { border-bottom: 1px solid #222; padding-bottom: 20px; }
-        .video-preview { width: 100%; aspect-ratio: 9/16; background: #111; cursor: pointer; }
-        .video-preview video { width: 100%; height: 100%; object-fit: cover; }
-        .grid-item { aspect-ratio: 3/4; background: #000; position: relative; cursor: pointer; }
-        .grid-item video { width: 100%; height: 100%; object-fit: cover; }
+        .video-preview, .grid-item { cursor: pointer; background: #111; position: relative; }
+        .video-preview video, .grid-item video { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 9/16; }
+        .grid-item { aspect-ratio: 3/4; }
 
-        /* 全螢幕播放器 */
+        /* 全螢幕磁吸播放器 */
         #player-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; }
         .shorts-wrapper { height: 100dvh; width: 100vw; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
         .shorts-wrapper::-webkit-scrollbar { display: none; }
-        .short-card { height: 100dvh; width: 100vw; scroll-snap-align: start; position: relative; background: #000; }
+        .short-card { height: 100dvh; width: 100vw; scroll-snap-align: start; position: relative; }
         .short-card video { width: 100%; height: 100%; object-fit: cover; }
 
-        /* 右側功能欄 (按要求修改) */
-        .side-bar { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 20px; align-items: center; z-index: 10; }
-        .action-item { color: #fff; text-shadow: var(--icon-shadow); cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        /* 右側功能欄 */
+        .side-bar { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 15px; align-items: center; z-index: 10; }
+        .action-item { color: #fff; text-shadow: var(--icon-shadow); cursor: pointer; text-align: center; }
         .action-item i { font-size: 26px; }
-        .action-item span { font-size: 11px; margin-top: 4px; }
+        .action-item span { font-size: 11px; display: block; margin-top: 4px; }
 
-        /* 旋轉唱片進度條 (帶圖片圓形) */
-        .music-disc {
-            width: 45px; height: 45px; border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.3);
-            background: #222; overflow: hidden;
-            animation: rotate 4s linear infinite;
+        /* 載入進度組合件 */
+        .loader-box { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .music-disc { 
+            width: 48px; height: 48px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); 
+            overflow: hidden; animation: rotate 4s linear infinite; background: #222;
         }
-        .music-disc img { width: 100%; height: 100%; object-fit: cover; } /* 修正圖片變形 */
+        .music-disc img { width: 100%; height: 100%; object-fit: cover; }
+        .load-pct { 
+            font-size: 10px; color: var(--accent-color); font-weight: bold; 
+            text-shadow: 0 1px 3px #000; transition: opacity 0.5s; 
+        }
+        .load-pct.finished { opacity: 0; }
 
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        /* 底部資訊區 */
         .bottom-info { position: absolute; bottom: 40px; left: 15px; right: 80px; color: #fff; text-shadow: var(--icon-shadow); pointer-events: none; }
         .close-btn { position: absolute; top: 40px; left: 20px; z-index: 2100; color: #fff; font-size: 24px; cursor: pointer; }
 
-        body.dark-mode { background: #000; color: #fff; }
+        body.light-mode { background: #fff; color: #000; }
     </style>
 </head>
 <body class="dark-mode">
@@ -84,8 +76,7 @@
         </div>
         <div class="profile-header">
             <div class="profile-avatar"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"></div>
-            <div class="profile-name">莫比空間 🪄</div>
-            <button style="border:1px solid #ddd; background:transparent; color:inherit; padding:6px 30px; border-radius:6px; margin-top:15px; font-weight:bold;">追蹤中</button>
+            <button style="border:1px solid #ddd; background:transparent; color:inherit; padding:6px 30px; border-radius:6px; margin-top:10px; font-weight:bold;">追蹤中</button>
         </div>
         <div class="tabs">
             <div class="tab-item active" onclick="showView('all')">全部</div>
@@ -102,15 +93,12 @@
 
     <script>
         const videoSources = [
-            "https://files.catbox.moe/xh7uyj.mp4", "https://files.catbox.moe/u94tk7.mp4",
-            "https://files.catbox.moe/aizh9p.mp4", "https://files.catbox.moe/t9ojp9.mp4",
-            "https://files.catbox.moe/xcqf9s.mp4", "https://files.catbox.moe/zzuqo4.mp4",
-            "https://files.catbox.moe/t0mil6.mp4", "https://files.catbox.moe/rw7p6b.MP4",
-            "https://files.catbox.moe/nvq49m.mp4", "https://files.catbox.moe/9fvg1s.mp4",
-            "https://files.catbox.moe/9461nt.mp4", "https://files.catbox.moe/e93uth.mp4",
-            "https://files.catbox.moe/79y11a.mp4", "https://files.catbox.moe/0d6dx3.mp4",
-            "https://files.catbox.moe/00mt42.mp4", "https://files.catbox.moe/fret8a.mp4",
-            "https://files.catbox.moe/kmgu5w.mp4", "https://files.catbox.moe/dwtlj4.mp4"
+            "https://files.catbox.moe/xh7uyj.mp4", "https://files.catbox.moe/u94tk7.mp4", "https://files.catbox.moe/aizh9p.mp4",
+            "https://files.catbox.moe/t9ojp9.mp4", "https://files.catbox.moe/xcqf9s.mp4", "https://files.catbox.moe/zzuqo4.mp4",
+            "https://files.catbox.moe/t0mil6.mp4", "https://files.catbox.moe/rw7p6b.MP4", "https://files.catbox.moe/nvq49m.mp4",
+            "https://files.catbox.moe/9fvg1s.mp4", "https://files.catbox.moe/9461nt.mp4", "https://files.catbox.moe/e93uth.mp4",
+            "https://files.catbox.moe/79y11a.mp4", "https://files.catbox.moe/0d6dx3.mp4", "https://files.catbox.moe/00mt42.mp4",
+            "https://files.catbox.moe/fret8a.mp4", "https://files.catbox.moe/kmgu5w.mp4", "https://files.catbox.moe/dwtlj4.mp4"
         ];
 
         let isMuted = true;
@@ -121,77 +109,82 @@
             const wrapper = document.getElementById('shortsWrapper');
 
             videoSources.forEach((src, idx) => {
-                // 全部視圖 (Feed)
+                // 全部 (Feed)
                 const fItem = document.createElement('div');
                 fItem.className = 'feed-item';
-                fItem.innerHTML = `
-                    <div style="display:flex; align-items:center; gap:10px; padding:15px">
-                        <img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG" style="width:34px; height:34px; border-radius:50%; object-fit:cover">
-                        <span style="font-weight:bold; font-size:14px">莫比空間</span>
-                    </div>
-                    <div class="video-preview" onclick="openPlayer(${idx})">
-                        <video src="${src}#t=0.1" muted playsinline></video>
-                    </div>
-                    <div style="padding:15px; font-size:14px; color:#eee">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ™️ 莫比音樂頻道 #Shorts</div>
-                `;
+                fItem.innerHTML = `<div style="padding:15px; font-weight:bold; font-size:14px"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG" style="width:30px; height:30px; border-radius:50%; vertical-align:middle; margin-right:10px; object-fit:cover">莫比空間</div><div class="video-preview" onclick="openPlayer(${idx})"><video src="${src}#t=0.1" muted playsinline></video></div>`;
                 feed.appendChild(fItem);
 
-                // 影片視圖 (Grid)
+                // 影片 (Grid)
                 const gItem = document.createElement('div');
                 gItem.className = 'grid-item';
                 gItem.onclick = () => openPlayer(idx);
-                gItem.innerHTML = `<video src="${src}#t=0.1" muted playsinline></video><i class="fa-solid fa-play" style="position:absolute; top:8px; right:8px; color:#fff; font-size:10px"></i>`;
+                gItem.innerHTML = `<video src="${src}#t=0.1" muted playsinline></video><i class="fa-solid fa-play" style="position:absolute; top:8px; right:8px; font-size:10px"></i>`;
                 grid.appendChild(gItem);
 
-                // 全螢幕播放卡片 (Side Bar 修改完成)
+                // 全螢幕卡片 (帶進度顯示)
                 const card = document.createElement('div');
                 card.className = 'short-card';
                 card.innerHTML = `
                     <video loop playsinline data-src="${src}" muted onclick="this.paused?this.play():this.pause()"></video>
                     <div class="side-bar">
-                        <div class="action-item" onclick="toggleMute(event)">
-                            <i class="fa-solid fa-volume-xmark mute-icon"></i>
-                            <span>音量</span>
-                        </div>
-                        <div class="action-item" onclick="shareVideo(event)">
-                            <i class="fa-solid fa-share"></i>
-                            <span>分享</span>
-                        </div>
-                        <div class="music-disc">
-                            <img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG">
+                        <div class="action-item" onclick="toggleMute(event)"><i class="fa-solid fa-volume-xmark mute-icon"></i><span>音量</span></div>
+                        <div class="action-item" onclick="shareVideo(event)"><i class="fa-solid fa-share"></i><span>分享</span></div>
+                        <div class="loader-box">
+                            <div class="music-disc"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"></div>
+                            <div class="load-pct">0%</div>
                         </div>
                     </div>
-                    <div class="bottom-info">
-                        <div style="font-weight:bold; margin-bottom:8px">@Mobispace_Music</div>
-                        <div style="font-size:14px; opacity:0.9">莫比空間Ⓒ 莫比音樂頻道🎵 #Music</div>
-                    </div>
+                    <div class="bottom-info"><div style="font-weight:bold">@Mobispace_Music</div><div style="font-size:13px; opacity:0.8">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ™️ 莫比音樂頻道 #MobiShorts</div></div>
                 `;
                 wrapper.appendChild(card);
             });
+            setupProgressTracking();
             setupObserver();
+        }
+
+        // 核心：追蹤檔案載入進度
+        function setupProgressTracking() {
+            document.querySelectorAll('.short-card').forEach(card => {
+                const video = card.querySelector('video');
+                const pctText = card.querySelector('.load-pct');
+
+                video.addEventListener('progress', () => {
+                    if (video.duration > 0 && video.buffered.length > 0) {
+                        const bufferedEnd = video.buffered.end(video.buffered.length - 1);
+                        const percent = Math.round((bufferedEnd / video.duration) * 100);
+                        pctText.innerText = percent + '%';
+                        
+                        // 載入完成隱藏
+                        if (percent >= 100) pctText.classList.add('finished');
+                    }
+                });
+                // 確保播放時也會檢查一次
+                video.addEventListener('canplaythrough', () => {
+                    pctText.innerText = '100%';
+                    pctText.classList.add('finished');
+                });
+            });
         }
 
         function toggleMute(e) {
             e.stopPropagation();
             isMuted = !isMuted;
             document.querySelectorAll('.short-card video').forEach(v => v.muted = isMuted);
-            document.querySelectorAll('.mute-icon').forEach(i => {
-                i.className = isMuted ? 'fa-solid fa-volume-xmark mute-icon' : 'fa-solid fa-volume-high mute-icon';
-            });
+            document.querySelectorAll('.mute-icon').forEach(i => i.className = isMuted ? 'fa-solid fa-volume-xmark mute-icon' : 'fa-solid fa-volume-high mute-icon');
         }
 
         async function shareVideo(e) {
             e.stopPropagation();
-            if (navigator.share) {
-                try { await navigator.share({ title: '莫比空間 Shorts', url: window.location.href }); } catch (err) {}
-            } else { alert('連結已複製'); }
+            if (navigator.share) { try { await navigator.share({ title: '莫比空間 Shorts', url: window.location.href }); } catch (err) {} }
+            else { alert('連結已複製'); }
         }
 
-        function openPlayer(index) {
+        function openPlayer(idx) {
             document.getElementById('player-overlay').style.display = 'block';
             const cards = document.querySelectorAll('.short-card');
-            cards[index].scrollIntoView();
-            const v = cards[index].querySelector('video');
+            cards[idx].scrollIntoView();
+            const v = cards[idx].querySelector('video');
             if(!v.src) v.src = v.dataset.src;
             v.play();
         }
@@ -203,10 +196,8 @@
 
         function showView(type) {
             const isAll = (type === 'all');
-            document.body.className = isAll ? 'dark-mode' : '';
-            document.querySelectorAll('.tab-item').forEach((el, i) => {
-                el.classList.toggle('active', (isAll && i===0) || (!isAll && i===1));
-            });
+            document.body.className = isAll ? 'dark-mode' : 'light-mode';
+            document.querySelectorAll('.tab-item').forEach((el, i) => el.classList.toggle('active', (isAll && i===0) || (!isAll && i===1)));
             document.getElementById('feed-view').style.display = isAll ? 'block' : 'none';
             document.getElementById('grid-view').style.display = isAll ? 'none' : 'grid';
         }
@@ -215,10 +206,8 @@
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     const v = entry.target;
-                    if (entry.isIntersecting) {
-                        if(!v.src) v.src = v.dataset.src;
-                        v.play().catch(() => {});
-                    } else { v.pause(); v.currentTime = 0; }
+                    if (entry.isIntersecting) { if(!v.src) v.src = v.dataset.src; v.play().catch(() => {}); } 
+                    else { v.pause(); v.currentTime = 0; }
                 });
             }, { root: document.getElementById('shortsWrapper'), threshold: 0.7 });
             document.querySelectorAll('.short-card video').forEach(v => observer.observe(v));
