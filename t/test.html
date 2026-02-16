@@ -11,85 +11,85 @@
 
     <style>
         :root {
-            --accent-color: #00cec9; /* Blog 青色 */
-            --bg-white: #ffffff;
-            --text-dark: #111111;
+            --accent-color: #00cec9;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; background: var(--bg-white); font-family: -apple-system, sans-serif; color: var(--text-dark); }
+        body, html { margin: 0; padding: 0; background: #fff; font-family: -apple-system, sans-serif; transition: background 0.3s; }
 
-        /* 啟動畫面 */
+        /* --- 修正版啟動畫面 --- */
         #splash-screen {
             position: fixed; inset: 0;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG') center/cover no-repeat;
-            z-index: 10000; transition: opacity 0.6s ease;
+            z-index: 10000; transition: opacity 0.5s ease, visibility 0.5s;
+            visibility: visible;
         }
-        #splash-screen.hide { opacity: 0; pointer-events: none; }
+        #splash-screen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
 
         /* 導覽列 */
         .nav-bar {
-            position: sticky; top: 0; background: #fff; z-index: 100;
+            position: sticky; top: 0; background: inherit; z-index: 100;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 15px; border-bottom: 1px solid #f0f0f0;
+            padding: 10px 15px; border-bottom: 1px solid rgba(128,128,128,0.2);
         }
 
-        /* 個人資訊區 (符合圖 1 & 圖 2) */
+        /* 個人資訊區 */
         .profile-header {
             display: flex; flex-direction: column; align-items: center;
-            padding: 25px 0; background: #fff;
+            padding: 25px 0; background: inherit;
         }
         .profile-avatar {
             width: 80px; height: 80px; border-radius: 50%;
-            border: 1px solid #eee; overflow: hidden; margin-bottom: 12px;
+            border: 1px solid rgba(128,128,128,0.3); overflow: hidden; margin-bottom: 12px;
         }
         .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
         .profile-name { font-weight: bold; font-size: 18px; margin-bottom: 4px; }
         .profile-stats { font-size: 14px; color: #888; margin-bottom: 15px; }
         .follow-btn {
-            border: 1px solid #ddd; background: #fff; padding: 6px 35px;
-            border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer;
+            border: 1px solid #ddd; background: transparent; padding: 6px 35px;
+            border-radius: 6px; font-weight: bold; font-size: 14px; color: inherit;
         }
 
-        /* 標籤頁 (符合截圖) */
-        .tabs { display: flex; border-bottom: 1px solid #eee; position: sticky; top: 45px; background: #fff; z-index: 90; }
+        /* 標籤頁 */
+        .tabs { display: flex; border-bottom: 1px solid rgba(128,128,128,0.2); position: sticky; top: 45px; background: inherit; z-index: 90; }
         .tab-item {
             flex: 1; text-align: center; padding: 12px; font-weight: bold; color: #999;
             cursor: pointer; position: relative;
         }
-        .tab-item.active { color: #000; }
+        .tab-item.active { color: inherit; }
         .tab-item.active::after {
             content: ''; position: absolute; bottom: 0; left: 35%;
-            width: 30%; height: 2px; background: #000;
+            width: 30%; height: 2px; background: currentColor;
         }
 
-        /* --- 模式 1: 全部 (Feed 流 - 圖 1) --- */
-        #feed-view { display: block; padding: 0; }
-        .feed-item { margin-bottom: 25px; border-bottom: 8px solid #f8f8f8; padding-bottom: 15px; }
-        .post-author { display: flex; align-items: center; gap: 10px; padding: 12px 15px; }
+        /* --- 模式 1: 全部 (黑色背景 + 白色文字 - 圖 1) --- */
+        #feed-view { display: block; background: #000; color: #fff; }
+        .feed-item { margin-bottom: 0; border-bottom: 1px solid #222; padding-bottom: 20px; }
+        .post-author { display: flex; align-items: center; gap: 10px; padding: 15px; }
         .post-author img { width: 34px; height: 34px; border-radius: 50%; }
-        .post-author span { font-size: 14px; font-weight: bold; }
+        .post-author span { font-size: 14px; font-weight: bold; color: #fff; }
         
-        .video-main { width: 100%; aspect-ratio: 9/16; background: #000; overflow: hidden; position: relative; }
+        .video-main { width: 100%; aspect-ratio: 9/16; background: #111; position: relative; }
         .video-main video { width: 100%; height: 100%; object-fit: cover; }
         
-        .post-content { padding: 12px 15px; font-size: 15px; line-height: 1.4; }
-        .interaction-bar { display: flex; gap: 20px; padding: 0 15px; color: #666; font-size: 20px; }
-        .interaction-bar div { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
-        .interaction-bar i { color: #555; }
-        .fa-face-smile { color: #ffd32a !important; } /* 笑臉黃色 */
+        .post-content { padding: 12px 15px; font-size: 14px; line-height: 1.5; color: #eee; }
+        .interaction-bar { display: flex; gap: 20px; padding: 0 15px; color: #ccc; }
+        .interaction-bar div { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+        .fa-face-smile { color: #ffd32a !important; }
 
-        /* --- 模式 2: 影片 (網格 - 圖 2) --- */
-        #grid-view { display: none; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #eee; }
-        .grid-item { aspect-ratio: 3/4; background: #000; position: relative; cursor: pointer; }
+        /* --- 模式 2: 影片 (白色背景 - 圖 2) --- */
+        #grid-view { display: none; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #fff; }
+        .grid-item { aspect-ratio: 3/4; background: #000; position: relative; }
         .grid-item video { width: 100%; height: 100%; object-fit: cover; }
-        .grid-item .play-icon { position: absolute; top: 8px; right: 8px; color: #fff; font-size: 12px; opacity: 0.8; }
+        .grid-item .play-icon { position: absolute; top: 8px; right: 8px; color: #fff; font-size: 12px; }
 
+        /* 適應黑色模式的樣式切換 */
+        body.dark-mode { background: #000; color: #fff; }
+        body.dark-mode .nav-bar, body.dark-mode .profile-header { background: #000; }
+        body.dark-mode .follow-btn { border-color: #444; }
     </style>
 </head>
-<body>
-
-    <div id="splash-screen"></div>
+<body class="dark-mode"> <div id="splash-screen"></div>
 
     <div class="nav-bar">
         <i class="fa-solid fa-chevron-left" onclick="location.href='https://mobsp.github.io/blog/'"></i>
@@ -110,7 +110,6 @@
     </div>
 
     <div id="feed-view"></div>
-
     <div id="grid-view"></div>
 
     <script>
@@ -120,68 +119,69 @@
             "https://files.catbox.moe/xcqf9s.mp4", "https://files.catbox.moe/zzuqo4.mp4"
         ];
 
-        const feedView = document.getElementById('feed-view');
-        const gridView = document.getElementById('grid-view');
+        // 啟動圖快速關閉腳本
+        function hideSplash() {
+            const s = document.getElementById('splash-screen');
+            if(s) {
+                s.classList.add('hide');
+                setTimeout(() => s.remove(), 500);
+            }
+        }
+        // 只要資源載入或超過1.5秒，一定執行
+        window.addEventListener('load', hideSplash);
+        setTimeout(hideSplash, 1500); 
 
-        // 初始化：渲染兩種畫面
         function init() {
-            // 渲染「全部」 (Feed 模式 - 圖 1)
+            const feed = document.getElementById('feed-view');
+            const grid = document.getElementById('grid-view');
+
             videoSources.forEach(src => {
-                const item = document.createElement('div');
-                item.className = 'feed-item';
-                item.innerHTML = `
+                // 渲染 Feed (圖 1)
+                const fItem = document.createElement('div');
+                fItem.className = 'feed-item';
+                fItem.innerHTML = `
                     <div class="post-author">
                         <img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG">
                         <span>莫比空間</span>
                     </div>
-                    <div class="video-main">
-                        <video loop muted playsinline src="${src}"></video>
-                    </div>
-                    <div class="post-content">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ™️ 莫比音樂頻道🎵 #Music #Shorts</div>
+                    <div class="video-main"><video loop muted playsinline src="${src}"></video></div>
+                    <div class="post-content">莫比空間Ⓒ 莫比音樂頻道🎵 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ™️ #Shorts</div>
                     <div class="interaction-bar">
                         <div><i class="fa-regular fa-face-smile"></i> 39</div>
                         <div><i class="fa-regular fa-comment"></i> 12</div>
                         <div><i class="fa-solid fa-arrow-up-from-bracket"></i> 1</div>
                     </div>
                 `;
-                feedView.appendChild(item);
-            });
+                feed.appendChild(fItem);
 
-            // 渲染「影片」 (Grid 模式 - 圖 2)
-            videoSources.forEach(src => {
-                const item = document.createElement('div');
-                item.className = 'grid-item';
-                item.innerHTML = `<video src="${src}#t=0.5" muted playsinline></video><i class="fa-solid fa-play play-icon"></i>`;
-                gridView.appendChild(item);
+                // 渲染 Grid (圖 2)
+                const gItem = document.createElement('div');
+                gItem.className = 'grid-item';
+                gItem.innerHTML = `<video src="${src}#t=0.5" muted playsinline></video><i class="fa-solid fa-play play-icon"></i>`;
+                grid.appendChild(gItem);
             });
-
             setupObserver();
         }
 
-        // 切換視圖邏輯
         function showView(type) {
-            document.getElementById('btn-all').classList.toggle('active', type === 'all');
-            document.getElementById('btn-video').classList.toggle('active', type === 'video');
+            const isAll = (type === 'all');
+            document.body.className = isAll ? 'dark-mode' : ''; // 切換黑白主題
+            document.getElementById('btn-all').classList.toggle('active', isAll);
+            document.getElementById('btn-video').classList.toggle('active', !isAll);
             
-            feedView.style.display = (type === 'all') ? 'block' : 'none';
-            gridView.style.display = (type === 'video') ? 'grid' : 'none';
+            document.getElementById('feed-view').style.display = isAll ? 'block' : 'none';
+            document.getElementById('grid-view').style.display = isAll ? 'none' : 'grid';
         }
 
-        // 智慧播放 (僅限 Feed 模式)
         function setupObserver() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) entry.target.play();
                     else entry.target.pause();
                 });
-            }, { threshold: 0.6 });
+            }, { threshold: 0.5 });
             document.querySelectorAll('#feed-view video').forEach(v => observer.observe(v));
         }
-
-        // 啟動圖移除
-        window.addEventListener('load', () => {
-            setTimeout(() => document.getElementById('splash-screen').classList.add('hide'), 1500);
-        });
 
         init();
     </script>
