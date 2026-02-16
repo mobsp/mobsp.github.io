@@ -6,142 +6,99 @@
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | Shorts</title>
 
     <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
-    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* 使用 Blog 頁面配色核心變數 */
-        :root {
-            --bg-body: #000000;
-            --accent-color: #00cec9; /* Blog 的青色 */
-            --text-main: #ffffff;
-            --text-sub: #aaaaaa;
-            --glass-bg: rgba(0, 0, 0, 0.4);
-            --icon-shadow: 0 2px 8px rgba(0,0,0,0.5);
-        }
-
+        :root { --accent-color: #00cec9; --icon-shadow: 0 2px 8px rgba(0,0,0,0.5); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        html, body {
-            height: 100%; width: 100%; margin: 0; padding: 0;
-            overflow: hidden; background-color: var(--bg-body);
-            position: fixed; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+        body, html { margin: 0; padding: 0; font-family: -apple-system, sans-serif; height: 100%; width: 100%; overflow-x: hidden; }
 
         /* 啟動畫面 */
         #splash-screen {
-            position: fixed; inset: 0;
+            position: fixed; inset: 0; z-index: 10000;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG') center/cover no-repeat;
-            z-index: 9999; transition: opacity 0.8s ease;
+            transition: opacity 0.5s ease;
         }
         #splash-screen.hide { opacity: 0; pointer-events: none; }
 
-        /* 核心磁吸容器 */
-        .shorts-wrapper {
-            height: 100dvh; width: 100vw;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-        }
+        /* 主導航 */
+        .nav-bar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: inherit; border-bottom: 1px solid rgba(128,128,128,0.2); }
+        .profile-header { display: flex; flex-direction: column; align-items: center; padding: 25px 0; background: inherit; }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(128,128,128,0.3); }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; } /* 修正圖片變形 */
+
+        .tabs { display: flex; border-bottom: 1px solid rgba(128,128,128,0.2); position: sticky; top: 45px; z-index: 90; background: inherit; }
+        .tab-item { flex: 1; text-align: center; padding: 12px; font-weight: bold; color: #999; cursor: pointer; position: relative; }
+        .tab-item.active { color: inherit; }
+        .tab-item.active::after { content: ''; position: absolute; bottom: 0; left: 35%; width: 30%; height: 2px; background: currentColor; }
+
+        /* 視圖樣式 */
+        #feed-view { display: block; background: #000; color: #fff; }
+        #grid-view { display: none; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #fff; }
+        .feed-item { border-bottom: 1px solid #222; padding-bottom: 20px; }
+        .video-preview { width: 100%; aspect-ratio: 9/16; background: #111; cursor: pointer; }
+        .video-preview video { width: 100%; height: 100%; object-fit: cover; }
+        .grid-item { aspect-ratio: 3/4; background: #000; position: relative; cursor: pointer; }
+        .grid-item video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* 全螢幕播放器 */
+        #player-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; }
+        .shorts-wrapper { height: 100dvh; width: 100vw; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
         .shorts-wrapper::-webkit-scrollbar { display: none; }
+        .short-card { height: 100dvh; width: 100vw; scroll-snap-align: start; position: relative; background: #000; }
+        .short-card video { width: 100%; height: 100%; object-fit: cover; }
 
-        .short-card {
-            height: 100dvh; width: 100vw;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            position: relative;
-            background-color: #000;
-            display: flex; align-items: center; justify-content: center;
-        }
+        /* 右側功能欄 (按要求修改) */
+        .side-bar { position: absolute; right: 12px; bottom: 100px; display: flex; flex-direction: column; gap: 20px; align-items: center; z-index: 10; }
+        .action-item { color: #fff; text-shadow: var(--icon-shadow); cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .action-item i { font-size: 26px; }
+        .action-item span { font-size: 11px; margin-top: 4px; }
 
-        video { width: 100%; height: 100%; object-fit: cover; }
-
-        /* Line Voom 風格頂部導覽 */
-        .top-nav {
-            position: fixed; top: 0; left: 0; right: 0;
-            padding: calc(15px + env(safe-area-inset-top)) 20px 10px;
-            display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(rgba(0,0,0,0.6), transparent);
-            z-index: 20; color: #fff;
+        /* 旋轉唱片進度條 (帶圖片圓形) */
+        .music-disc {
+            width: 45px; height: 45px; border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: #222; overflow: hidden;
+            animation: rotate 4s linear infinite;
         }
-        .top-nav .back-btn { font-size: 22px; color: #fff; text-decoration: none; }
-        .top-nav .tab-menu { display: flex; gap: 20px; font-weight: bold; font-size: 17px; }
-        .tab-menu span.active { color: var(--accent-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 4px; }
-
-        /* 右側操作欄 (Line Voom 風格) */
-        .side-bar {
-            position: absolute; right: 12px; bottom: 120px;
-            display: flex; flex-direction: column; align-items: center;
-            gap: 20px; z-index: 10;
-        }
-
-        .action-item {
-            display: flex; flex-direction: column; align-items: center;
-            text-shadow: var(--icon-shadow); cursor: pointer; color: #fff;
-        }
-        .action-item i { font-size: 26px; margin-bottom: 4px; }
-        .action-item span { font-size: 12px; font-weight: 500; }
-        .action-item.active i { color: #ff4757; } /* 愛心變紅 */
-
-        /* 底部資訊欄 */
-        .bottom-info {
-            position: absolute; bottom: calc(20px + env(safe-area-inset-bottom));
-            left: 15px; right: 80px; z-index: 10;
-            color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-        }
-
-        .profile-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-        .avatar-circle {
-            width: 42px; height: 42px; border-radius: 50%;
-            border: 1.5px solid var(--accent-color); overflow: hidden;
-        }
-        .avatar-circle img { width: 100%; height: 100%; object-fit: cover; }
-        .user-name { font-weight: bold; font-size: 15px; }
-        .follow-btn {
-            background: transparent; border: 1px solid var(--accent-color);
-            color: var(--accent-color); padding: 2px 12px; border-radius: 4px;
-            font-size: 12px; font-weight: bold; margin-left: 5px;
-        }
-
-        .video-caption {
-            font-size: 14px; line-height: 1.5; margin-bottom: 12px;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-            overflow: hidden; opacity: 0.95;
-        }
-
-        .music-scroller {
-            display: flex; align-items: center; gap: 8px; font-size: 13px;
-            background: var(--glass-bg); padding: 4px 12px; border-radius: 15px;
-            width: fit-content; max-width: 200px;
-        }
-        .music-scroller i { animation: rotate 4s linear infinite; color: var(--accent-color); }
+        .music-disc img { width: 100%; height: 100%; object-fit: cover; } /* 修正圖片變形 */
 
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* 靜音切換提示 */
-        .mute-overlay {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.5); width: 60px; height: 60px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 5;
-        }
-        .mute-overlay.show { opacity: 1; }
+        /* 底部資訊區 */
+        .bottom-info { position: absolute; bottom: 40px; left: 15px; right: 80px; color: #fff; text-shadow: var(--icon-shadow); pointer-events: none; }
+        .close-btn { position: absolute; top: 40px; left: 20px; z-index: 2100; color: #fff; font-size: 24px; cursor: pointer; }
+
+        body.dark-mode { background: #000; color: #fff; }
     </style>
 </head>
-<body>
+<body class="dark-mode">
 
     <div id="splash-screen"></div>
 
-    <header class="top-nav">
-        <a href="https://mobsp.github.io/blog/" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
-        <div class="tab-menu">
-            <span>追蹤中</span>
-            <span class="active">為您推薦</span>
+    <div id="main-page">
+        <div class="nav-bar">
+            <i class="fa-solid fa-chevron-left" onclick="location.href='https://mobsp.github.io/blog/'"></i>
+            <span style="font-weight: bold;">莫比空間</span>
+            <i class="fa-solid fa-ellipsis-vertical"></i>
         </div>
-        <div style="width: 24px;"></div> </header>
+        <div class="profile-header">
+            <div class="profile-avatar"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"></div>
+            <div class="profile-name">莫比空間 🪄</div>
+            <button style="border:1px solid #ddd; background:transparent; color:inherit; padding:6px 30px; border-radius:6px; margin-top:15px; font-weight:bold;">追蹤中</button>
+        </div>
+        <div class="tabs">
+            <div class="tab-item active" onclick="showView('all')">全部</div>
+            <div class="tab-item" onclick="showView('video')">影片</div>
+        </div>
+        <div id="feed-view"></div>
+        <div id="grid-view"></div>
+    </div>
 
-    <div class="shorts-wrapper" id="shortsWrapper"></div>
+    <div id="player-overlay">
+        <i class="fa-solid fa-xmark close-btn" onclick="closePlayer()"></i>
+        <div class="shorts-wrapper" id="shortsWrapper"></div>
+    </div>
 
     <script>
         const videoSources = [
@@ -156,109 +113,121 @@
             "https://files.catbox.moe/kmgu5w.mp4", "https://files.catbox.moe/dwtlj4.mp4"
         ];
 
-        const constantTags = "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間Ⓒ 莫比音樂頻道🎵 #MobiShorts";
-        const wrapper = document.getElementById('shortsWrapper');
         let isMuted = true;
 
-        // 生成影片卡片 (Line Voom 佈局)
-        videoSources.forEach((src) => {
-            const card = document.createElement('div');
-            card.className = 'short-card';
-            card.innerHTML = `
-                <video loop preload="metadata" playsinline muted>
-                    <source src="${src}" type="video/mp4">
-                </video>
-                <div class="mute-overlay"><i class="fa-solid fa-volume-xmark" style="color:#fff; font-size:24px;"></i></div>
-                
-                <div class="side-bar">
-                    <div class="action-item" onclick="toggleLike(this)">
-                        <i class="fa-solid fa-heart"></i>
-                        <span>1.2k</span>
-                    </div>
-                    <div class="action-item">
-                        <i class="fa-solid fa-comment-dots"></i>
-                        <span>45</span>
-                    </div>
-                    <div class="action-item" onclick="shareVideo(event)">
-                        <i class="fa-solid fa-share-nodes"></i>
-                        <span>分享</span>
-                    </div>
-                </div>
+        function init() {
+            const feed = document.getElementById('feed-view');
+            const grid = document.getElementById('grid-view');
+            const wrapper = document.getElementById('shortsWrapper');
 
-                <div class="bottom-info">
-                    <div class="profile-row">
-                        <div class="avatar-circle" onclick="location.href='https://mobsp.github.io/blog/'">
-                            <img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG" alt="Author">
+            videoSources.forEach((src, idx) => {
+                // 全部視圖 (Feed)
+                const fItem = document.createElement('div');
+                fItem.className = 'feed-item';
+                fItem.innerHTML = `
+                    <div style="display:flex; align-items:center; gap:10px; padding:15px">
+                        <img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG" style="width:34px; height:34px; border-radius:50%; object-fit:cover">
+                        <span style="font-weight:bold; font-size:14px">莫比空間</span>
+                    </div>
+                    <div class="video-preview" onclick="openPlayer(${idx})">
+                        <video src="${src}#t=0.1" muted playsinline></video>
+                    </div>
+                    <div style="padding:15px; font-size:14px; color:#eee">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ™️ 莫比音樂頻道 #Shorts</div>
+                `;
+                feed.appendChild(fItem);
+
+                // 影片視圖 (Grid)
+                const gItem = document.createElement('div');
+                gItem.className = 'grid-item';
+                gItem.onclick = () => openPlayer(idx);
+                gItem.innerHTML = `<video src="${src}#t=0.1" muted playsinline></video><i class="fa-solid fa-play" style="position:absolute; top:8px; right:8px; color:#fff; font-size:10px"></i>`;
+                grid.appendChild(gItem);
+
+                // 全螢幕播放卡片 (Side Bar 修改完成)
+                const card = document.createElement('div');
+                card.className = 'short-card';
+                card.innerHTML = `
+                    <video loop playsinline data-src="${src}" muted onclick="this.paused?this.play():this.pause()"></video>
+                    <div class="side-bar">
+                        <div class="action-item" onclick="toggleMute(event)">
+                            <i class="fa-solid fa-volume-xmark mute-icon"></i>
+                            <span>音量</span>
                         </div>
-                        <span class="user-name">莫比空間</span>
-                        <button class="follow-btn">追蹤</button>
+                        <div class="action-item" onclick="shareVideo(event)">
+                            <i class="fa-solid fa-share"></i>
+                            <span>分享</span>
+                        </div>
+                        <div class="music-disc">
+                            <img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG">
+                        </div>
                     </div>
-                    <div class="video-caption">
-                        ${constantTags} 感謝您的支持，我們持續更新高品質音樂影音。
+                    <div class="bottom-info">
+                        <div style="font-weight:bold; margin-bottom:8px">@Mobispace_Music</div>
+                        <div style="font-size:14px; opacity:0.9">莫比空間Ⓒ 莫比音樂頻道🎵 #Music</div>
                     </div>
-                    <div class="music-scroller">
-                        <i class="fa-solid fa-music"></i> 
-                        <marquee scrollamount="3">原聲 - Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Music Channel</marquee>
-                    </div>
-                </div>
-            `;
-            wrapper.appendChild(card);
-        });
-
-        // 啟動畫面邏輯
-        window.addEventListener('load', () => {
-            const splash = document.getElementById('splash-screen');
-            setTimeout(() => {
-                splash.classList.add('hide');
-                setTimeout(() => splash.remove(), 800);
-            }, 1200);
-        });
-
-        // 智慧播放邏輯
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                const v = entry.target;
-                if (entry.isIntersecting) {
-                    v.play().catch(() => {});
-                } else {
-                    v.pause();
-                    v.currentTime = 0;
-                }
+                `;
+                wrapper.appendChild(card);
             });
-        }, { root: wrapper, threshold: 0.6 });
+            setupObserver();
+        }
 
-        document.querySelectorAll('video').forEach(v => observer.observe(v));
-
-        // 點擊事件：切換靜音
-        document.querySelectorAll('.short-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const v = card.querySelector('video');
-                const overlay = card.querySelector('.mute-overlay');
-                const icon = overlay.querySelector('i');
-                
-                isMuted = !isMuted;
-                document.querySelectorAll('video').forEach(vid => vid.muted = isMuted);
-                
-                icon.className = isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
-                overlay.classList.add('show');
-                setTimeout(() => overlay.classList.remove('show'), 800);
+        function toggleMute(e) {
+            e.stopPropagation();
+            isMuted = !isMuted;
+            document.querySelectorAll('.short-card video').forEach(v => v.muted = isMuted);
+            document.querySelectorAll('.mute-icon').forEach(i => {
+                i.className = isMuted ? 'fa-solid fa-volume-xmark mute-icon' : 'fa-solid fa-volume-high mute-icon';
             });
-        });
-
-        function toggleLike(el) {
-            el.classList.toggle('active');
         }
 
         async function shareVideo(e) {
             e.stopPropagation();
             if (navigator.share) {
-                try {
-                    await navigator.share({ title: '莫比空間 Shorts', url: window.location.href });
-                } catch (err) {}
-            } else {
-                alert('連結已複製！');
-            }
+                try { await navigator.share({ title: '莫比空間 Shorts', url: window.location.href }); } catch (err) {}
+            } else { alert('連結已複製'); }
         }
+
+        function openPlayer(index) {
+            document.getElementById('player-overlay').style.display = 'block';
+            const cards = document.querySelectorAll('.short-card');
+            cards[index].scrollIntoView();
+            const v = cards[index].querySelector('video');
+            if(!v.src) v.src = v.dataset.src;
+            v.play();
+        }
+
+        function closePlayer() {
+            document.getElementById('player-overlay').style.display = 'none';
+            document.querySelectorAll('.short-card video').forEach(v => { v.pause(); v.currentTime = 0; });
+        }
+
+        function showView(type) {
+            const isAll = (type === 'all');
+            document.body.className = isAll ? 'dark-mode' : '';
+            document.querySelectorAll('.tab-item').forEach((el, i) => {
+                el.classList.toggle('active', (isAll && i===0) || (!isAll && i===1));
+            });
+            document.getElementById('feed-view').style.display = isAll ? 'block' : 'none';
+            document.getElementById('grid-view').style.display = isAll ? 'none' : 'grid';
+        }
+
+        function setupObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const v = entry.target;
+                    if (entry.isIntersecting) {
+                        if(!v.src) v.src = v.dataset.src;
+                        v.play().catch(() => {});
+                    } else { v.pause(); v.currentTime = 0; }
+                });
+            }, { root: document.getElementById('shortsWrapper'), threshold: 0.7 });
+            document.querySelectorAll('.short-card video').forEach(v => observer.observe(v));
+        }
+
+        window.onload = () => {
+            init();
+            setTimeout(() => { document.getElementById('splash-screen').classList.add('hide'); }, 1000);
+        };
     </script>
 </body>
 </html>
