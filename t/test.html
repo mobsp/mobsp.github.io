@@ -8,48 +8,50 @@
     <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
     <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
         :root {
-            --accent-color: #00cec9;
-            --icon-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            --accent-color: #00cec9; /* Blog 青色 */
+            --bg-white: #ffffff;
+            --text-dark: #111111;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; background: #fff; font-family: -apple-system, sans-serif; height: 100%; }
+        body, html { margin: 0; padding: 0; background: var(--bg-white); font-family: -apple-system, sans-serif; color: var(--text-dark); }
 
         /* 啟動畫面 */
         #splash-screen {
             position: fixed; inset: 0;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG') center/cover no-repeat;
-            z-index: 10000; transition: opacity 0.6s ease, visibility 0.6s;
+            z-index: 10000; transition: opacity 0.6s ease;
         }
-        #splash-screen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+        #splash-screen.hide { opacity: 0; pointer-events: none; }
 
-        /* 頂部導覽 */
+        /* 導覽列 */
         .nav-bar {
             position: sticky; top: 0; background: #fff; z-index: 100;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 15px; border-bottom: 1px solid #eee;
+            padding: 10px 15px; border-bottom: 1px solid #f0f0f0;
         }
 
-        /* 個人資料區 */
+        /* 個人資訊區 (符合圖 1 & 圖 2) */
         .profile-header {
             display: flex; flex-direction: column; align-items: center;
-            padding: 25px 0; border-bottom: 1px solid #f0f0f0;
+            padding: 25px 0; background: #fff;
         }
         .profile-avatar {
-            width: 85px; height: 85px; border-radius: 50%;
+            width: 80px; height: 80px; border-radius: 50%;
             border: 1px solid #eee; overflow: hidden; margin-bottom: 12px;
         }
         .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-name { font-weight: bold; font-size: 18px; }
-        .profile-stats { font-size: 14px; color: #888; margin: 5px 0 15px; }
+        .profile-name { font-weight: bold; font-size: 18px; margin-bottom: 4px; }
+        .profile-stats { font-size: 14px; color: #888; margin-bottom: 15px; }
         .follow-btn {
             border: 1px solid #ddd; background: #fff; padding: 6px 35px;
-            border-radius: 5px; font-weight: bold; cursor: pointer;
+            border-radius: 6px; font-weight: bold; font-size: 14px; cursor: pointer;
         }
 
-        /* 分頁標籤 */
+        /* 標籤頁 (符合截圖) */
         .tabs { display: flex; border-bottom: 1px solid #eee; position: sticky; top: 45px; background: #fff; z-index: 90; }
         .tab-item {
             flex: 1; text-align: center; padding: 12px; font-weight: bold; color: #999;
@@ -61,153 +63,127 @@
             width: 30%; height: 2px; background: #000;
         }
 
-        /* 內容網格 */
-        .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #fff; }
-        .grid-item { aspect-ratio: 3/4; background: #000; position: relative; cursor: pointer; overflow: hidden; }
-        .grid-item video, .grid-item img { width: 100%; height: 100%; object-fit: cover; }
-        .grid-item .type-icon { position: absolute; top: 8px; right: 8px; color: #fff; font-size: 14px; opacity: 0.9; }
-
-        /* 全螢幕播放器 */
-        #player-overlay { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; }
-        #player-overlay.show { display: block; }
-        .close-player { position: absolute; top: env(safe-area-inset-top, 20px); left: 15px; z-index: 2100; color: #fff; font-size: 24px; cursor: pointer; }
+        /* --- 模式 1: 全部 (Feed 流 - 圖 1) --- */
+        #feed-view { display: block; padding: 0; }
+        .feed-item { margin-bottom: 25px; border-bottom: 8px solid #f8f8f8; padding-bottom: 15px; }
+        .post-author { display: flex; align-items: center; gap: 10px; padding: 12px 15px; }
+        .post-author img { width: 34px; height: 34px; border-radius: 50%; }
+        .post-author span { font-size: 14px; font-weight: bold; }
         
-        .shorts-wrapper { height: 100dvh; width: 100vw; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
-        .short-card { height: 100dvh; width: 100vw; scroll-snap-align: start; position: relative; background: #000; }
-        .short-card video { width: 100%; height: 100%; object-fit: cover; }
+        .video-main { width: 100%; aspect-ratio: 9/16; background: #000; overflow: hidden; position: relative; }
+        .video-main video { width: 100%; height: 100%; object-fit: cover; }
+        
+        .post-content { padding: 12px 15px; font-size: 15px; line-height: 1.4; }
+        .interaction-bar { display: flex; gap: 20px; padding: 0 15px; color: #666; font-size: 20px; }
+        .interaction-bar div { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+        .interaction-bar i { color: #555; }
+        .fa-face-smile { color: #ffd32a !important; } /* 笑臉黃色 */
 
-        .side-bar { position: absolute; right: 12px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
-        .action-item { color: #fff; text-align: center; text-shadow: var(--icon-shadow); }
-        .bottom-info { position: absolute; bottom: 40px; left: 15px; right: 80px; color: #fff; text-shadow: var(--icon-shadow); pointer-events: none; }
+        /* --- 模式 2: 影片 (網格 - 圖 2) --- */
+        #grid-view { display: none; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #eee; }
+        .grid-item { aspect-ratio: 3/4; background: #000; position: relative; cursor: pointer; }
+        .grid-item video { width: 100%; height: 100%; object-fit: cover; }
+        .grid-item .play-icon { position: absolute; top: 8px; right: 8px; color: #fff; font-size: 12px; opacity: 0.8; }
+
     </style>
 </head>
 <body>
 
     <div id="splash-screen"></div>
 
-    <div id="main-profile">
-        <div class="nav-bar">
-            <i class="fa-solid fa-chevron-left" onclick="location.href='https://mobsp.github.io/blog/'"></i>
-            <span style="font-weight: bold;">莫比空間</span>
-            <i class="fa-solid fa-ellipsis-vertical"></i>
-        </div>
-
-        <div class="profile-header">
-            <div class="profile-avatar"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"></div>
-            <div class="profile-name">莫比空間 🪄</div>
-            <div class="profile-stats">233 貼文</div>
-            <button class="follow-btn">追蹤中</button>
-        </div>
-
-        <div class="tabs">
-            <div class="tab-item" id="tab-all" onclick="switchTab('全部')">全部</div>
-            <div class="tab-item active" id="tab-video" onclick="switchTab('影片')">影片</div>
-        </div>
-
-        <div class="video-grid" id="videoGrid"></div>
+    <div class="nav-bar">
+        <i class="fa-solid fa-chevron-left" onclick="location.href='https://mobsp.github.io/blog/'"></i>
+        <span style="font-weight: bold;">莫比空間</span>
+        <i class="fa-solid fa-ellipsis-vertical"></i>
     </div>
 
-    <div id="player-overlay">
-        <i class="fa-solid fa-chevron-left close-player" onclick="closePlayer()"></i>
-        <div class="shorts-wrapper" id="shortsWrapper"></div>
+    <div class="profile-header">
+        <div class="profile-avatar"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"></div>
+        <div class="profile-name">莫比空間 🪄</div>
+        <div class="profile-stats">233 貼文</div>
+        <button class="follow-btn">追蹤中</button>
     </div>
+
+    <div class="tabs">
+        <div class="tab-item active" id="btn-all" onclick="showView('all')">全部</div>
+        <div class="tab-item" id="btn-video" onclick="showView('video')">影片</div>
+    </div>
+
+    <div id="feed-view"></div>
+
+    <div id="grid-view"></div>
 
     <script>
         const videoSources = [
             "https://files.catbox.moe/xh7uyj.mp4", "https://files.catbox.moe/u94tk7.mp4",
             "https://files.catbox.moe/aizh9p.mp4", "https://files.catbox.moe/t9ojp9.mp4",
-            "https://files.catbox.moe/xcqf9s.mp4", "https://files.catbox.moe/zzuqo4.mp4",
-            "https://files.catbox.moe/t0mil6.mp4", "https://files.catbox.moe/rw7p6b.MP4"
+            "https://files.catbox.moe/xcqf9s.mp4", "https://files.catbox.moe/zzuqo4.mp4"
         ];
 
-        // 模擬「全部」標籤中的額外照片
-        const photoSources = ["https://mobsp.github.io/assets/brand/ms-logo.JPEG"];
+        const feedView = document.getElementById('feed-view');
+        const gridView = document.getElementById('grid-view');
 
-        function renderGrid(filter) {
-            const grid = document.getElementById('videoGrid');
-            const wrapper = document.getElementById('shortsWrapper');
-            grid.innerHTML = '';
-            wrapper.innerHTML = '';
+        // 初始化：渲染兩種畫面
+        function init() {
+            // 渲染「全部」 (Feed 模式 - 圖 1)
+            videoSources.forEach(src => {
+                const item = document.createElement('div');
+                item.className = 'feed-item';
+                item.innerHTML = `
+                    <div class="post-author">
+                        <img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG">
+                        <span>莫比空間</span>
+                    </div>
+                    <div class="video-main">
+                        <video loop muted playsinline src="${src}"></video>
+                    </div>
+                    <div class="post-content">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ™️ 莫比音樂頻道🎵 #Music #Shorts</div>
+                    <div class="interaction-bar">
+                        <div><i class="fa-regular fa-face-smile"></i> 39</div>
+                        <div><i class="fa-regular fa-comment"></i> 12</div>
+                        <div><i class="fa-solid fa-arrow-up-from-bracket"></i> 1</div>
+                    </div>
+                `;
+                feedView.appendChild(item);
+            });
 
-            let contentList = (filter === '全部') ? [...photoSources, ...videoSources] : videoSources;
-
-            contentList.forEach((src, index) => {
-                const isVideo = src.endsWith('.mp4') || src.endsWith('.MP4');
-                
-                // 渲染九宮格
+            // 渲染「影片」 (Grid 模式 - 圖 2)
+            videoSources.forEach(src => {
                 const item = document.createElement('div');
                 item.className = 'grid-item';
-                if(isVideo) {
-                    item.onclick = () => openPlayer(index - (filter === '全部' ? photoSources.length : 0));
-                    item.innerHTML = `<video src="${src}#t=0.1" muted playsinline></video><i class="fa-solid fa-play type-icon"></i>`;
-                } else {
-                    item.innerHTML = `<img src="${src}"><i class="fa-solid fa-image type-icon"></i>`;
-                }
-                grid.appendChild(item);
-
-                // 如果是影片，則準備播放器卡片
-                if(isVideo) {
-                    const card = document.createElement('div');
-                    card.className = 'short-card';
-                    card.innerHTML = `
-                        <video loop playsinline muted data-src="${src}"><source src="" type="video/mp4"></video>
-                        <div class="side-bar">
-                            <div class="action-item"><i class="fa-solid fa-heart"></i><span>讚</span></div>
-                            <div class="action-item"><i class="fa-solid fa-share"></i><span>分享</span></div>
-                        </div>
-                        <div class="bottom-info"><span style="font-weight:bold">@Mobispace_Music</span></div>
-                    `;
-                    wrapper.appendChild(card);
-                }
+                item.innerHTML = `<video src="${src}#t=0.5" muted playsinline></video><i class="fa-solid fa-play play-icon"></i>`;
+                gridView.appendChild(item);
             });
-            initObserver();
+
+            setupObserver();
         }
 
-        function switchTab(type) {
-            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
-            if(type === '全部') document.getElementById('tab-all').classList.add('active');
-            else document.getElementById('tab-video').classList.add('active');
-            renderGrid(type);
+        // 切換視圖邏輯
+        function showView(type) {
+            document.getElementById('btn-all').classList.toggle('active', type === 'all');
+            document.getElementById('btn-video').classList.toggle('active', type === 'video');
+            
+            feedView.style.display = (type === 'all') ? 'block' : 'none';
+            gridView.style.display = (type === 'video') ? 'grid' : 'none';
         }
 
-        function openPlayer(index) {
-            if(index < 0) return; // 點擊照片不開啟播放器
-            document.getElementById('player-overlay').classList.add('show');
-            const cards = document.querySelectorAll('.short-card');
-            cards[index].scrollIntoView();
-            const v = cards[index].querySelector('video');
-            if(!v.src) v.src = v.dataset.src;
-            v.play();
-        }
-
-        function closePlayer() {
-            document.getElementById('player-overlay').classList.remove('show');
-            document.querySelectorAll('.short-card video').forEach(v => { v.pause(); v.currentTime = 0; });
-        }
-
-        function initObserver() {
+        // 智慧播放 (僅限 Feed 模式)
+        function setupObserver() {
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
-                    const v = entry.target;
-                    if (entry.isIntersecting) {
-                        if(!v.src) v.src = v.dataset.src;
-                        v.play().catch(() => {});
-                    } else { v.pause(); }
+                    if (entry.isIntersecting) entry.target.play();
+                    else entry.target.pause();
                 });
-            }, { root: document.getElementById('shortsWrapper'), threshold: 0.7 });
-            document.querySelectorAll('.short-card video').forEach(v => observer.observe(v));
+            }, { threshold: 0.6 });
+            document.querySelectorAll('#feed-view video').forEach(v => observer.observe(v));
         }
 
-        // 啟動畫面邏輯
-        function hideSplash() {
-            const s = document.getElementById('splash-screen');
-            if(s) { s.classList.add('hide'); setTimeout(()=>s.remove(), 600); }
-        }
-        window.addEventListener('load', hideSplash);
-        setTimeout(hideSplash, 3000);
+        // 啟動圖移除
+        window.addEventListener('load', () => {
+            setTimeout(() => document.getElementById('splash-screen').classList.add('hide'), 1500);
+        });
 
-        // 預設載入「影片」標籤
-        renderGrid('影片');
+        init();
     </script>
 </body>
 </html>
