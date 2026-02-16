@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比部落格</title>
     
-    <link rel="icon" href="https://files.catbox.moe/8yessc.png" type="image/png">
+    <link rel="icon" href="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -24,7 +26,7 @@
             height: 100dvh; overflow: hidden; 
         }
 
-        /* --- 啟動畫面優化 --- */
+        /* --- 啟動畫面 --- */
         #ms-splash {
             position: fixed; inset: 0;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover no-repeat;
@@ -95,7 +97,7 @@
         /* 文章行樣式 */
         .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; cursor: pointer; text-decoration: none; }
         .article-row:active { background: rgba(255,255,255,0.05); }
-        .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+        .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; flex-shrink: 0; }
         .row-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
         .row-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: #eee; }
 
@@ -133,10 +135,10 @@
         <main id="main-view">
             <div class="section-label">最新精選</div>
             <div class="horizontal-slider">
-                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://files.catbox.moe/jk7vkg.jpeg');">
+                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.JPEG');">
                     <span style="font-size: 13px;">莫比空間開發日誌</span>
                 </div>
-                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://files.catbox.moe/8yessc.png');">
+                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.JPEG');">
                     <span style="font-size: 13px;">PWA 技術實踐指南</span>
                 </div>
                 <div class="mid-card" style="background: #1a1a1a; border: 1px dashed #333; justify-content: center; align-items: center;">
@@ -151,20 +153,10 @@
 
             <div id="article-list-container">
                 <div class="article-row" onclick="location.href='#'">
-                    <img src="https://files.catbox.moe/8yessc.png" class="row-img" alt="封面圖">
+                    <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img" alt="封面圖">
                     <div class="row-info">
                         <div class="row-title">如何優化你的 GitHub Pages 載入速度？</div>
                         <div style="font-size: 11px; color: var(--text-sub);">2026/02/13 · 莫比空間</div>
-                    </div>
-                </div>
-                
-                <div class="article-row" onclick="location.href='#'">
-                    <div class="row-img">
-                        <i class="fa-solid fa-file-code" style="opacity:0.3; color: white;"></i>
-                    </div>
-                    <div class="row-info">
-                        <div class="row-title">仿 Line App 介面設計心得分享</div>
-                        <div style="font-size: 11px; color: var(--text-sub);">2026/02/12 · 技術分享</div>
                     </div>
                 </div>
             </div>
@@ -181,14 +173,12 @@
     </div>
 
     <script>
-        // GitHub API 配置
         const GH_CONFIG = {
             user: 'mobsp',
             repo: 'mobsp.github.io',
             path: 'blog/p/list'
         };
 
-        // 核心載入邏輯
         (function() {
             const splash = document.getElementById('ms-splash');
             
@@ -200,7 +190,6 @@
                 }
             }
 
-            // 讀取 GitHub 文章功能
             async function loadGithubArticles() {
                 const container = document.getElementById('github-articles');
                 const api_url = `https://api.github.com/repos/${GH_CONFIG.user}/${GH_CONFIG.repo}/contents/${GH_CONFIG.path}`;
@@ -210,21 +199,19 @@
                     if (!response.ok) return;
                     const files = await response.json();
 
-                    // 只讀取 .html 檔案
                     const htmlFiles = files.filter(file => file.name.endsWith('.html'));
 
                     htmlFiles.forEach(file => {
                         const title = file.name.replace('.html', '').replace(/-/g, ' ').toUpperCase();
                         const articleUrl = `https://mobsp.github.io/blog/p/list/${file.name}`;
                         
+                        // 動態渲染中套用 ms-post.JPEG 作為所有文章預覽圖
                         const articleHtml = `
                             <div class="article-row" onclick="location.href='${articleUrl}'">
-                                <div class="row-img">
-                                    <i class="fa-solid fa-file-lines" style="color: var(--accent-color); opacity:0.8; font-size:24px;"></i>
-                                </div>
+                                <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img" alt="封面圖">
                                 <div class="row-info">
                                     <div class="row-title">${title}</div>
-                                    <div style="font-size: 11px; color: var(--text-sub);">自動同步文章 · HTML 專案</div>
+                                    <div style="font-size: 11px; color: var(--text-sub);">自動同步文章 · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
                                 </div>
                                 <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px; margin-right:5px;"></i>
                             </div>
@@ -237,11 +224,11 @@
             }
 
             window.addEventListener('load', () => {
-                loadGithubArticles(); // 載入文章
+                loadGithubArticles();
                 setTimeout(hideSplash, 1000);
             });
 
-            setTimeout(hideSplash, 3000); // 安全機制
+            setTimeout(hideSplash, 3000);
         })();
     </script>
 </body>
