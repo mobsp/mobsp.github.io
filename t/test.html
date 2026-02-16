@@ -1,8 +1,8 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | Shorts</title>
 
     <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
@@ -10,224 +10,153 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --icon-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-
-        html, body {
-            height: 100%; width: 100%; margin: 0; padding: 0;
-            overflow: hidden; background-color: #000;
-            position: fixed; font-family: -apple-system, sans-serif;
+        :root {
+            --accent-color: #00cec9; /* Blog 青色 */
+            --bg-dark: #ffffff;      /* 依照截圖，背景改為白色或極淺灰 */
+            --text-dark: #333333;
         }
 
-        /* 啟動畫面樣式 */
-        #splash-screen {
-            position: fixed; inset: 0;
-            background: #000 url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG') center/cover no-repeat;
-            z-index: 9999; display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease;
-        }
-        #splash-screen.hide { opacity: 0; pointer-events: none; }
-
-        /* 核心磁吸容器 */
-        .shorts-wrapper {
-            height: 100dvh; width: 100vw;
-            overflow-y: scroll;
-            scroll-snap-type: y mandatory;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-        .shorts-wrapper::-webkit-scrollbar { display: none; }
-
-        .short-card {
-            height: 100dvh; width: 100vw;
-            scroll-snap-align: start;
-            scroll-snap-stop: always;
-            position: relative;
-            background-color: #000;
+        body {
+            margin: 0; background-color: #fff;
+            font-family: -apple-system, sans-serif;
+            color: var(--text-dark);
         }
 
+        /* 頂部導覽列 */
+        .nav-bar {
+            position: sticky; top: 0; background: #fff; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 15px; border-bottom: 1px solid #eee;
+        }
+        .nav-bar i { font-size: 20px; cursor: pointer; }
+
+        /* 個人資訊區塊 (仿 Line Voom 截圖) */
+        .profile-header {
+            display: flex; flex-direction: column; align-items: center;
+            padding: 30px 20px; text-align: center;
+        }
+        .profile-avatar {
+            width: 80px; height: 80px; border-radius: 50%;
+            overflow: hidden; margin-bottom: 15px;
+            border: 1px solid #eee;
+        }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-name { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
+        .stats-row { color: #666; font-size: 14px; margin-bottom: 20px; }
+        
+        .follow-btn {
+            background-color: #fff; border: 1px solid #ddd;
+            padding: 8px 30px; border-radius: 8px;
+            font-size: 14px; font-weight: bold; cursor: pointer;
+        }
+
+        /* 分類標籤頁 */
+        .tabs {
+            display: flex; border-bottom: 1px solid #eee;
+            position: sticky; top: 45px; background: #fff; z-index: 90;
+        }
+        .tab-item {
+            flex: 1; text-align: center; padding: 12px 0;
+            font-size: 14px; font-weight: bold; color: #999;
+            cursor: pointer; position: relative;
+        }
+        .tab-item.active { color: #000; }
+        .tab-item.active::after {
+            content: ''; position: absolute; bottom: 0; left: 35%;
+            width: 30%; height: 2px; background: #000;
+        }
+
+        /* 影片瀑布流清單 */
+        .video-feed { padding: 10px; }
+        .feed-item { margin-bottom: 20px; border-bottom: 1px solid #f5f5f5; padding-bottom: 15px; }
+        
+        /* 模仿 Line Voom 貼文格式 */
+        .author-info { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .author-avatar { width: 32px; height: 32px; border-radius: 50%; }
+        .author-name { font-size: 13px; font-weight: bold; }
+
+        .video-container {
+            width: 100%; border-radius: 12px; overflow: hidden;
+            background: #000; aspect-ratio: 9/16; position: relative;
+        }
         video { width: 100%; height: 100%; object-fit: cover; }
 
-        .side-bar {
-            position: absolute; right: 12px; bottom: 100px;
-            display: flex; flex-direction: column; align-items: center;
-            gap: 25px; z-index: 10;
-        }
-
-        .action-item {
-            display: flex; flex-direction: column; align-items: center;
-            text-shadow: var(--icon-shadow); cursor: pointer; color: #fff;
-        }
-        .action-item i { font-size: 28px; }
-        .action-item span { font-size: 11px; margin-top: 5px; font-weight: 500; }
-
-        /* 作者頭像圖示 */
-        .avatar-btn {
-            width: 48px; height: 48px;
-            border-radius: 50%; border: 2px solid #fff;
-            overflow: hidden; cursor: pointer;
-            box-shadow: var(--icon-shadow);
-        }
-        .avatar-btn img { width: 100%; height: 100%; object-fit: cover; }
-
-        .bottom-info {
-            position: absolute; bottom: 40px; left: 15px; right: 80px;
-            z-index: 10; pointer-events: none; color: #fff;
-        }
-        .bottom-info > * { pointer-events: auto; }
-
-        .channel-info { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .channel-name { font-weight: bold; font-size: 16px; text-shadow: var(--icon-shadow); }
-
-        .video-desc {
-            font-size: 14px; margin-bottom: 10px;
-            text-shadow: 0 1px 3px rgba(0,0,0,1);
-            line-height: 1.4; opacity: 0.9;
-        }
-
-        .music-tag { display: flex; align-items: center; gap: 8px; font-size: 13px; }
-        .music-tag i { animation: rotate 4s linear infinite; }
-
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        .top-nav {
-            position: fixed; top: env(safe-area-inset-top, 20px); left: 15px;
-            z-index: 20; font-size: 18px; font-weight: bold; color: #fff;
-        }
-        .top-nav span { border-bottom: 2px solid #fff; padding-bottom: 4px; }
-
-        .back-btn {
-            position: fixed; top: env(safe-area-inset-top, 20px); right: 15px;
-            z-index: 20; font-size: 24px; color: #fff; text-decoration: none;
-        }
+        .video-footer { padding: 10px 5px; }
+        .video-title { font-size: 14px; margin-bottom: 10px; line-height: 1.4; }
+        
+        .interaction-bar { display: flex; gap: 20px; color: #666; font-size: 18px; }
+        .interaction-bar div { display: flex; align-items: center; gap: 5px; font-size: 13px; }
     </style>
 </head>
 <body>
 
-    <div id="splash-screen"></div>
-
-    <div class="top-nav">
-        <span>推薦</span>
+    <div class="nav-bar">
+        <i class="fa-solid fa-chevron-left" onclick="history.back()"></i>
+        <i class="fa-solid fa-ellipsis-vertical"></i>
     </div>
 
-    <a href="https://mobsp.github.io/blog/" class="back-btn">
-        <i class="fa-solid fa-xmark"></i>
-    </a>
+    <div class="profile-header">
+        <div class="profile-avatar">
+            <img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG" alt="Avatar">
+        </div>
+        <div class="profile-name">莫比空間 🪄</div>
+        <div class="stats-row">233 貼文</div>
+        <button class="follow-btn">追蹤中</button>
+    </div>
 
-    <div class="shorts-wrapper" id="shortsWrapper"></div>
+    <div class="tabs">
+        <div class="tab-item active">全部</div>
+        <div class="tab-item">影片</div>
+    </div>
+
+    <div class="video-feed" id="videoFeed"></div>
 
     <script>
         const videoSources = [
             "https://files.catbox.moe/xh7uyj.mp4", "https://files.catbox.moe/u94tk7.mp4",
-            "https://files.catbox.moe/aizh9p.mp4", "https://files.catbox.moe/t9ojp9.mp4",
-            "https://files.catbox.moe/xcqf9s.mp4", "https://files.catbox.moe/zzuqo4.mp4",
-            "https://files.catbox.moe/t0mil6.mp4", "https://files.catbox.moe/rw7p6b.MP4",
-            "https://files.catbox.moe/nvq49m.mp4", "https://files.catbox.moe/9fvg1s.mp4",
-            "https://files.catbox.moe/9461nt.mp4", "https://files.catbox.moe/e93uth.mp4",
-            "https://files.catbox.moe/79y11a.mp4", "https://files.catbox.moe/0d6dx3.mp4",
-            "https://files.catbox.moe/00mt42.mp4", "https://files.catbox.moe/fret8a.mp4",
-            "https://files.catbox.moe/kmgu5w.mp4", "https://files.catbox.moe/dwtlj4.mp4"
+            "https://files.catbox.moe/aizh9p.mp4", "https://files.catbox.moe/t9ojp9.mp4"
         ];
 
-        const constantTags = "莫比空間Ⓒ 莫比音樂頻道🎵 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ™️ ÐJ-Ⲙⳝ🎧 Mobi-Music-channel 熱門歌曲";
-        const randomOptions = ["Mix", "ReMix", "抒情", "華語流行", "中文電音", "DJ舞曲"];
+        const feed = document.getElementById('videoFeed');
 
-        const wrapper = document.getElementById('shortsWrapper');
-        let isMuted = true;
-
-        // 生成影片卡片
-        videoSources.forEach((src, index) => {
-            const randomTag = randomOptions[Math.floor(Math.random() * randomOptions.length)];
-            const card = document.createElement('div');
-            card.className = 'short-card';
-            card.innerHTML = `
-                <video loop preload="metadata" playsinline muted>
-                    <source src="${src}" type="video/mp4">
-                </video>
-                <div class="side-bar">
-                    <div class="action-item mute-btn" onclick="toggleMute(event)">
-                        <i class="fa-solid fa-volume-xmark"></i>
-                        <span>音量</span>
-                    </div>
-                    <div class="action-item" onclick="shareVideo(event, '${src}')">
-                        <i class="fa-solid fa-share"></i>
-                        <span>分享</span>
-                    </div>
-                    <div class="avatar-btn" onclick="location.href='https://mobsp.github.io/blog/'">
-                        <img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG" alt="Author">
-                    </div>
+        // 生成類似 Line Voom 貼文的內容
+        videoSources.forEach(src => {
+            const item = document.createElement('div');
+            item.className = 'feed-item';
+            item.innerHTML = `
+                <div class="author-info">
+                    <img class="author-avatar" src="https://mobsp.github.io/assets/brand/ms-logo.JPEG">
+                    <span class="author-name">莫比空間</span>
                 </div>
-                <div class="bottom-info">
-                    <div class="channel-info">
-                        <span class="channel-name">@Mobispace_Music</span>
-                    </div>
-                    <div class="video-desc">
-                        ${constantTags} <span style="color: #FFD700;">#${randomTag}</span>
-                    </div>
-                    <div class="music-tag">
-                        <i class="fa-solid fa-music"></i> 原聲 - 莫比空間頻道
+                <div class="video-container">
+                    <video loop muted playsinline preload="metadata">
+                        <source src="${src}" type="video/mp4">
+                    </video>
+                </div>
+                <div class="video-footer">
+                    <div class="video-title">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ™️ 莫比音樂頻道🎵 #DJMix #熱門歌曲</div>
+                    <div class="interaction-bar">
+                        <div><i class="fa-regular fa-face-smile"></i> 39</div>
+                        <div><i class="fa-regular fa-comment"></i> 12</div>
+                        <div><i class="fa-solid fa-arrow-up-from-bracket"></i> 1</div>
                     </div>
                 </div>
             `;
-            wrapper.appendChild(card);
+            feed.appendChild(item);
         });
 
-        // 啟動畫面自動隱藏邏輯
-        window.addEventListener('load', () => {
-            const splash = document.getElementById('splash-screen');
-            setTimeout(() => {
-                splash.classList.add('hide');
-                setTimeout(() => splash.remove(), 800);
-            }, 1500); // 顯示 1.5 秒後淡出
-        });
-
-        function toggleMute(e) {
-            e.stopPropagation();
-            isMuted = !isMuted;
-            const allVideos = document.querySelectorAll('video');
-            const allMuteIcons = document.querySelectorAll('.mute-btn i');
-            allVideos.forEach(v => v.muted = isMuted);
-            allMuteIcons.forEach(icon => {
-                icon.className = isMuted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
-            });
-        }
-
-        async function shareVideo(e, url) {
-            e.stopPropagation();
-            if (navigator.share) {
-                try {
-                    await navigator.share({
-                        title: '莫比空間 Shorts',
-                        text: '來看看莫比空間精彩短影音！',
-                        url: window.location.href
-                    });
-                } catch (err) { console.log('分享取消'); }
-            } else {
-                navigator.clipboard.writeText(window.location.href);
-                alert('連結已複製');
-            }
-        }
-
+        // 智慧滾動播放邏輯
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                const v = entry.target;
                 if (entry.isIntersecting) {
-                    v.play().catch(() => {});
+                    entry.target.play();
                 } else {
-                    v.pause();
-                    v.currentTime = 0;
+                    entry.target.pause();
                 }
             });
-        }, { root: wrapper, threshold: 0.6 });
+        }, { threshold: 0.7 });
 
         document.querySelectorAll('video').forEach(v => observer.observe(v));
-
-        document.querySelectorAll('.short-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const v = card.querySelector('video');
-                v.paused ? v.play() : v.pause();
-            });
-        });
     </script>
 </body>
 </html>
