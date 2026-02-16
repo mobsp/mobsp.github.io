@@ -85,7 +85,6 @@
         }
         .app-main::-webkit-scrollbar { display: none; }
 
-        /* 通用卡片樣式 */
         .action-btn {
             flex: 0 0 85%; height: 70%; scroll-snap-align: center; text-decoration: none;
             border-radius: 40px; position: relative; overflow: hidden; border: 1px solid var(--border-color);
@@ -94,7 +93,6 @@
         }
         .action-btn:active { transform: scale(0.95); filter: brightness(0.8); }
 
-        /* 個別卡片預覽圖套用 */
         .btn-blog { background-image: url('https://mobsp.github.io/assets/brand/ms-blog.JPEG'); }
         .btn-tools { background-image: url('https://mobsp.github.io/assets/brand/ms-tools.JPEG'); }
         .btn-music { background-image: url('https://mobsp.github.io/assets/brand/ms-music.JPEG'); }
@@ -145,7 +143,6 @@
 </div>
 
 <script>
-// 啟動畫面控制
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('fake-splash');
     window.onload = () => {
@@ -162,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 3000);
 });
 
-// 公告系統
 const MD_URL = 'https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/data/notice.md';
 async function initNoticeSystem() {
     const vTag = document.getElementById('v-tag');
