@@ -4,158 +4,211 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | Shorts</title>
+
+    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        :root { --accent-color: #00cec9; }
+        :root {
+            --accent-color: #00cec9;
+            --icon-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; font-family: -apple-system, sans-serif; transition: background 0.3s; }
-        
-        /* 啟動畫面快速移除 */
+        body, html { margin: 0; padding: 0; font-family: -apple-system, sans-serif; height: 100%; width: 100%; overflow-x: hidden; }
+
+        /* 啟動畫面 */
         #splash-screen {
-            position: fixed; inset: 0; z-index: 10000;
+            position: fixed; inset: 0;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG') center/cover no-repeat;
-            transition: opacity 0.4s;
+            z-index: 10000; transition: opacity 0.5s ease;
         }
         #splash-screen.hide { opacity: 0; pointer-events: none; }
 
-        /* 導覽與個人資訊 */
-        .nav-bar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; border-bottom: 1px solid rgba(128,128,128,0.2); background: inherit; }
+        /* --- 第一層：主頁面 --- */
+        #main-page { display: block; min-height: 100vh; }
+        .nav-bar { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: inherit; border-bottom: 1px solid rgba(128,128,128,0.2); }
         .profile-header { display: flex; flex-direction: column; align-items: center; padding: 25px 0; background: inherit; }
-        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; margin-bottom: 12px; border: 1px solid rgba(128,128,128,0.3); }
+        .profile-avatar { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(128,128,128,0.3); }
         .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
-        .profile-name { font-weight: bold; font-size: 18px; }
-        .follow-btn { border: 1px solid #ddd; background: transparent; padding: 6px 35px; border-radius: 6px; font-weight: bold; color: inherit; cursor: pointer; margin-top: 15px; }
+        .follow-btn { border: 1px solid #ddd; background: transparent; padding: 6px 35px; border-radius: 6px; font-weight: bold; margin-top: 15px; color: inherit; cursor: pointer; }
 
-        /* 標籤頁切換 */
         .tabs { display: flex; border-bottom: 1px solid rgba(128,128,128,0.2); position: sticky; top: 45px; z-index: 90; background: inherit; }
         .tab-item { flex: 1; text-align: center; padding: 12px; font-weight: bold; color: #999; cursor: pointer; position: relative; }
         .tab-item.active { color: inherit; }
         .tab-item.active::after { content: ''; position: absolute; bottom: 0; left: 35%; width: 30%; height: 2px; background: currentColor; }
 
-        /* 全部模式 (黑色主題 - 圖1) */
+        /* 全部模式 (黑色主題) */
         #feed-view { display: block; background: #000; color: #fff; }
         .feed-item { border-bottom: 1px solid #222; padding-bottom: 20px; }
-        .post-author { display: flex; align-items: center; gap: 10px; padding: 15px; cursor: pointer; }
+        .post-author { display: flex; align-items: center; gap: 10px; padding: 15px; }
         .post-author img { width: 34px; height: 34px; border-radius: 50%; }
-        .video-container { width: 100%; aspect-ratio: 9/16; background: #111; cursor: pointer; }
-        .video-container video { width: 100%; height: 100%; object-fit: cover; }
-        .post-content { padding: 12px 15px; font-size: 14px; color: #eee; }
+        .video-preview { width: 100%; aspect-ratio: 9/16; background: #111; cursor: pointer; position: relative; }
+        .video-preview video { width: 100%; height: 100%; object-fit: cover; }
 
-        /* 影片模式 (白色主題 - 圖2) */
+        /* 影片模式 (白色主題) */
         #grid-view { display: none; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #fff; }
         .grid-item { aspect-ratio: 3/4; background: #000; position: relative; cursor: pointer; }
         .grid-item video { width: 100%; height: 100%; object-fit: cover; }
-        .grid-item .fa-play { position: absolute; top: 8px; right: 8px; color: #fff; font-size: 12px; }
+        .grid-item .fa-play { position: absolute; top: 8px; right: 8px; color: #fff; font-size: 10px; }
 
-        /* 全螢幕播放器層 */
-        #fullscreen-player { position: fixed; inset: 0; background: #000; z-index: 2000; display: none; }
-        #fullscreen-player.show { display: block; }
-        .close-btn { position: absolute; top: 30px; left: 20px; z-index: 2100; color: #fff; font-size: 24px; cursor: pointer; }
+        /* --- 第二層：全螢幕磁吸播放器 --- */
+        #player-overlay {
+            position: fixed; inset: 0; background: #000; z-index: 2000;
+            display: none; flex-direction: column;
+        }
+        .close-player { position: absolute; top: 40px; left: 20px; z-index: 2100; color: #fff; font-size: 24px; text-shadow: var(--icon-shadow); cursor: pointer; }
+        
+        .shorts-wrapper { height: 100dvh; width: 100vw; overflow-y: scroll; scroll-snap-type: y mandatory; scrollbar-width: none; }
+        .shorts-wrapper::-webkit-scrollbar { display: none; }
+        .short-card { height: 100dvh; width: 100vw; scroll-snap-align: start; position: relative; display: flex; align-items: center; }
+        .short-card video { width: 100%; height: 100%; object-fit: cover; }
+
+        /* 播放器內 UI */
+        .side-bar { position: absolute; right: 12px; bottom: 120px; display: flex; flex-direction: column; gap: 20px; align-items: center; }
+        .action-item { color: #fff; text-align: center; text-shadow: var(--icon-shadow); }
+        .action-item i { font-size: 26px; }
+        .action-item span { font-size: 12px; display: block; margin-top: 4px; }
+        .bottom-info { position: absolute; bottom: 40px; left: 15px; right: 80px; color: #fff; text-shadow: var(--icon-shadow); }
 
         body.dark-mode { background: #000; color: #fff; }
     </style>
 </head>
 <body class="dark-mode">
 
-<div id="splash-screen"></div>
+    <div id="splash-screen"></div>
 
-<div class="nav-bar">
-    <i class="fa-solid fa-chevron-left"></i>
-    <span style="font-weight: bold;">莫比空間</span>
-    <i class="fa-solid fa-ellipsis-vertical"></i>
-</div>
+    <div id="main-page">
+        <div class="nav-bar">
+            <i class="fa-solid fa-chevron-left" onclick="location.href='https://mobsp.github.io/blog/'"></i>
+            <span style="font-weight: bold;">莫比空間</span>
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </div>
+        <div class="profile-header">
+            <div class="profile-avatar"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"></div>
+            <div class="profile-name">莫比空間 🪄</div>
+            <button class="follow-btn">追蹤中</button>
+        </div>
+        <div class="tabs">
+            <div class="tab-item active" onclick="showView('all')">全部</div>
+            <div class="tab-item" onclick="showView('video')">影片</div>
+        </div>
+        <div id="feed-view"></div>
+        <div id="grid-view"></div>
+    </div>
 
-<div class="profile-header">
-    <div class="profile-avatar"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"></div>
-    <div class="profile-name">莫比空間 🪄</div>
-    <button class="follow-btn">追蹤中</button>
-</div>
+    <div id="player-overlay">
+        <i class="fa-solid fa-xmark close-player" onclick="closePlayer()"></i>
+        <div class="shorts-wrapper" id="shortsWrapper"></div>
+    </div>
 
-<div class="tabs">
-    <div class="tab-item active" onclick="showView('all')">全部</div>
-    <div class="tab-item" onclick="showView('video')">影片</div>
-</div>
+    <script>
+        const videoSources = [
+            "https://files.catbox.moe/xh7uyj.mp4", "https://files.catbox.moe/u94tk7.mp4",
+            "https://files.catbox.moe/aizh9p.mp4", "https://files.catbox.moe/t9ojp9.mp4",
+            "https://files.catbox.moe/xcqf9s.mp4", "https://files.catbox.moe/zzuqo4.mp4",
+            "https://files.catbox.moe/t0mil6.mp4", "https://files.catbox.moe/rw7p6b.MP4",
+            "https://files.catbox.moe/nvq49m.mp4", "https://files.catbox.moe/9fvg1s.mp4",
+            "https://files.catbox.moe/9461nt.mp4", "https://files.catbox.moe/e93uth.mp4",
+            "https://files.catbox.moe/79y11a.mp4", "https://files.catbox.moe/0d6dx3.mp4",
+            "https://files.catbox.moe/00mt42.mp4", "https://files.catbox.moe/fret8a.mp4",
+            "https://files.catbox.moe/kmgu5w.mp4", "https://files.catbox.moe/dwtlj4.mp4"
+        ];
 
-<div id="feed-view"></div>
-<div id="grid-view"></div>
+        function init() {
+            const feed = document.getElementById('feed-view');
+            const grid = document.getElementById('grid-view');
+            const wrapper = document.getElementById('shortsWrapper');
 
-<div id="fullscreen-player">
-    <i class="fa-solid fa-xmark close-btn" onclick="closeFullscreen()"></i>
-    <video id="fs-video" loop controls style="width: 100%; height: 100%; object-fit: contain;"></video>
-</div>
+            videoSources.forEach((src, idx) => {
+                // 1. 全部頁面 (Feed)
+                const fItem = document.createElement('div');
+                fItem.className = 'feed-item';
+                fItem.innerHTML = `
+                    <div class="post-author"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"><span>莫比空間</span></div>
+                    <div class="video-preview" onclick="openPlayer(${idx})">
+                        <video src="${src}#t=0.1" muted playsinline></video>
+                    </div>
+                    <div class="post-author" style="padding-top:0"><span style="font-weight:normal">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ™️ 莫比音樂頻道🎵</span></div>
+                `;
+                feed.appendChild(fItem);
 
-<script>
-    const videos = [
-        "https://files.catbox.moe/xh7uyj.mp4", "https://files.catbox.moe/u94tk7.mp4",
-        "https://files.catbox.moe/aizh9p.mp4", "https://files.catbox.moe/t9ojp9.mp4",
-        "https://files.catbox.moe/xcqf9s.mp4", "https://files.catbox.moe/zzuqo4.mp4"
-    ];
+                // 2. 影片頁面 (Grid)
+                const gItem = document.createElement('div');
+                gItem.className = 'grid-item';
+                gItem.onclick = () => openPlayer(idx);
+                gItem.innerHTML = `<video src="${src}#t=0.1" muted playsinline></video><i class="fa-solid fa-play"></i>`;
+                grid.appendChild(gItem);
 
-    // 1. 初始化內容
-    function init() {
-        const feed = document.getElementById('feed-view');
-        const grid = document.getElementById('grid-view');
+                // 3. 全螢幕磁吸卡片
+                const card = document.createElement('div');
+                card.className = 'short-card';
+                card.innerHTML = `
+                    <video loop playsinline data-src="${src}"></video>
+                    <div class="side-bar">
+                        <div class="action-item"><i class="fa-solid fa-heart"></i><span>1.2k</span></div>
+                        <div class="action-item"><i class="fa-solid fa-share-nodes"></i><span>分享</span></div>
+                    </div>
+                    <div class="bottom-info">
+                        <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px">
+                            <img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG" style="width:35px; border-radius:50%; border:1px solid var(--accent-color)">
+                            <span style="font-weight:bold">莫比空間</span>
+                        </div>
+                        <div style="font-size:14px">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ™️ 莫比音樂頻道 #MobiShorts</div>
+                    </div>
+                `;
+                wrapper.appendChild(card);
+            });
+            setupObserver();
+        }
 
-        videos.forEach((src, idx) => {
-            // 全部模式 (圖 1)
-            const fItem = document.createElement('div');
-            fItem.className = 'feed-item';
-            fItem.innerHTML = `
-                <div class="post-author"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"><span>莫比空間</span></div>
-                <div class="video-container" onclick="togglePlay(this)">
-                    <video loop muted playsinline src="${src}"></video>
-                </div>
-                <div class="post-content">莫比空間Ⓒ 頻道更新 #Music</div>
-            `;
-            feed.appendChild(fItem);
+        function showView(type) {
+            const isAll = (type === 'all');
+            document.body.className = isAll ? 'dark-mode' : '';
+            document.querySelectorAll('.tab-item').forEach((el, i) => {
+                el.classList.toggle('active', (isAll && i===0) || (!isAll && i===1));
+            });
+            document.getElementById('feed-view').style.display = isAll ? 'block' : 'none';
+            document.getElementById('grid-view').style.display = isAll ? 'none' : 'grid';
+        }
 
-            // 影片模式 (圖 2)
-            const gItem = document.createElement('div');
-            gItem.className = 'grid-item';
-            gItem.onclick = () => openFullscreen(src);
-            gItem.innerHTML = `<video src="${src}#t=0.5" muted playsinline></video><i class="fa-solid fa-play"></i>`;
-            grid.appendChild(gItem);
-        });
-        
-        // 啟動畫面邏輯
-        setTimeout(() => document.getElementById('splash-screen').classList.add('hide'), 1000);
-    }
+        function openPlayer(index) {
+            const overlay = document.getElementById('player-overlay');
+            overlay.style.display = 'flex';
+            const cards = document.querySelectorAll('.short-card');
+            cards[index].scrollIntoView();
+            const v = cards[index].querySelector('video');
+            if(!v.src) v.src = v.dataset.src;
+            v.play();
+        }
 
-    // 2. 全部頁面：點擊影片切換播放/暫停
-    function togglePlay(container) {
-        const v = container.querySelector('video');
-        if (v.paused) v.play();
-        else v.pause();
-    }
+        function closePlayer() {
+            document.getElementById('player-overlay').style.display = 'none';
+            document.querySelectorAll('.short-card video').forEach(v => { v.pause(); v.currentTime = 0; });
+        }
 
-    // 3. 影片頁面：點擊縮圖開啟全螢幕
-    function openFullscreen(src) {
-        const player = document.getElementById('fullscreen-player');
-        const fsVideo = document.getElementById('fs-video');
-        fsVideo.src = src;
-        player.classList.add('show');
-        fsVideo.play();
-    }
+        function setupObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const v = entry.target;
+                    if (entry.isIntersecting) {
+                        if(!v.src) v.src = v.dataset.src;
+                        v.play().catch(() => {});
+                    } else { v.pause(); }
+                });
+            }, { root: document.getElementById('shortsWrapper'), threshold: 0.7 });
+            document.querySelectorAll('.short-card video').forEach(v => observer.observe(v));
+        }
 
-    function closeFullscreen() {
-        const player = document.getElementById('fullscreen-player');
-        const fsVideo = document.getElementById('fs-video');
-        player.classList.remove('show');
-        fsVideo.pause();
-    }
-
-    // 4. 切換標籤邏輯
-    function showView(type) {
-        const isAll = (type === 'all');
-        document.body.className = isAll ? 'dark-mode' : '';
-        document.querySelectorAll('.tab-item').forEach((el, i) => {
-            el.classList.toggle('active', (isAll && i===0) || (!isAll && i===1));
-        });
-        document.getElementById('feed-view').style.display = isAll ? 'block' : 'none';
-        document.getElementById('grid-view').style.display = isAll ? 'none' : 'grid';
-    }
-
-    window.onload = init;
-</script>
+        window.onload = () => {
+            init();
+            setTimeout(() => {
+                const s = document.getElementById('splash-screen');
+                s.classList.add('hide');
+                setTimeout(() => s.remove(), 500);
+            }, 1000);
+        };
+    </script>
 </body>
 </html>
