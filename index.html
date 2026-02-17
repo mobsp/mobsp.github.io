@@ -3,62 +3,218 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間</title>
+    
+    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-startup-image" href="https://mobsp.github.io/assets/brand/ms-guide.JPEG">
+
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
+    <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
+    
+    <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合導航">
+    <meta property="og:image" content="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0b0b0c">
+
     <style>
-        /* ... 你原本的 :root, .app-header, .v-tag, .mq-text 等樣式 ... */
-        .tag-important { background: #ff4d4d !important; color: #fff !important; }
-        .tag-update { background: #00ff88 !important; color: #000 !important; }
+        :root {
+            --bg-color: #0b0b0c;          
+            --card-bg: rgba(25, 27, 31, 0.95); 
+            --text-main: #f1f2f6;         
+            --primary-color: #00cec9;     
+            --border-color: rgba(255, 255, 255, 0.1); 
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        #fake-splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050508 url('https://mobsp.github.io/assets/brand/ms-guide.JPEG') center/cover no-repeat;
+            z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        #fake-splash::after {
+            content: "LOADING...";
+            position: absolute; bottom: 15%; color: white; letter-spacing: 5px; font-size: 12px; opacity: 0.5;
+        }
+        #fake-splash.fade-out { opacity: 0; visibility: hidden; }
+
+        html, body {
+            width: 100%; height: 100dvh; overflow: hidden;
+            position: fixed; margin: 0; padding: 0;
+            background-color: var(--bg-color); color: var(--text-main);
+            font-family: 'PingFang TC', system-ui, -apple-system, sans-serif;
+            touch-action: manipulation;
+        }
+
+        .visually-hidden {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); border: 0;
+        }
+
+        .page-wrapper { display: flex; flex-direction: column; height: 100dvh; max-width: 500px; margin: 0 auto; }
+
+        /* Header 區域 */
+        .app-header {
+            flex-shrink: 0;
+            padding: calc(20px + env(safe-area-inset-top)) 20px 15px; 
+            background: rgba(11, 11, 12, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
+
+        /* 跑馬燈樣式修正 */
+        .marquee-row {
+            display: flex; align-items: center; background: rgba(255,255,255,0.05);
+            padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+            min-height: 28px;
+        }
+
+        .v-tag { 
+            background: var(--primary-color); color: #000; font-size: 9px; font-weight: 900; 
+            padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap;
+            transition: background 0.3s;
+        }
+        .tag-important { background: #ff4d4d; color: #fff; }
+        .tag-update { background: #00ff88; color: #000; }
+
+        .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
+        
+        .mq-text { 
+            display: inline-block; 
+            padding-left: 100%;
+            animation: mq 45s linear infinite; /* 速度調適中 */
+            font-size: 11px; opacity: 0.9; letter-spacing: 0.5px;
+        }
+        @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        /* 主選單區域 */
+        .app-main {
+            flex: 1; display: flex; align-items: center; overflow-x: auto;
+            scroll-snap-type: x mandatory; padding: 0 40px; gap: 25px; scrollbar-width: none;
+        }
+        .app-main::-webkit-scrollbar { display: none; }
+
+        .action-btn {
+            flex: 0 0 85%; height: 70%; scroll-snap-align: center; text-decoration: none;
+            border-radius: 40px; position: relative; overflow: hidden; border: 1px solid var(--border-color);
+            background-color: #1e272e; background-position: center; background-size: cover;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5); transition: var(--transition);
+        }
+        .action-btn:active { transform: scale(0.95); filter: brightness(0.8); }
+
+        /* 按鈕圖片設定 */
+        .btn-blog { background-image: url('https://mobsp.github.io/assets/brand/ms-blog.JPEG'); }
+        .btn-tools { background-image: url('https://mobsp.github.io/assets/brand/ms-tools.JPEG'); }
+        .btn-music { background-image: url('https://mobsp.github.io/assets/brand/ms-music.JPEG'); }
+        .btn-shorts { background-image: url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG'); }
+        .btn-wiki { background-image: url('https://mobsp.github.io/assets/brand/ms-wiki.JPEG'); }
+        .btn-logo { background-image: url('https://mobsp.github.io/assets/brand/ms-logo.JPEG'); }
+
+        .btn-overlay { position: absolute; bottom: 0; width: 100%; padding: 50px 30px 40px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); }
+        .btn-title { color: #fff; font-size: 1.85rem; font-weight: 800; letter-spacing: 3px; }
+
+        .app-footer {
+            flex-shrink: 0; padding: 15px 20px calc(20px + env(safe-area-inset-bottom));
+            background: rgba(11, 11, 12, 0.9); border-top: 1px solid var(--border-color); text-align: center;
+        }
+        .copyright { font-size: 10px; opacity: 0.4; line-height: 1.6; letter-spacing: 1px; }
     </style>
 </head>
+
 <body>
-    <div id="fake-splash"></div>
-    <div class="page-wrapper">
-        <header class="app-header">
-            <nav class="marquee-row">
-                <span class="v-tag" id="v-tag">SYNCING</span>
-                <div class="mq-box">
-                    <div class="mq-text" id="mq-text">正在載入雲端數據...</div>
-                </div>
-            </nav>
-            <div style="font-size: 1.4rem; font-weight: 900; text-align: center; color: #00cec9;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
-        </header>
+<div id="fake-splash" aria-hidden="true"></div>
 
-        <footer class="app-footer">
-            <div class="copyright">&copy; 2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
-        </footer>
-    </div>
+<div class="page-wrapper">
+    <header class="app-header">
+        <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間</h1>
+        <nav class="marquee-row">
+            <span class="v-tag" id="v-tag">SYNCING</span>
+            <div class="mq-box">
+                <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
+            </div>
+        </nav>
+        <div style="font-size: 1.4rem; font-weight: 900; text-align: center; letter-spacing: 5px; color: var(--primary-color);" aria-hidden="true">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</div>
+    </header>
 
-    <script>
-        // Splash 移除邏輯保持不變...
+    <main class="app-main">
+        <a href="https://mobsp.github.io/blog/" class="action-btn btn-blog" aria-label="前往部落格"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
+        <a href="https://mobsp.github.io/tol/" class="action-btn btn-tools" aria-label="前往工具庫"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
+        <a href="https://mobsp.github.io/p/#Music" class="action-btn btn-music" aria-label="前往音樂頻道"><div class="btn-overlay"><div class="btn-title">音樂頻道</div></div></a>
+        <a href="https://mobsp.github.io/p/#Shorts" class="action-btn btn-shorts" aria-label="前往Shorts"><div class="btn-overlay"><div class="btn-title">Shorts</div></div></a>
+        <a href="https://mobsp.github.io/p/#wiki" class="action-btn btn-wiki" aria-label="前往支援中心"><div class="btn-overlay"><div class="btn-title">支援中心</div></div></a>
+        <a href="https://mobsp.github.io/p/#History" class="action-btn btn-logo" aria-label="查看歷史紀錄"><div class="btn-overlay"><div class="btn-title">歷史紀錄</div></div></a>
+        <a href="https://mobsp.github.io/p/#Settings" class="action-btn btn-logo" aria-label="開啟設定"><div class="btn-overlay"><div class="btn-title">設定</div></div></a>
+    </main>
 
-        // 新的雲端公告讀取邏輯
-        async function initNoticeSystem() {
-            const vTag = document.getElementById('v-tag');
-            const mqText = document.getElementById('mq-text');
+    <footer class="app-footer">
+        <div class="copyright">&copy; 2026 <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong><br>資源整合與數位服務入口網</div>
+    </footer>
+</div>
 
-            try {
-                // 向 Vercel API 請求資料
-                const response = await fetch('/api/get-notice');
-                if (!response.ok) throw new Error('API Error');
-                const item = await response.json();
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-                // 更新顯示
-                vTag.innerText = `v2.0 | ${item.type}`;
-                mqText.innerText = item.message;
+<script>
+// Splash 處理
+document.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('fake-splash');
+    window.onload = () => {
+        setTimeout(() => {
+            splash.classList.add('fade-out');
+            setTimeout(() => splash.remove(), 800);
+        }, 1000);
+    };
+});
 
-                // 處理變色
-                vTag.classList.remove('tag-important', 'tag-update');
-                if (['重要', '守則', '聲明'].includes(item.type)) {
-                    vTag.classList.add('tag-important');
-                } else {
-                    vTag.classList.add('tag-update');
-                }
-            } catch (err) {
-                vTag.innerText = "v1.0 | ERROR";
-                mqText.innerText = "連線失敗，請檢查網路連線。";
-            }
+// Supabase 公告系統
+const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+
+const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+async function initNoticeSystem() {
+    const vTag = document.getElementById('v-tag');
+    const mqText = document.getElementById('mq-text');
+
+    try {
+        // 從 Supabase 抓取所有公告
+        const { data, error } = await _supabase
+            .from('notices')
+            .select('type, message')
+            .order('created_at', { ascending: false });
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+            // 隨機選取一則公告顯示在 Header
+            const randomItem = data[Math.floor(Math.random() * data.length)];
+            const category = randomItem.type || "NEWS";
+            const displayMsg = randomItem.message || "";
+
+            // 更新標籤顏色
+            vTag.classList.remove('tag-important', 'tag-update');
+            if (category.includes('重要') || category.includes('守則')) vTag.classList.add('tag-important');
+            else if (category.includes('更新') || category.includes('系統')) vTag.classList.add('tag-update');
+
+            // 顯示版本號 (固定為 v2.0 表示雲端版) 加上分類
+            vTag.innerText = `v2.0 | ${category}`;
+            mqText.innerText = displayMsg;
+
+            // 如果想要所有公告一起跑，可以啟用下面這行替代上面兩行：
+            // mqText.innerHTML = data.map(i => `[${i.type}] ${i.message}`).join(' &nbsp;&nbsp;&nbsp;&nbsp; ');
         }
-        initNoticeSystem();
-    </script>
+    } catch (err) {
+        console.error('Supabase Error:', err);
+        vTag.innerText = "v1.0 | INFO";
+        mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ，雲端連線失敗。";
+    }
+}
+
+initNoticeSystem();
+</script>
 </body>
 </html>
+
