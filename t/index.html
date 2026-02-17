@@ -3,86 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ⲙⳝ 莫比空間 - 雲端公告系統</title>
+    <title>Ⲙⳝ 莫比空間 - 雲端實時公告</title>
     <style>
-        body { background: #0a0a0a; color: #e0e0e0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        h2 { color: #00d4ff; text-shadow: 0 0 10px rgba(0,212,255,0.5); font-weight: 300; }
+        /* 頁面背景與字體 */
+        body { 
+            background: #0a0a0a; 
+            color: #e0e0e0; 
+            font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+
+        h2 { 
+            color: #00d4ff; 
+            text-shadow: 0 0 10px rgba(0,212,255,0.5); 
+            font-weight: 300; 
+            margin-bottom: 20px;
+        }
+
+        /* 跑馬燈外框 */
         .marquee-container {
             width: 95%;
             max-width: 900px;
             overflow: hidden;
             background: rgba(255, 255, 255, 0.05);
-            padding: 15px 0;
+            padding: 18px 0;
             border-radius: 8px;
             border-left: 4px solid #00d4ff;
             box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
+
+        /* 滾動動畫設定 */
         .marquee-content {
             display: inline-block;
             white-space: nowrap;
             padding-left: 100%;
-            animation: marquee 30s linear infinite;
+            animation: marquee 35s linear infinite; /* 35秒走完一圈，可自行調整快慢 */
         }
+
         @keyframes marquee {
             0% { transform: translateX(0); }
             100% { transform: translateX(-100%); }
         }
-        .notice-item { margin-right: 60px; font-size: 1.1rem; letter-spacing: 1px; }
+
+        /* 公告文字樣式 */
+        .notice-item { 
+            margin-right: 80px; 
+            font-size: 1.2rem; 
+            letter-spacing: 1px; 
+            display: inline-flex;
+            align-items: center;
+        }
+
+        /* 類別標籤樣式 */
         .notice-type { 
             background: #00d4ff; 
             color: #000; 
-            padding: 2px 10px; 
+            padding: 2px 12px; 
             border-radius: 4px; 
             font-weight: bold; 
-            margin-right: 12px;
+            margin-right: 15px;
             font-size: 0.9rem;
         }
     </style>
 </head>
 <body>
 
-    <h2>Ⲙⳝ 莫比空間：實時公告測試</h2>
+    <h2>Ⲙⳝ 莫比空間：實時公告系統</h2>
     
     <div class="marquee-container">
-        <div id="marquee" class="marquee-content">📡 正在同步雲端數據...</div>
+        <div id="marquee" class="marquee-content">📡 正在建立加密連線並抓取雲端數據...</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
+        // 設定你的專案連線資訊
         const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
         const SUPABASE_KEY = 'EyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEyNTc3NjEsImV4cCI6MjA4NjgzMzc2MX0.qq5kIBhi5kCIwprwNcraYvgYilxxwJanrKfnXdlRBuA';
 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        async function fetchCloudNotices() {
+        async function initMarquee() {
             const marqueeEl = document.getElementById('marquee');
             
             try {
-                // 注意：這裡直接使用你設定的中文欄位名稱
+                // 1. 嘗試從 notices 表格抓取所有資料
+                // 如果你的表格在 Supabase 左邊顯示為「通知」，請把下面 'notices' 改成 '通知'
                 const { data, error } = await _supabase
-                    .from('notices') // 這裡假設你的表名還是 notices
-                    .select('類別, 內容') 
+                    .from('notices') 
+                    .select('*')
                     .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
                 if (data && data.length > 0) {
+                    // 2. 自動偵測欄位名稱 (適應中文「類別/內容」或英文「type/message」)
+                    const firstRow = data[0];
+                    const typeField = firstRow.hasOwnProperty('類別') ? '類別' : (firstRow.hasOwnProperty('type') ? 'type' : null);
+                    const msgField = firstRow.hasOwnProperty('內容') ? '內容' : (firstRow.hasOwnProperty('message') ? 'message' : null);
+
+                    if (!typeField || !msgField) {
+                        marqueeEl.innerHTML = "❌ 欄位名稱對不上！請確認標題是「類別」與「內容」。";
+                        return;
+                    }
+
+                    // 3. 渲染跑馬燈內容
                     marqueeEl.innerHTML = data.map(item => `
                         <span class="notice-item">
-                            <span class="notice-type">${item.類別}</span>${item.內容}
+                            <span class="notice-type">${item[typeField]}</span> ${item[msgField]}
                         </span>
                     `).join('');
+
                 } else {
-                    marqueeEl.innerHTML = "📭 目前雲端資料庫中沒有任何公告。";
+                    marqueeEl.innerHTML = "📭 目前雲端資料庫沒有任何公告。";
                 }
             } catch (err) {
-                console.error('連線詳情:', err);
-                marqueeEl.innerHTML = "❌ 連線失敗：" + err.message;
+                console.error('Debug Info:', err);
+                // 顯示具體錯誤原因，方便我們排錯
+                marqueeEl.innerHTML = "❌ 連線失敗：" + (err.message || "請檢查網路或專案設定");
             }
         }
 
-        fetchCloudNotices();
+        // 啟動系統
+        initMarquee();
     </script>
 </body>
 </html>
