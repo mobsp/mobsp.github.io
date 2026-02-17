@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+  <!-- =============================
+       Mobispace Blog Shell v2
+       路徑：/test/index.html
+       資料來源：/test/articles.json
+       ============================= -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比部落格</title>
+  <meta name="description" content="莫比空間 Mobispace 技術筆記與實驗場">
+
+  <!-- 圖示（不動原路徑） -->
+  <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
+  <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
+
+  <!-- Font Awesome（UI icon 層） -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ========= 核心變數 ========= */
+    :root {
+      --bg-body:#000;--bg-container:#111;
+      --text-main:#fff;--text-sub:#aaa;
+      --accent:#00cec9;--border:#262626;
+      --ease:0.6s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ========= Reset ========= */
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+      background:var(--bg-body);
+      height:100dvh;
+      overflow:hidden;
+    }
+
+    /* ========= Splash ========= */
+    #ms-splash{
+      position:fixed;inset:0;
+      background:#000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover;
+      z-index:9999;
+      transition:opacity var(--ease);
+    }
+    #ms-splash.hide{opacity:0;pointer-events:none}
+
+    /* ========= App Container ========= */
+    #app{
+      max-width:480px;
+      margin:auto;
+      height:100%;
+      background:var(--bg-container);
+      display:flex;
+      flex-direction:column;
+      opacity:0;
+      transition:opacity var(--ease);
+    }
+    body.ready #app{opacity:1}
+
+    /* ========= Main ========= */
+    main{
+      flex:1;
+      overflow-y:auto;
+      -webkit-overflow-scrolling:touch;
+    }
+
+    /* ========= Article Row ========= */
+    a.article{
+      display:flex;
+      gap:12px;
+      padding:12px 15px;
+      border-bottom:1px solid var(--border);
+      text-decoration:none;
+      color:inherit;
+    }
+    a.article:active{background:rgba(255,255,255,.05)}
+    .thumb{
+      width:72px;height:72px;
+      border-radius:12px;
+      object-fit:cover;
+      flex-shrink:0;
+    }
+    .info{flex:1}
+    .title{font-size:14px;line-height:1.4}
+    .meta{font-size:11px;color:var(--text-sub)}
+  </style>
+</head>
+
+<body>
+
+<!-- ===== Splash（與資料完成狀態綁定） ===== -->
+<div id="ms-splash" aria-hidden="true"></div>
+
+<!-- ===== App Root ===== -->
+<div id="app">
+  <main id="article-list" aria-live="polite"></main>
+</div>
+
+<script>
+/* =========================================================
+   Mobispace Blog Engine Core
+   - 不使用 GitHub API
+   - JSON 驅動
+   - localStorage 快取
+   ========================================================= */
+
+const CONFIG = {
+  data: './articles.json',        // 同目錄讀取（未來拆檔安全）
+  cacheKey: 'ms_articles_v1',      // 快取版本控制
+  cacheTTL: 1000 * 60 * 10         // 10 分鐘
+};
+
+/* ===== 取得文章資料（含快取） ===== */
+async function getArticles(){
+  const cache = localStorage.getItem(CONFIG.cacheKey);
+  if(cache){
+    const parsed = JSON.parse(cache);
+    if(Date.now() - parsed.time < CONFIG.cacheTTL){
+      return parsed.data;
+    }
+  }
+
+  const res = await fetch(CONFIG.data);
+  const data = await res.json();
+
+  localStorage.setItem(CONFIG.cacheKey, JSON.stringify({
+    time: Date.now(),
+    data
+  }));
+
+  return data;
+}
+
+/* ===== 渲染文章列表 ===== */
+function renderArticles(list){
+  const root = document.getElementById('article-list');
+  root.innerHTML = '';
+
+  list.forEach(a=>{
+    const el = document.createElement('a');
+    el.className = 'article';
+    el.href = a.url;
+    el.innerHTML = `
+      <img class="thumb" src="${a.cover}" alt="">
+      <div class="info">
+        <div class="title">${a.title}</div>
+        <div class="meta">${a.date} · ${a.author}</div>
+      </div>
+    `;
+    root.appendChild(el);
+  });
+}
+
+/* ===== 啟動流程 ===== */
+(async ()=>{
+  const splash = document.getElementById('ms-splash');
+
+  try{
+    const articles = await getArticles();
+    renderArticles(articles);
+  }catch(e){
+    console.error('文章載入失敗', e);
+  }finally{
+    splash.classList.add('hide');
+    document.body.classList.add('ready');
+    setTimeout(()=>splash.remove(),800);
+  }
+})();
+</script>
+
+</body>
+</html>
