@@ -2,57 +2,70 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>Ⲙⳝ 莫比空間 - 終極測試版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ⲙⳝ 莫比空間 - 實時公告系統</title>
     <style>
-        body { background: #0a0a0a; color: #00d4ff; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
-        .marquee-container { width: 90%; background: rgba(255,255,255,0.1); padding: 20px; border-radius: 10px; overflow: hidden; }
-        .content { display: inline-block; white-space: nowrap; animation: move 20s linear infinite; font-size: 1.5rem; }
-        @keyframes move { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
+        body { background: #0a0a0a; color: #e0e0e0; font-family: "PingFang TC", "Microsoft JhengHei", sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        h2 { color: #00d4ff; text-shadow: 0 0 10px rgba(0,212,255,0.5); font-weight: 300; }
+        .marquee-container {
+            width: 95%; max-width: 900px; overflow: hidden;
+            background: rgba(255, 255, 255, 0.05); padding: 18px 0;
+            border-radius: 8px; border-left: 4px solid #00d4ff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .marquee-content {
+            display: inline-block; white-space: nowrap;
+            padding-left: 100%; animation: marquee 35s linear infinite;
+        }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        .notice-item { margin-right: 80px; font-size: 1.1rem; letter-spacing: 1px; }
+        .notice-type { 
+            background: #00d4ff; color: #000; padding: 2px 10px; 
+            border-radius: 4px; font-weight: bold; margin-right: 12px;
+        }
     </style>
 </head>
 <body>
-    <h2>📡 測試中...</h2>
+
+    <h2>Ⲙⳝ 莫比空間：雲端公告</h2>
+    
     <div class="marquee-container">
-        <div id="marquee" class="content">連線中，請稍候...</div>
+        <div id="marquee" class="marquee-content">📡 正在同步雲端數據...</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
-        // 這是你剛剛給我的 service_role key
-        const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
-        const _supabase = supabase.createClient(URL, KEY);
+        const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
+        // 使用你剛才給我的這把萬能鑰匙
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
-        async function run() {
-            const el = document.getElementById('marquee');
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function fetchNotices() {
+            const marqueeEl = document.getElementById('marquee');
             try {
-                // 1. 嘗試抓取英文名表格
-                let { data, error } = await _supabase.from('notices').select('*');
-                
-                // 2. 如果報錯，自動嘗試抓取中文名表格
-                if (error) {
-                    const retry = await _supabase.from('通知').select('*');
-                    data = retry.data;
-                    error = retry.error;
-                }
+                // 根據截圖，表名是 notices，欄位是 type 和 message
+                const { data, error } = await _supabase
+                    .from('notices')
+                    .select('type, message')
+                    .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
                 if (data && data.length > 0) {
-                    const row = data[0];
-                    // 自動判斷欄位：不管是中文標題還是英文標題都通
-                    const t = row.類別 || row.type || "公告";
-                    const m = row.內容 || row.message || "無內容";
-                    
-                    el.innerHTML = data.map(item => `[${item.類別 || item.type || '公告'}] ${item.內容 || item.message || '...'}`).join(' ｜ ');
+                    marqueeEl.innerHTML = data.map(item => `
+                        <span class="notice-item">
+                            <span class="notice-type">${item.type}</span>${item.message}
+                        </span>
+                    `).join('');
                 } else {
-                    el.innerHTML = "✅ 連線成功，但表格裡是空的！請去 Supabase 新增內容並存檔。";
+                    marqueeEl.innerHTML = "📭 目前雲端沒有公告內容。";
                 }
             } catch (err) {
-                el.innerHTML = "❌ 還是不行： " + err.message;
+                marqueeEl.innerHTML = "❌ 連線失敗：" + err.message;
             }
         }
-        run();
+        fetchNotices();
     </script>
 </body>
 </html>
