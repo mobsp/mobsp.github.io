@@ -13,58 +13,67 @@
     
     <style>
         :root {
-            --am-red: #fa243c;
-            --primary: #00cec9; /* 莫比空間主色 */
+            --primary: #00cec9; /* 莫比空間主色 - Tiffany 藍 */
             --am-gray: #1c1c1e;
             --am-text-muted: #8e8e93;
             --glass: rgba(28, 28, 30, 0.8);
+            --bg-color: #000;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            background-color: #000;
+            background-color: var(--bg-color);
             color: #fff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             line-height: 1.6;
             padding-top: env(safe-area-inset-top);
         }
 
-        /* 啟動畫面疊加 */
+        /* 啟動畫面背景 */
         .bg-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://mobsp.github.io/assets/brand/ms-wiki.JPEG') center/cover no-repeat;
-            opacity: 0.15; z-index: -1;
+            opacity: 0.12; z-index: -1;
         }
 
-        header { padding: 40px 20px 20px; display: flex; justify-content: space-between; align-items: flex-start; }
+        header { padding: 40px 20px 20px; text-align: left; }
+        header p { color: var(--primary); font-weight: bold; font-size: 13px; letter-spacing: 2px; margin-bottom: 5px; }
         h1 { font-size: 34px; font-weight: 800; letter-spacing: -1px; }
 
-        /* 分段切換 */
-        .tabs { display: flex; background: var(--am-gray); margin: 0 20px 25px; border-radius: 10px; padding: 2px; }
-        .tab-btn { flex: 1; padding: 8px 0; text-align: center; font-size: 14px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; color: var(--am-text-muted); }
+        /* Tabs 切換 */
+        .tabs { display: flex; background: var(--am-gray); margin: 0 20px 25px; border-radius: 12px; padding: 3px; }
+        .tab-btn { flex: 1; padding: 10px 0; text-align: center; font-size: 14px; font-weight: 600; border-radius: 9px; cursor: pointer; transition: 0.3s; color: var(--am-text-muted); }
         .tab-btn.active { background: #3a3a3c; color: #fff; }
 
         /* 內容區塊 */
-        .content-section { display: none; padding: 0 20px 100px; animation: fadeIn 0.4s ease; }
+        .content-section { display: none; padding: 0 20px 120px; animation: fadeIn 0.4s ease forwards; }
         .content-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Q&A 風琴式組件 */
-        .qa-item { background: var(--am-gray); border-radius: 12px; margin-bottom: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
-        .qa-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .qa-header span { font-weight: 600; font-size: 15px; }
-        .qa-body { padding: 0 20px; max-height: 0; overflow: hidden; transition: all 0.3s ease-out; color: var(--am-text-muted); font-size: 14px; }
-        .qa-item.open .qa-body { padding: 0 20px 15px; max-height: 500px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
+        /* QA 卡片設計 */
+        .qa-item { background: var(--am-gray); border-radius: 14px; margin-bottom: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.05); }
+        .qa-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .qa-header span { font-weight: 600; font-size: 15px; padding-right: 15px; }
+        .qa-body { padding: 0 20px; max-height: 0; overflow: hidden; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: var(--am-text-muted); font-size: 14px; }
+        
+        .qa-item.open { border-color: rgba(0, 206, 201, 0.3); }
+        .qa-item.open .qa-body { padding: 0 20px 20px; max-height: 1000px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
         .qa-item.open i { transform: rotate(180deg); color: var(--primary); }
+        .qa-header i { transition: 0.3s; font-size: 12px; color: var(--am-text-muted); }
 
         /* 底部導航 */
         .bottom-nav {
             position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
             background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            padding: 12px 30px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); z-index: 100;
+            padding: 12px 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .bottom-nav a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; }
+        .bottom-nav a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+
+        /* 載入動畫 */
+        .loader { text-align: center; padding: 40px; color: var(--am-text-muted); font-size: 14px; }
+        .loader i { margin-bottom: 10px; display: block; font-size: 24px; color: var(--primary); }
     </style>
 </head>
 <body>
@@ -72,10 +81,8 @@
     <div class="bg-overlay"></div>
 
     <header>
-        <div>
-            <p style="color: var(--primary); font-weight: bold; font-size: 13px; letter-spacing: 2px;">MOBISPACE</p>
-            <h1>支援中心</h1>
-        </div>
+        <p>MOBISPACE</p>
+        <h1>支援中心</h1>
     </header>
 
     <div class="tabs">
@@ -85,14 +92,23 @@
 
     <section id="qa" class="content-section active">
         <div id="qa-container">
-            <p style="text-align: center; color: var(--am-text-muted);">正在同步雲端資料庫...</p>
+            <div class="loader">
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                正在同步雲端資料庫...
+            </div>
         </div>
     </section>
 
     <section id="report" class="content-section">
-        <div style="background: var(--am-gray); padding: 20px; border-radius: 15px;">
-            <p style="font-size: 14px; color: var(--am-text-muted); margin-bottom: 15px;">如果您遇到技術問題，請透過 GitHub 回報或聯繫管理員。</p>
-            <a href="https://github.com/mobsp/mobsp.github.io/issues" target="_blank" style="display: block; width: 100%; background: var(--primary); color: #000; text-align: center; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: bold;">前往 GitHub Issues</a>
+        <div style="background: var(--am-gray); padding: 25px; border-radius: 18px; border: 1px solid rgba(255,255,255,0.05);">
+            <h3 style="margin-bottom: 10px;">回報問題</h3>
+            <p style="font-size: 14px; color: var(--am-text-muted); margin-bottom: 20px;">
+                如果您在使用莫比空間時遇到技術問題、Bug 或有功能建議，請前往我們的 GitHub 儲存庫提交。
+            </p>
+            <a href="https://github.com/mobsp/mobsp.github.io/issues" target="_blank" 
+               style="display: block; width: 100%; background: var(--primary); color: #000; text-align: center; padding: 14px; border-radius: 12px; text-decoration: none; font-weight: bold; transition: 0.3s;">
+                前往 GitHub Issues
+            </a>
         </div>
     </section>
 
@@ -101,38 +117,57 @@
     </div>
 
     <script>
-        const QA_MD_URL = 'https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/data/wiki/qa.md';
+        // 修正後的 RAW 網址，並加上防快取參數
+        const QA_MD_URL = 'https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/data/qa.md';
 
-        // 讀取並解析 Markdown
         async function loadQA() {
             const container = document.getElementById('qa-container');
             try {
-                const response = await fetch(QA_MD_URL);
-                if (!response.ok) throw new Error('無法讀取 QA 文件');
+                // 使用 fetch 抓取資料，並加上時間戳防止快取
+                const response = await fetch(`${QA_MD_URL}?t=${new Date().getTime()}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                
                 const text = await response.text();
 
-                // 解析簡單的 Markdown (假設格式為 ### 問題 \n 回答)
+                // 以 ### 作為題目分割點
                 const parts = text.split('###').filter(p => p.trim() !== '');
+                
+                // 如果檔案裡只有標題沒有內容的處理
+                if (parts.length === 0 || (parts.length === 1 && parts[0].includes('# '))) {
+                    container.innerHTML = `<p style="text-align: center; color: var(--am-text-muted); padding: 40px;">目前尚無常見問題內容。</p>`;
+                    return;
+                }
+
                 container.innerHTML = '';
 
                 parts.forEach(part => {
                     const lines = part.trim().split('\n');
                     const question = lines[0].trim();
+                    // 剩下的行數合併為回答內容，並將換行轉為 HTML 換行
                     const answer = lines.slice(1).join('<br>').trim();
 
-                    const item = document.createElement('div');
-                    item.className = 'qa-item';
-                    item.innerHTML = `
-                        <div class="qa-header" onclick="toggleQA(this)">
-                            <span>${question}</span>
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </div>
-                        <div class="qa-body">${answer}</div>
-                    `;
-                    container.appendChild(item);
+                    if (question) {
+                        const item = document.createElement('div');
+                        item.className = 'qa-item';
+                        item.innerHTML = `
+                            <div class="qa-header" onclick="toggleQA(this)">
+                                <span>${question}</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div class="qa-body">${answer}</div>
+                        `;
+                        container.appendChild(item);
+                    }
                 });
+
             } catch (err) {
-                container.innerHTML = `<p style="text-align: center; color: var(--am-red);">讀取失敗，請稍後再試。</p>`;
+                console.error('Fetch error:', err);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fa-solid fa-triangle-exclamation" style="color: #fa243c; font-size: 30px; margin-bottom: 10px;"></i>
+                        <p style="color: #fa243c;">資料讀取失敗</p>
+                        <p style="font-size: 12px; color: var(--am-text-muted); margin-top: 5px;">請確認 data/qa.md 檔案存在於儲存庫中</p>
+                    </div>`;
             }
         }
 
@@ -144,11 +179,13 @@
         }
 
         function toggleQA(element) {
-            element.parentElement.classList.toggle('open');
+            const item = element.parentElement;
+            // 如果點擊已開啟的，則關閉它；否則開啟它並關閉其他的（可選）
+            item.classList.toggle('open');
         }
 
-        // 初始化
-        window.onload = loadQA;
+        // 頁面載入後啟動
+        window.addEventListener('DOMContentLoaded', loadQA);
     </script>
 </body>
 </html>
