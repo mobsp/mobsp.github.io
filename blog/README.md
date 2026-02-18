@@ -21,11 +21,10 @@
 ---
 
 ## 🌐 核心服務入口 (Core Services)
-*我們將各類數位服務整合於下表，點擊網址即可直接進入對應功能。*
 
-| 服務項目 | 描述 | 官方入口 (HTTPS) |
+| 服務項目 | 描述 | 入口連結 (全路徑) |
 | :--- | :--- | :--- |
-| **官網首頁** | 最新公告與品牌動態 | [https://mobsp.github.io](https://mobsp.github.io) |
+| **[官網首頁](https://mobsp.github.io)** | 最新公告與品牌動態 | [https://mobsp.github.io](https://mobsp.github.io) |
 | **莫比部落格** | 技術筆記與數位生活紀錄 | [https://mobsp.github.io/blog/](https://mobsp.github.io/blog/) |
 | **支援中心 (Wiki)** | 專案說明與使用者指南 | [https://mobsp.github.io/p/#wiki](https://mobsp.github.io/p/#wiki) |
 | **Ⲙⳝ 工具庫** | 動態驅動的實用開發工具 | [https://mobsp.github.io/tol/](https://mobsp.github.io/tol/) |
@@ -43,9 +42,9 @@
 | 類型 | 檔案路徑 | 功能說明 |
 | :--- | :--- | :--- |
 | **Brand Assets** | `./assets/logo.png` | **莫比空間官方 Logo (核心識別資源)** |
-| **Entry (HTML)** | `./index.html`, `./blog/index.html`, `./tol/index.html`, `./p/index.html` | 各大模組的主要入口頁面 |
+| **Entry (HTML)** | `./index.html`, `./blog/index.html`, `./tol/index.html` | 各大模組的主要入口頁面 |
 | **Documentation** | `./README.md`, `./data/notice.md` | 專案說明與系統動態公告文件 |
-| **Logic (JS)** | `/assets/js/`, `/src/` | 驅動 SPA、PWA 與 Vue 運行的邏輯 |
+| **Logic (JS)** | `/assets/js/`, `/src/` | 驅動 SPA 切換、PWA 與 Vue 運行的邏輯 |
 | **Data (JSON)** | `./tol/data.json`, `./p/sub.json` | 工具庫與子頁面配置的數據核心 |
 
 </details>
@@ -54,11 +53,11 @@
 
 ## 🏗️ 技術架構 (Architecture)
 
-本專案採用 **Vue.js** 單頁面應用架構，結合 GitHub Pages 的靜態部署優勢：
+本專案採用 **Vue.js** 單頁面應用架構，並針對 GitHub Pages 進行靜態優化。
 
 * **PWA 支持**：提供離線訪問與原生 App 級別的安裝體驗。
-* **數據驅動**：內容高度依賴 JSON 配置，實現極簡維護。
-* **響應式設計**：完美兼容手機、平板與桌機。
+* **數據驅動**：內容高度依賴 JSON 配置，實現「無痛維護」。
+* **響應式佈局**：完美兼容各類終端顯示。
 
 ---
 
