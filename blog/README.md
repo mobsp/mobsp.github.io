@@ -15,22 +15,21 @@
 
 ---
 
-## 🚀 快速訪問 (Quick Access)
-> **傳送門：[點我進入 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 官方服務總網](https://mobsp.github.io)** 👈 *一鍵開啟極致體驗*
+
+> ** 🚀 快速入口 ：[點我進入 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 官方服務總網](http://xxx..)** 👈 *這裡是臭寶指定的專屬入口！*
 
 ---
 
 ## 🌐 核心服務入口 (Core Services)
-
-| 服務項目 | 描述 | 入口連結 (全路徑) |
+| ℹ️服務項目 | 📝描述 | 📁目錄檔案 |
 | :--- | :--- | :--- |
-| **[官網首頁](https://mobsp.github.io)** | 最新公告與品牌動態 | [https://mobsp.github.io](https://mobsp.github.io) |
-| **莫比部落格** | 技術筆記與數位生活紀錄 | [https://mobsp.github.io/blog/](https://mobsp.github.io/blog/) |
-| **支援中心 (Wiki)** | 專案說明與使用者指南 | [https://mobsp.github.io/p/#wiki](https://mobsp.github.io/p/#wiki) |
-| **Ⲙⳝ 工具庫** | 動態驅動的實用開發工具 | [https://mobsp.github.io/tol/](https://mobsp.github.io/tol/) |
-| **莫比音樂** | 沈浸式線上音樂體驗 | [https://mobsp.github.io/p/#Music](https://mobsp.github.io/p/#Music) |
-| **Ⲙⳝ 記事 (Keep)** | 輕量化雲端靈感記錄 | [https://mobsp.github.io/p/#Keep](https://mobsp.github.io/p/#Keep) |
-| **可視化編輯器** | 即時預覽代碼與內容 | [https://mobsp.github.io/p/#Editor](https://mobsp.github.io/p/#Editor) |
+| **[官網首頁](https://mobsp.github.io)** | 最新公告與品牌動態 | [前往首頁 🏠](./index.html) |
+| **[莫比部落格](https://mobsp.github.io/blog/)** | 技術筆記與數位生活紀錄 | [閱讀文章 📝](./blog/index.html) |
+| **[支援中心 (Wiki)](https://mobsp.github.io/wiki/)** | 專案說明與使用者指南 | [查看指南 📚](./p/#wiki) |
+| **[Ⲙⳝ 工具庫](https://mobsp.github.io/tol/** | 動態驅動的實用開發工具 | [使用工具 🛠️](./tol/index.html) |
+| **[莫比音樂](https://mobsp.github.io/music/)** | 沈浸式線上音樂體驗 | [開啟頻道 🎵](./p/#Music) |
+| **[Ⲙⳝ 記事 ](Keep)](https://mobsp.github.io/tol/keep)** | 輕量化雲端靈感記錄 | [記錄靈感 📒](./p/#Keep) |
+| **[可視化編輯器](https://mobsp.github.i/tol/ve/)** | 即時預覽代碼與內容 | [開始編碼 💻](./p/#Editor) |
 
 ---
 
@@ -41,10 +40,10 @@
 
 | 類型 | 檔案路徑 | 功能說明 |
 | :--- | :--- | :--- |
-| **Brand Assets** | `./assets/logo.png` | **莫比空間官方 Logo (核心識別資源)** |
-| **Entry (HTML)** | `./index.html`, `./blog/index.html`, `./tol/index.html` | 各大模組的主要入口頁面 |
-| **Documentation** | `./README.md`, `./data/notice.md` | 專案說明與系統動態公告文件 |
-| **Logic (JS)** | `/assets/js/`, `/src/` | 驅動 SPA 切換、PWA 與 Vue 運行的邏輯 |
+| **Brand Assets** | `./assets/logo.png` | **莫比空間官方 Logo (核心識別)** |
+| **Entry (HTML)** | `./index.html`, `./blog/index.html`, `./tol/index.html`, `./p/index.html` | 各大模組的主要入口頁面 |
+| **Documentation** | `./README.md`, `./data/notice.md` | 專案說明與系統動態公告 |
+| **Logic (JS)** | `/assets/js/` | 驅動 SPA 切換與 PWA 運行的邏輯 |
 | **Data (JSON)** | `./tol/data.json`, `./p/sub.json` | 工具庫與子頁面配置的數據核心 |
 
 </details>
@@ -56,8 +55,8 @@
 本專案採用 **Vue.js** 單頁面應用架構，並針對 GitHub Pages 進行靜態優化。
 
 * **PWA 支持**：提供離線訪問與原生 App 級別的安裝體驗。
-* **數據驅動**：內容高度依賴 JSON 配置，實現「無痛維護」。
-* **響應式佈局**：完美兼容各類終端顯示。
+* **數據驅動**：工具庫與子頁面高度依賴 JSON 配置，實現「無痛更新」。
+* **響應式佈局**：完美兼容手機、平板與桌機顯示。
 
 ---
 
