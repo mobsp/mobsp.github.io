@@ -1,14 +1,9 @@
 <p align="center">
   <a href="https://mobsp.github.io">
-    <img src="assets/brand/mobsp-logo.png" 
-         alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網 | 極簡・高效・流暢" 
-         width="100%">
+    <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網" width="100%">
   </a>
 </p>
 
-
-
-<h1 align="center" style="display: none;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</h1>
 
 <p align="center">
   <strong>極簡 ‧ 高效 ‧ 流暢 — 您的全方位數位資源入口</strong>
@@ -18,11 +13,6 @@
   <a href="https://mobsp.github.io"><img src="https://img.shields.io/website?url=https%3A%2F%2Fmobsp.github.io&label=Live%20Status&style=for-the-badge&color=black" alt="Website Status"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT"></a>
 </p>
-
----
-
-
-> 🚀 任意門 ： [ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 官方服務總網](https://mobsp.github.io)
 
 ---
 
