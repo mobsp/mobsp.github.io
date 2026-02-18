@@ -1,8 +1,9 @@
 <p align="center">
   <a href="https://mobsp.github.io">
-    <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Logo" style="max-width: 220px; width: 80%; height: auto;">
+    <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Logo" style="width: 100%; height: auto; display: block; margin: 0;">
   </a>
 </p>
+
 
 </p>
 
