@@ -23,6 +23,7 @@
 ## 🌐 核心服務入口 (Core Services)
 
 <details>
+<summary>🔽點擊查看完整清單</summary>
 
 <div align="left" style="overflow: auto;">
   <table>
