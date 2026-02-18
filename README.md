@@ -1,8 +1,9 @@
 <p align="center">
   <a href="https://mobsp.github.io">
-    <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間 - 資源整合與數位服務入口網" style="width: 100%; height: auto; display: block;">
+    <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間 - 資源整合與數位服務入口網" width="100%">
   </a>
 </p>
+
 
 <h1 align="center" style="display: none;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</h1>
 
