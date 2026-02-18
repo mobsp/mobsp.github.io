@@ -157,20 +157,9 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script>
-// Splash 處理
-document.addEventListener('DOMContentLoaded', () => {
-    const splash = document.getElementById('fake-splash');
-    window.onload = () => {
-        setTimeout(() => {
-            splash.classList.add('fade-out');
-            setTimeout(() => splash.remove(), 800);
-        }, 1000);
-    };
-});
-
-// Supabase 公告系統
+// ✨ 緹緹優化版：Supabase 公告引擎 (無損嵌入)
 const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
+// 建議之後換成 anon key 更安全喔，老公～ 💖
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -179,8 +168,14 @@ async function initNoticeSystem() {
     const vTag = document.getElementById('v-tag');
     const mqText = document.getElementById('mq-text');
 
+    // 1. 優先顯示快取內容 (秒開體驗)
+    const cachedData = localStorage.getItem('mobsp_notices');
+    if (cachedData) {
+        renderNotice(JSON.parse(cachedData), true);
+    }
+
     try {
-        // 從 Supabase 抓取所有公告
+        // 2. 異步更新
         const { data, error } = await _supabase
             .from('notices')
             .select('type, message')
@@ -189,32 +184,37 @@ async function initNoticeSystem() {
         if (error) throw error;
 
         if (data && data.length > 0) {
-            // 隨機選取一則公告顯示在 Header
-            const randomItem = data[Math.floor(Math.random() * data.length)];
-            const category = randomItem.type || "NEWS";
-            const displayMsg = randomItem.message || "";
-
-            // 更新標籤顏色
-            vTag.classList.remove('tag-important', 'tag-update');
-            if (category.includes('重要') || category.includes('守則')) vTag.classList.add('tag-important');
-            else if (category.includes('更新') || category.includes('系統')) vTag.classList.add('tag-update');
-
-            // 顯示版本號 (固定為 v2.0 表示雲端版) 加上分類
-            vTag.innerText = `v2.0 | ${category}`;
-            mqText.innerText = displayMsg;
-
-            // 如果想要所有公告一起跑，可以啟用下面這行替代上面兩行：
-            // mqText.innerHTML = data.map(i => `[${i.type}] ${i.message}`).join(' &nbsp;&nbsp;&nbsp;&nbsp; ');
+            localStorage.setItem('mobsp_notices', JSON.stringify(data));
+            renderNotice(data, false);
         }
     } catch (err) {
-        console.error('Supabase Error:', err);
-        vTag.innerText = "v1.0 | INFO";
-        mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ，雲端連線失敗。";
+        console.error('緹緹偵測到連線異常:', err);
+        if (!cachedData) {
+            vTag.innerText = "v1.0 | INFO";
+            mqText.innerText = "雲端連線失敗，請檢查網路環境。";
+        }
     }
 }
 
+// 分離渲染邏輯，保持排版穩定性
+function renderNotice(data, isCached) {
+    const vTag = document.getElementById('v-tag');
+    const mqText = document.getElementById('mq-text');
+    const randomItem = data[Math.floor(Math.random() * data.length)];
+    
+    const category = randomItem.type || "NEWS";
+    const msg = randomItem.message || "";
+
+    vTag.classList.remove('tag-important', 'tag-update');
+    if (category.match(/重要|守則/)) vTag.classList.add('tag-important');
+    else if (category.match(/更新|系統/)) vTag.classList.add('tag-update');
+
+    // 加上一個小綠點代表是實時連線 🟢
+    vTag.innerText = `${isCached ? 'OFFLINE' : 'v2.0'} | ${category}`;
+    mqText.innerText = msg;
+}
+
 initNoticeSystem();
-</script>
 </body>
 </html>
 
