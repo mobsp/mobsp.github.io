@@ -22,6 +22,8 @@
 
 ## 🌐 核心服務入口 (Core Services)
 
+<details>
+
 <div align="left" style="overflow: auto;">
   <table>
     <thead>
@@ -70,6 +72,8 @@
     </tbody>
   </table>
 </div>
+
+</details>
 
 > 💡 **小提示**：如畫面太窄，請左右滑動表格查看完整資訊。
 
