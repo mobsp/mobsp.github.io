@@ -1,13 +1,10 @@
 <p align="center">
   <a href="https://mobsp.github.io">
-    <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Logo" style="width: 100%; height: auto; display: block; margin: 0;">
+    <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間 - 資源整合與數位服務入口網" style="width: 100%; height: auto; display: block;">
   </a>
 </p>
 
-
-</p>
-
-<h1 align="center">莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+<h1 align="center" style="display: none;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</h1>
 
 <p align="center">
   <strong>極簡 ‧ 高效 ‧ 流暢 — 您的全方位數位資源入口</strong>
