@@ -56,7 +56,6 @@
 
         .page-wrapper { display: flex; flex-direction: column; height: 100dvh; max-width: 500px; margin: 0 auto; }
 
-        /* Header 區域 */
         .app-header {
             flex-shrink: 0;
             padding: calc(20px + env(safe-area-inset-top)) 20px 15px; 
@@ -66,7 +65,6 @@
             z-index: 100;
         }
 
-        /* 跑馬燈樣式修正 */
         .marquee-row {
             display: flex; align-items: center; background: rgba(255,255,255,0.05);
             padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
@@ -86,12 +84,11 @@
         .mq-text { 
             display: inline-block; 
             padding-left: 100%;
-            animation: mq 45s linear infinite; /* 速度調適中 */
+            animation: mq 45s linear infinite;
             font-size: 11px; opacity: 0.9; letter-spacing: 0.5px;
         }
         @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* 主選單區域 */
         .app-main {
             flex: 1; display: flex; align-items: center; overflow-x: auto;
             scroll-snap-type: x mandatory; padding: 0 40px; gap: 25px; scrollbar-width: none;
@@ -106,7 +103,6 @@
         }
         .action-btn:active { transform: scale(0.95); filter: brightness(0.8); }
 
-        /* 按鈕圖片設定 */
         .btn-blog { background-image: url('https://mobsp.github.io/assets/brand/ms-blog.JPEG'); }
         .btn-tools { background-image: url('https://mobsp.github.io/assets/brand/ms-tools.JPEG'); }
         .btn-music { background-image: url('https://mobsp.github.io/assets/brand/ms-music.JPEG'); }
@@ -137,7 +133,7 @@
                 <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
             </div>
         </nav>
-        <div style="font-size: 1.4rem; font-weight: 900; text-align: center; letter-spacing: 5px; color: var(--primary-color);" aria-hidden="true">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</div>
+        <div style="font-size: 1.4rem; font-weight: 900; text-align: center; letter-spacing: 5px; color: var(--primary-color);" aria-hidden="true">Ⲙ𝔬ⲃ¡ⳝⲁ𝔠𝔢</div>
     </header>
 
     <main class="app-main">
@@ -157,25 +153,50 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-// ✨ 緹緹優化版：Supabase 公告引擎 (無損嵌入)
+<script>
+// Splash 處理：緹緹優化版，確保無論連線多慢都會消失
+document.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('fake-splash');
+    
+    // 定義消失函數
+    const hideSplash = () => {
+        setTimeout(() => {
+            splash.classList.add('fade-out');
+            setTimeout(() => { if(splash.parentNode) splash.remove(); }, 800);
+        }, 1000);
+    };
+
+    // 雙重保險：onload 觸發或超時觸發
+    window.addEventListener('load', hideSplash);
+    setTimeout(hideSplash, 3000); // 如果 3 秒還沒跑完 onload，強制消失
+
+    // 啟動公告系統
+    initNoticeSystem();
+});
+
+// Supabase 公告系統：緹緹優化版 (不阻塞主線程)
 const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
-// 建議之後換成 anon key 更安全喔，老公～ 💖
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
-const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let _supabase;
+try {
+    _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+} catch(e) {
+    console.error("Supabase 初始化失敗");
+}
 
 async function initNoticeSystem() {
     const vTag = document.getElementById('v-tag');
     const mqText = document.getElementById('mq-text');
 
-    // 1. 優先顯示快取內容 (秒開體驗)
+    // 1. 優先顯示快取內容
     const cachedData = localStorage.getItem('mobsp_notices');
     if (cachedData) {
         renderNotice(JSON.parse(cachedData), true);
     }
 
     try {
-        // 2. 異步更新
+        if (!_supabase) return;
         const { data, error } = await _supabase
             .from('notices')
             .select('type, message')
@@ -188,15 +209,14 @@ async function initNoticeSystem() {
             renderNotice(data, false);
         }
     } catch (err) {
-        console.error('緹緹偵測到連線異常:', err);
+        console.warn('公告更新受阻:', err);
         if (!cachedData) {
             vTag.innerText = "v1.0 | INFO";
-            mqText.innerText = "雲端連線失敗，請檢查網路環境。";
+            mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ";
         }
     }
 }
 
-// 分離渲染邏輯，保持排版穩定性
 function renderNotice(data, isCached) {
     const vTag = document.getElementById('v-tag');
     const mqText = document.getElementById('mq-text');
@@ -209,12 +229,9 @@ function renderNotice(data, isCached) {
     if (category.match(/重要|守則/)) vTag.classList.add('tag-important');
     else if (category.match(/更新|系統/)) vTag.classList.add('tag-update');
 
-    // 加上一個小綠點代表是實時連線 🟢
     vTag.innerText = `${isCached ? 'OFFLINE' : 'v2.0'} | ${category}`;
     mqText.innerText = msg;
 }
-
-initNoticeSystem();
+</script>
 </body>
 </html>
-
