@@ -22,7 +22,7 @@
 
 ## 🌐 核心服務入口 (Core Services)
 
-## 🌐 核心服務入口 (Core Services)
+<div style="overflow-x: auto; white-space: nowrap;">
 
 | ℹ️服務項目 | 📝描述 | 📁目錄檔案 |
 | :--- | :--- | :--- |
@@ -33,6 +33,10 @@
 | **[開啟頻道 🎵](https://mobsp.github.io/p/#Music)** | 沈浸式線上音樂體驗 | [`./p/#Music`](./p/#Music) |
 | **[記錄靈感 📒](https://mobsp.github.io/p/#Keep)** | 輕量化雲端靈感記錄 | [`./p/#Keep`](./p/#Keep) |
 | **[開始編碼 💻](https://mobsp.github.io/p/#Editor)** | 即時預覽代碼與內容 | [`./p/#Editor`](./p/#Editor) |
+
+</div>
+
+> 💡 **小提示**：如果在手機上查看，可以左右滑動表格來查看完整內容喔！
 
 ---
 
