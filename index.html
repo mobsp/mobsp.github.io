@@ -1,150 +1,209 @@
-<p align="center">
-  <img src="https://files.catbox.moe/ah8hgq.jpeg" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Logo" width="220">
-</p>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    
+    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-startup-image" href="https://mobsp.github.io/assets/brand/ms-guide.JPEG">
 
-<h1 align="center">莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
+    <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
+    
+    <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合導航">
+    <meta property="og:image" content="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
 
-<p align="center">
-  <strong>極簡 ‧ 高效 ‧ 流暢 — 您的全方位數位資源入口</strong>
-</p>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#0b0b0c">
 
-<p align="center">
-  <a href="https://mobsp.github.io"><img src="https://img.shields.io/website?url=https%3A%2F%2Fmobsp.github.io&label=Live%20Status&style=for-the-badge&color=black" alt="Website Status"></a>
-  <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT"></a>
-</p>
+    <style>
+        :root {
+            --bg-color: #0b0b0c;          
+            --card-bg: rgba(25, 27, 31, 0.95); 
+            --text-main: #f1f2f6;         
+            --primary-color: #00cec9;     
+            --border-color: rgba(255, 255, 255, 0.1); 
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
 
----
+        #fake-splash {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #050508 url('https://mobsp.github.io/assets/brand/ms-guide.JPEG') center/cover no-repeat;
+            z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+        #fake-splash::after {
+            content: "LOADING...";
+            position: absolute; bottom: 15%; color: white; letter-spacing: 5px; font-size: 12px; opacity: 0.5;
+        }
+        #fake-splash.fade-out { opacity: 0; visibility: hidden; }
 
+        html, body {
+            width: 100%; height: 100dvh; overflow: hidden;
+            position: fixed; margin: 0; padding: 0;
+            background-color: var(--bg-color); color: var(--text-main);
+            font-family: 'PingFang TC', system-ui, -apple-system, sans-serif;
+            touch-action: manipulation;
+        }
 
-> 🚀 任意門 ： [ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 官方服務總網](https://mobsp.github.io)
+        .visually-hidden {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); border: 0;
+        }
 
----
+        .page-wrapper { display: flex; flex-direction: column; height: 100dvh; max-width: 500px; margin: 0 auto; }
 
-## 🌐 核心服務入口 (Core Services)
+        .app-header {
+            flex-shrink: 0;
+            padding: calc(20px + env(safe-area-inset-top)) 20px 15px; 
+            background: rgba(11, 11, 12, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 100;
+        }
 
-<details>
-<summary>點擊查看完整清單</summary>
+        .marquee-row {
+            display: flex; align-items: center; background: rgba(255,255,255,0.05);
+            padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+            min-height: 28px;
+        }
 
-<div align="left" style="overflow: auto;">
-  <table>
-    <thead>
-      <tr>
-        <th nowrap>ℹ️ 服務項目</th>
-        <th nowrap>📝 描述</th>
-        <th nowrap>📁 目錄檔案</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td nowrap><a href="https://mobsp.github.io"><b>前往首頁 🏠</b></a></td>
-        <td nowrap>最新公告與品牌動態</td>
-        <td nowrap><a href="./index.html"><code>./index.html</code></a></td>
-      </tr>
-      <tr>
-        <td nowrap><a href="https://mobsp.github.io/blog/"><b>閱讀文章 📝</b></a></td>
-        <td nowrap>技術筆記與數位生活紀錄</td>
-        <td nowrap><a href="./blog/index.html"><code>./blog/index.html</code></a></td>
-      </tr>
-      <tr>
-        <td nowrap><a href="https://mobsp.github.io/p/#wiki"><b>查看指南 📚</b></a></td>
-        <td nowrap>專案說明與使用者指南</td>
-        <td nowrap><a href="./p/#wiki"><code>./p/#wiki</code></a></td>
-      </tr>
-      <tr>
-        <td nowrap><a href="https://mobsp.github.io/tol/"><b>使用工具 🛠️</b></a></td>
-        <td nowrap>動態驅動的實用開發工具</td>
-        <td nowrap><a href="./tol/index.html"><code>./tol/index.html</code></a></td>
-      </tr>
-      <tr>
-        <td nowrap><a href="https://mobsp.github.io/p/#Music"><b>開啟頻道 🎵</b></a></td>
-        <td nowrap>沈浸式線上音樂體驗</td>
-        <td nowrap><a href="./p/#Music"><code>./p/#Music</code></a></td>
-      </tr>
-      <tr>
-        <td nowrap><a href="https://mobsp.github.io/p/#Keep"><b>記錄靈感 📒</b></a></td>
-        <td nowrap>輕量化雲端靈感記錄</td>
-        <td nowrap><a href="./p/#Keep"><code>./p/#Keep</code></a></td>
-      </tr>
-      <tr>
-        <td nowrap><a href="https://mobsp.github.io/p/#Editor"><b>開始編碼 💻</b></a></td>
-        <td nowrap>即時預覽代碼與內容</td>
-        <td nowrap><a href="./p/#Editor"><code>./p/#Editor</code></a></td>
-      </tr>
-    </tbody>
-  </table>
+        .v-tag { 
+            background: var(--primary-color); color: #000; font-size: 9px; font-weight: 900; 
+            padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap;
+            transition: background 0.3s;
+        }
+        .tag-important { background: #ff4d4d; color: #fff; }
+        .tag-update { background: #00ff88; color: #000; }
+
+        .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
+        
+        .mq-text { 
+            display: inline-block; 
+            padding-left: 100%;
+            animation: mq 45s linear infinite;
+            font-size: 11px; opacity: 0.9; letter-spacing: 0.5px;
+        }
+        @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        .app-main {
+            flex: 1; display: flex; align-items: center; overflow-x: auto;
+            scroll-snap-type: x mandatory; padding: 0 40px; gap: 25px; scrollbar-width: none;
+        }
+        .app-main::-webkit-scrollbar { display: none; }
+
+        .action-btn {
+            flex: 0 0 85%; height: 70%; scroll-snap-align: center; text-decoration: none;
+            border-radius: 40px; position: relative; overflow: hidden; border: 1px solid var(--border-color);
+            background-color: #1e272e; background-position: center; background-size: cover;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5); transition: var(--transition);
+        }
+        .action-btn:active { transform: scale(0.95); filter: brightness(0.8); }
+
+        .btn-blog { background-image: url('https://mobsp.github.io/assets/brand/ms-blog.JPEG'); }
+        .btn-tools { background-image: url('https://mobsp.github.io/assets/brand/ms-tools.JPEG'); }
+        .btn-music { background-image: url('https://mobsp.github.io/assets/brand/ms-music.JPEG'); }
+        .btn-shorts { background-image: url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG'); }
+        .btn-wiki { background-image: url('https://mobsp.github.io/assets/brand/ms-wiki.JPEG'); }
+        .btn-logo { background-image: url('https://mobsp.github.io/assets/brand/ms-logo.JPEG'); }
+
+        .btn-overlay { position: absolute; bottom: 0; width: 100%; padding: 50px 30px 40px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); }
+        .btn-title { color: #fff; font-size: 1.85rem; font-weight: 800; letter-spacing: 3px; }
+
+        .app-footer {
+            flex-shrink: 0; padding: 15px 20px calc(20px + env(safe-area-inset-bottom));
+            background: rgba(11, 11, 12, 0.9); border-top: 1px solid var(--border-color); text-align: center;
+        }
+        .copyright { font-size: 10px; opacity: 0.4; line-height: 1.6; letter-spacing: 1px; }
+    </style>
+</head>
+
+<body>
+<div id="fake-splash" aria-hidden="true"></div>
+
+<div class="page-wrapper">
+    <header class="app-header">
+        <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間</h1>
+        <nav class="marquee-row">
+            <span class="v-tag" id="v-tag">SYNCING</span>
+            <div class="mq-box">
+                <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
+            </div>
+        </nav>
+        <div style="font-size: 1.4rem; font-weight: 900; text-align: center; letter-spacing: 5px; color: var(--primary-color);" aria-hidden="true">Ⲙ𝔬ⲃ¡ⳝⲁ𝔠𝔢</div>
+    </header>
+
+    <main class="app-main">
+        <a href="https://mobsp.github.io/blog/" class="action-btn btn-blog" aria-label="前往部落格"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
+        <a href="https://mobsp.github.io/tol/" class="action-btn btn-tools" aria-label="前往工具庫"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
+        <a href="https://mobsp.github.io/p/#Music" class="action-btn btn-music" aria-label="前往音樂頻道"><div class="btn-overlay"><div class="btn-title">音樂頻道</div></div></a>
+        <a href="https://mobsp.github.io/p/#Shorts" class="action-btn btn-shorts" aria-label="前往Shorts"><div class="btn-overlay"><div class="btn-title">Shorts</div></div></a>
+        <a href="https://mobsp.github.io/p/#wiki" class="action-btn btn-wiki" aria-label="前往支援中心"><div class="btn-overlay"><div class="btn-title">支援中心</div></div></a>
+        <a href="https://mobsp.github.io/p/#History" class="action-btn btn-logo" aria-label="查看歷史紀錄"><div class="btn-overlay"><div class="btn-title">歷史紀錄</div></div></a>
+        <a href="https://mobsp.github.io/p/#Settings" class="action-btn btn-logo" aria-label="開啟設定"><div class="btn-overlay"><div class="btn-title">設定</div></div></a>
+    </main>
+
+    <footer class="app-footer">
+        <div class="copyright">&copy; 2026 <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong><br>資源整合與數位服務入口網</div>
+    </footer>
 </div>
 
-</details>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+// 緹緹救援版：確保腳本在正確時機執行
+document.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('fake-splash');
+    const hideSplash = () => {
+        setTimeout(() => {
+            if (splash) {
+                splash.classList.add('fade-out');
+                setTimeout(() => { if(splash.parentNode) splash.remove(); }, 800);
+            }
+        }, 1000);
+    };
+    window.addEventListener('load', hideSplash);
+    setTimeout(hideSplash, 3500);
+    initNoticeSystem();
+});
 
-> 💡 **小提示**：如畫面太窄，請左右滑動表格查看完整資訊。
+const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
+async function initNoticeSystem() {
+    const vTag = document.getElementById('v-tag');
+    const mqText = document.getElementById('mq-text');
+    const cachedData = localStorage.getItem('mobsp_notices');
+    if (cachedData) renderNotice(JSON.parse(cachedData), true);
 
----
+    try {
+        if (typeof supabase === 'undefined') return;
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
+        if (!error && data.length > 0) {
+            localStorage.setItem('mobsp_notices', JSON.stringify(data));
+            renderNotice(data, false);
+        }
+    } catch (err) {
+        console.warn('公告更新受阻');
+    }
+}
 
-## 📂 系統資產矩陣 (Asset Matrix)
-
-<details>
-<summary>🔍 點擊展開詳細資產清單 (內部開發專用)</summary>
-
-<div align="left" style="overflow: auto;">
-  <table>
-    <thead>
-      <tr>
-        <th nowrap>ℹ️ 類型</th>
-        <th nowrap>📁 檔案路徑</th>
-        <th nowrap>📝 功能說明</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td nowrap><b>Brand Assets</b></td>
-        <td nowrap><code>./assets/logo.png</code></td>
-        <td nowrap><b>莫比空間官方 Logo (核心識別)</b></td>
-      </tr>
-      <tr>
-        <td nowrap><b>Entry (HTML)</b></td>
-        <td nowrap><code>./index.html</code>, <code>./blog/index.html</code>, <code>./tol/index.html</code>, <code>./p/index.html</code></td>
-        <td nowrap>各大模組的主要入口頁面</td>
-      </tr>
-      <tr>
-        <td nowrap><b>Documentation</b></td>
-        <td nowrap><code>./README.md</code>, <code>./data/notice.md</code></td>
-        <td nowrap>專案說明與系統動態公告</td>
-      </tr>
-      <tr>
-        <td nowrap><b>Logic (JS)</b></td>
-        <td nowrap><code>/assets/js/</code></td>
-        <td nowrap>驅動 SPA 切換與 PWA 運行的邏輯</td>
-      </tr>
-      <tr>
-        <td nowrap><b>Data (JSON)</b></td>
-        <td nowrap><code>./tol/data.json</code>, <code>./p/sub.json</code></td>
-        <td nowrap>工具庫與子頁面配置的數據核心</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-</details>
-
----
-
-## 🏗️ 技術架構 (Architecture)
-
-本專案採用 **Vue.js** 單頁面應用架構，並針對 GitHub Pages 進行靜態優化：
-
-* **🚀 PWA 支持**：提供離線訪問與原生 App 級別的安裝體驗。
-* **📊 數據驅動**：工具庫與子頁面高度依賴 JSON 配置，實現「無痛更新」。
-* **📱 響應式佈局**：完美兼容手機、平板與桌機顯示。
-
-
----
-
-## 📈 搜尋引擎優化 (SEO)
-`莫比空間` `Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ` `Mobispace` `資源整合入口` `數位工具庫` `PWA 網頁應用` `資源導航` `莫比部落格`
-
----
-
-<p align="center">
-  © 2024–2026 <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間)</strong>. All rights reserved.
-</p>
+function renderNotice(data, isCached) {
+    const vTag = document.getElementById('v-tag');
+    const mqText = document.getElementById('mq-text');
+    if (!vTag || !mqText || !data.length) return;
+    
+    const randomItem = data[Math.floor(Math.random() * data.length)];
+    const category = randomItem.type || "NEWS";
+    vTag.classList.remove('tag-important', 'tag-update');
+    if (category.match(/重要|守則/)) vTag.classList.add('tag-important');
+    else if (category.match(/更新|系統/)) vTag.classList.add('tag-update');
+    vTag.innerText = `${isCached ? 'OFFLINE' : 'v2.0'} | ${category}`;
+    mqText.innerText = randomItem.message || "";
+}
+</script>
+</body>
+</html>
