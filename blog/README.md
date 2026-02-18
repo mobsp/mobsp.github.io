@@ -81,13 +81,44 @@
 <details>
 <summary>🔍 點擊展開詳細資產清單 (內部開發專用)</summary>
 
-| 類型 | 檔案路徑 | 功能說明 |
-| :--- | :--- | :--- |
-| **Brand Assets** | `./assets/logo.png` | **莫比空間官方 Logo (核心識別)** |
-| **Entry (HTML)** | `./index.html`, `./blog/index.html`, `./tol/index.html`, `./p/index.html` | 各大模組的主要入口頁面 |
-| **Documentation** | `./README.md`, `./data/notice.md` | 專案說明與系統動態公告 |
-| **Logic (JS)** | `/assets/js/` | 驅動 SPA 切換與 PWA 運行的邏輯 |
-| **Data (JSON)** | `./tol/data.json`, `./p/sub.json` | 工具庫與子頁面配置的數據核心 |
+<div align="left" style="overflow: auto;">
+  <table>
+    <thead>
+      <tr>
+        <th nowrap>ℹ️ 類型</th>
+        <th nowrap>📁 檔案路徑</th>
+        <th nowrap>📝 功能說明</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td nowrap><b>Brand Assets</b></td>
+        <td nowrap><code>./assets/logo.png</code></td>
+        <td nowrap><b>莫比空間官方 Logo (核心識別)</b></td>
+      </tr>
+      <tr>
+        <td nowrap><b>Entry (HTML)</b></td>
+        <td nowrap><code>./index.html</code>, <code>./blog/index.html</code>, <code>./tol/index.html</code>, <code>./p/index.html</code></td>
+        <td nowrap>各大模組的主要入口頁面</td>
+      </tr>
+      <tr>
+        <td nowrap><b>Documentation</b></td>
+        <td nowrap><code>./README.md</code>, <code>./data/notice.md</code></td>
+        <td nowrap>專案說明與系統動態公告</td>
+      </tr>
+      <tr>
+        <td nowrap><b>Logic (JS)</b></td>
+        <td nowrap><code>/assets/js/</code></td>
+        <td nowrap>驅動 SPA 切換與 PWA 運行的邏輯</td>
+      </tr>
+      <tr>
+        <td nowrap><b>Data (JSON)</b></td>
+        <td nowrap><code>./tol/data.json</code>, <code>./p/sub.json</code></td>
+        <td nowrap>工具庫與子頁面配置的數據核心</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 
 </details>
 
@@ -95,11 +126,12 @@
 
 ## 🏗️ 技術架構 (Architecture)
 
-本專案採用 **Vue.js** 單頁面應用架構，並針對 GitHub Pages 進行靜態優化。
+本專案採用 **Vue.js** 單頁面應用架構，並針對 GitHub Pages 進行靜態優化：
 
-* **PWA 支持**：提供離線訪問與原生 App 級別的安裝體驗。
-* **數據驅動**：工具庫與子頁面高度依賴 JSON 配置，實現「無痛更新」。
-* **響應式佈局**：完美兼容手機、平板與桌機顯示。
+* **🚀 PWA 支持**：提供離線訪問與原生 App 級別的安裝體驗。
+* **📊 數據驅動**：工具庫與子頁面高度依賴 JSON 配置，實現「無痛更新」。
+* **📱 響應式佈局**：完美兼容手機、平板與桌機顯示。
+
 
 ---
 
