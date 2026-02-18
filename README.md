@@ -3,7 +3,7 @@
     <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間" width="100%">
   </a>
   <br>
-  <kbd>🖱️ 點擊上方圖片進入 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 官方入口</kbd>
+  <kbd>🖱️ 點擊⇪圖片進入 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 官方入口</kbd>
 </p>
 
 
