@@ -1,6 +1,9 @@
 <p align="center">
   <a href="https://mobsp.github.io">
-  <img src="https://files.catbox.moe/ah8hgq.jpeg" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Logo" width="220">
+    <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Logo" style="max-width: 220px; width: 80%; height: auto;">
+  </a>
+</p>
+
 </p>
 
 <h1 align="center">莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
