@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://mobsp.github.io">
-    <img src="assets/brand/logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間" width="100%">
+    <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間" width="100%">
   </a>
   <br>
   <kbd> 點擊∆圖片探索 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ ☖ </kbd>
