@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 系統控制台</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root {
+  --bg-body: #000000;
+  --bg-card: #111111;
+  --text-main: #ffffff;
+  --text-sub: #aaaaaa;
+  --accent-color: #06c755; /* 莫比招牌綠 */
+  --border: #222222;
+}
+
+body {
+  font-family: -apple-system, "SF Pro Display", system-ui;
+  background: var(--bg-body);
+  color: var(--text-main);
+  margin: 0;
+  padding: 20px 15px 100px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.container { max-width: 500px; margin: auto; }
+
+/* 標題動畫 */
+.brand-title {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 30px;
+  background: linear-gradient(to right, #fff, #555);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -1px;
+}
+
+.card {
+  background: var(--bg-card);
+  padding: 24px;
+  border-radius: 22px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+h2 { font-size: 16px; margin-bottom: 20px; color: var(--accent-color); display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 1px; }
+
+label { display: block; margin: 15px 0 8px; font-size: 13px; color: var(--text-sub); font-weight: 500; }
+
+input, select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: #1a1a1a;
+  color: #fff;
+  outline: none;
+  font-size: 15px;
+  box-sizing: border-box;
+  transition: border 0.3s ease;
+}
+
+input:focus { border-color: var(--accent-color); }
+
+button {
+  width: 100%;
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--accent-color);
+  color: #000;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  margin-top: 20px;
+  font-size: 16px;
+  transition: transform 0.2s active;
+}
+
+button:active { transform: scale(0.98); }
+
+#output-box {
+  background: #080808;
+  color: #00ff00;
+  font-family: "SF Mono", monospace;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #1a1a1a;
+  white-space: pre-wrap;
+  word-break: break-all;
+  font-size: 12px;
+  margin-top: 15px;
+  display: none;
+}
+
+/* 底部導覽列 - 依照你的截圖風格 */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 80px;
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around; align-items: center;
+  z-index: 1000;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.nav-item {
+  color: #555;
+  text-decoration: none;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.nav-item.active { color: var(--accent-color); }
+.nav-item i { font-size: 22px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="brand-title">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ <span style="font-size:14px; color:var(--text-sub);">Admin</span></div>
+
+  <div class="card">
+    <h2><i class="fa-solid fa-plus-circle"></i> 內容部署</h2>
+    
+    <label>發布類別</label>
+    <select id="dataType">
+      <option value="blog">📔 Markdown 文章 (Blog)</option>
+      <option value="shorts">🎬 Shorts 短影音</option>
+      <option value="music">🎵 音樂播放清單</option>
+      <option value="wiki">📖 支援維基百科</option>
+    </select>
+
+    <label>標題名稱</label>
+    <input type="text" id="dataTitle" placeholder="例如：2024 更新公告">
+
+    <label>資源路徑 (MD 檔案或串流網址)</label>
+    <input type="text" id="dataUrl" placeholder="例如：blog/p/list/article-01.md">
+
+    <button onclick="generateData()">產生更新代碼</button>
+    
+    <div id="output-box"></div>
+    <button id="copyBtn" style="display:none; background:#333; color:#fff;" onclick="copyCode()">
+      <i class="fa-regular fa-copy"></i> 複製並前往 GitHub
+    </button>
+  </div>
+
+  <div class="card" style="opacity: 0.7;">
+    <h2><i class="fa-solid fa-sliders"></i> 介面偏好 (同步全站)</h2>
+    <label>光暗模式</label>
+    <select id="themeMode" onchange="applySettings()">
+      <option value="dark">AMOLED 深黑</option>
+      <option value="light">洗鍊明亮</option>
+    </select>
+  </div>
+</div>
+
+<nav class="bottom-nav">
+  <a href="/blog/" class="nav-item"><i class="fa-solid fa-house"></i><span>首頁</span></a>
+  <a href="/shorts.html" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
+  <a href="/ms-player.html" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
+  <a href="/settings.html" class="nav-item active"><i class="fa-solid fa-gear"></i><span>設定</span></a>
+</nav>
+
+<script>
+let MOBI_DATA = { blog: [], shorts: [], music: [], wiki: [] };
+
+function generateData() {
+    const type = document.getElementById('dataType').value;
+    const title = document.getElementById('dataTitle').value;
+    const url = document.getElementById('dataUrl').value;
+
+    if(!url) return alert("❌ 請輸入網址或檔案路徑！");
+
+    const newData = {
+        title: title || "未命名內容",
+        url: url,
+        date: new Date().toLocaleDateString('zh-TW')
+    };
+
+    MOBI_DATA[type].unshift(newData);
+
+    const output = document.getElementById('output-box');
+    const copyBtn = document.getElementById('copyBtn');
+    output.style.display = 'block';
+    copyBtn.style.display = 'block';
+    
+    const code = `// 複製以下代碼至 data.js\nconst MOBI_UPDATE = ${JSON.stringify(newData, null, 4)};`;
+    output.innerText = code;
+}
+
+function copyCode() {
+    const text = document.getElementById('output-box').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert("✅ 莫比數據已複製！");
+        window.open('https://github.com/mobsp/mobsp.github.io/edit/main/data.js', '_blank');
+    });
+}
+</script>
+</body>
+</html>
