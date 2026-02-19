@@ -1,172 +1,285 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 系統控制台</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
-:root {
-  --bg-body: #000000;
-  --bg-card: #111111;
-  --text-main: #ffffff;
-  --text-sub: #aaaaaa;
-  --accent-color: #06c755;
-  --border: #222222;
-}
+    <meta charset="UTF-8">
+    <!-- 行動優先佈局設定：確保在手機上 1:1 呈現，禁止使用者縮放導致 UI 跑版 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LINE 終極旗艦版 - 五彩斑斕黑系統</title>
+    
+    <!-- 載入 Google Icon 資源庫 -->
+    <link href="https://fonts.googleapis.com" rel="stylesheet">
 
-body {
-  font-family: -apple-system, "SF Pro Display", system-ui;
-  background: var(--bg-body);
-  color: var(--text-main);
-  margin: 0;
-  padding: 20px 15px 100px;
-}
+    <style>
+        /* 
+           =========================================
+           【1000% 終極指南：CSS 變數系統層】
+           =========================================
+           使用 CSS Variables (--variable) 是實現「多模式切換」的核心。
+           這讓 JavaScript 只需要改動一個屬性，全站顏色就會像多米諾骨牌一樣自動更換。
+        */
+        :root {
+            /* --- 預設：五彩斑斕黑 (Multicolor Black) --- */
+            --bg-gradient: linear-gradient(135deg, #000 20%, #1a0b2e 50%, #000 80%);
+            --bg-animation: rainbow-flow 8s ease infinite; /* 動態流動感 */
+            --card-bg: rgba(20, 20, 20, 0.8); /* 半透明黑，透出背景光 */
+            --header-bg: rgba(0, 0, 0, 0.9);
+            --text-primary: #ffffff;
+            --text-secondary: #aaaaaa;
+            --accent-color: #ff00ff; /* 霓虹桃紅 */
+            --border-color: #333333;
+            --glow-effect: 0 0 15px rgba(255, 0, 255, 0.6);
+        }
 
-.container { max-width: 500px; margin: auto; text-align: center; }
+        /* 
+           =========================================
+           【多模式定義區】利用 [data-theme] 屬性切換
+           =========================================
+        */
+        /* 1. 舒適版光模式 */
+        [data-theme="light"] {
+            --bg-gradient: none; --bg-animation: none; --bg-color: #f2f2f2;
+            --card-bg: #ffffff; --header-bg: #ffffff; --text-primary: #000000;
+            --text-secondary: #888888; --accent-color: #06c755; --border-color: #eeeeee;
+            --glow-effect: none;
+        }
 
-.brand-title {
-  font-size: 26px;
-  font-weight: 800;
-  margin-bottom: 25px;
-  background: linear-gradient(to bottom, #fff, #777);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+        /* 2. 沈浸式暗模式 */
+        [data-theme="immersive-dark"] {
+            --bg-gradient: none; --bg-animation: none; --bg-color: #000000;
+            --card-bg: #121212; --header-bg: #000000; --text-primary: #e0e0e0;
+            --text-secondary: #555555; --accent-color: #ffffff; --border-color: #222222;
+            --glow-effect: none;
+        }
 
-.card {
-  background: var(--bg-card);
-  padding: 24px;
-  border-radius: 22px;
-  margin-bottom: 20px;
-  border: 1px solid var(--border);
-}
+        /* 3. 常態版 (LINE Classic) */
+        [data-theme="normal"] {
+            --bg-gradient: none; --bg-animation: none; --bg-color: #edeff2;
+            --card-bg: #ffffff; --header-bg: #ffffff; --text-primary: #111111;
+            --text-secondary: #a0a0a0; --accent-color: #06c755; --border-color: #dbdbdb;
+            --glow-effect: none;
+        }
 
-h2 { font-size: 16px; margin-bottom: 20px; color: var(--accent-color); justify-content: center; display: flex; align-items: center; gap: 8px; }
+        /* 
+           =========================================
+           【核心關鍵動畫：五彩斑斕黑】
+           =========================================
+           透過改變背景位置 (background-position) 讓漸層色動起來
+        */
+        @keyframes rainbow-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-label { display: block; margin: 15px 0 8px; font-size: 13px; color: var(--text-sub); text-align: left; }
+        /* 
+           =========================================
+           【全客製化實作區】
+           =========================================
+        */
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body {
+            background: var(--bg-color, #000);
+            background-image: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: var(--bg-animation);
+            color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-input, select {
-  width: 100%; padding: 14px; border-radius: 14px;
-  border: 1px solid var(--border); background: #1a1a1a; color: #fff;
-  outline: none; font-size: 15px; box-sizing: border-box;
-}
+        /* 固定頁首 */
+        header {
+            position: fixed; top: 0; width: 100%; height: 60px;
+            background: var(--header-bg); border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; z-index: 1000; backdrop-filter: blur(10px); /* 磨砂玻璃效果 */
+        }
 
-button {
-  width: 100%; padding: 16px; border-radius: 16px;
-  background: var(--accent-color); color: #000;
-  border: none; cursor: pointer; font-weight: 700;
-  margin-top: 20px; font-size: 16px;
-}
+        .header-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
+        .header-icons { display: flex; gap: 20px; align-items: center; }
+        .material-icons { cursor: pointer; color: var(--text-primary); font-size: 26px; }
 
-#output-box {
-  background: #080808; color: #00ff00; font-family: monospace;
-  padding: 15px; border-radius: 12px; border: 1px solid #1a1a1a;
-  white-space: pre-wrap; word-break: break-all; font-size: 12px;
-  margin-top: 15px; display: none; text-align: left;
-}
+        /* 
+           =========================================
+           【終極設定選單與 Color Picker】
+           =========================================
+        */
+        #settings-panel {
+            position: fixed; top: 70px; right: 10px; width: 280px;
+            background: rgba(255, 255, 255, 0.95); border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            display: none; flex-direction: column; padding: 15px; z-index: 2000;
+            color: #333; border: 1px solid #ccc;
+        }
+        #settings-panel.show { display: flex; animation: slideIn 0.3s ease-out; }
+        
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-.action-btns { display: flex; gap: 10px; margin-top: 10px; }
-.secondary-btn { background: #333; color: #fff; flex: 1; margin-top: 0; }
-.danger-btn { background: #441111; color: #ff3b30; flex: 1; margin-top: 0; border: 1px solid #ff3b30; }
+        .setting-group { margin-bottom: 15px; }
+        .setting-label { font-size: 12px; font-weight: bold; color: #666; margin-bottom: 8px; display: block; }
+        .mode-btn { 
+            width: 100%; padding: 10px; margin-bottom: 5px; border: none; border-radius: 8px;
+            text-align: left; cursor: pointer; background: #eee; font-weight: 500;
+        }
+        .mode-btn:hover { background: #ddd; }
 
-.bottom-nav {
-  position: fixed; bottom: 0; left: 0; right: 0; height: 80px;
-  background: rgba(10, 10, 10, 0.9); backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border); display: flex;
-  justify-content: space-around; align-items: center;
-}
+        /* Color Picker 樣式 */
+        .picker-container { display: flex; align-items: center; gap: 10px; background: #fff; padding: 5px; border-radius: 8px; }
+        input[type="color"] { border: none; width: 30px; height: 30px; cursor: pointer; background: none; }
 
-.nav-item { color: #555; text-decoration: none; font-size: 11px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-.nav-item.active { color: var(--accent-color); }
-.nav-item i { font-size: 22px; }
-</style>
+        /* 
+           =========================================
+           【主內容與頁尾】
+           =========================================
+        */
+        main { padding: 80px 16px 100px; }
+        .hero-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 24px; padding: 20px; display: flex; align-items: center; gap: 15px;
+            box-shadow: var(--glow-effect);
+        }
+        .avatar { width: 65px; height: 65px; border-radius: 28px; background: linear-gradient(45deg, #444, #888); }
+        .user-name { font-size: 20px; font-weight: bold; }
+        .user-desc { color: var(--text-secondary); font-size: 14px; margin-top: 4px; }
+
+        footer {
+            position: fixed; bottom: 0; width: 100%; height: 70px;
+            background: var(--header-bg); border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+            backdrop-filter: blur(15px);
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-secondary); text-decoration: none; }
+        .nav-item.active { color: var(--accent-color); text-shadow: var(--glow-effect); }
+        .nav-label { font-size: 11px; margin-top: 5px; font-weight: 500; }
+
+    </style>
 </head>
-<body>
+<body data-theme="multicolor-black">
 
-<div class="container">
-  <div class="brand-title">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Admin</div>
+    <!-- 頁首：標題與功能按鈕 -->
+    <header>
+        <div class="header-title">主頁</div>
+        <div class="header-icons">
+            <span class="material-icons">search</span>
+            <span class="material-icons">person_add</span>
+            <span class="material-icons" id="settings-trigger">settings</span>
+        </div>
 
-  <div class="card">
-    <h2><i class="fa-solid fa-cloud-arrow-up"></i> 內容部署</h2>
-    
-    <label>發布類別</label>
-    <select id="dataType" onchange="updatePlaceholder()">
-      <option value="blog">📔 Markdown 文章 (Blog)</option>
-      <option value="wiki">📖 支援百科 (Wiki)</option>
-      <option value="shorts">🎬 短影音 (Shorts)</option>
-      <option value="music">🎵 音樂 (Music)</option>
-    </select>
+        <!-- 隱藏式設定面板 -->
+        <div id="settings-panel">
+            <span class="setting-label">視覺模式切換</span>
+            <button class="mode-btn" onclick="applyTheme('multicolor-black')">🌌 五彩斑斕黑 (預設)</button>
+            <button class="mode-btn" onclick="applyTheme('light')">☀️ 舒適版光模式</button>
+            <button class="mode-btn" onclick="applyTheme('immersive-dark')">🌑 沈浸式暗模式</button>
+            <button class="mode-btn" onclick="applyTheme('normal')">🟢 常態版</button>
+            
+            <div class="setting-group" style="margin-top: 15px;">
+                <span class="setting-label">全客製：自訂高亮顏色 (Color Picker)</span>
+                <div class="picker-container">
+                    <input type="color" id="accent-picker" value="#ff00ff">
+                    <span style="font-size: 13px;">點擊選色並套用</span>
+                </div>
+            </div>
+            <button class="mode-btn" style="background: #06c755; color: white;" onclick="closeMenu()">完成設定</button>
+        </div>
+    </header>
 
-    <label>標題名稱</label>
-    <input type="text" id="dataTitle" placeholder="輸入內容標題">
+    <!-- 主內容區 -->
+    <main>
+        <div class="hero-card">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <div class="user-name">旗艦版使用者</div>
+                <div class="user-desc">正在使用五彩斑斕黑介面...</div>
+            </div>
+        </div>
 
-    <label id="pathLabel">資源路徑</label>
-    <input type="text" id="dataUrl" placeholder="blog/p/list/article.md">
+        <div style="margin-top: 30px; opacity: 0.6; font-size: 12px; letter-spacing: 1px;">
+            <p>1000% 終極指南：</p>
+            <p>• 點擊右上角齒輪開啟 Color Picker</p>
+            <p>• 五彩斑斕黑背景會隨時間流動</p>
+        </div>
+    </main>
 
-    <button onclick="generateData()">產生代碼</button>
-    
-    <div id="output-box"></div>
-    <div class="action-btns" id="actionArea" style="display:none;">
-        <button class="secondary-btn" id="copyBtn" onclick="copyCode()">複製並前往</button>
-        <button class="danger-btn" onclick="clearOutput()">清除</button>
-    </div>
-  </div>
-</div>
+    <!-- 頁尾：導覽列 -->
+    <footer>
+        <div class="nav-item active">
+            <span class="material-icons">home</span>
+            <span class="nav-label">主頁</span>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons">chat_bubble_outline</span>
+            <span class="nav-label">聊天</span>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons">explore</span>
+            <span class="nav-label">VOOM</span>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons">account_balance_wallet</span>
+            <span class="nav-label">錢包</span>
+        </div>
+    </footer>
 
-<nav class="bottom-nav">
-  <a href="/index.html" class="nav-item"><i class="fa-solid fa-house"></i><span>主頁</span></a>
-  <a href="/blog/" class="nav-item"><i class="fa-solid fa-newspaper"></i><span>部落格</span></a>
-  <a href="/wiki.html" class="nav-item"><i class="fa-solid fa-circle-question"></i><span>支援中心</span></a>
-  <a href="/settings.html" class="nav-item active"><i class="fa-solid fa-gear"></i><span>管理</span></a>
-</nav>
+    <script>
+        /* 
+           =========================================
+           【JavaScript 邏輯控制層】
+           =========================================
+        */
+        const settingsTrigger = document.getElementById('settings-trigger');
+        const settingsPanel = document.getElementById('settings-panel');
+        const accentPicker = document.getElementById('accent-picker');
 
-<script>
-const config = {
-    blog: { ph: "blog/p/list/xxx.md", url: "https://github.com/mobsp/mobsp.github.io/edit/main/data/blog.js" },
-    wiki: { ph: "wiki/xxx.md", url: "https://github.com/mobsp/mobsp.github.io/edit/main/data/wiki.js" },
-    shorts: { ph: "https://catbox.moe/xxx.mp4", url: "https://github.com/mobsp/mobsp.github.io/edit/main/data/shorts.js" },
-    music: { ph: "https://catbox.moe/xxx.mp3", url: "https://github.com/mobsp/mobsp.github.io/edit/main/data/music.js" }
-};
+        // 1. 切換面板顯示狀態
+        settingsTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsPanel.classList.toggle('show');
+        });
 
-function updatePlaceholder() {
-    const type = document.getElementById('dataType').value;
-    document.getElementById('dataUrl').placeholder = config[type].ph;
-}
+        // 2. 點擊外部自動關閉選單
+        window.onclick = (e) => {
+            if (!settingsPanel.contains(e.target) && e.target !== settingsTrigger) {
+                settingsPanel.classList.remove('show');
+            }
+        };
 
-function generateData() {
-    const type = document.getElementById('dataType').value;
-    const title = document.getElementById('dataTitle').value || "未命名";
-    const url = document.getElementById('dataUrl').value;
-    if(!url) return alert("❌ 請輸入路徑！");
+        function closeMenu() {
+            settingsPanel.classList.remove('show');
+        }
 
-    const codeTemplate = {
-        blog: `const NEW_POST = { title: "${title}", path: "${url}", date: "${new Date().toLocaleDateString()}" };`,
-        wiki: `const NEW_WIKI = { title: "${title}", file: "${url}" };`,
-        shorts: `const NEW_SHORT = "${url}";`,
-        music: `const NEW_MUSIC = { title: "${title}", url: "${url}" };`
-    };
+        // 3. 套用預設模式
+        function applyTheme(themeName) {
+            // 移除自定義的高亮色（恢復該模式的預設值）
+            document.documentElement.style.removeProperty('--accent-color');
+            document.documentElement.style.removeProperty('--glow-effect');
+            
+            document.body.setAttribute('data-theme', themeName);
+            console.log(`[系統] 已切換至: ${themeName}`);
+        }
 
-    document.getElementById('output-box').innerText = codeTemplate[type];
-    document.getElementById('output-box').style.display = 'block';
-    document.getElementById('actionArea').style.display = 'flex';
-}
+        // 4. Color Picker 核心邏輯：即時變動 CSS 變數
+        // input 事件會在顏色盤移動時即時觸發
+        accentPicker.addEventListener('input', (e) => {
+            const pickedColor = e.target.value;
+            
+            // 強制覆蓋全域的 --accent-color 變數
+            document.documentElement.style.setProperty('--accent-color', pickedColor);
+            
+            // 同步更新發光效果 (Glow)
+            document.documentElement.style.setProperty('--glow-effect', `0 0 15px ${pickedColor}aa`);
+            
+            console.log(`[客製] 自訂顏色更新: ${pickedColor}`);
+        });
 
-function copyCode() {
-    const text = document.getElementById('output-box').innerText;
-    const type = document.getElementById('dataType').value;
-    navigator.clipboard.writeText(text).then(() => {
-        alert("✅ 代碼已複製！");
-        window.open(config[type].url, '_blank');
-    });
-}
-
-function clearOutput() {
-    document.getElementById('output-box').style.display = 'none';
-    document.getElementById('actionArea').style.display = 'none';
-    document.getElementById('dataTitle').value = "";
-    document.getElementById('dataUrl').value = "";
-}
-</script>
+        /*
+           【旗艦版小貼士】
+           - multicolor-black 模式使用了 CSS 動畫背景，會消耗較多 GPU 資源。
+           - backdrop-filter 屬性在部分舊版 Android 瀏覽器可能無效，建議使用最新版 Chrome。
+           - Color Picker 是透過原生 <input type="color"> 實現，能完美支援所有現代瀏覽器。
+        */
+    </script>
 </body>
 </html>
