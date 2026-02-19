@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://mobsp.github.io">
-    <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間" width="100%">
+    <img src="assets/brand/logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間" width="100%">
   </a>
   <br>
   <kbd> 點擊∆圖片探索 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ ☖ </kbd>
@@ -20,7 +20,7 @@
 
 ## 🌐 核心服務入口 (Core Services)
 
-<details>
+<details open>
 <summary>點擊查看完整清單</summary>
 
 <div align="left" style="overflow: auto;">
@@ -44,9 +44,9 @@
         <td nowrap><a href="./blog/index.html"><code>./blog/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/p/#wiki"><b>查看指南 📚</b></a></td>
+        <td nowrap><a href="https://mobsp.github.io/wiki/"><b>查看指南 📚</b></a></td>
         <td nowrap>專案說明與使用者指南</td>
-        <td nowrap><a href="./p/#wiki"><code>./p/#wiki</code></a></td>
+        <td nowrap><a href="./wiki/index.html"><code>./wiki/index.html</code></a></td>
       </tr>
       <tr>
         <td nowrap><a href="https://mobsp.github.io/tol/"><b>使用工具 🛠️</b></a></td>
@@ -54,19 +54,19 @@
         <td nowrap><a href="./tol/index.html"><code>./tol/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/p/#Music"><b>開啟頻道 🎵</b></a></td>
-        <td nowrap>沈浸式線上音樂體驗</td>
-        <td nowrap><a href="./p/#Music"><code>./p/#Music</code></a></td>
+        <td nowrap><a href="https://mobsp.github.io/shorts/"><b>短影音頻道 🎵</b></a></td>
+        <td nowrap>沈浸式多媒體內容體驗</td>
+        <td nowrap><a href="./shorts/index.html"><code>./shorts/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/p/#Keep"><b>記錄靈感 📒</b></a></td>
-        <td nowrap>輕量化雲端靈感記錄</td>
-        <td nowrap><a href="./p/#Keep"><code>./p/#Keep</code></a></td>
+        <td nowrap><a href="https://mobsp.github.io/data/notice.md"><b>記錄靈感 📒</b></a></td>
+        <td nowrap>輕量化系統動態公告</td>
+        <td nowrap><a href="./data/notice.md"><code>./data/notice.md</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/p/#Editor"><b>開始編碼 💻</b></a></td>
-        <td nowrap>即時預覽代碼與內容</td>
-        <td nowrap><a href="./p/#Editor"><code>./p/#Editor</code></a></td>
+        <td nowrap><a href="https://mobsp.github.io/assets/icon/viewer/"><b>開始編碼 💻</b></a></td>
+        <td nowrap>圖示與組件開發預覽</td>
+        <td nowrap><a href="./assets/icon/viewer/index.html"><code>./assets/icon/viewer/index.html</code></a></td>
       </tr>
     </tbody>
   </table>
@@ -96,28 +96,28 @@
     <tbody>
       <tr>
         <td nowrap><b>Brand Assets</b></td>
-        <td nowrap><code>./assets/logo.png</code></td>
-        <td nowrap><b>莫比空間官方 Logo (核心識別)</b></td>
+        <td nowrap><code>./assets/brand/</code></td>
+        <td nowrap><b>莫比空間核心視覺識別系統</b></td>
       </tr>
       <tr>
         <td nowrap><b>Entry (HTML)</b></td>
-        <td nowrap><code>./index.html</code>, <code>./blog/index.html</code>, <code>./tol/index.html</code>, <code>./p/index.html</code></td>
-        <td nowrap>各大模組的主要入口頁面</td>
+        <td nowrap><code>./index.html</code>, <code>./blog/</code>, <code>./tol/</code>, <code>./wiki/</code>, <code>./shorts/</code></td>
+        <td nowrap>系統各大功能模組的主要入口</td>
       </tr>
       <tr>
         <td nowrap><b>Documentation</b></td>
-        <td nowrap><code>./README.md</code>, <code>./data/notice.md</code></td>
-        <td nowrap>專案說明與系統動態公告</td>
+        <td nowrap><code>./README.md</code>, <code>./data/notice.md</code>, <code>./data/qa.md</code></td>
+        <td nowrap>專案說明、系統公告與常見問題</td>
       </tr>
       <tr>
         <td nowrap><b>Logic (JS)</b></td>
-        <td nowrap><code>/assets/js/</code></td>
-        <td nowrap>驅動 SPA 切換與 PWA 運行的邏輯</td>
+        <td nowrap><code>./assets/js/</code></td>
+        <td nowrap>驅動 PWA 運行與前端交互邏輯核心</td>
       </tr>
       <tr>
         <td nowrap><b>Data (JSON)</b></td>
-        <td nowrap><code>./tol/data.json</code>, <code>./p/sub.json</code></td>
-        <td nowrap>工具庫與子頁面配置的數據核心</td>
+        <td nowrap><code>./tol/data.json</code>, <code>./manifest.json</code></td>
+        <td nowrap>工具庫數據配置與 Web App 元數據</td>
       </tr>
     </tbody>
   </table>
