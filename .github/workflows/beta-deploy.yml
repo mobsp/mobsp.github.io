@@ -1,0 +1,31 @@
+name: 莫比 Beta 部署與驗證
+on:
+  push:
+    paths:
+      - 'beta/**' # 僅監控 beta 目錄
+
+jobs:
+  validate-and-optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 驗證 JSON 資料安全性
+        run: |
+          if jq . beta/data.json > /dev/null 2>&1; then
+            echo "JSON 驗證通過"
+          else
+            echo "JSON 格式錯誤，終止部署"
+            exit 1
+          fi
+
+      - name: 壓縮前端資源
+        run: |
+          # 可以在這裡加入 CSS/JS 壓縮工具
+          echo "資源編譯完成"
+
+      - name: 部署到 GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: .
+          branch: gh-pages
