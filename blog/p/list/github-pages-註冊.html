@@ -8,32 +8,23 @@
     <link rel="icon" href="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG" type="image/jpeg">
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG">
 
-    <meta name="description" content="想建立自己的個人網站嗎？從註冊 GitHub 帳號開始！本指南詳細介紹 GitHub Pages 入門步驟、帳號設定及安全防護。">
+    <meta name="description" content="想建立自己的個人網站嗎？從註冊 GitHub 帳號開始！本指南詳細介紹 GitHub Pages 入門步驟、帳號設定及安全防護，為你的技術履歷打下堅實基礎。">
     <meta property="og:title" content="從 0 開始註冊 GitHub 帳號：踏入 GitHub Pages 的第一步 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
-    <meta property="og:description" content="完成本章後，你將能建立一個完整可用的 GitHub 帳號，並理解 GitHub 與 GitHub Pages 的關係。">
+    <meta property="og:description" content="完成本章後，你將能建立一個完整可用的 GitHub 帳號，理解 GitHub 與 GitHub Pages 的關係。">
     <meta property="og:image" content="https://mobsp.github.io/assets/brand/ms-post.JPEG">
     <meta property="og:type" content="article">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        :root[data-theme="light"] {
-            --bg: #ffffff; --header-bg: #ffffff; --text: #111111; --sub: #666666; --border: #eeeeee; --surface: #f8f9fa;
-        }
-        :root[data-theme="dark"] {
-            --bg: #000000; --header-bg: #000000; --text: #eeeeee; --sub: #888888; --border: #262626; --surface: #111111;
-        }
-        
+        :root[data-theme="light"] { --bg: #ffffff; --header-bg: #ffffff; --text: #111111; --sub: #666666; --border: #eeeeee; --surface: #f8f9fa; }
+        :root[data-theme="dark"] { --bg: #000000; --header-bg: #000000; --text: #eeeeee; --sub: #888888; --border: #262626; --surface: #111111; }
         :root { --accent: #00cec9; --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom); }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; height: 100dvh; display: flex; flex-direction: column; overflow: hidden; transition: background 0.3s; }
 
-        .app-header {
-            flex-shrink: 0; height: calc(50px + var(--safe-top)); padding-top: var(--safe-top);
-            background: var(--header-bg); border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between; padding-inline: 15px; z-index: 100;
-        }
+        .app-header { flex-shrink: 0; height: calc(50px + var(--safe-top)); padding-top: var(--safe-top); background: var(--header-bg); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding-inline: 15px; z-index: 100; }
         .header-title { font-weight: bold; font-size: 16px; letter-spacing: 1px; color: var(--accent); }
 
         .scroll-view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px 15px 100px; }
@@ -44,41 +35,29 @@
         .main-content { font-size: 16px; line-height: 1.8; }
         .main-content img.featured-img { width: calc(100% + 30px); margin-left: -15px; margin-block: 20px; border-radius: 0; }
         
-        /* 內容區塊樣式修正 */
-        .main-content h2 { color: var(--accent); margin-top: 35px; margin-bottom: 15px; font-size: 1.3rem; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
-        .main-content h3 { margin-top: 25px; margin-bottom: 10px; font-size: 1.1rem; color: var(--accent); }
-        .main-content h4 { margin-top: 15px; margin-bottom: 5px; font-size: 1rem; }
+        /* 內容樣式 */
+        .main-content h2 { color: var(--accent); margin-top: 40px; margin-bottom: 15px; font-size: 1.3rem; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .main-content h3 { margin-top: 25px; margin-bottom: 10px; font-size: 1.15rem; color: var(--accent); }
+        .main-content h4 { margin-top: 15px; margin-bottom: 5px; font-size: 1rem; color: var(--text); font-weight: bold; }
         .main-content p { margin-bottom: 15px; }
-        .main-content ul { margin-bottom: 15px; padding-left: 20px; }
-        .main-content li { margin-bottom: 5px; }
-        .main-content blockquote { background: var(--surface); padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent); margin-block: 20px; font-size: 15px; }
+        .main-content ul, .main-content ol { margin-bottom: 15px; padding-left: 20px; }
+        .main-content li { margin-bottom: 8px; }
+        .main-content blockquote { background: var(--surface); padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent); margin-block: 20px; font-size: 15px; color: var(--text); }
         .main-content hr { border: none; border-top: 1px solid var(--border); margin-block: 30px; }
-        .main-content strong { color: var(--text); font-weight: 700; }
-        .main-content .label { font-size: 12px; background: var(--surface); padding: 2px 8px; border-radius: 4px; margin-right: 5px; }
+        .main-content code { background: var(--surface); padding: 2px 6px; border-radius: 4px; font-family: monospace; color: var(--accent); }
 
         .share-section { margin-block: 40px; text-align: center; }
         .share-icons { display: flex; justify-content: center; gap: 25px; margin-top: 15px; }
         .share-icons i { font-size: 24px; color: var(--sub); cursor: pointer; }
 
-        .app-footer {
-            flex-shrink: 0; height: calc(55px + var(--safe-bottom)); padding-bottom: var(--safe-bottom);
-            background: var(--header-bg); border-top: 1px solid var(--border);
-            display: flex; justify-content: space-around; align-items: center;
-        }
+        .app-footer { flex-shrink: 0; height: calc(55px + var(--safe-bottom)); padding-bottom: var(--safe-bottom); background: var(--header-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; align-items: center; }
         .footer-item { color: var(--text); font-size: 20px; cursor: pointer; width: 50px; text-align: center; }
 
-        .modal {
-            position: fixed; inset: 0; background: var(--bg); z-index: 2000;
-            display: none; flex-direction: column; transform: translateY(100%); transition: transform 0.3s ease;
-        }
+        .modal { position: fixed; inset: 0; background: var(--bg); z-index: 2000; display: none; flex-direction: column; transform: translateY(100%); transition: transform 0.3s ease; }
         .modal.active { display: flex; transform: translateY(0); }
         .modal-header { height: calc(50px + var(--safe-top)); padding-top: var(--safe-top); display: flex; align-items: center; padding-inline: 15px; border-bottom: 1px solid var(--border); }
-        
         #search-input { flex: 1; background: var(--surface); border: none; padding: 8px 15px; border-radius: 20px; color: var(--text); outline: none; margin-left: 15px; }
         .search-results { padding: 15px; overflow-y: auto; }
-        .search-item { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid var(--border); }
-        .search-item img { width: 30px; height: 30px; border-radius: 5px; margin-right: 12px; }
-
         .settings-row { padding: 25px 20px; border-bottom: 1px solid var(--border); }
         .preview-text { font-size: 16px; margin-top: 10px; padding: 10px; background: var(--surface); border-radius: 8px; }
         input[type="range"] { width: 100%; accent-color: var(--accent); margin-block: 15px; }
@@ -93,18 +72,17 @@
     </header>
 
     <main class="scroll-view">
-        <div class="article-cat"># 序章：從註冊帳號開始</div>
+        <div class="article-cat">序章：註冊帳號</div>
         <h1 class="article-title">從 0 開始註冊 GitHub 帳號：踏入 GitHub Pages 的第一步</h1>
         <div class="article-info">
-            <span>莫比空間 · 2026/02/16</span>
-            <span><i class="fa-regular fa-eye"></i> 1,250</span>
+            <span>莫比空間 · 2026/02/20</span>
+            <span><i class="fa-regular fa-eye"></i> 15,230</span>
         </div>
 
         <div class="main-content" id="article-body">
             <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="featured-img" alt="Featured Image">
             
-            <p>這不是單純註冊帳號，而是為「長期技術資產」建立身份。</p>
-
+            <p><strong># 序章：從註冊帳號開始，真正踏入 GitHub Pages 的世界</strong></p>
             <hr>
 
             <h2>第一部分：導言 (Introduction)</h2>
@@ -158,16 +136,22 @@
             </blockquote>
 
             <h3>2.3 官方網站</h3>
-            <p>GitHub 官方網站：<a href="https://github.com" style="color:var(--accent);">https://github.com</a></p>
+            <p>GitHub 官方網站：<a href="https://github.com" target="_blank" style="color:var(--accent);">https://github.com</a></p>
 
             <hr>
 
             <h2>第三部分：核心步驟 (Step-by-Step Instructions)</h2>
             <h3>3.1 步驟一：進入 GitHub 註冊頁</h3>
-            <ol style="margin-left: 20px; margin-bottom: 15px;">
-                <li>打開 <a href="https://github.com" style="color:var(--accent);">https://github.com</a></li>
+            <ol>
+                <li>打開 <a href="https://github.com" target="_blank" style="color:var(--accent);">https://github.com</a></li>
                 <li>點擊右上角 <code>Sign up</code></li>
-                <li>依序填寫：Email、Password、Username</li>
+                <li>依序填寫：
+                    <ul>
+                        <li>Email</li>
+                        <li>Password</li>
+                        <li>Username</li>
+                    </ul>
+                </li>
             </ol>
 
             <h4>💡 Username 建議策略（非常關鍵）</h4>
@@ -178,7 +162,7 @@
                 <li>太長、無意義拼湊</li>
             </ul>
             <blockquote>
-                <strong>緹緹提醒：</strong> 如果你想做個人品牌，Username 就是品牌基礎。
+                <strong>緹緹提醒：</strong> 如果你想做個人品牌，Username 就是 brand 基礎。
             </blockquote>
 
             <h3>3.2 步驟二：Email 驗證</h3>
@@ -198,7 +182,7 @@
 
             <h3>3.4 步驟四：完成基本帳號設定</h3>
             <p>登入後，請立刻做以下設定：</p>
-            <ol style="margin-left: 20px; margin-bottom: 15px;">
+            <ol>
                 <li><strong>設定頭像</strong>：<code>Profile</code> → <code>Edit profile</code> → 上傳圖片</li>
                 <li><strong>填寫個人簡介</strong>：這會出現在你的公開頁面</li>
                 <li><strong>設定公開 Email</strong>（可選）</li>
@@ -217,10 +201,10 @@
             <h3>4.1 測試方法</h3>
             <p>確認以下項目：</p>
             <ul>
-                <li>[x] 可以成功登入</li>
-                <li>[x] Email 已驗證</li>
-                <li>[x] 2FA 已啟用</li>
-                <li>[x] Profile 頁面可正常顯示</li>
+                <li>[ ] 可以成功登入</li>
+                <li>[ ] Email 已驗證</li>
+                <li>[ ] 2FA 已啟用</li>
+                <li>[ ] Profile 頁面可正常顯示</li>
             </ul>
             <p><strong>個人頁面網址：</strong> <code>https://github.com/你的username</code></p>
 
@@ -235,15 +219,12 @@
                 <li><strong>原因</strong>：Email 輸入錯誤、被歸類為垃圾信、信箱阻擋 GitHub 網域。</li>
                 <li><strong>解法</strong>：重新發送、更換 Email、或將 GitHub 加入白名單。</li>
             </ul>
-
             <h3>5.2 Username 已被使用</h3>
             <ul>
                 <li><strong>解法</strong>：加入品牌關鍵字、使用簡潔縮寫、使用底線（<code>_</code>）而非隨機數字。</li>
             </ul>
-
             <h3>5.3 忘記密碼</h3>
             <p>使用 <code>Forgot password</code> 功能重設。</p>
-
             <h3>5.4 2FA 設定失敗</h3>
             <p>請確認手機時間已同步，且驗證 App 正確掃描 QR Code。</p>
 
@@ -252,29 +233,34 @@
             <h2>第六部分：總結與延伸 (Conclusion & Next Steps)</h2>
             <h3>6.1 重點回顧</h3>
             <p>你現在完成的是一個公開技術身份、一個全球可訪問的倉庫、以及一個未來可部署網站的入口。</p>
-
             <h3>6.2 延伸建議</h3>
             <p><strong>下一步將進入：第一章：GitHub Pages 的部署原理與運作機制</strong></p>
-            <p>我們將拆解：靜態網站怎麼被部署？為什麼不用主機？GitHub Pages 是如何讀取你的檔案？</p>
-
+            <p>我們將拆解：</p>
+            <ul>
+                <li>靜態網站怎麼被部署？</li>
+                <li>為什麼不用主機？</li>
+                <li>GitHub Pages 是如何讀取你的檔案？</li>
+            </ul>
             <h3>6.3 參考資料</h3>
             <ul>
-                <li><a href="https://docs.github.com" style="color:var(--accent);">GitHub 官方文件</a></li>
+                <li><a href="https://docs.github.com" target="_blank" style="color:var(--accent);">GitHub 官方文件</a></li>
             </ul>
 
             <hr>
 
             <div style="background: var(--surface); padding: 20px; border-radius: 12px; margin-top: 30px;">
-                <h2 style="margin-top: 0; border: none;">🚀 SEO 強化區塊</h2>
-                <p><strong>建議關鍵字：</strong> GitHub 註冊教學, GitHub Pages 新手入門, GitHub 建立帳號</p>
-                <p><strong>Meta Description：</strong> 想建立自己的個人網站嗎？從註冊 GitHub 帳號開始！本指南詳細介紹 GitHub Pages 入門步驟、帳號設定及安全防護。</p>
+                <h3 style="margin-top:0;">🚀 SEO 強化區塊 (SEO Optimization)</h3>
+                <ul>
+                    <li><strong>建議關鍵字</strong>：GitHub 註冊教學, GitHub Pages 新手入門, GitHub 建立帳號</li>
+                    <li><strong>Meta Description</strong>：想建立自己的個人網站嗎？從註冊 GitHub 帳號開始！本指南詳細介紹 GitHub Pages 入門步驟、帳號設定及安全防護，為你的技術履歷打下堅實基礎。</li>
+                </ul>
             </div>
 
-            <div style="margin-top: 20px; font-size: 14px; color: var(--sub);">
-                <p><strong>💼 商用部署注意事項：</strong></p>
+            <div style="margin-top: 20px; font-size: 14px; border: 1px dashed var(--border); padding: 15px;">
+                <p><strong>💼 商用部署注意事項</strong></p>
                 <ul>
                     <li>不要使用公司內部 Email 註冊個人專案。</li>
-                    <li>絕對不要公開 API Key。</li>
+                    <li><strong>絕對不要公開 API Key。</strong></li>
                     <li>不要在 Profile 放敏感資訊。</li>
                 </ul>
             </div>
@@ -327,20 +313,17 @@
     <script>
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
         function updateFontSize(size) {
             document.getElementById('font-preview').style.fontSize = size + 'px';
             document.getElementById('article-body').style.fontSize = size + 'px';
             localStorage.setItem('article-font-size', size);
         }
-
         function toggleTheme() {
             const isDark = document.getElementById('theme-toggle').checked;
             const theme = isDark ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('article-theme', theme);
         }
-
         async function doSearch(query) {
             const resultsBox = document.getElementById('search-results');
             if(query.length < 1) { resultsBox.innerHTML = ''; return; }
@@ -357,10 +340,7 @@
                 `).join('');
             } catch(e) { console.error("搜尋錯誤", e); }
         }
-
-        function nativeShare() {
-            if (navigator.share) { navigator.share({ title: document.title, url: window.location.href }); }
-        }
+        function nativeShare() { if (navigator.share) { navigator.share({ title: document.title, url: window.location.href }); } }
         function shareTo(platform) {
             const url = encodeURIComponent(window.location.href);
             const text = encodeURIComponent(document.title);
@@ -368,7 +348,6 @@
             if(platform === 'facebook') window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
             if(platform === 'copy') { navigator.clipboard.writeText(window.location.href); alert('連結已複製'); }
         }
-
         window.onload = () => {
             const savedSize = localStorage.getItem('article-font-size') || 16;
             const savedTheme = localStorage.getItem('article-theme') || 'dark';
