@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>從 0 開始註冊 GitHub 帳號 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <title>從 0 開始註冊 GitHub 帳號：踏入 GitHub Pages 的第一步 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
     
     <link rel="icon" href="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG" type="image/jpeg">
     <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo1.JPEG">
 
-    <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 技術指南：從 0 開始註冊 GitHub 帳號，踏入 GitHub Pages 的第一步。">
-    <meta property="og:title" content="從 0 開始註冊 GitHub 帳號 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
-    <meta property="og:description" content="踏入 GitHub Pages 的第一步，完整帳號註冊與安全設定指南。">
+    <meta name="description" content="想建立自己的個人網站嗎？從註冊 GitHub 帳號開始！本指南詳細介紹 GitHub Pages 入門步驟、帳號設定及安全防護。">
+    <meta property="og:title" content="從 0 開始註冊 GitHub 帳號：踏入 GitHub Pages 的第一步 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
+    <meta property="og:description" content="完成本章後，你將能建立一個完整可用的 GitHub 帳號，並理解 GitHub 與 GitHub Pages 的關係。">
     <meta property="og:image" content="https://mobsp.github.io/assets/brand/ms-post.JPEG">
     <meta property="og:type" content="article">
 
@@ -44,12 +44,17 @@
         .main-content { font-size: 16px; line-height: 1.8; }
         .main-content img.featured-img { width: calc(100% + 30px); margin-left: -15px; margin-block: 20px; border-radius: 0; }
         
-        /* 為了內容閱讀性，保留 markdown 風格的基礎樣式 */
-        .main-content h2 { color: var(--accent); margin-top: 30px; margin-bottom: 15px; border-left: 4px solid var(--accent); padding-left: 10px; font-size: 1.2rem; }
-        .main-content h3 { margin-top: 25px; margin-bottom: 10px; font-size: 1.1rem; }
+        /* 內容區塊樣式修正 */
+        .main-content h2 { color: var(--accent); margin-top: 35px; margin-bottom: 15px; font-size: 1.3rem; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .main-content h3 { margin-top: 25px; margin-bottom: 10px; font-size: 1.1rem; color: var(--accent); }
+        .main-content h4 { margin-top: 15px; margin-bottom: 5px; font-size: 1rem; }
         .main-content p { margin-bottom: 15px; }
         .main-content ul { margin-bottom: 15px; padding-left: 20px; }
-        .main-content blockquote { background: var(--surface); padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent); margin-block: 20px; font-size: 14px; color: var(--sub); }
+        .main-content li { margin-bottom: 5px; }
+        .main-content blockquote { background: var(--surface); padding: 15px; border-radius: 8px; border-left: 4px solid var(--accent); margin-block: 20px; font-size: 15px; }
+        .main-content hr { border: none; border-top: 1px solid var(--border); margin-block: 30px; }
+        .main-content strong { color: var(--text); font-weight: 700; }
+        .main-content .label { font-size: 12px; background: var(--surface); padding: 2px 8px; border-radius: 4px; margin-right: 5px; }
 
         .share-section { margin-block: 40px; text-align: center; }
         .share-icons { display: flex; justify-content: center; gap: 25px; margin-top: 15px; }
@@ -88,11 +93,11 @@
     </header>
 
     <main class="scroll-view">
-        <div class="article-cat">序章：註冊帳號</div>
+        <div class="article-cat"># 序章：從註冊帳號開始</div>
         <h1 class="article-title">從 0 開始註冊 GitHub 帳號：踏入 GitHub Pages 的第一步</h1>
         <div class="article-info">
-            <span>莫比空間 · 2026/02/20</span>
-            <span><i class="fa-regular fa-eye"></i> 1,024</span>
+            <span>莫比空間 · 2026/02/16</span>
+            <span><i class="fa-regular fa-eye"></i> 1,250</span>
         </div>
 
         <div class="main-content" id="article-body">
@@ -100,35 +105,182 @@
             
             <p>這不是單純註冊帳號，而是為「長期技術資產」建立身份。</p>
 
-            <h2>第一部分：導言</h2>
-            <p>完成本章後，你將能建立一個完整可用的 GitHub 帳號，理解 GitHub 與 GitHub Pages 的關係，並正確設定基礎安全機制。</p>
-            <ul>
-                <li>⏱️ 預估時間：約 10–20 分鐘</li>
-                <li>適用人群：完全新手、想建站但未接觸過 GitHub 者</li>
-            </ul>
+            <hr>
 
-            <h2>第二部分：事前準備</h2>
+            <h2>第一部分：導言 (Introduction)</h2>
+            <h3>1.1 標題</h3>
+            <p><strong>從 0 開始註冊 GitHub 帳號：踏入 GitHub Pages 的第一步</strong></p>
+
+            <h3>1.2 目標說明</h3>
+            <p>完成本章後，你將能：</p>
             <ul>
-                <li>一組可長期使用的 Email (建議 Gmail)</li>
-                <li>手機 (接收簡訊或安裝驗證 App)</li>
-                <li>一台電腦 (建議避免使用手機操作)</li>
+                <li>建立一個完整可用的 GitHub 帳號</li>
+                <li>理解 GitHub 與 GitHub Pages 的關係</li>
+                <li>正確設定基礎安全機制（Email 驗證、2FA）</li>
+                <li>為後續建立網站專案做好準備</li>
             </ul>
             <blockquote>
-                <strong>概念拆解：</strong> GitHub 是倉庫，GitHub Pages 是把倉庫裡的網站檔案公開展示。
+                <strong>緹緹的天才筆記：</strong> 這不是單純註冊帳號，而是為「長期技術資產」建立身份。
             </blockquote>
 
-            <h2>第三部分：核心步驟</h2>
-            <h3>步驟一：進入註冊頁</h3>
-            <p>打開 <a href="https://github.com" style="color:var(--accent);">github.com</a>，點擊 Sign up。Username 將成為你未來的網域 (username.github.io)，請慎重選擇。</p>
-            
-            <h3>步驟二：安全驗證</h3>
-            <p>完成 Email 驗證並選擇 Free Plan。隨後請務必在設定中啟用 <strong>2FA (兩步驟驗證)</strong>，保護你的技術資產。</p>
+            <h3>1.3 適用人群</h3>
+            <ul>
+                <li>完全新手</li>
+                <li>想用 GitHub Pages 建站但從未接觸 GitHub</li>
+                <li>有 GitHub 帳號但未正式使用過的人</li>
+            </ul>
 
-            <h2>第四部分：成果驗證</h2>
-            <p>確認可以成功登入，且 Profile 頁面顯示正常。你的個人網址為：https://github.com/你的username。</p>
+            <h3>1.4 預估時間</h3>
+            <p>⏱️ <strong>約 10–20 分鐘</strong>（含安全設定）</p>
 
-            <h2>第五部分：常見問題</h2>
-            <p>若無法收到驗證信，請檢查垃圾郵件或更換 Email。若 Username 已被使用，建議加入品牌關鍵字或簡潔縮寫。</p>
+            <hr>
+
+            <h2>第二部分：事前準備 (Preparation)</h2>
+            <h3>2.1 材料 / 工具清單</h3>
+            <ul>
+                <li>一組可長期使用的 Email（建議使用 Gmail）</li>
+                <li>可接收簡訊或安裝驗證 App 的手機</li>
+                <li>穩定網路環境</li>
+                <li>一台電腦（桌機或筆電）</li>
+            </ul>
+            <p>⚠️ <strong>建議使用電腦操作</strong>，手機瀏覽器不利於後續專案管理。</p>
+
+            <h3>2.2 必備基礎</h3>
+            <p>不需要會寫程式。但需要理解：</p>
+            <ul>
+                <li><strong>網站 ≠ Facebook 頁面</strong></li>
+                <li><strong>GitHub</strong> 是程式碼託管平台</li>
+                <li><strong>GitHub Pages</strong> 是靜態網站服務</li>
+            </ul>
+            <blockquote>
+                <strong>概念拆解：</strong><br>
+                GitHub 是倉庫，GitHub Pages 是把倉庫裡的網站檔案公開展示。
+            </blockquote>
+
+            <h3>2.3 官方網站</h3>
+            <p>GitHub 官方網站：<a href="https://github.com" style="color:var(--accent);">https://github.com</a></p>
+
+            <hr>
+
+            <h2>第三部分：核心步驟 (Step-by-Step Instructions)</h2>
+            <h3>3.1 步驟一：進入 GitHub 註冊頁</h3>
+            <ol style="margin-left: 20px; margin-bottom: 15px;">
+                <li>打開 <a href="https://github.com" style="color:var(--accent);">https://github.com</a></li>
+                <li>點擊右上角 <code>Sign up</code></li>
+                <li>依序填寫：Email、Password、Username</li>
+            </ol>
+
+            <h4>💡 Username 建議策略（非常關鍵）</h4>
+            <p>你的 Username 將成為：<code>https://&lt;username&gt;.github.io</code>，也就是你未來網站的預設網域。</p>
+            <p><strong>請避免：</strong></p>
+            <ul>
+                <li>隨便取、帶太多數字</li>
+                <li>太長、無意義拼湊</li>
+            </ul>
+            <blockquote>
+                <strong>緹緹提醒：</strong> 如果你想做個人品牌，Username 就是品牌基礎。
+            </blockquote>
+
+            <h3>3.2 步驟二：Email 驗證</h3>
+            <p>註冊後會收到驗證信。請點擊信件中的連結完成驗證。</p>
+            <p><strong>如果沒有收到信件：</strong></p>
+            <ul>
+                <li>檢查垃圾信件</li>
+                <li>等待 1–2 分鐘</li>
+                <li>點擊重新發送</li>
+            </ul>
+
+            <h3>3.3 步驟三：選擇免費方案</h3>
+            <p>GitHub 目前提供 <strong>Free 方案</strong> 即可使用 GitHub Pages，不需要升級付費。</p>
+            <ul>
+                <li>選擇：<code>Free Plan</code> → <code>Continue</code></li>
+            </ul>
+
+            <h3>3.4 步驟四：完成基本帳號設定</h3>
+            <p>登入後，請立刻做以下設定：</p>
+            <ol style="margin-left: 20px; margin-bottom: 15px;">
+                <li><strong>設定頭像</strong>：<code>Profile</code> → <code>Edit profile</code> → 上傳圖片</li>
+                <li><strong>填寫個人簡介</strong>：這會出現在你的公開頁面</li>
+                <li><strong>設定公開 Email</strong>（可選）</li>
+            </ol>
+
+            <h3>3.5 步驟五：啟用兩步驟驗證（強烈建議）</h3>
+            <ul>
+                <li><strong>路徑</strong>：<code>Settings</code> → <code>Password and authentication</code> → <code>Enable 2FA</code></li>
+                <li><strong>建議工具</strong>：<code>Google Authenticator</code> 或 <code>Microsoft Authenticator</code></li>
+            </ul>
+            <p>❗ <strong>這一步非常重要：</strong> 因為 GitHub 是你的技術資產庫。如果被盜，網站與專案都會有風險。</p>
+
+            <hr>
+
+            <h2>第四部分：成果驗證 (Verification)</h2>
+            <h3>4.1 測試方法</h3>
+            <p>確認以下項目：</p>
+            <ul>
+                <li>[x] 可以成功登入</li>
+                <li>[x] Email 已驗證</li>
+                <li>[x] 2FA 已啟用</li>
+                <li>[x] Profile 頁面可正常顯示</li>
+            </ul>
+            <p><strong>個人頁面網址：</strong> <code>https://github.com/你的username</code></p>
+
+            <h3>4.2 預期結果</h3>
+            <p>你應該看到個人頭像、Username、以及空白的 Repositories 區域。這表示你的技術身份已建立完成。</p>
+
+            <hr>
+
+            <h2>第五部分：常見問題與故障排除 (Troubleshooting)</h2>
+            <h3>5.1 無法收到驗證信</h3>
+            <ul>
+                <li><strong>原因</strong>：Email 輸入錯誤、被歸類為垃圾信、信箱阻擋 GitHub 網域。</li>
+                <li><strong>解法</strong>：重新發送、更換 Email、或將 GitHub 加入白名單。</li>
+            </ul>
+
+            <h3>5.2 Username 已被使用</h3>
+            <ul>
+                <li><strong>解法</strong>：加入品牌關鍵字、使用簡潔縮寫、使用底線（<code>_</code>）而非隨機數字。</li>
+            </ul>
+
+            <h3>5.3 忘記密碼</h3>
+            <p>使用 <code>Forgot password</code> 功能重設。</p>
+
+            <h3>5.4 2FA 設定失敗</h3>
+            <p>請確認手機時間已同步，且驗證 App 正確掃描 QR Code。</p>
+
+            <hr>
+
+            <h2>第六部分：總結與延伸 (Conclusion & Next Steps)</h2>
+            <h3>6.1 重點回顧</h3>
+            <p>你現在完成的是一個公開技術身份、一個全球可訪問的倉庫、以及一個未來可部署網站的入口。</p>
+
+            <h3>6.2 延伸建議</h3>
+            <p><strong>下一步將進入：第一章：GitHub Pages 的部署原理與運作機制</strong></p>
+            <p>我們將拆解：靜態網站怎麼被部署？為什麼不用主機？GitHub Pages 是如何讀取你的檔案？</p>
+
+            <h3>6.3 參考資料</h3>
+            <ul>
+                <li><a href="https://docs.github.com" style="color:var(--accent);">GitHub 官方文件</a></li>
+            </ul>
+
+            <hr>
+
+            <div style="background: var(--surface); padding: 20px; border-radius: 12px; margin-top: 30px;">
+                <h2 style="margin-top: 0; border: none;">🚀 SEO 強化區塊</h2>
+                <p><strong>建議關鍵字：</strong> GitHub 註冊教學, GitHub Pages 新手入門, GitHub 建立帳號</p>
+                <p><strong>Meta Description：</strong> 想建立自己的個人網站嗎？從註冊 GitHub 帳號開始！本指南詳細介紹 GitHub Pages 入門步驟、帳號設定及安全防護。</p>
+            </div>
+
+            <div style="margin-top: 20px; font-size: 14px; color: var(--sub);">
+                <p><strong>💼 商用部署注意事項：</strong></p>
+                <ul>
+                    <li>不要使用公司內部 Email 註冊個人專案。</li>
+                    <li>絕對不要公開 API Key。</li>
+                    <li>不要在 Profile 放敏感資訊。</li>
+                </ul>
+            </div>
+
+            <p style="margin-top: 30px;">這一章看起來簡單，但它是整個技術體系的起點。一個帳號，就是一個公開的技術履歷。而 GitHub Pages，會是你第一個公開作品的展示舞台。</p>
+            <p><strong>下一章，我們開始真正進入網站部署機制。</strong></p>
         </div>
 
         <div class="share-section">
@@ -173,7 +325,6 @@
     </div>
 
     <script>
-        // --- 彈窗、字體、主題、搜尋、分享邏輯完全保留原樣 ---
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
