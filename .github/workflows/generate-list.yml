@@ -1,0 +1,64 @@
+name: Generate Blog Article List
+on:
+  push:
+    paths:
+      - 'blog/p/list/**'  # 只有當文章資料夾變動時才執行
+  workflow_dispatch:      # 允許手動觸發
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Generate JSON
+        run: |
+          python <<EOF
+          import os, json, re
+          from datetime import datetime
+
+          path = 'blog/p/list'
+          articles = []
+          if os.path.exists(path):
+              for file in os.listdir(path):
+                  if file.endswith('.html') and file != 'index.html':
+                      file_path = os.path.join(path, file)
+                      with open(file_path, 'r', encoding='utf-8') as f:
+                          content = f.read()
+                          # 天才解析：自動抓取 HTML 裡的 <title> 標籤
+                          title_search = re.search('<title>(.*?)</title>', content)
+                          title = title_search.group(1) if title_search else file.replace('.html', '')
+                          
+                          # 取得檔案最後修改時間
+                          mtime = os.path.getmtime(file_path)
+                          date_str = datetime.fromtimestamp(mtime).strftime('%Y/%m/%d')
+                          
+                          articles.append({
+                              "title": title,
+                              "url": f"https://mobsp.github.io/{path}/{file}",
+                              "date": date_str,
+                              "fileName": file
+                          })
+          
+          # 按日期排序 (最新的在前)
+          articles.sort(key=lambda x: x['date'], reverse=True)
+          
+          with open('articles.json', 'w', encoding='utf-8') as f:
+              json.dump(articles, f, ensure_ascii=False, indent=2)
+          EOF
+
+      - name: Commit and Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add articles.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update articles.json" && git push)
