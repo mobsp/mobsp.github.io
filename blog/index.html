@@ -26,7 +26,6 @@
             height: 100dvh; overflow: hidden; 
         }
 
-        /* 啟動動畫屏 */
         #ms-splash {
             position: fixed; inset: 0;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover no-repeat;
@@ -50,6 +49,7 @@
         }
         body.loaded #app-container { opacity: 1; transform: scale(1); }
 
+        /* 還原臭寶最愛的跑馬燈樣式 */
         .app-header { 
             flex-shrink: 0;
             padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
@@ -73,18 +73,12 @@
 
         .section-label { padding: 20px 15px 10px; font-weight: bold; font-size: 1.1rem; color: #fff; }
         
-        /* 文章列表樣式 */
-        .article-row { 
-            display: flex; gap: 12px; padding: 12px 15px; 
-            border-bottom: 1px solid var(--border-color); 
-            align-items: center; cursor: pointer; text-decoration: none; 
-            transition: background 0.2s;
-        }
+        /* 文章行樣式 */
+        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; cursor: pointer; text-decoration: none; }
         .article-row:active { background: rgba(255,255,255,0.05); }
         .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; flex-shrink: 0; }
         .row-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
         .row-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: #eee; }
-        .row-meta { font-size: 11px; color: var(--text-sub); }
 
         .bottom-nav { 
             flex-shrink: 0;
@@ -106,18 +100,20 @@
     <div id="app-container">
         <header class="app-header">
             <div class="marquee-row">
-                <span class="version-tag">BLOG V2.0</span>
+                <span class="version-tag">BLOG V1.0</span>
                 <div class="mq-container">
-                    <div class="mq-content">✨ 自動化靜態索引已啟用 | 極速載入中...</div>
+                    <div class="mq-content" id="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！最新技術文章持續更新中...</div>
                 </div>
+                <button onclick="location.href='https://mobsp.github.io/'" style="background:none; border:none; color:var(--text-sub); font-size:16px; padding-left:10px; cursor:pointer;">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
             </div>
         </header>
 
         <main id="main-view">
             <div class="section-label">最新文章</div>
-            
-            <div id="article-list-container">
-                <p style="color: #444; text-align: center; padding: 40px; font-size: 12px;">正在載入天才清單...</p>
+            <div id="github-articles">
+                <p style="color: #555; text-align: center; padding: 20px; font-size: 12px;">同步文章清單中...</p>
             </div>
         </main>
 
@@ -131,7 +127,7 @@
     <script>
         (function() {
             const splash = document.getElementById('ms-splash');
-            const container = document.getElementById('article-list-container');
+            const container = document.getElementById('github-articles');
 
             function hideSplash() {
                 splash.classList.add('hide');
@@ -139,48 +135,38 @@
                 setTimeout(() => splash.remove(), 1000);
             }
 
-            // 核心功能：讀取靜態索引
             async function loadArticles() {
                 try {
-                    // 加上時間戳防止快取舊的索引檔
+                    // 嘗試讀取由 GitHub Actions 生成的索引檔案
                     const response = await fetch('articles.json?t=' + Date.now());
-                    if (!response.ok) throw new Error('索引檔尚未生成');
+                    if (!response.ok) throw new Error('Index not found');
                     
                     const articles = await response.json();
-                    
-                    if (!articles || articles.length === 0) {
-                        container.innerHTML = '<p style="color:gray; text-align:center; padding:20px;">資料夾中沒有文章</p>';
-                        return;
-                    }
+                    container.innerHTML = ''; 
 
-                    container.innerHTML = ''; // 清空加載中狀態
-                    
                     articles.forEach(art => {
                         const html = `
                             <div class="article-row" onclick="location.href='${art.url}'">
-                                <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img" alt="封面">
+                                <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img">
                                 <div class="row-info">
                                     <div class="row-title">${art.title}</div>
-                                    <div class="row-meta">${art.date} · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+                                    <div style="font-size: 11px; color: var(--text-sub);">${art.date} · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
                                 </div>
-                                <i class="fa-solid fa-chevron-right" style="color:#262626; font-size:12px;"></i>
+                                <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px; margin-right:5px;"></i>
                             </div>
                         `;
                         container.insertAdjacentHTML('beforeend', html);
                     });
                 } catch (err) {
-                    console.error("載入失敗:", err);
-                    container.innerHTML = `<p style="color:#555; text-align:center; padding:20px;">⚠️ 文章清單同步中，請稍候再試</p>`;
+                    // 如果 articles.json 還沒生成，給予友善提示，或者可以在此放原本的手動列表
+                    container.innerHTML = '<p style="color:gray; text-align:center; padding:20px; font-size:12px;">系統正在為您生成文章清單，請稍後推送代碼觸發更新 ❤️</p>';
                 }
             }
 
             window.addEventListener('load', () => {
                 loadArticles();
-                setTimeout(hideSplash, 1000); // 預留一點點動畫感
+                setTimeout(hideSplash, 1000);
             });
-            
-            // 安全保險：如果網頁加載太久沒回應，強制關閉 Splash
-            setTimeout(hideSplash, 3000);
         })();
     </script>
 </body>
