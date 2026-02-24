@@ -1,173 +1,186 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>SVG Editor | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>航空母艦編輯器 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { 
-            --bg: #0d1117; --panel: #161b22; --border: #30363d; 
-            --accent: #58a6ff; --header-h: 60px; --footer-h: 80px;
-        }
+        :root { --primary: #00cec9; --bg: #000; --panel: #1c1c1e; --border: #333; --text: #eee; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        header { padding: 15px 20px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
         
-        /* 核心：鎖定視窗高度，禁止外層滾動 */
-        html, body { 
-            margin: 0; padding: 0; height: 100%; overflow: hidden; 
-            background: var(--bg); color: white; font-family: -apple-system, sans-serif;
+        .main-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        
+        /* 預覽區縮小 */
+        .preview-area { height: 180px; background: #111; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--border); }
+        .canvas { width: 100px; height: 100px; border: 1px dashed #444; display: flex; align-items: center; justify-content: center; position: relative; }
+        #svg-target { max-width: 100%; transition: 0.1s; }
+
+        .control-area { padding: 20px; }
+        .ctrl-group { background: var(--panel); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
+        .ctrl-item { margin-bottom: 15px; }
+        label { font-size: 13px; color: #888; display: block; margin-bottom: 8px; }
+        select, input[type="color"] { width: 100%; padding: 10px; background: #2c2c2e; border: 1px solid var(--border); color: #fff; border-radius: 8px; }
+        
+        /* 滑桿樣式 */
+        .slider-wrap { display: none; margin-top: 10px; animation: slideDown 0.3s forwards; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 輸出區 */
+        .output-section { padding: 0 20px 20px; }
+        .action-btns { display: flex; gap: 10px; margin-bottom: 10px; }
+        .btn { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-exec { background: var(--primary); color: #000; }
+        .btn-copy { background: #333; color: #fff; }
+        .btn-share { background: #333; color: #fff; width: 50px; flex: none; }
+        
+        #code-output { 
+            width: 100%; min-height: 80px; background: #111; border: 1px solid var(--border); 
+            border-radius: 8px; color: var(--primary); padding: 12px; font-family: monospace; 
+            font-size: 12px; white-space: pre-wrap; word-break: break-all;
         }
 
-        /* 頁首：固定高度 */
-        header {
-            height: var(--header-h);
-            background: var(--panel);
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 20px; box-sizing: border-box;
-        }
-
-        /* 容器：扣除頭尾後撐滿 */
-        .app-container {
-            height: calc(100% - var(--header-h) - var(--footer-h));
-            display: flex; flex-direction: column;
-        }
-        @media (min-width: 768px) { .app-container { flex-direction: row; } }
-
-        /* 左側/上方預覽區：可獨立滾動 */
-        .preview-section {
-            flex: 1; overflow-y: auto; padding: 20px;
-            display: flex; flex-direction: column; align-items: center;
-            background: radial-gradient(circle, #1c2128 0%, #0d1117 100%);
-        }
-        .canvas {
-            width: 100%; max-width: 300px; aspect-ratio: 1;
-            background-image: linear-gradient(45deg, #161b22 25%, transparent 25%), 
-                              linear-gradient(-45deg, #161b22 25%, transparent 25%),
-                              linear-gradient(45deg, transparent 75%, #161b22 75%),
-                              linear-gradient(-45deg, transparent 75%, #161b22 75%);
-            background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
-            border: 1px solid var(--border); border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        #svg-target { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-
-        /* 右側/下方控制區：可獨立滾動 */
-        .control-section {
-            flex: 1; background: var(--panel); border-top: 1px solid var(--border);
-            padding: 20px; overflow-y: auto; -webkit-overflow-scrolling: touch;
-        }
-        @media (min-width: 768px) { 
-            .control-section { width: 350px; flex: none; border-top: none; border-left: 1px solid var(--border); } 
-        }
-
-        /* 頁尾：固定產出按鈕區 */
-        footer {
-            height: var(--footer-h);
-            background: var(--panel);
-            border-top: 1px solid var(--border);
-            padding: 10px 20px; display: flex; align-items: center; gap: 10px;
-            box-sizing: border-box;
-        }
-
-        /* UI 組件樣式 */
-        .ctrl-group { margin-bottom: 25px; }
-        .ctrl-group h4 { margin: 0 0 10px; font-size: 0.9rem; color: var(--accent); }
-        label { display: block; font-size: 0.75rem; color: #8b949e; margin-bottom: 5px; }
-        select, input { 
-            width: 100%; padding: 10px; background: #0d1117; color: white; 
-            border: 1px solid var(--border); border-radius: 8px; appearance: none;
-        }
-        .output-box {
-            flex: 1; background: #000; border-radius: 6px; padding: 10px;
-            font-family: monospace; font-size: 0.7rem; color: #3fb950;
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        }
-        .btn-action {
-            background: var(--accent); color: white; border: none;
-            padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer;
-        }
+        footer { padding: 20px; background: var(--panel); border-top: 1px solid var(--border); text-align: center; }
+        footer p { font-size: 11px; color: #555; margin-bottom: 10px; }
+        .social-links { display: flex; justify-content: center; gap: 20px; font-size: 20px; }
+        .social-links a { color: var(--text); opacity: 0.6; }
     </style>
 </head>
 <body>
 
-    <header>
-        <div onclick="history.back()" style="cursor:pointer">✕</div>
-        <div id="icon-title">Editor</div>
-        <div style="color:var(--accent)">儲存</div>
-    </header>
+<header>
+    <i class="fa-solid fa-chevron-left" onclick="history.back()"></i>
+    <span id="title">圖標編輯器</span>
+    <i class="fa-solid fa-ellipsis"></i>
+</header>
 
-    <div class="app-container">
-        <section class="preview-section">
-            <div class="canvas">
-                <img id="svg-target" src="" alt="Preview">
-            </div>
-            <p style="font-size: 0.7rem; color: #8b949e; margin-top: 15px;">預覽效果</p>
-        </section>
+<div class="main-content">
+    <div class="preview-area">
+        <div class="canvas">
+            <img id="svg-target" src="">
+        </div>
+    </div>
 
-        <section class="control-section" id="config-panel">
-            </section>
+    <div class="control-area" id="controls">
+        </div>
+
+    <div class="output-section">
+        <div class="action-btns">
+            <button class="btn btn-exec" onclick="generateCode()"><i class="fa-solid fa-play"></i> 執行</button>
+            <button class="btn btn-copy" onclick="copyCode()"><i class="fa-solid fa-copy"></i> 複製</button>
+            <button class="btn btn-share" onclick="share()"><i class="fa-solid fa-share-nodes"></i></button>
+        </div>
+        <div id="code-output" contenteditable="false">等待產生...</div>
     </div>
 
     <footer>
-        <div class="output-box" id="code-preview">點擊產生代碼...</div>
-        <button class="btn-action" onclick="applySettings()">執行</button>
+        <p>© 2024 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ. All rights reserved.</p>
+        <div class="social-links">
+            <a href="#"><i class="fa-brands fa-github"></i></a>
+            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        </div>
     </footer>
+</div>
 
-    <script>
-        const params = new URLSearchParams(window.location.search);
-        const iconName = params.get('icon');
-        const svgUrl = `https://mobsp.github.io/assets/icon/svg/${iconName}`;
-        
-        document.getElementById('icon-title').textContent = iconName;
-        document.getElementById('svg-target').src = svgUrl;
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const iconName = params.get('icon') || '';
+    const svgUrl = `https://mobsp.github.io/assets/icon/svg/${iconName}`;
+    document.getElementById('svg-target').src = svgUrl;
+    document.getElementById('title').textContent = iconName.replace('.svg', '');
 
-        async function init() {
-            try {
-                const res = await fetch('../data/editor_config.json');
-                const config = await res.json();
-                const panel = document.getElementById('config-panel');
+    async function init() {
+        const res = await fetch('../data/editor-config.json');
+        const config = await res.json();
+        const container = document.getElementById('controls');
+
+        config.ui_groups.forEach(group => {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'ctrl-group';
+            groupDiv.innerHTML = `<h4>${group.group_name}</h4>`;
+            
+            group.controls.forEach(ctrl => {
+                const item = document.createElement('div');
+                item.className = 'ctrl-item';
+                item.innerHTML = `<label>${ctrl.label}</label>`;
                 
-                config.ui_groups.forEach(group => {
-                    const div = document.createElement('div');
-                    div.className = 'ctrl-group';
-                    div.innerHTML = `<h4>${group.group_name}</h4>`;
-                    group.controls.forEach(ctrl => {
-                        const label = document.createElement('label');
-                        label.textContent = ctrl.label;
-                        const input = ctrl.type === 'select' ? document.createElement('select') : document.createElement('input');
-                        if(ctrl.type === 'select') {
-                            ctrl.options.forEach(opt => input.add(new Option(opt, opt)));
-                        } else {
-                            input.type = ctrl.type;
-                            if(ctrl.default) input.value = ctrl.default;
-                        }
-                        input.id = ctrl.id;
-                        div.appendChild(label);
-                        div.appendChild(input);
-                    });
-                    panel.appendChild(div);
-                });
-            } catch (e) { console.error(e); }
-        }
+                let inputEl = ctrl.type === 'select' ? document.createElement('select') : document.createElement('input');
+                inputEl.id = ctrl.id;
+                if(ctrl.type === 'select') {
+                    ctrl.options.forEach(o => inputEl.add(new Option(o, o)));
+                    inputEl.onchange = () => handleLogic(ctrl.id);
+                } else {
+                    inputEl.type = ctrl.type;
+                    if(ctrl.default) inputEl.value = ctrl.default;
+                    inputEl.oninput = updatePreview;
+                }
+                item.appendChild(inputEl);
 
-        function applySettings() {
-            const size = document.getElementById('size').value;
-            const color = document.getElementById('color').value;
-            const rotate = document.getElementById('rotate').value;
-            
-            const img = document.getElementById('svg-target');
-            img.style.width = size;
-            img.style.filter = `drop-shadow(0 0 0 ${color})`;
-            img.style.transform = `rotate(${rotate})`;
-            
-            const code = `<img src="${svgUrl}" style="width:${size}; filter:drop-shadow(0 0 0 ${color}); transform:rotate(${rotate})">`;
-            document.getElementById('code-preview').textContent = code;
-            
-            // 手機震動回饋 (如果有支援)
-            if(navigator.vibrate) navigator.vibrate(50);
-            alert("代碼已產生！");
-        }
+                // ✨ 這裡加入隱藏的滑桿 (Slider)
+                if(ctrl.id === 'rotate_mode' || ctrl.id === 'shadow_mode' || ctrl.id === 'radius_mode') {
+                    const sliderWrap = document.createElement('div');
+                    sliderWrap.className = 'slider-wrap';
+                    sliderWrap.id = `slider-wrap-${ctrl.id}`;
+                    sliderWrap.innerHTML = `<input type="range" id="slider-${ctrl.id}" min="0" max="360" value="0" oninput="updatePreview()">`;
+                    item.appendChild(sliderWrap);
+                }
 
-        init();
-    </script>
+                groupDiv.appendChild(item);
+            });
+            container.appendChild(groupDiv);
+        });
+    }
+
+    function handleLogic(id) {
+        const val = document.getElementById(id).value;
+        const wrap = document.getElementById(`slider-wrap-${id}`);
+        if(wrap) {
+            wrap.style.display = (val.includes('自由') || val.includes('自訂')) ? 'block' : 'none';
+        }
+        updatePreview();
+    }
+
+    function updatePreview() {
+        const img = document.getElementById('svg-target');
+        const color = document.getElementById('color').value;
+        const rotate = document.getElementById('rotate_mode').value === '自由旋轉' ? 
+                       document.getElementById('slider-rotate_mode').value + 'deg' : 
+                       document.getElementById('rotate_mode').value.replace('固定 ', '');
+        
+        // 即時視覺反饋
+        img.style.filter = `drop-shadow(0 0 5px ${color})`;
+        img.style.transform = `rotate(${rotate})`;
+        img.style.fill = color; // 針對部分 SVG 結構
+    }
+
+    function generateCode() {
+        updatePreview(); // 產出前再同步一次
+        const format = document.getElementById('format').value;
+        const code = `<img src="${svgUrl}" style="transform: ${document.getElementById('svg-target').style.transform}; filter: ${document.getElementById('svg-target').style.filter};">`;
+        document.getElementById('code-output').textContent = code;
+    }
+
+    function copyCode() {
+        const text = document.getElementById('code-output').textContent;
+        navigator.clipboard.writeText(text);
+        alert('代碼已複製到剪貼簿！');
+    }
+
+    function share() {
+        const text = `嘿！我在莫比空間編輯了這個圖標：${iconName}\n傳送門：${window.location.href}`;
+        if (navigator.share) {
+            navigator.share({ title: '莫比空間圖標分享', text: text, url: window.location.href });
+        } else {
+            alert('分享內容已備好：' + text);
+        }
+    }
+
+    init();
+</script>
 </body>
 </html>
