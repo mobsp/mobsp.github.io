@@ -1,0 +1,58 @@
+/* 顏色變數定義 */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --accent-color: #007bff;
+  --card-bg: #f8f9fa;
+}
+
+/* 黑暗模式自動切換 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --accent-color: #8ab4f8;
+    --card-bg: #1e1e1e;
+  }
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  transition: 0.3s;
+  padding: 20px;
+}
+
+.container { max-width: 800px; margin: 0 auto; }
+
+/* 歷史紀錄 Timeline 樣式 */
+.timeline {
+  list-style: none;
+  padding: 0;
+  border-left: 3px solid var(--accent-color);
+  margin-top: 30px;
+}
+
+.timeline li {
+  margin: 20px 0 20px 20px;
+  padding: 15px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  position: relative;
+}
+
+.date {
+  display: block;
+  font-size: 0.85em;
+  color: var(--accent-color);
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.back-btn {
+  text-decoration: none;
+  color: var(--accent-color);
+  display: inline-block;
+  margin-top: 20px;
+}
