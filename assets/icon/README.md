@@ -263,6 +263,291 @@
 
 ---
 
+### ⏰ 時間 / 日期類
+<details>
+<summary>點擊展開 ⏰ 時間 / 日期圖示</summary>
+
+<div align="left" style="overflow:auto;">
+<table>
+<thead>
+<tr>
+<th>名稱 & 小圖示</th>
+<th>描述</th>
+<th>SVG 路徑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td nowrap>時鐘 <img src="https://mobsp.github.io/assets/icon/svg/clock.svg" width="20"></td>
+<td nowrap>標準時鐘圖示</td>
+<td nowrap><code>assets/icon/svg/clock.svg</code></td>
+</tr>
+<tr>
+<td nowrap>沙漏 <img src="https://mobsp.github.io/assets/icon/svg/hourglass.svg" width="20"></td>
+<td nowrap>時間流逝象徵</td>
+<td nowrap><code>assets/icon/svg/hourglass.svg</code></td>
+</tr>
+<tr>
+<td nowrap>日曆 <img src="https://mobsp.github.io/assets/icon/svg/calendar.svg" width="20"></td>
+<td nowrap>日曆圖示</td>
+<td nowrap><code>assets/icon/svg/calendar.svg</code></td>
+</tr>
+<tr>
+<td nowrap>鬧鐘提醒 <img src="https://mobsp.github.io/assets/icon/svg/alarm.svg" width="20"></td>
+<td nowrap>提醒鬧鐘</td>
+<td nowrap><code>assets/icon/svg/alarm.svg</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+
+---
+
+### 🌦️ 天氣 / 環境類
+<details>
+<summary>點擊展開 🌦️ 天氣 / 環境圖示</summary>
+
+<div align="left" style="overflow:auto;">
+<table>
+<thead>
+<tr>
+<th>名稱 & 小圖示</th>
+<th>描述</th>
+<th>SVG 路徑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td nowrap>太陽 <img src="https://mobsp.github.io/assets/icon/svg/sun.svg" width="20"></td>
+<td nowrap>晴天象徵</td>
+<td nowrap><code>assets/icon/svg/sun.svg</code></td>
+</tr>
+<tr>
+<td nowrap>月亮 <img src="https://mobsp.github.io/assets/icon/svg/moon.svg" width="20"></td>
+<td nowrap>夜晚象徵</td>
+<td nowrap><code>assets/icon/svg/moon.svg</code></td>
+</tr>
+<tr>
+<td nowrap>雲朵 <img src="https://mobsp.github.io/assets/icon/svg/cloud.svg" width="20"></td>
+<td nowrap>多雲天氣</td>
+<td nowrap><code>assets/icon/svg/cloud.svg</code></td>
+</tr>
+<tr>
+<td nowrap>雨滴 <img src="https://mobsp.github.io/assets/icon/svg/rain.svg" width="20"></td>
+<td nowrap>下雨天氣</td>
+<td nowrap><code>assets/icon/svg/rain.svg</code></td>
+</tr>
+<tr>
+<td nowrap>雷電 <img src="https://mobsp.github.io/assets/icon/svg/thunder.svg" width="20"></td>
+<td nowrap>雷雨天氣</td>
+<td nowrap><code>assets/icon/svg/thunder.svg</code></td>
+</tr>
+<tr>
+<td nowrap>雪花 <img src="https://mobsp.github.io/assets/icon/svg/snow.svg" width="20"></td>
+<td nowrap>雪天氣象</td>
+<td nowrap><code>assets/icon/svg/snow.svg</code></td>
+</tr>
+<tr>
+<td nowrap>風 <img src="https://mobsp.github.io/assets/icon/svg/wind.svg" width="20"></td>
+<td nowrap>風向與風力</td>
+<td nowrap><code>assets/icon/svg/wind.svg</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+
+---
+
+### 🎵 音樂 / 多媒體類
+<details>
+<summary>點擊展開 🎵 音樂 / 多媒體圖示</summary>
+
+<div align="left" style="overflow:auto;">
+<table>
+<thead>
+<tr>
+<th>名稱 & 小圖示</th>
+<th>描述</th>
+<th>SVG 路徑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td nowrap>播放 <img src="https://mobsp.github.io/assets/icon/svg/play.svg" width="20"></td>
+<td nowrap>播放按鈕</td>
+<td nowrap><code>assets/icon/svg/play.svg</code></td>
+</tr>
+<tr>
+<td nowrap>暫停 <img src="https://mobsp.github.io/assets/icon/svg/pause.svg" width="20"></td>
+<td nowrap>暫停按鈕</td>
+<td nowrap><code>assets/icon/svg/pause.svg</code></td>
+</tr>
+<tr>
+<td nowrap>停止 <img src="https://mobsp.github.io/assets/icon/svg/stop.svg" width="20"></td>
+<td nowrap>停止播放</td>
+<td nowrap><code>assets/icon/svg/stop.svg</code></td>
+</tr>
+<tr>
+<td nowrap>快轉 <img src="https://mobsp.github.io/assets/icon/svg/forward.svg" width="20"></td>
+<td nowrap>快轉音樂或影片</td>
+<td nowrap><code>assets/icon/svg/forward.svg</code></td>
+</tr>
+<tr>
+<td nowrap>倒轉 <img src="https://mobsp.github.io/assets/icon/svg/backward.svg" width="20"></td>
+<td nowrap>倒轉音樂或影片</td>
+<td nowrap><code>assets/icon/svg/backward.svg</code></td>
+</tr>
+<tr>
+<td nowrap>音量 <img src="https://mobsp.github.io/assets/icon/svg/volume.svg" width="20"></td>
+<td nowrap>音量控制</td>
+<td nowrap><code>assets/icon/svg/volume.svg</code></td>
+</tr>
+<tr>
+<td nowrap>靜音 <img src="https://mobsp.github.io/assets/icon/svg/mute.svg" width="20"></td>
+<td nowrap>音量靜音</td>
+<td nowrap><code>assets/icon/svg/mute.svg</code></td>
+</tr>
+<tr>
+<td nowrap>耳機 <img src="https://mobsp.github.io/assets/icon/svg/headphone.svg" width="20"></td>
+<td nowrap>耳機圖示</td>
+<td nowrap><code>assets/icon/svg/headphone.svg</code></td>
+</tr>
+<tr>
+<td nowrap>喇叭 <img src="https://mobsp.github.io/assets/icon/svg/speaker.svg" width="20"></td>
+<td nowrap>喇叭圖示</td>
+<td nowrap><code>assets/icon/svg/speaker.svg</code></td>
+</tr>
+<tr>
+<td nowrap>錄音 <img src="https://mobsp.github.io/assets/icon/svg/record.svg" width="20"></td>
+<td nowrap>錄音功能</td>
+<td nowrap><code>assets/icon/svg/record.svg</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+
+---
+
+### 📱 手機 / 電腦 / 裝置類
+<details>
+<summary>點擊展開 📱 手機 / 電腦 / 裝置圖示</summary>
+
+<div align="left" style="overflow:auto;">
+<table>
+<thead>
+<tr>
+<th>名稱 & 小圖示</th>
+<th>描述</th>
+<th>SVG 路徑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td nowrap>手機 <img src="https://mobsp.github.io/assets/icon/svg/phone.svg" width="20"></td>
+<td nowrap>智慧型手機圖示</td>
+<td nowrap><code>assets/icon/svg/phone.svg</code></td>
+</tr>
+<tr>
+<td nowrap>平板 <img src="https://mobsp.github.io/assets/icon/svg/tablet.svg" width="20"></td>
+<td nowrap>平板裝置圖示</td>
+<td nowrap><code>assets/icon/svg/tablet.svg</code></td>
+</tr>
+<tr>
+<td nowrap>筆電 <img src="https://mobsp.github.io/assets/icon/svg/laptop.svg" width="20"></td>
+<td nowrap>筆記型電腦</td>
+<td nowrap><code>assets/icon/svg/laptop.svg</code></td>
+</tr>
+<tr>
+<td nowrap>桌機 <img src="https://mobsp.github.io/assets/icon/svg/desktop.svg" width="20"></td>
+<td nowrap>桌上型電腦</td>
+<td nowrap><code>assets/icon/svg/desktop.svg</code></td>
+</tr>
+<tr>
+<td nowrap>伺服器 <img src="https://mobsp.github.io/assets/icon/svg/server.svg" width="20"></td>
+<td nowrap>伺服器裝置</td>
+<td nowrap><code>assets/icon/svg/server.svg</code></td>
+</tr>
+<tr>
+<td nowrap>雲端 <img src="https://mobsp.github.io/assets/icon/svg/cloud_storage.svg" width="20"></td>
+<td nowrap>雲端存儲</td>
+<td nowrap><code>assets/icon/svg/cloud_storage.svg</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+
+---
+
+### 🔧 工具 / 系統類
+<details>
+<summary>點擊展開 🔧 工具 / 系統圖示</summary>
+
+<div align="left" style="overflow:auto;">
+<table>
+<thead>
+<tr>
+<th>名稱 & 小圖示</th>
+<th>描述</th>
+<th>SVG 路徑</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td nowrap>設定 <img src="https://mobsp.github.io/assets/icon/svg/settings.svg" width="20"></td>
+<td nowrap>系統設定</td>
+<td nowrap><code>assets/icon/svg/settings.svg</code></td>
+</tr>
+<tr>
+<td nowrap>工具 <img src="https://mobsp.github.io/assets/icon/svg/tool.svg" width="20"></td>
+<td nowrap>多用途工具圖示</td>
+<td nowrap><code>assets/icon/svg/tool.svg</code></td>
+</tr>
+<tr>
+<td nowrap>鑰匙 <img src="https://mobsp.github.io/assets/icon/svg/key.svg" width="20"></td>
+<td nowrap>安全鑰匙 / 加密象徵</td>
+<td nowrap><code>assets/icon/svg/key.svg</code></td>
+</tr>
+<tr>
+<td nowrap>鎖頭 <img src="https://mobsp.github.io/assets/icon/svg/lock.svg" width="20"></td>
+<td nowrap>安全鎖頭</td>
+<td nowrap><code>assets/icon/svg/lock.svg</code></td>
+</tr>
+<tr>
+<td nowrap>解鎖 <img src="https://mobsp.github.io/assets/icon/svg/unlock.svg" width="20"></td>
+<td nowrap>解鎖狀態</td>
+<td nowrap><code>assets/icon/svg/unlock.svg</code></td>
+</tr>
+<tr>
+<td nowrap>警告 <img src="https://mobsp.github.io/assets/icon/svg/warning.svg" width="20"></td>
+<td nowrap>警告或注意事項</td>
+<td nowrap><code>assets/icon/svg/warning.svg</code></td>
+</tr>
+<tr>
+<td nowrap>錯誤 <img src="https://mobsp.github.io/assets/icon/svg/error.svg" width="20"></td>
+<td nowrap>錯誤提示</td>
+<td nowrap><code>assets/icon/svg/error.svg</code></td>
+</tr>
+<tr>
+<td nowrap>成功 <img src="https://mobsp.github.io/assets/icon/svg/success.svg" width="20"></td>
+<td nowrap>成功提示</td>
+<td nowrap><code>assets/icon/svg/success.svg</code></td>
+</tr>
+<tr>
+<td nowrap>信息 <img src="https://mobsp.github.io/assets/icon/svg/info.svg" width="20"></td>
+<td nowrap>一般訊息</td>
+<td nowrap><code>assets/icon/svg/info.svg</code></td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+
+---
+
 <p align="center">
   © 2024–2026 <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠Ⲱ (莫比空間)</strong>. All rights reserved.
 </p>
