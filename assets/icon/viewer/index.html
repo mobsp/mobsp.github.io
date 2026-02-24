@@ -1,247 +1,91 @@
 <!DOCTYPE html>
-<html lang="zh-Hant"> 
-<head> 
+<html lang="zh-Hant">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title>Circum Icons Gallery｜搜尋 + 超連結 + 可視化展示牆</title>
-  <meta name="description" content="Circum Icons 可搜尋、可預覽、可點擊、可擴充的前端圖示牆。純 HTML5 + CSS3 + JS 實作。" />
-
-  <meta property="og:title" content="Circum Icons Gallery" />
-  <meta property="og:description" content="可搜尋、可預覽、可點擊的 SVG Icon 視覺化展示牆" />
-  <meta property="og:type" content="website" />
-
+  <title>Circum Icons Gallery Pro｜緹緹優化版</title>
   <style>
-    /* ================================
-       🎯 全域設計變數
-    ================================ */
+    /* 這裡延用你的 CSS，但緹緹額外加個小動畫 */
     :root {
-      --bg: #0f1115;
-      --panel: #161a22;
-      --border: #242b3a;
-      --text: #e8e8e8;
-      --muted: #9aa3b2;
-      --accent: #5aa9ff;
-      --radius: 14px;
+      --bg: #0f1115; --panel: #161a22; --border: #242b3a;
+      --text: #e8e8e8; --muted: #9aa3b2; --accent: #5aa9ff; --radius: 14px;
     }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.6;
-    }
-
-    /* ================================
-       Header 區塊
-    ================================ */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(15,17,21,0.9);
-      backdrop-filter: blur(8px);
-      padding: 1rem 1.2rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    header h1 {
-      margin: 0 0 .5rem 0;
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
-
-    #search {
-      width: 100%;
-      padding: .7rem 1rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      color: var(--text);
-      font-size: 1rem;
-      outline: none;
-    }
-
-    #search:focus { border-color: var(--accent); }
-
-    /* ================================
-       Grid 展示牆結構
-    ================================ */
-    main { padding: 1.5rem; }
-
-    #grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 1rem;
-    }
-
-    /* ================================
-       單一卡片元件
-    ================================ */
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1rem;
-      text-align: center;
-      text-decoration: none;
-      color: inherit;
-      transition: transform .15s ease, border .15s ease;
-      display: flex;
-      flex-direction: column;
-      gap: .6rem;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-      border-color: var(--accent);
-    }
-
-    .icon {
-      width: 64px;
-      height: 64px;
-      margin: 0 auto;
-      filter: brightness(0.9) invert(1); /* 讓黑色 SVG 在深色背景下變白 */
-    }
-
-    .name {
-      font-size: .85rem;
-      color: var(--muted);
-      word-break: break-all;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem 1rem;
-      font-size: .8rem;
-      color: var(--muted);
-    }
+    * { box-sizing: border-box; transition: all 0.2s ease-in-out; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; }
+    header { position: sticky; top: 0; z-index: 10; background: rgba(15,17,21,0.85); backdrop-filter: blur(12px); padding: 1.2rem; border-bottom: 1px solid var(--border); }
+    #search { width: 100%; padding: .8rem 1.2rem; border-radius: 12px; border: 1px solid var(--border); background: var(--panel); color: var(--text); outline: none; }
+    #search:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(90, 169, 255, 0.2); }
+    main { padding: 1.5rem; min-height: 80vh; }
+    #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1.2rem; }
+    .card { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.2rem; text-align: center; text-decoration: none; color: inherit; display: flex; flex-direction: column; align-items: center; gap: .8rem; }
+    .card:hover { transform: translateY(-5px); border-color: var(--accent); background: #1c212c; }
+    .icon { width: 48px; height: 48px; filter: brightness(0) invert(1); opacity: 0.8; }
+    .card:hover .icon { opacity: 1; transform: scale(1.1); }
+    .name { font-size: .75rem; color: var(--muted); font-family: monospace; }
+    .loading-msg { text-align: center; color: var(--accent); padding: 2rem; font-weight: bold; }
   </style>
 </head>
-
 <body>
   <header>
-    <h1>Circum Icons Gallery</h1>
-    <input id="search" type="search" placeholder="搜尋 icon 名稱，例如：camera / user / cloud..." />
+    <h1>✨ Circum Icons Gallery</h1>
+    <input id="search" type="search" placeholder="輸入關鍵字尋找組件..." />
   </header>
 
   <main>
-    <section id="grid"></section>
+    <div id="grid"><div class="loading-msg">緹緹正在努力載入資料庫...</div></div>
   </main>
 
-  <footer>
-    純前端架構｜莫比空間 Ⓒ 2026｜可直接部署於 GitHub Pages
-  </footer>
-
   <script>
-    /* ================================
-       📦 更改後的 Icon 資料源 (已替換為 mobsp.github.io)
-    ================================ */
     const BASE_URL = "https://mobsp.github.io/assets/icon/svg/";
+    const JSON_DATA_URL = "data/svg.json"; // 你的目標路徑
     
-    const ICON_FILES = [
-      "youtube.svg", "wave_pulse_1.svg", "warning.svg", "zoom_in.svg", "zoom_out.svg",
-      "volume.svg", "volume_mute.svg", "volume_high.svg", "view_timeline.svg", "view_table.svg",
-      "view_list.svg", "view_column.svg", "view_board.svg", "video_on.svg", "video_off.svg",
-      "user.svg", "unread.svg", "unlock.svg", "undo.svg", "twitter.svg",
-      "trash.svg", "text.svg", "sun.svg", "stop_sign_1.svg", "stop_1.svg",
-      "sticky_note.svg", "star.svg", "square_more.svg", "square_plus.svg", "square_question.svg",
-      "square_remove.svg", "square_minus.svg", "square_info.svg", "square_chev_right.svg", "square_chev_up.svg",
-      "square_chev_left.svg", "square_chev_down.svg", "square_check.svg", "square_alert.svg", "speaker.svg",
-      "slider_vertical.svg", "slider_horizontal.svg", "signpost_r_1.svg", "timer.svg", "signpost_l_1.svg",
-      "signpost_duo_1.svg", "shopping_tag.svg", "shuffle.svg", "share_1.svg", "share_2.svg",
-      "settings.svg", "server.svg", "search.svg", "save_up_2.svg", "save_up_1.svg",
-      "save_down_2.svg", "save_down_1.svg", "route.svg", "redo.svg", "repeat.svg",
-      "read.svg", "rainbow.svg", "power.svg", "plug_1.svg", "receipt.svg",
-      "play_1.svg", "phone.svg", "pause_1.svg", "percent.svg", "paperplane.svg",
-      "parking_1.svg", "no_waiting_sign.svg", "music_note_1.svg", "monitor.svg", "mountain_1.svg",
-      "mobile_4.svg", "mobile_3.svg", "mobile_2.svg", "mobile_1.svg", "minimize_2.svg",
-      "microphone_off.svg", "microphone_on.svg", "minimize_1.svg", "memo_pad.svg", "maximize_2.svg",
-      "maximize_1.svg", "map.svg", "map_pin.svg", "medal.svg", "mail.svg",
-      "lollipop.svg", "logout.svg", "login.svg", "lock.svg", "location_off.svg",
-      "location_arrow_1.svg", "location_on.svg", "linkedin.svg", "link.svg", "light.svg",
-      "lemon.svg", "laptop.svg", "keyboard.svg", "instagram.svg", "inbox_out.svg",
-      "inbox_in.svg", "import.svg", "image_on.svg", "image_off.svg", "ice_cream.svg",
-      "hotdog.svg", "home.svg", "heart.svg", "hashtag.svg", "headphones.svg",
-      "hard_drive.svg", "grid_2-v.svg", "grid_2-h.svg", "grid_4-1.svg", "gps.svg",
-      "globe.svg", "gift.svg", "folder_on.svg", "folder_off.svg", "floppy_disk.svg",
-      "flag_1.svg", "filter.svg", "file_on.svg", "file_off.svg", "facebook.svg",
-      "face_smile.svg", "face_meh.svg", "face_frown.svg", "export.svg", "edit.svg",
-      "eraser.svg", "droplet.svg", "discount_1.svg", "dollar.svg", "desktop.svg",
-      "database.svg", "dark.svg", "crop.svg", "compass_1.svg", "cloud.svg",
-      "cloud_sun.svg", "cloud_on.svg", "cloud_off.svg", "cloud_moon.svg", "cloud_drizzle.svg",
-      "cloud_rainbow.svg", "clock_2.svg", "clock_1.svg", "circle_remove.svg", "circle_question.svg",
-      "circle_plus.svg", "circle_more.svg", "circle_minus.svg", "circle_list.svg", "circle_chev_up.svg",
-      "circle_chev_left.svg", "circle_chev_right.svg", "circle_info.svg", "circle_alert.svg", "circle_chev_down.svg",
-      "circle_check.svg", "chat_2.svg", "chat_1.svg", "camera.svg", "calendar.svg",
-      "calendar_date.svg", "calculator_1.svg", "calculator_2.svg", "bullhorn.svg", "brightness_up.svg",
-      "brightness_down.svg", "box_list.svg", "boxes.svg", "bookmark.svg", "bookmark_plus.svg",
-      "bookmark_remove.svg", "bookmark_minus.svg", "bookmark_check.svg", "bluetooth.svg", "bell_on.svg",
-      "bell_off.svg", "bezier.svg", "battery_full.svg", "battery_empty.svg", "battery_charging.svg",
-      "barcode.svg", "bank.svg", "badge_dollar.svg", "alarm_on.svg", "alarm_off.svg"
-    ];
+    let iconRegistry = []; // 全域快取
 
-    // 將檔名轉換為完整 URL
-    const ICON_URLS = ICON_FILES.map(file => BASE_URL + file);
-
-    /* ================================
-       DOM 參照
-    ================================ */
     const grid = document.getElementById("grid");
     const searchInput = document.getElementById("search");
 
-    /* ================================
-       工具函式：從 URL 擷取檔名
-    ================================ */
     const getName = url => url.split("/").pop().replace(".svg", "");
 
-    /* ================================
-       核心渲染函式
-    ================================ */
+    // 天才級渲染優化：DocumentFragment 減少重繪
     function render(list) {
-      grid.innerHTML = ""; 
+      grid.innerHTML = "";
+      if (list.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: var(--muted);">找不到相關圖標喔，臭寶 😢</div>';
+        return;
+      }
 
+      const fragment = document.createDocumentFragment();
       list.forEach(url => {
         const name = getName(url);
-
         const a = document.createElement("a");
-        a.href = url;                    
-        a.target = "_blank";             
-        a.className = "card";            
-
-        const img = document.createElement("img");
-        img.src = url;                   
-        img.className = "icon";
-        img.loading = "lazy";           
-        img.alt = name;                  
-
-        const label = document.createElement("div");
-        label.className = "name";
-        label.textContent = name;
-
-        a.append(img, label);
-        grid.appendChild(a);
+        a.href = url; a.target = "_blank"; a.className = "card";
+        a.innerHTML = `<img src="${url}" class="icon" loading="lazy" alt="${name}"><div class="name">${name}</div>`;
+        fragment.appendChild(a);
       });
+      grid.appendChild(fragment);
     }
 
-    /* ================================
-       搜尋邏輯
-    ================================ */
-    searchInput.addEventListener("input", () => {
-      const keyword = searchInput.value.toLowerCase();
-      const filtered = ICON_URLS.filter(url =>
-        getName(url).toLowerCase().includes(keyword)
-      );
+    // 異步初始化
+    async function loadIcons() {
+      try {
+        const resp = await fetch(JSON_DATA_URL);
+        if (!resp.ok) throw new Error("網路請求不給力");
+        const files = await resp.json();
+        
+        iconRegistry = files.map(f => BASE_URL + f);
+        render(iconRegistry);
+      } catch (err) {
+        grid.innerHTML = `<div class="loading-msg" style="color: #ff5a5a;">糟糕！讀取失敗了：${err.message}</div>`;
+      }
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      const kw = e.target.value.toLowerCase();
+      const filtered = iconRegistry.filter(url => getName(url).toLowerCase().includes(kw));
       render(filtered);
     });
 
-    /* ================================
-       初始化渲染
-    ================================ */
-    render(ICON_URLS);
+    loadIcons();
   </script>
 </body>
 </html>
