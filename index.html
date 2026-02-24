@@ -68,27 +68,27 @@
             align-items: center;
         }
 
-        /* 跑馬燈列：上移 */
         .marquee-row {
             display: flex; align-items: center; background: rgba(255,255,255,0.05);
             padding: 6px 12px; border-radius: 10px; margin-bottom: 15px; overflow: hidden;
             min-height: 28px; width: 100%; box-sizing: border-box;
         }
 
-        /* 標題圖樣式：下移至跑馬燈下方 */
+        /* 標題圖樣式：隨網頁寬度延展 */
         .brand-title-link {
             display: block;
-            width: 100%;
-            max-width: 260px;
+            width: 100%; /* 寬度佔滿容器 */
             transition: var(--transition);
             margin-bottom: 5px;
+            box-sizing: border-box;
+            padding: 0 5px; /* 給左右留一點微小的呼吸空間 */
         }
-        .brand-title-link:hover { opacity: 0.8; transform: scale(1.02); }
+        .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
         .brand-title-img {
-            width: 100%;
-            height: auto;
+            width: 100%; /* 圖片寬度延展 */
+            height: auto; /* 高度自動等比例 */
             display: block;
-            border-radius: 4px;
+            border-radius: 8px; /* 增加一點點圓角感 */
         }
 
         .v-tag { 
