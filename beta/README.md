@@ -49,7 +49,7 @@
         <td nowrap><a href="./assets/icon/viewer/index.html"><code>./assets/icon/viewer/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/svg-editor/"><b>SVG 航空母艦 🚀</b></a></td>
+        <td nowrap><a href="https://mobsp.github.io/svg-editor/"><b>SVG 編輯器 🚀</b></a></td>
         <td nowrap>進階圖示加工與代碼生成器</td>
         <td nowrap><a href="./svg-editor/index.html"><code>./svg-editor/index.html</code></a></td>
       </tr>
