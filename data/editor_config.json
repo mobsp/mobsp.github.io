@@ -1,160 +1,24 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>航空母艦編輯器 v2.2 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root { --primary: #00cec9; --bg: #000; --panel: #1c1c1e; --border: #333; --text: #eee; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; width: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; overflow: hidden; }
-        .app { height: 100%; display: flex; flex-direction: column; }
-        header { height: 60px; padding: 0 20px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
-        .scroller { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-        .preview { height: 160px; background: #111; display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
-        .canvas { width: 80px; height: 80px; border: 1px dashed #444; display: flex; align-items: center; justify-content: center; }
-        #svg-target { max-width: 100%; max-height: 100%; transition: 0.2s; }
-        .config { padding: 15px; }
-        .card { background: var(--panel); border-radius: 16px; padding: 18px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        .card h4 { font-size: 13px; color: var(--primary); margin-bottom: 15px; }
-        .field { margin-bottom: 15px; }
-        label { font-size: 11px; color: #666; display: block; margin-bottom: 6px; }
-        select, input[type="color"] { width: 100%; padding: 12px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 10px; font-size: 14px; }
-        .slider-box { display: none; margin-top: 10px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; }
-        input[type="range"] { width: 100%; accent-color: var(--primary); }
-        .output { padding: 0 15px 30px; }
-        .btns { display: flex; gap: 8px; margin-bottom: 10px; }
-        .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .btn-run { background: var(--primary); color: #000; }
-        .btn-copy { background: #333; color: #fff; }
-        #code-res { width: 100%; min-height: 100px; background: #000; border: 1px solid var(--border); border-radius: 12px; color: var(--primary); padding: 15px; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
-        footer { padding: 30px 20px; background: var(--panel); text-align: center; }
-        .socials { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin: 20px 0; }
-        .socials a { color: #fff; text-decoration: none; font-size: 20px; opacity: 0.6; display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .socials span { font-size: 9px; }
-    </style>
-</head>
-<body>
-<div class="app">
-    <header>
-        <i class="fa-solid fa-angle-left" onclick="history.back()" style="font-size: 20px;"></i>
-        <b id="icon-title">EDITOR</b>
-        <i class="fa-solid fa-house" onclick="location.href='../index.html'"></i>
-    </header>
-    <div class="scroller">
-        <div class="preview"><div class="canvas"><img id="svg-target" src=""></div></div>
-        <div class="config" id="root">
-            <p id="status" style="text-align:center; padding:20px; color:#555;">正在連線至航空母艦數據庫...</p>
-        </div>
-        <div class="output">
-            <div class="btns">
-                <button class="btn btn-run" onclick="generate()"><i class="fa-solid fa-play"></i> 執行</button>
-                <button class="btn btn-copy" onclick="copy()"><i class="fa-solid fa-copy"></i> 複製</button>
-            </div>
-            <div id="code-res">點擊執行產生代碼...</div>
-        </div>
-        <footer>
-            <p style="font-size: 10px; color: #444;">© 2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 極簡體驗</p>
-            <div class="socials">
-                <a href="#"><i class="fa-brands fa-facebook"></i><span>FB</span></a>
-                <a href="#"><i class="fa-brands fa-line"></i><span>LINE</span></a>
-                <a href="#"><i class="fa-brands fa-instagram"></i><span>IG</span></a>
-                <a href="#"><i class="fa-brands fa-x-twitter"></i><span>X</span></a>
-                <a href="#"><i class="fa-brands fa-github"></i><span>Git</span></a>
-                <a href="#"><i class="fa-brands fa-threads"></i><span>Threads</span></a>
-                <a href="#"><i class="fa-brands fa-whatsapp"></i><span>WA</span></a>
-                <a href="#"><i class="fa-brands fa-telegram"></i><span>TG</span></a>
-            </div>
-            <div style="color:var(--primary); font-size:12px; font-weight:bold; cursor:pointer;" onclick="share()">更多分享方式...</div>
-        </footer>
-    </div>
-</div>
-<script>
-    const params = new URLSearchParams(window.location.search);
-    const icon = params.get('icon') || '';
-    const svgPath = `https://mobsp.github.io/assets/icon/svg/${icon}`;
-    
-    // 💡 修正關鍵：正確對應你的檔名 editor_config.json
-    const configUrl = '../data/editor_config.json'; 
-
-    document.getElementById('svg-target').src = svgPath;
-    document.getElementById('icon-title').textContent = icon.replace('.svg', '').toUpperCase();
-
-    async function init() {
-        const root = document.getElementById('root');
-        try {
-            const res = await fetch(configUrl + '?v=' + Date.now());
-            if (!res.ok) throw new Error('找不到檔案');
-            const data = await res.json();
-            root.innerHTML = '';
-            data.ui_groups.forEach(g => {
-                const card = document.createElement('div');
-                card.className = 'card';
-                card.innerHTML = `<h4>${g.group_name}</h4>`;
-                g.controls.forEach(c => {
-                    const field = document.createElement('div');
-                    field.className = 'field';
-                    field.innerHTML = `<label>${c.label}</label>`;
-                    const el = c.type === 'select' ? document.createElement('select') : document.createElement('input');
-                    el.id = c.id;
-                    if(c.type === 'select') {
-                        c.options.forEach(o => el.add(new Option(o, o)));
-                        el.onchange = () => { handleSlider(c.id); update(); };
-                    } else {
-                        el.type = c.type; if(c.default) el.value = c.default;
-                        el.oninput = update;
-                    }
-                    field.appendChild(el);
-                    if(['rotate_mode','shadow_mode','radius_mode'].includes(c.id)) {
-                        const s = document.createElement('div');
-                        s.className = 'slider-box'; s.id = `s-${c.id}`;
-                        s.innerHTML = `<input type="range" id="range-${c.id}" min="0" max="360" value="0" oninput="update()">`;
-                        field.appendChild(s);
-                    }
-                    card.appendChild(field);
-                });
-                root.appendChild(card);
-            });
-        } catch (e) {
-            root.innerHTML = `<div style="text-align:center; padding:30px; color:#ff4d4d;">
-                <i class="fa-solid fa-triangle-exclamation" style="font-size:30px;"></i><br><br>
-                <b>數據加載失敗</b><br><small>請確認檔名是否為：data/editor_config.json</small>
-            </div>`;
-        }
+{
+  "ui_groups": [
+    {
+      "group_name": "基礎視覺 (A-D)",
+      "controls": [
+        { "id": "size", "label": "圖標尺寸", "type": "select", "options": ["24px", "32px", "48px", "64px", "128px", "自訂"] },
+        { "id": "color", "label": "填充顏色", "type": "color", "default": "#00cec9" },
+        { "id": "rotate_mode", "label": "旋轉模式", "type": "select", "options": ["固定 0°", "固定 90°", "固定 180°", "自由旋轉"] },
+        { "id": "shadow_mode", "label": "陰影強度(A)", "type": "select", "options": ["無", "柔和", "深邃", "自訂模糊"] },
+        { "id": "radius_mode", "label": "背景圓角(B)", "type": "select", "options": ["0px", "8px", "50% (圓形)", "自訂半徑"] },
+        { "id": "flip", "label": "翻轉變換(C)", "type": "select", "options": ["無", "水平翻轉", "垂直翻轉"] },
+        { "id": "gradient", "label": "漸層模式(D)", "type": "select", "options": ["關閉", "線性漸層", "徑向漸層"] }
+      ]
+    },
+    {
+      "group_name": "輸出與擴充 (E-L)",
+      "controls": [
+        { "id": "format", "label": "代碼格式(E-G)", "type": "select", "options": ["HTML (Img)", "SVG Inline", "CSS Mask", "React", "Vue", "Base64"] },
+        { "id": "minify", "label": "代碼壓縮(I)", "type": "select", "options": ["否", "是"] },
+        { "id": "history", "label": "紀錄/收藏(L)", "type": "select", "options": ["無", "加入收藏", "存入本地歷史"] }
+      ]
     }
-
-    function handleSlider(id) {
-        const box = document.getElementById(`s-${id}`);
-        if(box) box.style.display = document.getElementById(id).value.match(/自由|自訂/) ? 'block' : 'none';
-    }
-
-    function update() {
-        const img = document.getElementById('svg-target');
-        const color = document.getElementById('color')?.value || '#00cec9';
-        const rot = document.getElementById('rotate_mode')?.value === '自由旋轉' ? 
-                    document.getElementById('range-rotate_mode').value + 'deg' : '0deg';
-        img.style.webkitMask = `url(${img.src}) no-repeat center / contain`;
-        img.style.backgroundColor = color;
-        img.style.transform = `rotate(${rot})`;
-    }
-
-    function generate() {
-        update();
-        const code = `<div style="width:32px; height:32px; background-color:${document.getElementById('color').value}; -webkit-mask:url('${svgPath}') no-repeat center/contain; transform:${document.getElementById('svg-target').style.transform};"></div>`;
-        document.getElementById('code-res').textContent = code;
-    }
-
-    function copy() {
-        navigator.clipboard.writeText(document.getElementById('code-res').textContent);
-        alert('代碼已複製到剪貼簿！');
-    }
-
-    function share() {
-        if (navigator.share) navigator.share({ title: 'Mobispace Editor', url: window.location.href });
-    }
-
-    window.onload = init;
-</script>
-</body>
-</html>
+  ]
+}
