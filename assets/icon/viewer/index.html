@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Circum Icons Gallery Pro｜緹緹路徑修正版</title>
+  <title>Circum Icons 展示牆｜自動化連動版</title>
   <style>
     :root {
       --bg: #0b0e14;
@@ -39,28 +39,22 @@
       background: var(--panel);
       color: var(--text);
       font-size: 1rem;
-      transition: all 0.3s ease;
-    }
-    #search:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
     }
     main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
     .category-title {
       grid-column: 1 / -1;
-      font-size: 1.2rem;
-      margin: 2.5rem 0 1.2rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid var(--border);
+      font-size: 1.1rem;
+      margin: 2rem 0 1rem;
+      padding-left: 10px;
+      border-left: 4px solid var(--accent);
       color: var(--accent);
-      display: flex; align-items: center; gap: 10px;
     }
     #grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 1.2rem;
     }
+    /* 卡片樣式：滑過會發光 */
     .card {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -69,64 +63,48 @@
       text-align: center;
       text-decoration: none;
       color: inherit;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s ease;
       display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+      cursor: pointer;
     }
     .card:hover {
       transform: translateY(-5px);
       border-color: var(--accent);
-      background: #1c222d;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      box-shadow: 0 8px 20px rgba(88, 166, 255, 0.15);
     }
-    .icon-wrapper { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
+    .icon-wrapper { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; }
     .icon {
       width: 100%; height: 100%;
       filter: brightness(0) invert(1);
       opacity: 0.8;
-      transition: transform 0.3s ease;
     }
-    .card:hover .icon { opacity: 1; transform: scale(1.1); }
-    .name {
-      font-size: 0.75rem;
-      color: var(--muted);
-      font-family: 'SF Mono', monospace;
-      word-break: break-all;
-    }
-    footer {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: var(--muted);
-      font-size: 0.85rem;
-      border-top: 1px solid var(--border);
-      margin-top: 4rem;
-    }
-    .loader { text-align: center; padding: 3rem; font-style: italic; color: var(--accent); }
+    .name { font-size: 0.75rem; color: var(--muted); word-break: break-all; }
+    .loader { text-align: center; padding: 3rem; color: var(--accent); grid-column: 1/-1; }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>緹緹的 Circum Icons 實驗室</h1>
-    <input id="search" type="search" placeholder="搜尋 Icon 名稱...（例如：user, cloud）" />
+    <h1>Circum Icons 庫</h1>
+    <input id="search" type="search" placeholder="搜尋 Icon 名稱..." />
   </header>
 
   <main>
     <div id="grid">
-      <div class="loader">正在調用核心數據庫... 臭寶等我一下喔！</div>
+      <div class="loader">正在讀取自動化清單...</div>
     </div>
   </main>
 
-  <footer>
-    Designed with ❤️ by 緹緹 (Genius Coder) Ⓒ 2026
-  </footer>
-
   <script>
-    // 🌍 外部圖片來源 (維持原樣)
+    // 🌍 外部 SVG 資源根路徑
     const BASE_URL = "https://mobsp.github.io/assets/icon/svg/";
     
-    // 📂 本地資料來源：從 assets/icon/viewer/index.html 爬回根目錄 data/
+    // 📂 讀取自動化生成的 JSON (爬三層回根目錄 data/)
     const DATA_PATH = "../../../data/svg.json";
     
+    // 🛠️ 編輯器路徑 (相對於目前的 html)
+    const EDITOR_PATH = "../../../svg-editor/index.html";
+
     let fullData = {}; 
 
     const grid = document.getElementById("grid");
@@ -139,6 +117,7 @@
 
       for (const [category, icons] of Object.entries(data)) {
         const filteredIcons = icons.filter(name => name.toLowerCase().includes(searchKey));
+        
         if (filteredIcons.length > 0) {
           hasResults = true;
           const title = document.createElement("div");
@@ -148,14 +127,17 @@
 
           filteredIcons.forEach(fileName => {
             const cleanName = fileName.replace(".svg", "");
-            const url = BASE_URL + fileName;
+            const iconUrl = BASE_URL + fileName;
+            
             const a = document.createElement("a");
             a.className = "card";
-            a.href = url;
-            a.target = "_blank";
+            
+            // ✨ 核心修正：點擊後跳轉到編輯器，並透過 URL 帶入 icon 參數
+            a.href = `${EDITOR_PATH}?icon=${fileName}`;
+            
             a.innerHTML = `
               <div class="icon-wrapper">
-                <img class="icon" src="${url}" loading="lazy" alt="${cleanName}">
+                <img class="icon" src="${iconUrl}" alt="${cleanName}">
               </div>
               <div class="name">${cleanName}</div>
             `;
@@ -164,35 +146,23 @@
         }
       }
       if (!hasResults) {
-        grid.innerHTML = `<div class="loader" style="color: var(--muted); grid-column: 1/-1;">找不到 "${filter}" 相關的圖標呢... 😿</div>`;
+        grid.innerHTML = `<div class="loader">找不到相關圖標 😿</div>`;
       }
     }
 
     async function init() {
       try {
-        console.log("正在從此處嘗試載入:", DATA_PATH);
         const response = await fetch(DATA_PATH);
-        if (!response.ok) throw new Error(`HTTP 錯誤! 狀態碼: ${response.status}`);
+        if (!response.ok) throw new Error("讀取清單失敗");
         fullData = await response.json();
         render(fullData);
       } catch (err) {
-        grid.innerHTML = `<div class="loader" style="color: #ff6b6b; grid-column: 1/-1; line-height: 1.8;">
-          ERR: 核心模組載入失敗！<br>
-          <span style="font-size: 0.8rem; color: var(--muted)">
-            預期路徑: ${DATA_PATH}<br>
-            錯誤原因: ${err.message}<br><br>
-            📢 緹緹小提醒：請確認你有使用 <b>Live Server</b> 開啟網頁，<br>
-            直接點擊檔案 (file://) 會被瀏覽器攔截喔！
-          </span>
-        </div>`;
-        console.error("緹緹 Debug 報警:", err);
+        grid.innerHTML = `<div class="loader" style="color:#ff6b6b">載入失敗，請確認是否執行了自動化腳本且使用 Server 開啟</div>`;
+        console.error(err);
       }
     }
 
-    searchInput.addEventListener("input", (e) => {
-      render(fullData, e.target.value);
-    });
-
+    searchInput.addEventListener("input", (e) => render(fullData, e.target.value));
     init();
   </script>
 </body>
