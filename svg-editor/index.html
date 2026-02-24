@@ -1,115 +1,79 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8"><title>SVG 航空母艦編輯器｜緹緹出品</title>
-  <style>
-    :root { --bg: #0d1117; --panel: #161b22; --accent: #58a6ff; --text: #c9d1d9; --border: #30363d; }
-    body { margin: 0; display: flex; height: 100vh; background: var(--bg); color: var(--text); font-family: sans-serif; }
-    
-    /* 左側預覽與輸出 */
-    .main-area { flex: 1; display: flex; flex-direction: column; padding: 20px; gap: 20px; overflow-y: auto; }
-    .preview-box { flex: 1; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative; min-height: 300px; }
-    #svg-display { transition: all 0.3s; }
-    .output-area { background: #000; border-radius: 8px; padding: 15px; position: relative; }
-    textarea { width: 100%; height: 120px; background: transparent; color: #3fb950; border: none; outline: none; font-family: monospace; resize: none; }
-    
-    /* 右側控制面板 */
-    .sidebar { width: 300px; background: var(--panel); border-left: 1px solid var(--border); display: flex; flex-direction: column; overflow-y: auto; }
-    .side-group { padding: 15px; border-bottom: 1px solid var(--border); }
-    .side-group h3 { font-size: 0.9rem; color: var(--accent); margin-top: 0; }
-    .control-item { margin-bottom: 12px; }
-    label { display: block; font-size: 0.8rem; margin-bottom: 5px; color: #8b949e; }
-    select, input { width: 100%; padding: 8px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 4px; }
-    
-    .btn-group { padding: 20px; }
-    button { width: 100%; padding: 12px; background: var(--accent); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
-    button:hover { opacity: 0.9; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG 編輯器</title>
+    <style>
+        :root { --bg: #0d1117; --panel: #161b22; --border: #30363d; --accent: #58a6ff; }
+        body { margin: 0; display: flex; flex-direction: column; height: 100vh; background: var(--bg); color: white; font-family: sans-serif; }
+        @media (min-width: 768px) { body { flex-direction: row; } }
+        
+        .main-view { flex: 1; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
+        .preview { flex: 1; background: #1b1f24; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; min-height: 250px; }
+        #svg-target { transition: 0.3s; max-width: 80%; }
+        .code-box { margin-top: 15px; background: #000; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 0.8rem; min-height: 80px; word-break: break-all; }
+        
+        .sidebar { width: 100%; background: var(--panel); border-left: 1px solid var(--border); padding: 20px; box-sizing: border-box; overflow-y: auto; }
+        @media (min-width: 768px) { .sidebar { width: 320px; } }
+        
+        .ctrl-group { margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        label { display: block; font-size: 0.8rem; color: #8b949e; margin: 10px 0 5px; }
+        select, input { width: 100%; padding: 8px; background: #0d1117; color: white; border: 1px solid var(--border); border-radius: 4px; }
+        button { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 6px; color: white; font-weight: bold; margin-top: 20px; }
+    </style>
 </head>
 <body>
-  <div class="main-area">
-    <div class="preview-box" id="preview-container">
-        <img id="svg-display" src="" alt="預覽圖">
+    <div class="main-view">
+        <div class="preview"><img id="svg-target" src=""></div>
+        <div class="code-box" id="output">代碼將在此產生...</div>
+        <button onclick="apply()">執行並產生代碼</button>
     </div>
-    <div class="output-area">
-      <textarea id="code-output" readonly placeholder="點擊執行按鈕產生代碼..."></textarea>
-    </div>
-    <div class="btn-group">
-      <button onclick="generateOutput()">執行並產生程式碼 (Generate)</button>
-    </div>
-  </div>
+    <div class="sidebar" id="ctrl-panel"><h3>配置選項</h3></div>
 
-  <div class="sidebar" id="sidebar">
-    <div class="side-group">
-        <h3>當前圖標：<span id="icon-name-display" style="color:white">--</span></h3>
-    </div>
-    </div>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const icon = params.get('icon') || '';
+        const svgUrl = `https://mobsp.github.io/assets/icon/svg/${icon}`;
+        document.getElementById('svg-target').src = svgUrl;
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const iconName = params.get('icon') || 'default.svg';
-    const BASE_URL = "https://mobsp.github.io/assets/icon/svg/";
-    const svgUrl = BASE_URL + iconName;
+        async function loadUI() {
+            const res = await fetch('../data/editor_config.json');
+            const config = await res.json();
+            const panel = document.getElementById('ctrl-panel');
+            config.ui_groups.forEach(g => {
+                const div = document.createElement('div');
+                div.className = 'ctrl-group';
+                div.innerHTML = `<h4>${g.group_name}</h4>`;
+                g.controls.forEach(c => {
+                    const label = document.createElement('label');
+                    label.textContent = c.label;
+                    let el;
+                    if(c.type === 'select') {
+                        el = document.createElement('select');
+                        c.options.forEach(o => el.add(new Option(o, o)));
+                    } else {
+                        el = document.createElement('input'); el.type = c.type; if(c.default) el.value = c.default;
+                    }
+                    el.id = c.id;
+                    div.appendChild(label); div.appendChild(el);
+                });
+                panel.appendChild(div);
+            });
+        }
 
-    document.getElementById('icon-name-display').textContent = iconName;
-    document.getElementById('svg-display').src = svgUrl;
-
-    async function loadConfig() {
-      const resp = await fetch('../data/editor_config.json');
-      const config = await resp.json();
-      const sidebar = document.getElementById('sidebar');
-
-      config.ui_groups.forEach(group => {
-        const div = document.createElement('div');
-        div.className = 'side-group';
-        div.innerHTML = `<h3>${group.group_name}</h3>`;
-        group.controls.forEach(ctrl => {
-          const item = document.createElement('div');
-          item.className = 'control-item';
-          item.innerHTML = `<label>${ctrl.label}</label>`;
-          
-          if(ctrl.type === 'select') {
-            const sel = document.createElement('select');
-            sel.id = ctrl.id;
-            ctrl.options.forEach(opt => sel.add(new Option(opt, opt)));
-            item.appendChild(sel);
-          } else if(ctrl.type === 'color') {
-            const inp = document.createElement('input');
-            inp.type = 'color'; inp.id = ctrl.id; inp.value = ctrl.default;
-            item.appendChild(inp);
-          }
-          div.appendChild(item);
-        });
-        sidebar.appendChild(div);
-      });
-    }
-
-    function generateOutput() {
-      const settings = {
-        size: document.getElementById('size').value,
-        color: document.getElementById('color').value,
-        rotate: document.getElementById('rotate').value,
-        format: document.getElementById('format').value
-      };
-
-      // 更新預覽視覺
-      const previewImg = document.getElementById('svg-display');
-      previewImg.style.width = settings.size;
-      previewImg.style.transform = `rotate(${settings.rotate})`;
-      previewImg.style.filter = `drop-shadow(0 0 0 ${settings.color}) scale(1)`; // 模擬著色
-
-      // 產出代碼 (簡易示範 HTML 格式)
-      let output = "";
-      if(settings.format === "HTML (Img Tag)") {
-        output = `<img src="${svgUrl}" style="width:${settings.size}; filter:drop-shadow(0 0 0 ${settings.color}); transform:rotate(${settings.rotate});">`;
-      } else {
-        output = `// ${settings.format} 格式產出中...\n// 目前已套用顏色: ${settings.color}\n// 旋轉: ${settings.rotate}`;
-      }
-      
-      document.getElementById('code-output').value = output;
-    }
-
-    loadConfig();
-  </script>
+        function apply() {
+            const s = document.getElementById('size').value;
+            const c = document.getElementById('color').value;
+            const r = document.getElementById('rotate').value;
+            const img = document.getElementById('svg-target');
+            img.style.width = s;
+            img.style.filter = `drop-shadow(0 0 0 ${c})`;
+            img.style.transform = `rotate(${r})`;
+            
+            document.getElementById('output').textContent = `<img src="${svgUrl}" style="width:${s}; filter:drop-shadow(0 0 0 ${c}); transform:rotate(${r})">`;
+        }
+        loadUI();
+    </script>
 </body>
 </html>
