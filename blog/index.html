@@ -50,7 +50,7 @@
         }
         body.loaded #app-container { opacity: 1; transform: scale(1); }
 
-        /* 隱藏標題 SEO 專用 */
+        /* SEO 隱藏標題 */
         .visually-hidden {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0,0,0,0); border: 0;
@@ -64,7 +64,7 @@
             display: flex; flex-direction: column; align-items: center;
         }
 
-        /* 替換為高級跑馬燈樣式 */
+        /* 跑馬燈樣式 */
         .marquee-row {
             display: flex; align-items: center; background: rgba(255,255,255,0.05);
             padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
@@ -84,13 +84,18 @@
         }
         @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* 部落格標題圖樣式 */
+        /* 標題圖樣式 - 修正版 */
         .brand-title-link {
             display: block; width: 100%; transition: var(--transition);
             margin-bottom: 5px; padding: 0 5px; box-sizing: border-box;
+            text-decoration: none;
         }
         .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
-        .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
+        .brand-title-img { 
+            width: 100%; height: auto; display: block; border-radius: 8px; 
+            /* 避免圖片加載前的空白區塊過大 */
+            min-height: 50px; 
+        }
 
         #main-view { 
             flex: 1; overflow-y: auto; 
@@ -149,15 +154,15 @@
             <nav class="marquee-row">
                 <span class="v-tag" id="v-tag">SYNCING</span>
                 <div class="mq-box">
-                    <div class="mq-text" id="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！最新技術文章持續更新中...</div>
+                    <div class="mq-text" id="mq-text">正在載入莫比部落格實時數據...</div>
                 </div>
-                <button onclick="location.href='https://mobsp.github.io/'" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:10px; cursor:pointer;">
+                <button onclick="location.href='https://mobsp.github.io/'" title="回到首頁" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:10px; cursor:pointer;">
                     <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
             </nav>
 
             <a href="https://mobsp.github.io/blog/" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
-                <img src="assets/brand/ms-blog-title.JPEG" alt="莫比部落格 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
+                <img src="https://mobsp.github.io/assets/brand/ms-blog-title.JPEG" alt="莫比部落格 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
             </a>
         </header>
 
@@ -229,6 +234,7 @@
                 if (cachedData) renderNotice(JSON.parse(cachedData), true);
 
                 try {
+                    if (typeof supabase === 'undefined') return;
                     const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                     const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
                     if (!error && data.length > 0) {
@@ -242,7 +248,7 @@
                 const vTag = document.getElementById('v-tag');
                 const mqText = document.getElementById('mq-text');
                 if (!vTag || !mqText || !data.length) return;
-                const item = data[0]; // 顯示最新的一條
+                const item = data[0]; 
                 vTag.classList.remove('tag-important', 'tag-update');
                 if (item.type.match(/重要|守則/)) vTag.classList.add('tag-important');
                 else if (item.type.match(/更新|系統/)) vTag.classList.add('tag-update');
