@@ -1,169 +1,71 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Circum Icons 展示牆｜自動化連動版</title>
-  <style>
-    :root {
-      --bg: #0b0e14;
-      --panel: #151921;
-      --border: #262c3a;
-      --text: #f0f0f0;
-      --muted: #8b949e;
-      --accent: #58a6ff;
-      --radius: 12px;
-    }
-    * { box-sizing: border-box; scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    }
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(11, 14, 20, 0.8);
-      backdrop-filter: blur(15px);
-      padding: 1.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-    h1 { margin: 0 0 1rem; font-size: 1.4rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
-    #search {
-      width: 100%;
-      padding: 12px 20px;
-      border-radius: 50px;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      color: var(--text);
-      font-size: 1rem;
-    }
-    main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
-    .category-title {
-      grid-column: 1 / -1;
-      font-size: 1.1rem;
-      margin: 2rem 0 1rem;
-      padding-left: 10px;
-      border-left: 4px solid var(--accent);
-      color: var(--accent);
-    }
-    #grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      gap: 1.2rem;
-    }
-    /* 卡片樣式：滑過會發光 */
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.2rem;
-      text-align: center;
-      text-decoration: none;
-      color: inherit;
-      transition: all 0.2s ease;
-      display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
-      cursor: pointer;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-      border-color: var(--accent);
-      box-shadow: 0 8px 20px rgba(88, 166, 255, 0.15);
-    }
-    .icon-wrapper { width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; }
-    .icon {
-      width: 100%; height: 100%;
-      filter: brightness(0) invert(1);
-      opacity: 0.8;
-    }
-    .name { font-size: 0.75rem; color: var(--muted); word-break: break-all; }
-    .loader { text-align: center; padding: 3rem; color: var(--accent); grid-column: 1/-1; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 展示牆</title>
+    <style>
+        :root { --bg: #0b0e14; --panel: #151921; --border: #262c3a; --accent: #58a6ff; --text: #f0f0f0; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }
+        header { position: sticky; top: 0; background: rgba(11,14,20,0.9); padding: 15px; border-bottom: 1px solid var(--border); z-index: 10; }
+        #search { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); color: white; box-sizing: border-box; }
+        main { padding: 15px; }
+        #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; }
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; text-decoration: none; color: inherit; transition: 0.2s; }
+        .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+        .icon-wrapper { width: 40px; height: 40px; margin: 0 auto 10px; }
+        .icon { width: 100%; height: 100%; filter: brightness(0) invert(1); }
+        .name { font-size: 0.7rem; opacity: 0.7; word-break: break-all; }
+        .category-title { grid-column: 1/-1; margin-top: 20px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+    </style>
 </head>
 <body>
+    <header><input id="search" type="search" placeholder="搜尋圖標..."></header>
+    <main><div id="grid">載入中...</div></main>
 
-  <header>
-    <h1>Circum Icons 庫</h1>
-    <input id="search" type="search" placeholder="搜尋 Icon 名稱..." />
-  </header>
+    <script>
+        const BASE_URL = "https://mobsp.github.io/assets/icon/svg/";
+        const DATA_PATH = "../../../data/svg.json"; 
+        let fullData = {};
 
-  <main>
-    <div id="grid">
-      <div class="loader">正在讀取自動化清單...</div>
-    </div>
-  </main>
-
-  <script>
-    // 🌍 外部 SVG 資源根路徑
-    const BASE_URL = "https://mobsp.github.io/assets/icon/svg/";
-    
-    // 📂 讀取自動化生成的 JSON (爬三層回根目錄 data/)
-    const DATA_PATH = "../../../data/svg.json";
-    
-    // 🛠️ 編輯器路徑 (相對於目前的 html)
-    const EDITOR_PATH = "../../../svg-editor/index.html";
-
-    let fullData = {}; 
-
-    const grid = document.getElementById("grid");
-    const searchInput = document.getElementById("search");
-
-    function render(data, filter = "") {
-      grid.innerHTML = "";
-      const searchKey = filter.toLowerCase();
-      let hasResults = false;
-
-      for (const [category, icons] of Object.entries(data)) {
-        const filteredIcons = icons.filter(name => name.toLowerCase().includes(searchKey));
-        
-        if (filteredIcons.length > 0) {
-          hasResults = true;
-          const title = document.createElement("div");
-          title.className = "category-title";
-          title.textContent = category;
-          grid.appendChild(title);
-
-          filteredIcons.forEach(fileName => {
-            const cleanName = fileName.replace(".svg", "");
-            const iconUrl = BASE_URL + fileName;
-            
-            const a = document.createElement("a");
-            a.className = "card";
-            
-            // ✨ 核心修正：點擊後跳轉到編輯器，並透過 URL 帶入 icon 參數
-            a.href = `${EDITOR_PATH}?icon=${fileName}`;
-            
-            a.innerHTML = `
-              <div class="icon-wrapper">
-                <img class="icon" src="${iconUrl}" alt="${cleanName}">
-              </div>
-              <div class="name">${cleanName}</div>
-            `;
-            grid.appendChild(a);
-          });
+        async function init() {
+            try {
+                const res = await fetch(DATA_PATH);
+                if (!res.ok) throw new Error("找不到檔案");
+                fullData = await res.json();
+                render(fullData);
+            } catch (e) {
+                document.getElementById('grid').innerHTML = `<p style="color:red">載入失敗: ${e.message}<br>請確認 data/svg.json 存在</p>`;
+            }
         }
-      }
-      if (!hasResults) {
-        grid.innerHTML = `<div class="loader">找不到相關圖標 😿</div>`;
-      }
-    }
 
-    async function init() {
-      try {
-        const response = await fetch(DATA_PATH);
-        if (!response.ok) throw new Error("讀取清單失敗");
-        fullData = await response.json();
-        render(fullData);
-      } catch (err) {
-        grid.innerHTML = `<div class="loader" style="color:#ff6b6b">載入失敗，請確認是否執行了自動化腳本且使用 Server 開啟</div>`;
-        console.error(err);
-      }
-    }
+        function render(data, filter = "") {
+            const grid = document.getElementById("grid");
+            grid.innerHTML = "";
+            for (const [cat, icons] of Object.entries(data)) {
+                const filtered = icons.filter(n => n.toLowerCase().includes(filter.toLowerCase()));
+                if (filtered.length > 0) {
+                    const title = document.createElement("div");
+                    title.className = "category-title";
+                    title.textContent = cat;
+                    grid.appendChild(title);
+                    filtered.forEach(name => {
+                        const a = document.createElement("a");
+                        a.className = "card";
+                        // ✨ 跳轉到根目錄的編輯器
+                        a.href = `../../../svg-editor/index.html?icon=${name}`;
+                        a.innerHTML = `
+                            <div class="icon-wrapper"><img class="icon" src="${BASE_URL+name}"></div>
+                            <div class="name">${name.replace('.svg','')}</div>
+                        `;
+                        grid.appendChild(a);
+                    });
+                }
+            }
+        }
 
-    searchInput.addEventListener("input", (e) => render(fullData, e.target.value));
-    init();
-  </script>
+        document.getElementById('search').addEventListener('input', e => render(fullData, e.target.value));
+        init();
+    </script>
 </body>
 </html>
