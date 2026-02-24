@@ -6,48 +6,64 @@
     <title>SVG編輯器｜莫比空間</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root { --primary: #00cec9; --bg: #000; --panel: #1c1c1e; --border: #333; --text: #eee; }
+        /* 🌑 全站背景回歸深色 */
+        :root { --primary: #00cec9; --bg: #000000; --panel: #1c1c1e; --border: #333; --text: #eee; }
+        
+        /* 🌗 只有在開啟模式 A 時才會變亮色 */
         body.light-mode { --bg: #f5f5f7; --panel: #ffffff; --border: #ddd; --text: #1d1d1f; }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; width: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; }
         
         header { height: 60px; padding: 0 20px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
         
-        /* 💡 修正點：這裡預設改為亮色系，讓預覽更有質感 */
-        .preview-fixed { height: 210px; background: #222; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 999; }
+        /* 🖼️ 預覽區塊：背景深色，襯托中間的白色預覽框 */
+        .preview-fixed { height: 210px; background: #0a0a0a; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); flex-shrink: 0; }
         
-        /* 💡 臭寶要求的預覽底色！設為純白 */
-        #canvas-bg { width: 100px; height: 100px; background-color: #ffffff; display: flex; align-items: center; justify-content: center; transition: 0.3s; position: relative; border: 1px solid #ddd; }
+        /* 💡 這是臭寶要的：純白色的預覽框 */
+        #canvas-bg { 
+            width: 100px; 
+            height: 100px; 
+            background-color: #ffffff; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            transition: 0.3s; 
+            position: relative; 
+            border: 2px solid #333; /* 預設邊框 */
+            border-radius: 12px;
+        }
+        
         #svg-target { width: 65%; height: 65%; transition: 0.3s; pointer-events: none; }
 
         .bg-slider-wrap { width: 180px; margin-top: 15px; text-align: center; }
-        .bg-slider-wrap label { font-size: 10px; color: #888; display: block; margin-bottom: 5px; }
+        .bg-slider-wrap label { font-size: 10px; color: #666; display: block; margin-bottom: 5px; }
         input[type="range"] { width: 100%; accent-color: var(--primary); }
 
         .scroll-container { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .config-grid { padding: 15px; }
         .card { background: var(--panel); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
-        .card h4 { font-size: 13px; color: var(--primary); margin-bottom: 18px; }
+        .card h4 { font-size: 13px; color: var(--primary); margin-bottom: 18px; border-left: 3px solid var(--primary); padding-left: 10px; }
         
         .field { margin-bottom: 18px; }
         label { font-size: 11px; color: #888; display: block; margin-bottom: 8px; }
-        select, input[type="color"] { width: 100%; padding: 12px; background: rgba(0,0,0,0.1); border: 1px solid var(--border); color: inherit; border-radius: 12px; }
-        
-        .slider-box { display: none; margin-top: 10px; }
+        select, input[type="color"] { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); color: inherit; border-radius: 12px; outline: none; }
+
         .output-section { padding: 0 15px 30px; }
-        #code-out { width: 100%; min-height: 120px; background: rgba(0,0,0,0.4); border: 1px solid var(--primary); color: var(--primary); font-family: monospace; font-size: 12px; padding: 15px; border-radius: 15px; white-space: pre-wrap; word-break: break-all; margin-bottom: 15px; }
+        #code-out { width: 100%; min-height: 120px; background: rgba(0,0,0,0.5); border: 1px solid var(--primary); color: var(--primary); font-family: monospace; font-size: 12px; padding: 15px; border-radius: 15px; white-space: pre-wrap; margin-bottom: 15px; }
+        
         .btn-group { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
-        .btn { padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-main { background: var(--primary); color: #000; }
-        .btn-sub { background: #333; color: #fff; }
+        .btn { padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .btn:active { transform: scale(0.95); }
 
         footer { padding: 50px 20px; background: var(--panel); border-top: 1px solid var(--border); text-align: center; }
-        .copyright { font-size: 11px; color: #666; }
+        .copyright { font-size: 10px; color: #555; margin-top: 20px; }
 
-        @keyframes anim-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-        @keyframes anim-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-        .level-1 { animation: anim-pulse 2s infinite ease-in-out; }
-        .level-2 { animation: anim-float 3s infinite ease-in-out; }
+        /* 動態庫 */
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .level-1 { animation: pulse 2s infinite ease-in-out; }
+        .level-2 { animation: float 3s infinite ease-in-out; }
     </style>
 </head>
 <body>
@@ -63,21 +79,24 @@
         <div id="svg-target"></div>
     </div>
     <div class="bg-slider-wrap">
-        <label>PREVIEW BG (WHITE - BLACK)</label>
+        <label>預覽底色切換 (1-5)</label>
         <input type="range" min="1" max="5" value="1" oninput="changeCanvasBg(this.value)">
     </div>
 </div>
 
 <div class="scroll-container">
     <div class="config-grid" id="ui-root"></div>
+    
     <div class="output-section">
-        <div id="code-out" contenteditable="true">點擊「執行產出」產生代碼...</div>
+        <div id="code-out" contenteditable="true">代碼產出預覽...</div>
         <div class="btn-group">
-            <button class="btn btn-main" onclick="generateCode()"><i class="fa-solid fa-wand-magic-sparkles"></i> 執行產出</button>
-            <button class="btn btn-sub" onclick="copyCode()"><i class="fa-solid fa-copy"></i> 複製</button>
+            <button class="btn" style="background:var(--primary); color:#000;" onclick="generateCode()">執行產出</button>
+            <button class="btn" style="background:#333; color:#fff;" onclick="copyCode()">複製代碼</button>
         </div>
     </div>
+
     <footer>
+        <div onclick="doShare()" style="color:var(--primary); font-size:12px; font-weight:bold; cursor:pointer;">更多分享方式...</div>
         <p class="copyright">莫比空間｜Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Ⓒ 2023-2026</p>
     </footer>
 </div>
@@ -89,79 +108,71 @@
 
     function changeCanvasBg(val) {
         const colors = ["#FFFFFF", "#CCCCCC", "#666666", "#222222", "#000000"];
-        document.getElementById('canvas-bg').style.backgroundColor = colors[val-1];
-        // 如果底色太亮，加個邊框區分
-        document.getElementById('canvas-bg').style.borderColor = val < 3 ? "#ddd" : "transparent";
+        const targetBg = document.getElementById('canvas-bg');
+        targetBg.style.backgroundColor = colors[val-1];
+        // 亮色時給邊框，暗色時隱藏邊框
+        targetBg.style.borderColor = val < 3 ? "#ddd" : "#444";
     }
 
     async function init() {
-        changeCanvasBg(1); // 💡 強制預設為第一階：白色
+        changeCanvasBg(1); // 預設白色
         const root = document.getElementById('ui-root');
-        const res = await fetch('../data/editor_config.json');
-        const data = await res.json();
-        
-        data.ui_groups.forEach(g => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.innerHTML = `<h4>${g.group_name}</h4>`;
-            g.controls.forEach(c => {
-                const f = document.createElement('div');
-                f.className = 'field';
-                f.innerHTML = `<label>${c.label}</label>`;
-                const el = c.type === 'select' ? document.createElement('select') : document.createElement('input');
-                el.id = c.id;
-                if(c.type === 'select') {
-                    c.options.forEach(o => el.add(new Option(o, o)));
-                    el.onchange = updateUI;
-                } else {
-                    el.type = c.type; if(c.default) el.value = c.default;
-                    el.oninput = updateUI;
-                }
-                f.appendChild(el);
-                if(['radius_mode','rotate_mode'].includes(c.id)) {
-                    const sb = document.createElement('div');
-                    sb.className = 'slider-box'; sb.id = `box-${c.id}`;
-                    sb.innerHTML = `<input type="range" id="range-${c.id}" min="0" max="100" value="0" oninput="updateUI()">`;
-                    f.appendChild(sb);
-                }
-                card.appendChild(f);
+        try {
+            const res = await fetch('../data/editor_config.json');
+            const data = await res.json();
+            
+            data.ui_groups.forEach(g => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<h4>${g.group_name}</h4>`;
+                g.controls.forEach(c => {
+                    const f = document.createElement('div');
+                    f.className = 'field';
+                    f.innerHTML = `<label>${c.label}</label>`;
+                    const el = c.type === 'select' ? document.createElement('select') : document.createElement('input');
+                    el.id = c.id;
+                    if(c.type === 'select') {
+                        c.options.forEach(o => el.add(new Option(o, o)));
+                        el.onchange = updateUI;
+                    } else {
+                        el.type = c.type; if(c.default) el.value = c.default;
+                        el.oninput = updateUI;
+                    }
+                    f.appendChild(el);
+                    card.appendChild(f);
+                });
+                root.appendChild(card);
             });
-            root.appendChild(card);
-        });
-        updateUI();
+            updateUI();
+        } catch(e) { console.error(e); }
     }
 
     function updateUI() {
         const target = document.getElementById('svg-target');
-        const canvas = document.getElementById('canvas-bg');
-        
         const fill = document.getElementById('fill_color')?.value || '#00cec9';
-        const stroke = document.getElementById('stroke_color')?.value || '#ffffff';
-        const bg = document.getElementById('bg_color')?.value || '#ffffff';
         const anim = document.getElementById('anim_level')?.value;
         const dm = document.getElementById('dark_mode_opt')?.value;
 
-        // 🌗 模式 A
+        // 🌗 模式 A：切換全站亮色/暗色
         document.body.classList.toggle('light-mode', dm === "模式 A: 介面同步");
         
         target.style.webkitMask = `url(${svgUrl}) no-repeat center / contain`;
         target.style.backgroundColor = fill;
 
-        // 🎬 動態處理
+        // 🎬 動態
         target.className = "";
         if(anim?.includes("1")) target.classList.add('level-1');
         if(anim?.includes("2")) target.classList.add('level-2');
     }
 
     function generateCode() {
-        const fill = document.getElementById('fill_color').value;
-        const res = `<div style="width:32px; height:32px; background:${fill}; -webkit-mask:url('${svgUrl}') no-repeat center/contain;"></div>`;
-        document.getElementById('code-out').textContent = res;
+        const f = document.getElementById('fill_color').value;
+        document.getElementById('code-out').textContent = `<div style="width:32px; height:32px; background:${f}; -webkit-mask:url('${svgUrl}') no-repeat center/contain;"></div>`;
     }
 
     function copyCode() {
         navigator.clipboard.writeText(document.getElementById('code-out').textContent);
-        alert('代碼已複製！');
+        alert('已複製代碼！');
     }
 
     window.onload = init;
