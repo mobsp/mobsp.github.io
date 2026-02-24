@@ -44,29 +44,34 @@
         <td nowrap><a href="./blog/index.html"><code>./blog/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/wiki/"><b>查看指南 📚</b></a></td>
-        <td nowrap>專案說明與使用者指南</td>
-        <td nowrap><a href="./wiki/index.html"><code>./wiki/index.html</code></a></td>
+        <td nowrap><a href="https://mobsp.github.io/assets/icon/viewer/"><b>SVG 展示牆 🖥️</b></a></td>
+        <td nowrap>圖示庫預覽與跳轉編輯</td>
+        <td nowrap><a href="./assets/icon/viewer/index.html"><code>./assets/icon/viewer/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/tol/"><b>使用工具 🛠️</b></a></td>
-        <td nowrap>動態驅動的實用開發工具</td>
-        <td nowrap><a href="./tol/index.html"><code>./tol/index.html</code></a></td>
+        <td nowrap><a href="https://mobsp.github.io/svg-editor/"><b>SVG 編輯器 🚀</b></a></td>
+        <td nowrap>進階圖示加工與代碼生成器</td>
+        <td nowrap><a href="./svg-editor/index.html"><code>./svg-editor/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/shorts/"><b>短影音頻道 🎵</b></a></td>
+        <td nowrap><a href="https://mobsp.github.io/music/"><b>音樂頻道 🎵</b></a></td>
+        <td nowrap>沉浸式工作背景音律體驗</td>
+        <td nowrap><a href="./music/index.html"><code>./music/index.html</code></a></td>
+      </tr>
+      <tr>
+        <td nowrap><a href="https://mobsp.github.io/shorts/"><b>短影音頻道 🎬</b></a></td>
         <td nowrap>沈浸式多媒體內容體驗</td>
         <td nowrap><a href="./shorts/index.html"><code>./shorts/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/data/notice.md"><b>記錄靈感 📒</b></a></td>
-        <td nowrap>輕量化系統動態公告</td>
-        <td nowrap><a href="./data/notice.md"><code>./data/notice.md</code></a></td>
+        <td nowrap><a href="https://mobsp.github.io/tol/"><b>工具箱 🛠️</b></a></td>
+        <td nowrap>動態驅動的實用開發工具</td>
+        <td nowrap><a href="./tol/index.html"><code>./tol/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/assets/icon/viewer/"><b>開始編碼 💻</b></a></td>
-        <td nowrap>圖示與組件開發預覽</td>
-        <td nowrap><a href="./assets/icon/viewer/index.html"><code>./assets/icon/viewer/index.html</code></a></td>
+        <td nowrap><a href="https://mobsp.github.io/wiki/"><b>查看指南 📚</b></a></td>
+        <td nowrap>專案說明與使用者指南</td>
+        <td nowrap><a href="./wiki/index.html"><code>./wiki/index.html</code></a></td>
       </tr>
     </tbody>
   </table>
@@ -95,19 +100,24 @@
     </thead>
     <tbody>
       <tr>
+        <td nowrap><b>Editor Logic</b></td>
+        <td nowrap><code>./svg-editor/</code>, <code>./data/editor_config.json</code></td>
+        <td nowrap><b>SVG 編輯器核心配置與渲染引擎</b></td>
+      </tr>
+      <tr>
+        <td nowrap><b>Global State</b></td>
+        <td nowrap><code>localStorage / indexedDB</code></td>
+        <td nowrap>全域<b>歷史紀錄</b>、<b>收藏夾</b>與個人化<b>設定</b></td>
+      </tr>
+      <tr>
+        <td nowrap><b>Audio Assets</b></td>
+        <td nowrap><code>./assets/audio/</code>, <code>./music/</code></td>
+        <td nowrap>音樂頻道串流與本地音效資源</td>
+      </tr>
+      <tr>
         <td nowrap><b>Brand Assets</b></td>
         <td nowrap><code>./assets/brand/</code></td>
-        <td nowrap><b>莫比空間核心視覺識別系統</b></td>
-      </tr>
-      <tr>
-        <td nowrap><b>Entry (HTML)</b></td>
-        <td nowrap><code>./index.html</code>, <code>./blog/</code>, <code>./tol/</code>, <code>./wiki/</code>, <code>./shorts/</code></td>
-        <td nowrap>系統各大功能模組的主要入口</td>
-      </tr>
-      <tr>
-        <td nowrap><b>Documentation</b></td>
-        <td nowrap><code>./README.md</code>, <code>./data/notice.md</code>, <code>./data/qa.md</code></td>
-        <td nowrap>專案說明、系統公告與常見問題</td>
+        <td nowrap>莫比空間核心視覺識別系統</td>
       </tr>
       <tr>
         <td nowrap><b>Logic (JS)</b></td>
@@ -116,8 +126,8 @@
       </tr>
       <tr>
         <td nowrap><b>Data (JSON)</b></td>
-        <td nowrap><code>./tol/data.json</code>, <code>./manifest.json</code></td>
-        <td nowrap>工具庫數據配置與 Web App 元數據</td>
+        <td nowrap><code>./data/svg.json</code>, <code>./manifest.json</code></td>
+        <td nowrap>圖示庫自動化數據與 Web App 元數據</td>
       </tr>
     </tbody>
   </table>
@@ -132,14 +142,14 @@
 本專案採用 **Vue.js** 單頁面應用架構，並針對 GitHub Pages 進行靜態優化：
 
 * **🚀 PWA 支持**：提供離線訪問與原生 App 級別的安裝體驗。
-* **📊 數據驅動**：工具庫與子頁面高度依賴 JSON 配置，實現「無痛更新」。
-* **📱 響應式佈局**：完美兼容手機、平板與桌機顯示。
-
+* **📊 數據驅動**：全系統（包含編輯器與工具庫）高度依賴 JSON 配置。
+* **💾 全域持久化**：整合 **收藏與最愛 (Favorites)** 功能，透過全域狀態管理紀錄用戶偏好。
+* **🤖 自動化管線**：透過 GitHub Actions 實現 SVG 資產自動檢測與索引更新。
 
 ---
 
 ## 📈 搜尋引擎優化 (SEO)
-`莫比空間` `Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ` `Mobispace` `資源整合入口` `數位工具庫` `PWA 網頁應用` `資源導航` `莫比部落格`
+`莫比空間` `Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ` `Mobispace` `SVG 編輯器` `數位工具庫` `音樂頻道` `PWA 應用` `開發者資源` `資源導航`
 
 ---
 
