@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Circum Icons Gallery Pro｜緹緹專屬優化版</title>
+  <title>Circum Icons Gallery Pro｜緹緹路徑修正版</title>
   <style>
     :root {
       --bg: #0b0e14;
@@ -14,17 +14,13 @@
       --accent: #58a6ff;
       --radius: 12px;
     }
-
     * { box-sizing: border-box; scroll-behavior: smooth; }
-
     body {
       margin: 0;
       background: var(--bg);
       color: var(--text);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
-
-    /* --- Header --- */
     header {
       position: sticky;
       top: 0;
@@ -34,10 +30,7 @@
       padding: 1.5rem;
       border-bottom: 1px solid var(--border);
     }
-
     h1 { margin: 0 0 1rem; font-size: 1.4rem; color: var(--accent); display: flex; align-items: center; gap: 8px; }
-    h1::before { content: '✨'; }
-
     #search {
       width: 100%;
       padding: 12px 20px;
@@ -48,16 +41,12 @@
       font-size: 1rem;
       transition: all 0.3s ease;
     }
-
     #search:focus {
       outline: none;
       border-color: var(--accent);
       box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
     }
-
-    /* --- Layout --- */
     main { padding: 2rem; max-width: 1400px; margin: 0 auto; }
-
     .category-title {
       grid-column: 1 / -1;
       font-size: 1.2rem;
@@ -65,18 +54,13 @@
       padding-bottom: 0.5rem;
       border-bottom: 2px solid var(--border);
       color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      display: flex; align-items: center; gap: 10px;
     }
-
     #grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 1.2rem;
     }
-
-    /* --- Card --- */
     .card {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -86,44 +70,28 @@
       text-decoration: none;
       color: inherit;
       transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.8rem;
+      display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
     }
-
     .card:hover {
       transform: translateY(-5px);
       border-color: var(--accent);
       background: #1c222d;
       box-shadow: 0 8px 20px rgba(0,0,0,0.3);
     }
-
-    .icon-wrapper {
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
+    .icon-wrapper { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; }
     .icon {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       filter: brightness(0) invert(1);
       opacity: 0.8;
       transition: transform 0.3s ease;
     }
-
     .card:hover .icon { opacity: 1; transform: scale(1.1); }
-
     .name {
       font-size: 0.75rem;
       color: var(--muted);
-      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-family: 'SF Mono', monospace;
       word-break: break-all;
     }
-
     footer {
       text-align: center;
       padding: 3rem 1rem;
@@ -132,8 +100,6 @@
       border-top: 1px solid var(--border);
       margin-top: 4rem;
     }
-
-    /* --- Loading State --- */
     .loader { text-align: center; padding: 3rem; font-style: italic; color: var(--accent); }
   </style>
 </head>
@@ -155,38 +121,34 @@
   </footer>
 
   <script>
+    // 🌍 外部圖片來源 (維持原樣)
     const BASE_URL = "https://mobsp.github.io/assets/icon/svg/";
-    const DATA_PATH = "data/svg.json";
     
-    let fullData = {}; // 儲存分類後的數據
+    // 📂 本地資料來源：從 assets/icon/viewer/index.html 爬回根目錄 data/
+    const DATA_PATH = "../../../data/svg.json";
+    
+    let fullData = {}; 
 
     const grid = document.getElementById("grid");
     const searchInput = document.getElementById("search");
 
-    // 核心渲染函式
     function render(data, filter = "") {
       grid.innerHTML = "";
       const searchKey = filter.toLowerCase();
       let hasResults = false;
 
       for (const [category, icons] of Object.entries(data)) {
-        // 過濾該分類下的圖標
         const filteredIcons = icons.filter(name => name.toLowerCase().includes(searchKey));
-
         if (filteredIcons.length > 0) {
           hasResults = true;
-          
-          // 渲染分類標題
           const title = document.createElement("div");
           title.className = "category-title";
           title.textContent = category;
           grid.appendChild(title);
 
-          // 渲染圖標卡片
           filteredIcons.forEach(fileName => {
             const cleanName = fileName.replace(".svg", "");
             const url = BASE_URL + fileName;
-
             const a = document.createElement("a");
             a.className = "card";
             a.href = url;
@@ -201,28 +163,32 @@
           });
         }
       }
-
       if (!hasResults) {
-        grid.innerHTML = `<div class="loader" style="color: var(--muted); grid-column: 1/-1;">哎呀，找不到 "${filter}" 相關的圖標呢... 😿</div>`;
+        grid.innerHTML = `<div class="loader" style="color: var(--muted); grid-column: 1/-1;">找不到 "${filter}" 相關的圖標呢... 😿</div>`;
       }
     }
 
-    // 初始化載入
     async function init() {
       try {
+        console.log("正在從此處嘗試載入:", DATA_PATH);
         const response = await fetch(DATA_PATH);
-        if (!response.ok) throw new Error("JSON 讀取失敗");
+        if (!response.ok) throw new Error(`HTTP 錯誤! 狀態碼: ${response.status}`);
         fullData = await response.json();
         render(fullData);
       } catch (err) {
-        grid.innerHTML = `<div class="loader" style="color: #ff6b6b; grid-column: 1/-1;">
-          ERR: 核心模組載入崩潰！臭寶快確認 data/svg.json 路徑對不對？<br>
-          <small>${err.message}</small>
+        grid.innerHTML = `<div class="loader" style="color: #ff6b6b; grid-column: 1/-1; line-height: 1.8;">
+          ERR: 核心模組載入失敗！<br>
+          <span style="font-size: 0.8rem; color: var(--muted)">
+            預期路徑: ${DATA_PATH}<br>
+            錯誤原因: ${err.message}<br><br>
+            📢 緹緹小提醒：請確認你有使用 <b>Live Server</b> 開啟網頁，<br>
+            直接點擊檔案 (file://) 會被瀏覽器攔截喔！
+          </span>
         </div>`;
+        console.error("緹緹 Debug 報警:", err);
       }
     }
 
-    // 搜尋監聽 (Debounce 概念優化效能)
     searchInput.addEventListener("input", (e) => {
       render(fullData, e.target.value);
     });
