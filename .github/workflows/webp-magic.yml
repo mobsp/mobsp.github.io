@@ -1,4 +1,4 @@
-name: 🎨 緹緹的終極暴力 WebP 魔法
+name: 🎨 緹緹的終極暴力美學：WebP + 歷史紀錄
 
 on:
   push:
@@ -10,22 +10,18 @@ jobs:
     steps:
       - name: 📥 讀取代碼
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 必須設定為 0 才能抓到完整的 Git 歷史
 
       - name: 🛠️ 安裝 WebP 工具
         run: sudo apt-get update && sudo apt-get install -y webp
-
-      - name: 🖼️ 圖片極致壓縮 (保留原始品質)
-        uses: calibreapp/image-actions@main
-        with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          compressOnly: true
 
       - name: 🐍 執行 Python 深度路徑淨化與轉檔
         run: |
           python3 -c "
           import os, re, subprocess
 
-          # 1. 轉換 WebP 核心邏輯
+          # 1. 轉換 WebP
           img_exts = ('.jpg', '.png', '.jpeg')
           for root, dirs, files in os.walk('.'):
               if '.git' in dirs: dirs.remove('.git')
@@ -35,30 +31,31 @@ jobs:
                       webp_path = os.path.splitext(img_path)[0] + '.webp'
                       if not os.path.exists(webp_path):
                           subprocess.run(['cwebp', '-q', '80', img_path, '-o', webp_path])
-                          print(f'✅ 已轉換: {img_path} -> {webp_path}')
-
-          # 2. 暴力替換路徑 (支援全目錄、大小寫、全域匹配)
+          
+          # 2. 暴力替換代碼中的圖片路徑
           code_exts = ('.html', '.css', '.js', '.htm', '.json')
-          # 正則表達式：尋找 .jpg, .png, .jpeg 並替換為 .webp
           img_pattern = re.compile(r'\.(jpg|png|jpeg)', re.IGNORECASE)
-
           for root, dirs, files in os.walk('.'):
-              if '.git' in dirs: dirs.remove('.git')
               for file in files:
                   if file.endswith(code_exts):
                       file_path = os.path.join(root, file)
                       with open(file_path, 'r', encoding='utf-8') as f:
                           content = f.read()
-                      
                       new_content = img_pattern.sub('.webp', content)
-                      
                       if content != new_content:
                           with open(file_path, 'w', encoding='utf-8') as f:
                               f.write(new_content)
-                          print(f'✨ 已暴力淨化檔案: {file_path}')
           "
 
-      - name: 🚀 強力部署到 GitHub Pages
+      - name: 📜 自動生成歷史紀錄 (history.html)
+        run: |
+          echo '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>系統進化日誌</title><link rel="stylesheet" href="style.css"></head><body>' > history.html
+          echo '<div class="container"><h1>🚀 系統進化日誌</h1><ul class="timeline">' >> history.html
+          # 格式化 Git Log：日期 - 訊息
+          git log -n 15 --pretty=format:"<li><span class='date'>%ad</span><span class='msg'>%s</span></li>" --date=short >> history.html
+          echo '</ul><a href="index.html" class="back-btn">← 返回主頁</a></div></body></html>' >> history.html
+
+      - name: 🚀 部署到 GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: .
