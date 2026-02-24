@@ -44,7 +44,7 @@
         <td nowrap><a href="./blog/index.html"><code>./blog/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/assets/icon/viewer/"><b>開始編碼 💻</b></a></td>
+        <td nowrap><a href="https://mobsp.github.io/assets/icon/viewer/"><b>SVG 展示牆 🖥️</b></a></td>
         <td nowrap>圖示庫預覽與跳轉編輯</td>
         <td nowrap><a href="./assets/icon/viewer/index.html"><code>./assets/icon/viewer/index.html</code></a></td>
       </tr>
