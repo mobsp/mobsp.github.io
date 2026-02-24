@@ -49,6 +49,7 @@
             touch-action: manipulation;
         }
 
+        /* SEO 隱藏標題專用樣式 */
         .visually-hidden {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0,0,0,0); border: 0;
@@ -63,24 +64,41 @@
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
             z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* 標題圖樣式 */
+        .brand-title-link {
+            display: block;
+            width: 100%;
+            max-width: 280px; /* 根據圖片比例微調 */
+            margin-bottom: 15px;
+            transition: var(--transition);
+        }
+        .brand-title-link:hover { opacity: 0.8; transform: scale(1.02); }
+        .brand-title-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 4px;
         }
 
         .marquee-row {
             display: flex; align-items: center; background: rgba(255,255,255,0.05);
-            padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
-            min-height: 28px;
+            padding: 6px 12px; border-radius: 10px; margin-bottom: 5px; overflow: hidden;
+            min-height: 28px; width: 100%; box-sizing: border-box;
         }
 
         .v-tag { 
             background: var(--primary-color); color: #000; font-size: 9px; font-weight: 900; 
             padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap;
-            transition: background 0.3s;
         }
         .tag-important { background: #ff4d4d; color: #fff; }
         .tag-update { background: #00ff88; color: #000; }
 
         .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
-        
         .mq-text { 
             display: inline-block; 
             padding-left: 100%;
@@ -127,13 +145,17 @@
 <div class="page-wrapper">
     <header class="app-header">
         <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間</h1>
+        
+        <a href="https://mobsp.github.io" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
+            <img src="assets/brand/ms-guide-title.JPEG" alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
+        </a>
+
         <nav class="marquee-row">
             <span class="v-tag" id="v-tag">SYNCING</span>
             <div class="mq-box">
                 <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
             </div>
         </nav>
-        <div style="font-size: 1.4rem; font-weight: 900; text-align: center; letter-spacing: 5px; color: var(--primary-color);" aria-hidden="true">Ⲙ𝔬ⲃ¡ⳝⲁ𝔠𝔢</div>
     </header>
 
     <main class="app-main">
@@ -153,7 +175,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// 緹緹救援版：確保腳本在正確時機執行
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('fake-splash');
     const hideSplash = () => {
