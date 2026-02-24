@@ -6,97 +6,114 @@
     <title>SVG編輯器｜莫比空間</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        /* 🌑 修正點：對齊圖 2-4 的深灰色調，不再是死黑 */
         :root { 
             --primary: #00cec9; 
-            --bg: #121212;      /* 高級深灰底 */
-            --panel: #1e1e1e;   /* 卡片背景 */
+            --bg: #121212;      /* 全站深炭灰 */
+            --panel: #1e1e1e;   /* 卡片深灰 */
             --border: #2c2c2e; 
             --text: #e1e1e1; 
         }
-        
         body.light-mode { --bg: #f5f5f7; --panel: #ffffff; --border: #ddd; --text: #1d1d1f; }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; width: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; overflow: hidden; display: flex; flex-direction: column; transition: 0.3s; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { height: 100%; width: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, sans-serif; overflow: hidden; display: flex; flex-direction: column; }
         
+        /* 📱 固定頂部導航 */
         header { height: 60px; padding: 0 20px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 1000; flex-shrink: 0; }
-        
-        /* 🖼️ 預覽區塊 */
-        .preview-fixed { height: 210px; background: #0a0a0a; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); flex-shrink: 0; }
-        
-        /* 💡 預覽框：純白色塊 */
-        #canvas-bg { 
-            width: 100px; height: 100px; 
-            background-color: #ffffff; 
-            display: flex; align-items: center; justify-content: center; 
-            transition: 0.3s; position: relative; 
-            border: 1px solid #333; border-radius: 12px; 
+        header b { letter-spacing: 1px; font-size: 16px; }
+
+        /* 🖼️ 固定預覽區區塊 (不會隨滾動條移動) */
+        .preview-fixed-area { 
+            height: 230px; background: #0a0a0a; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            border-bottom: 1px solid var(--border); flex-shrink: 0; z-index: 900;
         }
-        
-        #svg-target { width: 65%; height: 65%; transition: 0.3s; pointer-events: none; }
+        #canvas-bg { 
+            width: 110px; height: 110px; 
+            background-color: #1e2227; /* 緹緹推薦初始色 */
+            display: flex; align-items: center; justify-content: center; 
+            border: 1px solid #333; border-radius: 16px; transition: transform 0.3s, background-color 0.3s;
+            position: relative;
+        }
+        #svg-target { width: 60%; height: 60%; transition: 0.3s; pointer-events: none; }
 
         .bg-slider-wrap { width: 180px; margin-top: 15px; text-align: center; }
-        .bg-slider-wrap label { font-size: 10px; color: #666; display: block; margin-bottom: 5px; }
-        input[type="range"] { width: 100%; accent-color: var(--primary); }
+        .bg-slider-wrap label { font-size: 10px; color: #666; display: block; margin-bottom: 5px; text-transform: uppercase; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); cursor: pointer; }
 
-        .scroll-container { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
-        .config-grid { padding: 15px; }
+        /* 📜 獨立滾動配置區 */
+        .main-scroll-view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .container { padding: 15px; max-width: 600px; margin: 0 auto; }
         
-        /* 🌑 卡片質感回歸 */
-        .card { background: var(--panel); border-radius: 20px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.03); }
-        .card h4 { font-size: 13px; color: var(--primary); margin-bottom: 18px; border-left: 3px solid var(--primary); padding-left: 10px; }
+        .card { background: var(--panel); border-radius: 24px; padding: 22px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.03); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .card h4 { font-size: 13px; color: var(--primary); margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+        .card h4::before { content: ''; width: 3px; height: 13px; background: var(--primary); border-radius: 10px; }
         
         .field { margin-bottom: 18px; }
         label { font-size: 11px; color: #888; display: block; margin-bottom: 8px; }
-        select, input[type="color"] { width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); color: inherit; border-radius: 12px; outline: none; }
+        select, input[type="color"], .output-box { width: 100%; padding: 14px; background: rgba(0,0,0,0.25); border: 1px solid var(--border); color: inherit; border-radius: 14px; outline: none; font-size: 14px; transition: 0.2s; }
+        select:focus, input:focus { border-color: var(--primary); }
 
-        .output-section { padding: 0 15px 30px; }
-        #code-out { width: 100%; min-height: 120px; background: rgba(0,0,0,0.3); border: 1px solid var(--primary); color: var(--primary); font-family: monospace; font-size: 12px; padding: 15px; border-radius: 15px; white-space: pre-wrap; margin-bottom: 15px; }
-        
-        .btn-group { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
-        .btn { padding: 15px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; }
+        /* 聯動動態顯示項 */
+        .logic-gate { display: none; margin-top: 12px; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 10px; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        footer { padding: 50px 20px; background: var(--panel); border-top: 1px solid var(--border); text-align: center; }
-        .copyright { font-size: 10px; color: #555; margin-top: 20px; }
+        /* 輸出控制區 */
+        .output-panel { padding: 0 15px 40px; }
+        .btn-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .btn { padding: 15px; border-radius: 14px; border: none; font-weight: bold; cursor: pointer; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-secondary { background: #2c2c2e; color: #fff; }
 
+        .output-box { min-height: 130px; font-family: 'SF Mono', 'Courier New', monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; word-break: break-all; border: 1px solid var(--primary); color: var(--primary); }
+
+        footer { padding: 50px 20px; text-align: center; background: var(--panel); border-top: 1px solid var(--border); }
+        .footer-logo { font-weight: 900; font-size: 14px; color: var(--primary); margin-bottom: 10px; letter-spacing: 2px; }
+        .copyright { font-size: 10px; color: #555; }
+
+        /* 動態樣式表 */
+        .anim-pulse { animation: pulse 2s infinite ease-in-out; }
+        .anim-float { animation: float 3s infinite ease-in-out; }
+        .anim-rotate { animation: spin 4s infinite linear; }
         @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-        .level-1 { animation: pulse 2s infinite ease-in-out; }
-        .level-2 { animation: float 3s infinite ease-in-out; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
 <header>
     <i class="fa-solid fa-angle-left" onclick="history.back()"></i>
-    <b>SVG編輯器｜莫比空間</b>
-    <i class="fa-solid fa-clock-rotate-left" onclick="location.reload()"></i>
+    <b>SVG 編輯器｜莫比空間</b>
+    <i class="fa-solid fa-clock-rotate-left" onclick="showMobiHistory()"></i>
 </header>
 
-<div class="preview-fixed">
+<div class="preview-fixed-area">
     <div id="canvas-bg">
         <div id="svg-target"></div>
     </div>
     <div class="bg-slider-wrap">
-        <label>預覽底色切換 (1-5)</label>
-        <input type="range" min="1" max="5" value="1" oninput="changeCanvasBg(this.value)">
+        <label>預覽底色切換 (搖桿)</label>
+        <input type="range" min="1" max="5" value="2" oninput="changePreviewBg(this.value)">
     </div>
 </div>
 
-<div class="scroll-container">
-    <div class="config-grid" id="ui-root"></div>
+<div class="main-scroll-view">
+    <div class="container" id="ui-root"></div>
     
-    <div class="output-section">
-        <div id="code-out" contenteditable="true">點擊「執行產出」產生代碼...</div>
-        <div class="btn-group">
-            <button class="btn" style="background:var(--primary); color:#000;" onclick="generateCode()">執行產出</button>
-            <button class="btn" style="background:#333; color:#fff;" onclick="copyCode()">複製代碼</button>
+    <div class="output-panel">
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="generateMobiCode()"><i class="fa-solid fa-wand-magic-sparkles"></i> 執行產出</button>
+            <button class="btn btn-secondary" onclick="copyMobiCode()"><i class="fa-solid fa-copy"></i> 複製</button>
+            <button class="btn btn-secondary" onclick="clearMobiCode()"><i class="fa-solid fa-eraser"></i> 清除</button>
         </div>
+        <div id="code-out" class="output-box" contenteditable="true" placeholder="點擊按鈕產出程式碼..."></div>
+        <button class="btn btn-secondary" style="width:100%; margin-top:12px;" onclick="addToMobiFav()"><i class="fa-solid fa-heart"></i> 加入莫比收藏</button>
     </div>
 
     <footer>
-        <div style="color:var(--primary); font-size:12px; font-weight:bold; cursor:pointer;">更多分享方式...</div>
+        <div class="footer-logo">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
         <p class="copyright">莫比空間｜Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Ⓒ 2023-2026</p>
     </footer>
 </div>
@@ -106,76 +123,143 @@
     const iconName = params.get('icon') || 'power.svg';
     const svgUrl = `https://mobsp.github.io/assets/icon/svg/${iconName}`;
 
-    function changeCanvasBg(val) {
-        const colors = ["#FFFFFF", "#CCCCCC", "#666666", "#222222", "#000000"];
-        const targetBg = document.getElementById('canvas-bg');
-        targetBg.style.backgroundColor = colors[val-1];
-        targetBg.style.borderColor = val < 3 ? "#ddd" : "#444";
+    function changePreviewBg(val) {
+        const themes = ["#FFFFFF", "#1e2227", "#555555", "#222222", "#000000"];
+        document.getElementById('canvas-bg').style.backgroundColor = themes[val-1];
     }
 
-    async function init() {
-        changeCanvasBg(1);
+    async function mobiInit() {
         const root = document.getElementById('ui-root');
         try {
             const res = await fetch('../data/editor_config.json');
-            if (!res.ok) throw new Error("無法載入 JSON");
             const data = await res.json();
             
             data.ui_groups.forEach(g => {
                 const card = document.createElement('div');
                 card.className = 'card';
                 card.innerHTML = `<h4>${g.group_name}</h4>`;
+                
                 g.controls.forEach(c => {
-                    const f = document.createElement('div');
-                    f.className = 'field';
-                    f.innerHTML = `<label>${c.label}</label>`;
-                    const el = c.type === 'select' ? document.createElement('select') : document.createElement('input');
-                    el.id = c.id;
+                    const field = document.createElement('div');
+                    field.className = 'field';
+                    field.innerHTML = `<label>${c.label}</label>`;
+                    
+                    const ctrl = c.type === 'select' ? document.createElement('select') : document.createElement('input');
+                    ctrl.id = c.id;
                     if(c.type === 'select') {
-                        c.options.forEach(o => el.add(new Option(o, o)));
-                        el.onchange = updateUI;
+                        c.options.forEach(o => ctrl.add(new Option(o, o)));
+                        ctrl.onchange = () => { triggerLogic(c.id); updatePreviewUI(); };
                     } else {
-                        el.type = c.type; if(c.default) el.value = c.default;
-                        el.oninput = updateUI;
+                        ctrl.type = c.type; if(c.default) ctrl.value = c.default;
+                        ctrl.oninput = updatePreviewUI;
                     }
-                    f.appendChild(el);
-                    card.appendChild(f);
+                    field.appendChild(ctrl);
+
+                    // 聯動：漸層模式 D
+                    if(c.id === 'gradient') {
+                        const gate = document.createElement('div');
+                        gate.id = 'gate-grad'; gate.className = 'logic-gate';
+                        gate.innerHTML = `<label>漸層終點色</label><input type="color" id="fill_color_end" value="#ffffff" oninput="updatePreviewUI()">`;
+                        field.appendChild(gate);
+                    }
+
+                    // 聯動：自由旋轉 C
+                    if(c.id === 'rotate_mode') {
+                        const gate = document.createElement('div');
+                        gate.id = 'gate-rotate'; gate.className = 'logic-gate';
+                        gate.innerHTML = `<label>角度補償 (0-360)</label><input type="range" id="free-rotate-val" min="0" max="360" value="0" oninput="updatePreviewUI()">`;
+                        field.appendChild(gate);
+                    }
+                    card.appendChild(field);
                 });
                 root.appendChild(card);
             });
-            updateUI();
-        } catch(e) { 
-            root.innerHTML = `<div style="color:red; text-align:center; padding:20px;">⚠️ ${e.message}<br>請確認 editor_config.json 路徑是否正確</div>`;
+            updatePreviewUI();
+        } catch(e) { console.error("Config Load Error", e); }
+    }
+
+    function triggerLogic(id) {
+        if(id === 'gradient') {
+            document.getElementById('gate-grad').style.display = document.getElementById(id).value.includes('漸層') ? 'block' : 'none';
+        }
+        if(id === 'rotate_mode') {
+            document.getElementById('gate-rotate').style.display = document.getElementById(id).value === '自由旋轉' ? 'block' : 'none';
+        }
+        if(id === 'dark_mode_opt') {
+            document.body.classList.toggle('light-mode', document.getElementById(id).value.includes('淺色'));
         }
     }
 
-    function updateUI() {
+    function updatePreviewUI() {
         const target = document.getElementById('svg-target');
-        const fill = document.getElementById('fill_color')?.value || '#00cec9';
+        const fill1 = document.getElementById('fill_color')?.value || '#00cec9';
+        const fill2 = document.getElementById('fill_color_end')?.value || '#ffffff';
+        const grad = document.getElementById('gradient')?.value;
+        const rotateMode = document.getElementById('rotate_mode')?.value;
+        const flip = document.getElementById('flip')?.value;
         const anim = document.getElementById('anim_level')?.value;
-        const dm = document.getElementById('dark_mode_opt')?.value;
+        const radius = document.getElementById('radius_mode')?.value;
 
-        document.body.classList.toggle('light-mode', dm === "模式 A: 介面同步");
-        
+        // 🎨 顏色與漸層
         target.style.webkitMask = `url(${svgUrl}) no-repeat center / contain`;
-        target.style.backgroundColor = fill;
+        if(grad === '線性漸層') target.style.background = `linear-gradient(135deg, ${fill1}, ${fill2})`;
+        else if(grad === '徑向漸層') target.style.background = `radial-gradient(circle, ${fill1}, ${fill2})`;
+        else target.style.background = fill1;
 
+        // 📐 圓角與變換
+        document.getElementById('canvas-bg').style.borderRadius = radius || '16px';
+        
+        let rotVal = "0deg";
+        if(rotateMode === '自由旋轉') rotVal = document.getElementById('free-rotate-val').value + 'deg';
+        else rotVal = (rotateMode?.match(/\d+/) || [0])[0] + 'deg';
+
+        let sX = flip === '水平翻轉' ? -1 : 1;
+        let sY = flip === '垂直翻轉' ? -1 : 1;
+        target.style.transform = `rotate(${rotVal}) scale(${sX}, ${sY})`;
+
+        // 🎬 動態類名
         target.className = "";
-        if(anim?.includes("1")) target.classList.add('level-1');
-        if(anim?.includes("2")) target.classList.add('level-2');
+        if(anim?.includes("1")) target.classList.add('anim-pulse');
+        if(anim?.includes("2")) target.classList.add('anim-float');
+        if(anim?.includes("3")) target.classList.add('anim-rotate');
     }
 
-    function generateCode() {
-        const f = document.getElementById('fill_color').value;
-        document.getElementById('code-out').textContent = `<div style="width:32px; height:32px; background:${f}; -webkit-mask:url('${svgUrl}') no-repeat center/contain;"></div>`;
+    function generateMobiCode() {
+        const target = document.getElementById('svg-target');
+        const size = document.getElementById('size').value;
+        const format = document.getElementById('format').value;
+        let finalOutput = "";
+
+        if(format.includes("CSS")) {
+            finalOutput = `<div style="width:${size}; height:${size}; background:${target.style.background}; -webkit-mask:url('${svgUrl}') no-repeat center/contain; transform:${target.style.transform};"></div>`;
+        } else {
+            finalOutput = `\n<svg ...> (此格式需要讀取原始碼) </svg>`;
+        }
+        
+        document.getElementById('code-out').textContent = finalOutput;
+        
+        // 💾 自動儲存至歷史紀錄 (L 邏輯)
+        const hist = JSON.parse(localStorage.getItem('mobi_edit_history') || '[]');
+        hist.unshift({ name: iconName, time: new Date().toLocaleTimeString() });
+        localStorage.setItem('mobi_edit_history', JSON.stringify(hist.slice(0, 10)));
     }
 
-    function copyCode() {
-        navigator.clipboard.writeText(document.getElementById('code-out').textContent);
-        alert('已複製！');
+    function copyMobiCode() {
+        const text = document.getElementById('code-out').textContent;
+        if(!text) return alert("請先執行產出！");
+        navigator.clipboard.writeText(text).then(() => alert('✅ 已複製代碼'));
     }
 
-    window.onload = init;
+    function clearMobiCode() { document.getElementById('code-out').textContent = ""; }
+
+    function addToMobiFav() { alert('💖 已成功加入莫比收藏盒'); }
+
+    function showMobiHistory() {
+        const h = JSON.parse(localStorage.getItem('mobi_edit_history') || '[]');
+        alert('🕒 最近編輯紀錄：\n' + (h.length ? h.map(i => `${i.time} - ${i.name}`).join('\n') : '目前尚無紀錄'));
+    }
+
+    window.onload = mobiInit;
 </script>
 </body>
 </html>
