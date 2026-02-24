@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Mobi Admin Beta | 高階管理系統</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+
+    <style>
+        /* --- 高階 CSS 變數系統 --- */
+        :root {
+            --bg-body: #0a0a0a;
+            --bg-card: #141414;
+            --bg-input: #1f1f1f;
+            --text-main: #ffffff;
+            --text-sub: #888888;
+            --accent: #06c755;
+            --accent-glow: rgba(6, 199, 85, 0.25);
+            --border: #2a2a2a;
+            --transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-body: #f2f2f7;
+            --bg-card: #ffffff;
+            --bg-input: #e5e5ea;
+            --text-main: #000000;
+            --text-sub: #636366;
+            --border: #d1d1d6;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px 15px 100px;
+            transition: var(--transition);
+            font-size: 16px;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .container { max-width: 550px; margin: 0 auto; }
+
+        /* --- UI 組件樣式 --- */
+        .card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        h2 { font-size: 1.1rem; color: var(--accent); margin: 0 0 18px; display: flex; align-items: center; gap: 10px; }
+        
+        label { font-size: 13px; color: var(--text-sub); display: block; margin-bottom: 8px; }
+
+        input, select, textarea {
+            width: 100%; padding: 14px; border-radius: 12px;
+            background: var(--bg-input); border: 1px solid var(--border);
+            color: var(--text-main); font-size: 14px; margin-bottom: 16px;
+            box-sizing: border-box; transition: var(--transition);
+        }
+
+        input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 3px var(--accent-glow); }
+
+        button {
+            width: 100%; padding: 16px; border-radius: 14px; border: none;
+            background: var(--accent); color: #fff; font-weight: 700;
+            cursor: pointer; transition: var(--transition);
+            display: flex; justify-content: center; align-items: center; gap: 8px;
+        }
+
+        button:active { transform: scale(0.97); opacity: 0.9; }
+
+        #console-log {
+            background: #000; color: #00ff41; font-family: monospace;
+            padding: 15px; border-radius: 10px; font-size: 11px;
+            margin-top: 15px; display: none; max-height: 150px; overflow-y: auto;
+            border: 1px solid #333;
+        }
+
+        /* 導覽列佔位 */
+        mobi-nav { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container" id="router-view">
+    <header style="margin-bottom: 30px;">
+        <h1 style="font-size: 26px; margin: 0;">⚙️ Mobi 控制台 <small style="font-size: 12px; color: var(--accent);">Beta</small></h1>
+        <p style="color: var(--text-sub); font-size: 13px; margin-top: 5px;">路徑: /beta/index.html &bull; 資料庫: data.json</p>
+    </header>
+
+    <!-- 介面設定 -->
+    <div class="card">
+        <h2><i class="fa-solid fa-wand-magic-sparkles"></i> 渲染引擎</h2>
+        <label>色彩模式</label>
+        <select id="ui-theme" onchange="MobiApp.updateTheme(this.value)">
+            <option value="dark">深邃黑 (Default)</option>
+            <option value="light">純淨白</option>
+        </select>
+        <label>全站字體大小 (<span id="fs-label">16</span>px)</label>
+        <input type="range" min="14" max="22" value="16" id="ui-fontsize" oninput="MobiApp.updateFont(this.value)">
+    </div>
+
+    <!-- 資料更新 -->
+    <div class="card">
+        <h2><i class="fa-solid fa-database"></i> JSON 封裝器</h2>
+        <label>資料分類</label>
+        <select id="db-type">
+            <option value="shorts">Shorts 影音內容</option>
+            <option value="music">音樂串流資源</option>
+            <option value="wiki">支援中心文章</option>
+        </select>
+        <input type="text" id="db-title" placeholder="輸入標題 (選填)">
+        <input type="url" id="db-url" placeholder="資源連結 (https://...)">
+        
+        <button onclick="MobiApp.stageData()">
+            <i class="fa-solid fa-layer-group"></i> 產生更新封裝
+        </button>
+        
+        <div id="console-log"></div>
+        
+        <button id="sync-btn" style="display:none; background:#24292e; margin-top:12px;" onclick="MobiApp.pushToGitHub()">
+            <i class="fa-brands fa-github"></i> 推送同步至 GitHub
+        </button>
+    </div>
+</div>
+
+<!-- 高階 Web Component 導覽列 -->
+<mobi-nav></mobi-nav>
+
+<script>
+/**
+ * MobiApp 高階邏輯控制器
+ */
+const MobiApp = {
+    // 初始狀態
+    data: { shorts: [], music: [], wiki: [] },
+    config: {
+        user: "YOUR_GITHUB_USERNAME", // ⬅️ 修改為你的 GitHub 帳號
+        repo: "YOUR_REPO_NAME",       // ⬅️ 修改為你的倉庫名
+        path: "beta/data.json",
+        token: "" // ⚠️ 警告：生產環境建議透過 Secret 傳遞，此處僅供開發測試
+    },
+
+    init() {
+        this.loadSettings();
+        console.log("MobiCore Beta 核心已就緒");
+    },
+
+    // 1. 動態 CSS 與主題控制
+    updateTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        localStorage.setItem('mobi_theme', theme);
+    },
+
+    updateFont(size) {
+        document.body.style.fontSize = size + 'px';
+        document.getElementById('fs-label').innerText = size;
+        localStorage.setItem('mobi_font', size);
+    },
+
+    loadSettings() {
+        const t = localStorage.getItem('mobi_theme') || 'dark';
+        const f = localStorage.getItem('mobi_font') || '16';
+        this.updateTheme(t);
+        this.updateFont(f);
+        document.getElementById('ui-theme').value = t;
+        document.getElementById('ui-fontsize').value = f;
+    },
+
+    // 2. 資料封裝與 JSON 驗證
+    stageData() {
+        const type = document.getElementById('db-type').value;
+        const title = document.getElementById('db-title').value;
+        const url = document.getElementById('db-url').value;
+
+        if(!url) return alert("URL 不能為空！");
+
+        const entry = {
+            id: Date.now(),
+            title: title || "未命名項目",
+            url: url,
+            date: new Date().toISOString()
+        };
+
+        this.data[type].unshift(entry);
+        
+        const log = document.getElementById('console-log');
+        log.style.display = 'block';
+        log.innerText = "驗證成功，準備封裝 JSON：\n" + JSON.stringify(this.data, null, 2);
+        document.getElementById('sync-btn').style.display = 'flex';
+    },
+
+    // 3. 高階 GitHub API 同步邏輯 (自動處理 SHA)
+    async pushToGitHub() {
+        if(!this.config.user || this.config.user === "YOUR_GITHUB_USERNAME") {
+            return alert("請先在 script 中設定您的 GitHub 帳號與倉庫資訊！");
+        }
+
+        const apiURL = `https://api.github.com{this.config.user}/${this.config.config.repo}/contents/${this.config.path}`;
+        
+        try {
+            // A. 獲取遠端檔案 SHA (GitHub 更新必需)
+            const getFile = await fetch(apiURL);
+            const fileData = await getFile.json();
+            const sha = fileData.sha;
+
+            // B. 將 JSON 轉為 Base64 (GitHub API 要求格式)
+            const jsonString = JSON.stringify(this.data, null, 2);
+            const contentBase64 = btoa(unescape(encodeURIComponent(jsonString)));
+
+            // C. 推送更新
+            const response = await fetch(apiURL, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${this.config.token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: "⚡ 自動化部署：更新 beta/data.json",
+                    content: contentBase64,
+                    sha: sha
+                })
+            });
+
+            if(response.ok) {
+                alert("✅ 同步成功！GitHub Pages 將在 1 分鐘內完成更新。");
+            } else {
+                throw new Error("API 回應錯誤");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("同步失敗！請確認 Token 是否正確且具備 Repo 寫入權限。");
+        }
+    }
+};
+
+// --- Web Component: 高階 SPA 導覽列 ---
+class MobiNav extends HTMLElement {
+    connectedCallback() {
+        this.render();
+    }
+
+    render() {
+        this.innerHTML = `
+        <style>
+            .nav-container {
+                position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
+                background: var(--bg-card); border-top: 1px solid var(--border);
+                display: flex; justify-content: space-around; align-items: center;
+                backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 9999;
+            }
+            .nav-link {
+                color: var(--text-sub); text-decoration: none; font-size: 11px;
+                display: flex; flex-direction: column; align-items: center; gap: 5px;
+                transition: var(--transition); flex: 1;
+            }
+            .nav-link.active { color: var(--accent); transform: translateY(-3px); }
+            .nav-link i { font-size: 22px; }
+        </style>
+        <nav class="nav-container">
+            <a href="/beta/index.html" class="nav-link active" data-route><i class="fa-solid fa-house-chimney"></i><span>控制台</span></a>
+            <a href="/beta/shorts.html" class="nav-link" data-route><i class="fa-solid fa-play"></i><span>Shorts</span></a>
+            <a href="/beta/music.html" class="nav-link" data-route><i class="fa-solid fa-compact-disc"></i><span>音樂</span></a>
+        </nav>
+        `;
+
+        // SPA 路由攔截：無刷新換頁
+        this.querySelectorAll('[data-route]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPath = link.getAttribute('href');
+                history.pushState(null, '', targetPath);
+                this.updateActiveState(link);
+                // 這裡可以觸發頁面內容 Fetch 邏輯
+                console.log(`無刷新導航至: ${targetPath}`);
+            });
+        });
+    }
+
+    updateActiveState(activeLink) {
+        this.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        activeLink.classList.add('active');
+    }
+}
+customElements.define('mobi-nav', MobiNav);
+
+// 啟動應用
+MobiApp.init();
+</script>
+
+</body>
+</html>

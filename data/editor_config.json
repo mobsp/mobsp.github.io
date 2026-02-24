@@ -1,0 +1,32 @@
+{
+  "ui_groups": [
+    {
+      "group_name": "核心視覺 (A-D)",
+      "controls": [
+        { "id": "size", "label": "尺寸 (Size)", "type": "select", "options": ["24px", "32px", "48px", "64px", "128px"] },
+        { "id": "bg_fill", "label": "1. 背景填充 (Base Fill)", "type": "color", "default": "#1e2227" },
+        { "id": "icon_fill", "label": "2. 圖示填充 (Icon Fill)", "type": "color", "default": "#00cec9" },
+        { "id": "icon_stroke", "label": "3. 圖示線條 (Icon Stroke)", "type": "color", "default": "#ffffff" },
+        { "id": "gradient", "label": "漸層模式 (D)", "type": "select", "options": ["關閉", "線性漸層", "逕向漸層"] },
+        { "id": "rotate_mode", "label": "旋轉角度 (C)", "type": "select", "options": ["0°", "90°", "180°", "270°", "自由旋轉"] },
+        { "id": "dark_mode_opt", "label": "介面模式 (A/B)", "type": "select", "options": ["模式 A: 深色主題", "模式 B: 淺色主題"] }
+      ]
+    },
+    {
+      "group_name": "型態與特效 (B-C)",
+      "controls": [
+        { "id": "radius_mode", "label": "底座圓角 (B)", "type": "select", "options": ["12px", "0px", "25px", "50% (圓形)"] },
+        { "id": "flip", "label": "鏡像翻轉 (C)", "type": "select", "options": ["無", "水平翻轉", "垂直翻轉"] },
+        { "id": "shadow_mode", "label": "陰影強度 (A)", "type": "select", "options": ["無", "柔和", "強烈"] }
+      ]
+    },
+    {
+      "group_name": "輸出與動態 (E-L)",
+      "controls": [
+        { "id": "anim_level", "label": "動態程度 (E)", "type": "select", "options": ["0: 靜態", "1: 呼吸跳動", "2: 懸停浮動", "3: 旋轉動畫"] },
+        { "id": "format", "label": "代碼格式 (G)", "type": "select", "options": ["CSS Mask (推薦)", "SVG Inline", "Base64"] },
+        { "id": "minify", "label": "代碼壓縮 (I)", "type": "select", "options": ["開啟", "關閉"] }
+      ]
+    }
+  ]
+}

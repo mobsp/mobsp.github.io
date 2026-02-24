@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>官方支援百科 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #00cec9; /* Tiffany 藍 */
+            --bg: #000;
+            --panel: #1c1c1e;
+            --text-muted: #8e8e93;
+            --border: rgba(255, 255, 255, 0.08);
+            --header-h: 120px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: -apple-system, system-ui, sans-serif;
+            line-height: 1.6;
+            padding-bottom: 100px; /* 為底部導航留空間 */
+        }
+
+        /* 啟動裝飾背景 */
+        .bg-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(0,206,201,0.05) 0%, rgba(0,0,0,0) 100%);
+            z-index: -1;
+        }
+
+        header { padding: 40px 20px 20px; }
+        header .brand { color: var(--primary); font-weight: bold; font-size: 12px; letter-spacing: 2px; }
+        header h1 { font-size: 32px; font-weight: 800; margin-top: 5px; }
+
+        /* 分類標題 */
+        .category-group { margin-bottom: 25px; }
+        .category-title { 
+            padding: 10px 20px; 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Wiki 卡片 */
+        .wiki-item {
+            background: var(--panel);
+            margin: 0 15px 1px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .wiki-item:first-of-type { border-radius: 14px 14px 0 0; }
+        .wiki-item:last-of-type { border-radius: 0 0 14px 14px; margin-bottom: 20px; }
+        .wiki-item:only-of-type { border-radius: 14px; }
+
+        .wiki-header {
+            padding: 18px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .wiki-header .tag { font-size: 18px; }
+        .wiki-header .question { flex: 1; font-weight: 600; font-size: 15px; margin-top: 2px; }
+        .wiki-header i { color: var(--text-muted); font-size: 12px; margin-top: 6px; transition: 0.3s; }
+
+        .wiki-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-muted);
+            font-size: 14px;
+            background: rgba(255,255,255,0.02);
+        }
+        .wiki-content { padding: 0 20px 20px 50px; }
+
+        /* 開啟狀態 */
+        .wiki-item.active { background: #2c2c2e; }
+        .wiki-item.active .wiki-body { max-height: 800px; }
+        .wiki-item.active i { transform: rotate(180deg); color: var(--primary); }
+
+        /* 底部導航 */
+        .bottom-nav {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(20px);
+            padding: 12px 25px; border-radius: 30px; border: 1px solid var(--border);
+            z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .bottom-nav a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+
+        /* 載入中 */
+        .loading { text-align: center; padding: 50px; color: var(--text-muted); }
+    </style>
+</head>
+<body>
+    <div class="bg-overlay"></div>
+
+    <header>
+        <div class="brand">OFFICIAL WIKI</div>
+        <h1>百科指南</h1>
+    </header>
+
+    <main id="wiki-root">
+        <div class="loading"><i class="fas fa-circle-notch fa-spin"></i> 正在同步百科資料...</div>
+    </main>
+
+    <div class="bottom-nav">
+        <a href="../index.html"><i class="fa-solid fa-house"></i> 回到首頁</a>
+    </div>
+
+    <script>
+        const DATA_URL = '../data/wiki-info.json';
+
+        async function initWiki() {
+            const root = document.getElementById('wiki-root');
+            try {
+                const response = await fetch(`${DATA_URL}?v=${Date.now()}`);
+                const data = await response.json();
+
+                // ✨ 按分類 (Category) 分組資料
+                const groups = data.reduce((acc, item) => {
+                    if (!acc[item.category]) acc[item.category] = [];
+                    acc[item.category].push(item);
+                    return acc;
+                }, {});
+
+                root.innerHTML = ''; // 清除載入中文字
+
+                // 渲染每個分組
+                for (const category in groups) {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'category-group';
+                    groupDiv.innerHTML = `<div class="category-title">${category}</div>`;
+
+                    groups[category].forEach(item => {
+                        const wikiItem = document.createElement('div');
+                        wikiItem.className = 'wiki-item';
+                        wikiItem.innerHTML = `
+                            <div class="wiki-header" onclick="toggleWiki(this)">
+                                <span class="tag">${item.tag}</span>
+                                <span class="question">${item.question}</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div class="wiki-body">
+                                <div class="wiki-content">${item.answer}</div>
+                            </div>
+                        `;
+                        groupDiv.appendChild(wikiItem);
+                    });
+                    root.appendChild(groupDiv);
+                }
+
+            } catch (err) {
+                root.innerHTML = `<div class="loading" style="color:#ff4d4d">❌ 載入失敗，請確認檔案路徑</div>`;
+            }
+        }
+
+        function toggleWiki(el) {
+            const parent = el.parentElement;
+            const isOpen = parent.classList.contains('active');
+            
+            // 手風琴效果：關閉同分類下的其他項
+            parent.parentElement.querySelectorAll('.wiki-item').forEach(i => i.classList.remove('active'));
+            
+            if (!isOpen) parent.classList.add('active');
+        }
+
+        window.onload = initWiki;
+    </script>
+</body>
+</html>

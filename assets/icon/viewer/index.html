@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 展示牆</title>
+    <style>
+        :root { --bg: #0b0e14; --panel: #151921; --border: #262c3a; --accent: #58a6ff; --text: #f0f0f0; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: sans-serif; }
+        header { position: sticky; top: 0; background: rgba(11,14,20,0.9); padding: 15px; border-bottom: 1px solid var(--border); z-index: 10; }
+        #search { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--panel); color: white; box-sizing: border-box; }
+        main { padding: 15px; }
+        #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; }
+        .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center; text-decoration: none; color: inherit; transition: 0.2s; }
+        .card:hover { border-color: var(--accent); transform: translateY(-3px); }
+        .icon-wrapper { width: 40px; height: 40px; margin: 0 auto 10px; }
+        .icon { width: 100%; height: 100%; filter: brightness(0) invert(1); }
+        .name { font-size: 0.7rem; opacity: 0.7; word-break: break-all; }
+        .category-title { grid-column: 1/-1; margin-top: 20px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+    <header><input id="search" type="search" placeholder="搜尋圖標..."></header>
+    <main><div id="grid">載入中...</div></main>
+
+    <script>
+        const BASE_URL = "https://mobsp.github.io/assets/icon/svg/";
+        const DATA_PATH = "../../../data/svg.json"; 
+        let fullData = {};
+
+        async function init() {
+            try {
+                const res = await fetch(DATA_PATH);
+                if (!res.ok) throw new Error("找不到檔案");
+                fullData = await res.json();
+                render(fullData);
+            } catch (e) {
+                document.getElementById('grid').innerHTML = `<p style="color:red">載入失敗: ${e.message}<br>請確認 data/svg.json 存在</p>`;
+            }
+        }
+
+        function render(data, filter = "") {
+            const grid = document.getElementById("grid");
+            grid.innerHTML = "";
+            for (const [cat, icons] of Object.entries(data)) {
+                const filtered = icons.filter(n => n.toLowerCase().includes(filter.toLowerCase()));
+                if (filtered.length > 0) {
+                    const title = document.createElement("div");
+                    title.className = "category-title";
+                    title.textContent = cat;
+                    grid.appendChild(title);
+                    filtered.forEach(name => {
+                        const a = document.createElement("a");
+                        a.className = "card";
+                        // ✨ 跳轉到根目錄的編輯器
+                        a.href = `../../../svg-editor/index.html?icon=${name}`;
+                        a.innerHTML = `
+                            <div class="icon-wrapper"><img class="icon" src="${BASE_URL+name}"></div>
+                            <div class="name">${name.replace('.svg','')}</div>
+                        `;
+                        grid.appendChild(a);
+                    });
+                }
+            }
+        }
+
+        document.getElementById('search').addEventListener('input', e => render(fullData, e.target.value));
+        init();
+    </script>
+</body>
+</html>
