@@ -3,116 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>支援中心 | 莫比空間 Mobispace</title>
+    <title>官方支援百科 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #00cec9;
-            --am-gray: #1c1c1e;
-            --am-text-muted: #8e8e93;
-            --glass: rgba(28, 28, 30, 0.8);
-            --bg-color: #000;
+            --primary: #00cec9; /* Tiffany 藍 */
+            --bg: #000;
+            --panel: #1c1c1e;
+            --text-muted: #8e8e93;
+            --border: rgba(255, 255, 255, 0.08);
+            --header-h: 120px;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: #fff; font-family: -apple-system, sans-serif; line-height: 1.6; padding-top: env(safe-area-inset-top); overflow-x: hidden; }
-        .bg-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://mobsp.github.io/assets/brand/ms-wiki.JPEG') center/cover no-repeat; opacity: 0.12; z-index: -1; }
+
+        body {
+            background-color: var(--bg);
+            color: #fff;
+            font-family: -apple-system, system-ui, sans-serif;
+            line-height: 1.6;
+            padding-bottom: 100px; /* 為底部導航留空間 */
+        }
+
+        /* 啟動裝飾背景 */
+        .bg-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(180deg, rgba(0,206,201,0.05) 0%, rgba(0,0,0,0) 100%);
+            z-index: -1;
+        }
+
         header { padding: 40px 20px 20px; }
-        header p { color: var(--primary); font-weight: bold; font-size: 11px; letter-spacing: 2px; margin-bottom: 5px; }
-        h1 { font-size: 32px; font-weight: 800; letter-spacing: -1px; }
-        .tabs { display: flex; background: var(--am-gray); margin: 0 20px 25px; border-radius: 12px; padding: 3px; }
-        .tab-btn { flex: 1; padding: 12px 0; text-align: center; font-size: 14px; font-weight: 600; border-radius: 9px; cursor: pointer; transition: 0.3s; color: var(--am-text-muted); }
-        .tab-btn.active { background: #3a3a3c; color: #fff; }
-        .content-section { display: none; padding: 0 20px 120px; animation: fadeIn 0.4s ease; }
-        .content-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
-        .qa-item { background: var(--am-gray); border-radius: 14px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
-        .qa-header { padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-        .qa-header span { font-weight: 600; font-size: 15px; }
-        .qa-body { padding: 0 20px; max-height: 0; overflow: hidden; transition: all 0.3s ease; color: var(--am-text-muted); font-size: 14px; }
-        .qa-item.open { border-color: rgba(0, 206, 201, 0.4); }
-        .qa-item.open .qa-body { padding: 0 20px 20px; max-height: 500px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
-        .qa-header i { transition: 0.3s; font-size: 12px; }
-        .qa-item.open i { transform: rotate(180deg); color: var(--primary); }
-        .bottom-nav { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: var(--glass); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 12px 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); z-index: 100; }
+        header .brand { color: var(--primary); font-weight: bold; font-size: 12px; letter-spacing: 2px; }
+        header h1 { font-size: 32px; font-weight: 800; margin-top: 5px; }
+
+        /* 分類標題 */
+        .category-group { margin-bottom: 25px; }
+        .category-title { 
+            padding: 10px 20px; 
+            font-size: 13px; 
+            color: var(--text-muted); 
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Wiki 卡片 */
+        .wiki-item {
+            background: var(--panel);
+            margin: 0 15px 1px;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .wiki-item:first-of-type { border-radius: 14px 14px 0 0; }
+        .wiki-item:last-of-type { border-radius: 0 0 14px 14px; margin-bottom: 20px; }
+        .wiki-item:only-of-type { border-radius: 14px; }
+
+        .wiki-header {
+            padding: 18px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            cursor: pointer;
+        }
+        .wiki-header .tag { font-size: 18px; }
+        .wiki-header .question { flex: 1; font-weight: 600; font-size: 15px; margin-top: 2px; }
+        .wiki-header i { color: var(--text-muted); font-size: 12px; margin-top: 6px; transition: 0.3s; }
+
+        .wiki-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-muted);
+            font-size: 14px;
+            background: rgba(255,255,255,0.02);
+        }
+        .wiki-content { padding: 0 20px 20px 50px; }
+
+        /* 開啟狀態 */
+        .wiki-item.active { background: #2c2c2e; }
+        .wiki-item.active .wiki-body { max-height: 800px; }
+        .wiki-item.active i { transform: rotate(180deg); color: var(--primary); }
+
+        /* 底部導航 */
+        .bottom-nav {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(20px);
+            padding: 12px 25px; border-radius: 30px; border: 1px solid var(--border);
+            z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
         .bottom-nav a { color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .loader { text-align: center; padding: 40px; color: var(--am-text-muted); }
+
+        /* 載入中 */
+        .loading { text-align: center; padding: 50px; color: var(--text-muted); }
     </style>
 </head>
 <body>
     <div class="bg-overlay"></div>
-    <header><p>MOBISPACE</p><h1>支援中心</h1></header>
 
-    <div class="tabs">
-        <div class="tab-btn active" onclick="switchTab('qa', this)">常見問題</div>
-        <div class="tab-btn" onclick="switchTab('report', this)">錯誤回報</div>
+    <header>
+        <div class="brand">OFFICIAL WIKI</div>
+        <h1>百科指南</h1>
+    </header>
+
+    <main id="wiki-root">
+        <div class="loading"><i class="fas fa-circle-notch fa-spin"></i> 正在同步百科資料...</div>
+    </main>
+
+    <div class="bottom-nav">
+        <a href="../index.html"><i class="fa-solid fa-house"></i> 回到首頁</a>
     </div>
 
-    <section id="qa" class="content-section active">
-        <div id="qa-container"><div class="loader"><i class="fa-solid fa-spinner fa-spin"></i> 同步中...</div></div>
-    </section>
-
-    <section id="report" class="content-section">
-        <div style="background: var(--am-gray); padding: 25px; border-radius: 18px;">
-            <h3>回報問題</h3>
-            <p style="font-size: 14px; color: var(--am-text-muted); margin: 15px 0 20px;">發現 Bug 或有新點子？請提交至 GitHub Issues。</p>
-            <a href="https://github.com/mobsp/mobsp.github.io/issues" target="_blank" style="display: block; background: var(--primary); color: #000; text-align: center; padding: 14px; border-radius: 12px; text-decoration: none; font-weight: bold;">前往 GitHub</a>
-        </div>
-    </section>
-
-    <div class="bottom-nav"><a href="https://mobsp.github.io/"><i class="fa-solid fa-house"></i> 回到首頁</a></div>
-
     <script>
-        // ✨ 改為讀取 JSON 資料夾
-        const DATA_URL = 'https://mobsp.github.io/data/qa.json';
+        const DATA_URL = '../data/wiki-info.json';
 
-        async function loadQA() {
-            const container = document.getElementById('qa-container');
+        async function initWiki() {
+            const root = document.getElementById('wiki-root');
             try {
-                // 加上隨機參數防止快取
                 const response = await fetch(`${DATA_URL}?v=${Date.now()}`);
-                if (!response.ok) throw new Error('無法載入 JSON');
-                
                 const data = await response.json();
-                
-                if (data.length === 0) {
-                    container.innerHTML = '<p style="text-align:center; padding:40px; color:#888;">暫無問答資料</p>';
-                    return;
+
+                // ✨ 按分類 (Category) 分組資料
+                const groups = data.reduce((acc, item) => {
+                    if (!acc[item.category]) acc[item.category] = [];
+                    acc[item.category].push(item);
+                    return acc;
+                }, {});
+
+                root.innerHTML = ''; // 清除載入中文字
+
+                // 渲染每個分組
+                for (const category in groups) {
+                    const groupDiv = document.createElement('div');
+                    groupDiv.className = 'category-group';
+                    groupDiv.innerHTML = `<div class="category-title">${category}</div>`;
+
+                    groups[category].forEach(item => {
+                        const wikiItem = document.createElement('div');
+                        wikiItem.className = 'wiki-item';
+                        wikiItem.innerHTML = `
+                            <div class="wiki-header" onclick="toggleWiki(this)">
+                                <span class="tag">${item.tag}</span>
+                                <span class="question">${item.question}</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div class="wiki-body">
+                                <div class="wiki-content">${item.answer}</div>
+                            </div>
+                        `;
+                        groupDiv.appendChild(wikiItem);
+                    });
+                    root.appendChild(groupDiv);
                 }
 
-                container.innerHTML = '';
-                data.forEach(item => {
-                    const el = document.createElement('div');
-                    el.className = 'qa-item';
-                    el.innerHTML = `
-                        <div class="qa-header" onclick="toggleQA(this)">
-                            <span>${item.q}</span>
-                            <i class="fa-solid fa-chevron-down"></i>
-                        </div>
-                        <div class="qa-body">${item.a}</div>
-                    `;
-                    container.appendChild(el);
-                });
             } catch (err) {
-                container.innerHTML = '<p style="text-align:center; color:#ff4d4d; padding:40px;">⚠️ 雲端資料同步失敗</p>';
+                root.innerHTML = `<div class="loading" style="color:#ff4d4d">❌ 載入失敗，請確認檔案路徑</div>`;
             }
         }
 
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
+        function toggleWiki(el) {
+            const parent = el.parentElement;
+            const isOpen = parent.classList.contains('active');
+            
+            // 手風琴效果：關閉同分類下的其他項
+            parent.parentElement.querySelectorAll('.wiki-item').forEach(i => i.classList.remove('active'));
+            
+            if (!isOpen) parent.classList.add('active');
         }
 
-        function toggleQA(element) {
-            const item = element.parentElement;
-            const isOpen = item.classList.contains('open');
-            // 關閉所有其他項 (手風琴效果)
-            document.querySelectorAll('.qa-item').forEach(i => i.classList.remove('open'));
-            if (!isOpen) item.classList.add('open');
-        }
-
-        window.onload = loadQA;
+        window.onload = initWiki;
     </script>
 </body>
 </html>
