@@ -4,7 +4,9 @@
       "group_name": "核心視覺 (A-D)",
       "controls": [
         { "id": "size", "label": "尺寸 (Size)", "type": "select", "options": ["24px", "32px", "48px", "64px", "128px"] },
-        { "id": "fill_color", "label": "填充顏色 (A)", "type": "color", "default": "#00cec9" },
+        { "id": "bg_fill", "label": "1. 背景填充 (Base Fill)", "type": "color", "default": "#1e2227" },
+        { "id": "icon_fill", "label": "2. 圖示填充 (Icon Fill)", "type": "color", "default": "#00cec9" },
+        { "id": "icon_stroke", "label": "3. 圖示線條 (Icon Stroke)", "type": "color", "default": "#ffffff" },
         { "id": "gradient", "label": "漸層模式 (D)", "type": "select", "options": ["關閉", "線性漸層", "逕向漸層"] },
         { "id": "rotate_mode", "label": "旋轉角度 (C)", "type": "select", "options": ["0°", "90°", "180°", "270°", "自由旋轉"] },
         { "id": "dark_mode_opt", "label": "介面模式 (A/B)", "type": "select", "options": ["模式 A: 深色主題", "模式 B: 淺色主題"] }
