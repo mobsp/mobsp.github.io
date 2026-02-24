@@ -13,10 +13,14 @@
         header { height: 60px; padding: 0 20px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 1000; }
         .nav-btns { display: flex; gap: 20px; font-size: 18px; }
 
-        /* 🖼️ 固定預覽區 */
-        .preview-fixed { height: 240px; background: #0a0a0a; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
-        #canvas-mobi { width: 115px; height: 115px; display: flex; align-items: center; justify-content: center; border: 1px solid #333; transition: 0.3s; position: relative; }
-        #svg-mobi { width: 60%; height: 60%; transition: 0.3s; }
+        /* 🖼️ 固定預覽區 (修正：搖桿改圖框背景) */
+        .preview-fixed { height: 250px; background: #0a0a0a; display: flex; flex-direction: column; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
+        #canvas-mobi { width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; border: 1px solid #333; transition: 0.3s; position: relative; }
+        #svg-mobi { width: 60%; height: 60%; transition: 0.3s; position: relative; }
+
+        .env-bar { width: 140px; margin-top: 20px; text-align: center; }
+        .env-bar label { font-size: 10px; color: #555; display: block; margin-bottom: 5px; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); }
 
         /* 📜 捲動配置區 */
         .scroller { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -27,6 +31,13 @@
         label { font-size: 11px; color: #888; display: block; margin-bottom: 8px; }
         select, input[type="color"], .edit-box { width: 100%; padding: 14px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 12px; font-size: 14px; outline: none; }
 
+        /* 💥 動態效果實裝 (E) */
+        @keyframes mobi-breath { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.1); opacity: 0.8; } }
+        @keyframes mobi-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .anim-1 { animation: mobi-breath 2s infinite ease-in-out; }
+        .anim-2:hover { transform: translateY(-10px) !important; transition: 0.3s; }
+        .anim-3 { animation: mobi-spin 4s infinite linear; }
+
         /* 按鈕區 */
         .bottom-actions { padding: 0 15px 40px; }
         .btn-row { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
@@ -35,7 +46,10 @@
         .btn-dark { background: #333; color: #fff; }
         .edit-box { min-height: 120px; font-family: monospace; border: 1px solid var(--primary); color: var(--primary); white-space: pre-wrap; word-break: break-all; }
 
+        /* 📱 頁尾與社群媒體圖示 */
         footer { padding: 40px 20px; background: var(--panel); text-align: center; border-top: 1px solid var(--border); }
+        .social-icons { display: flex; justify-content: center; gap: 25px; margin-bottom: 20px; font-size: 20px; color: #888; }
+        .social-icons i:hover { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -44,7 +58,7 @@
     <i class="fa-solid fa-chevron-left" onclick="history.back()"></i>
     <b>莫比 SVG 編輯器</b>
     <div class="nav-btns">
-        <i class="fa-solid fa-heart" onclick="location.href='favorites.html'"></i>
+        <i class="fa-solid fa-heart" onclick="alert('已加入收藏')"></i>
         <i class="fa-solid fa-share-nodes" onclick="doShare()"></i>
     </div>
 </header>
@@ -53,7 +67,8 @@
     <div id="canvas-mobi">
         <div id="svg-mobi"></div>
     </div>
-    <div style="width: 140px; margin-top: 15px;">
+    <div class="env-bar">
+        <label>圖框背景顏色切換</label>
         <input type="range" min="1" max="5" value="2" oninput="changeEnv(this.value)">
     </div>
 </div>
@@ -68,13 +83,16 @@
             <button class="btn btn-dark" onclick="mobiClear()">清除</button>
         </div>
         <div id="mobi-out" class="edit-box" contenteditable="true"></div>
-        <button class="btn btn-dark" style="width:100%; margin-top:10px;" onclick="alert('❤️ 已收藏')">
-            <i class="fa-solid fa-star"></i> 收藏最愛頁面
-        </button>
     </div>
 
     <footer>
-        <div style="font-weight:bold; color:var(--primary);">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+        <div class="social-icons">
+            <i class="fa-brands fa-facebook" onclick="doShare()"></i>
+            <i class="fa-brands fa-instagram" onclick="doShare()"></i>
+            <i class="fa-brands fa-twitter" onclick="doShare()"></i>
+            <i class="fa-brands fa-line" onclick="doShare()"></i>
+        </div>
+        <div style="font-weight:bold; color:var(--primary); letter-spacing: 2px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
         <p style="font-size:10px; color:#555; margin-top:10px;">莫比空間｜Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Ⓒ 2023-2026</p>
     </footer>
 </div>
@@ -84,9 +102,10 @@
     const icon = params.get('icon') || 'power.svg';
     const svgUrl = `https://mobsp.github.io/assets/icon/svg/${icon}`;
 
+    // 搖桿：改變「圖框」變色
     function changeEnv(v) {
         const colors = ["#FFFFFF", "#1e2227", "#444444", "#222222", "#000000"];
-        document.getElementById('canvas-mobi').style.borderColor = v == 1 ? "#ddd" : "#333";
+        document.getElementById('canvas-mobi').style.backgroundColor = colors[v-1];
     }
 
     async function init() {
@@ -123,37 +142,39 @@
         const target = document.getElementById('svg-mobi');
         
         // 核心三色
-        const bg = document.getElementById('bg_fill').value;
-        const fill = document.getElementById('icon_fill').value;
-        const stroke = document.getElementById('icon_stroke').value;
+        const bgFill = document.getElementById('bg_fill').value; // 背景填充
+        const iconFill = document.getElementById('icon_fill').value; // 圖示內部填充
+        const iconStroke = document.getElementById('icon_stroke').value; // 圖示線條
         
-        // 規格項
         const rad = document.getElementById('radius_mode').value;
-        const flip = document.getElementById('flip').value;
-        const shadow = document.getElementById('shadow_mode').value;
+        const anim = document.getElementById('anim_level').value;
 
-        // 視覺套用
-        canvas.style.backgroundColor = bg;
+        // 1. 背景填充 (Base)
+        canvas.style.backgroundColor = bgFill; 
         canvas.style.borderRadius = rad;
-        canvas.style.boxShadow = shadow === '強烈' ? '0 10px 20px rgba(0,0,0,0.5)' : (shadow === '柔和' ? '0 5px 10px rgba(0,0,0,0.2)' : 'none');
 
+        // 2. 圖示內部填充 (使用 Mask)
         target.style.webkitMask = `url(${svgUrl}) no-repeat center / contain`;
-        target.style.background = fill;
-        target.style.border = `1px solid ${stroke}`;
+        target.style.background = iconFill;
 
-        let sX = flip === '水平翻轉' ? -1 : 1;
-        let sY = flip === '垂直翻轉' ? -1 : 1;
-        target.style.transform = `scale(${sX}, ${sY})`;
+        // 3. 圖示線條 (使用 Filter 模擬線條顏色效果)
+        target.style.filter = `drop-shadow(0px 0px 1px ${iconStroke}) drop-shadow(0px 0px 1px ${iconStroke})`;
+
+        // 4. 動態程度實裝 (E)
+        target.className = ""; // 清除舊動畫
+        if(anim.includes("1")) target.classList.add("anim-1");
+        if(anim.includes("2")) target.classList.add("anim-2");
+        if(anim.includes("3")) target.classList.add("anim-3");
     }
 
     function mobiRender() {
-        const code = `\n<div style="background:${document.getElementById('bg_fill').value}; border-radius:${document.getElementById('radius_mode').value};">\n  <div style="background:${document.getElementById('icon_fill').value}; -webkit-mask:url('${svgUrl}') no-repeat center/contain;"></div>\n</div>`;
+        const code = `\n<div style="background:${document.getElementById('bg_fill').value}; border-radius:${document.getElementById('radius_mode').value};">\n  <div style="background:${document.getElementById('icon_fill').value}; filter:drop-shadow(0 0 1px ${document.getElementById('icon_stroke').value}); -webkit-mask:url('${svgUrl}') no-repeat center/contain;"></div>\n</div>`;
         document.getElementById('mobi-out').textContent = code;
     }
 
     function mobiCopy() { navigator.clipboard.writeText(document.getElementById('mobi-out').textContent); alert('已複製'); }
     function mobiClear() { document.getElementById('mobi-out').textContent = ''; }
-    function doShare() { if(navigator.share) navigator.share({title:'莫比編輯器', url:window.location.href}); }
+    function doShare() { if(navigator.share) navigator.share({title:'莫比編輯器', url:window.location.href}); else alert('請複製連結分享'); }
 
     window.onload = init;
 </script>
