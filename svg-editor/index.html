@@ -3,217 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>航空母艦編輯器 v2.0 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>航空母艦編輯器 v2.1 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root { --primary: #00cec9; --bg: #000; --panel: #1c1c1e; --border: #333; --text: #eee; }
+        html, body { margin: 0; padding: 0; height: 100%; width: 100vw; background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; overflow: hidden; }
         
-        /* 💡 修正：鎖定全螢幕，防止內容消失 */
-        html, body { 
-            margin: 0; padding: 0; height: 100vh; width: 100vw;
-            background: var(--bg); color: var(--text); 
-            font-family: -apple-system, sans-serif; overflow: hidden;
-            display: flex; flex-direction: column;
-        }
+        /* 頁首固定 */
+        header { height: 60px; padding: 0 20px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        
+        /* 主滾動區：修正黑屏缺失 */
+        .app-body { height: calc(100% - 60px); overflow-y: auto; display: flex; flex-direction: column; -webkit-overflow-scrolling: touch; }
 
-        header { 
-            height: 60px; padding: 0 20px; background: var(--panel); 
-            border-bottom: 1px solid var(--border); display: flex; 
-            justify-content: space-between; align-items: center; flex-shrink: 0;
-        }
-        
-        /* 💡 修正：讓主內容區可獨立滾動，不被擠壓 */
-        .main-scroller { 
-            flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; 
-        }
-        
-        .preview-area { 
-            height: 180px; background: #111; display: flex; 
-            align-items: center; justify-content: center; border-bottom: 1px solid var(--border);
-        }
-        .canvas { width: 100px; height: 100px; border: 1px dashed #444; display: flex; align-items: center; justify-content: center; }
-        #svg-target { max-width: 90%; max-height: 90%; transition: 0.1s ease; }
+        /* 預覽區：縮小比例 */
+        .preview-box { height: 160px; flex-shrink: 0; background: radial-gradient(circle, #222 0%, #000 100%); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid var(--border); }
+        .canvas { width: 90px; height: 90px; border: 1px dashed #444; border-radius: 8px; display: flex; align-items: center; justify-content: center; background-size: 10px 10px; background-image: linear-gradient(to right, #111 1px, transparent 1px), linear-gradient(to bottom, #111 1px, transparent 1px); }
+        #svg-target { max-width: 80%; max-height: 80%; transition: all 0.2s ease; }
 
-        .control-area { padding: 20px; }
-        .ctrl-group { background: var(--panel); border-radius: 16px; padding: 18px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .ctrl-group h4 { font-size: 14px; color: var(--primary); margin-bottom: 15px; border-left: 3px solid var(--primary); padding-left: 10px; }
+        /* 配置區：確保內容撐開 */
+        .config-wrapper { padding: 15px; flex-grow: 1; min-height: 300px; }
+        .card { background: var(--panel); border-radius: 16px; padding: 18px; margin-bottom: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        .card h4 { font-size: 14px; color: var(--primary); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         
-        .ctrl-item { margin-bottom: 18px; }
-        label { font-size: 12px; color: #888; display: block; margin-bottom: 8px; }
-        select, input[type="color"] { 
-            width: 100%; padding: 12px; background: #2c2c2e; border: 1px solid var(--border); 
-            color: #fff; border-radius: 10px; font-size: 14px;
-        }
+        .field { margin-bottom: 15px; }
+        .field label { font-size: 11px; color: #777; margin-bottom: 6px; display: block; }
+        select, input[type="color"] { width: 100%; padding: 12px; background: #000; border: 1px solid var(--border); color: #fff; border-radius: 10px; font-size: 14px; outline: none; }
         
-        .slider-wrap { display: none; margin-top: 12px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; }
-        input[type="range"] { width: 100%; accent-color: var(--primary); }
+        /* 滑桿美化 */
+        .range-area { display: none; margin-top: 10px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; }
+        input[type="range"] { width: 100%; accent-color: var(--primary); margin-top: 5px; }
+        .range-val { font-size: 10px; color: var(--primary); float: right; }
 
-        .output-section { padding: 0 20px 30px; }
-        .action-btns { display: flex; gap: 10px; margin-bottom: 12px; }
-        .btn { flex: 1; padding: 14px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; transition: 0.2s; }
-        .btn-exec { background: var(--primary); color: #000; }
-        .btn-copy { background: #333; color: #fff; }
-        .btn-share { background: #333; color: #fff; width: 50px; flex: none; }
-        
-        /* 💡 修正：自動換行與寬度自適應 */
-        #code-output { 
-            width: 100%; min-height: 100px; background: #0a0a0a; border: 1px solid var(--border); 
-            border-radius: 10px; color: var(--primary); padding: 15px; font-family: 'Courier New', monospace; 
-            font-size: 12px; white-space: pre-wrap; word-break: break-all; line-height: 1.5;
-        }
+        /* 輸出框區 */
+        .output-area { padding: 0 15px 30px; }
+        .btn-row { display: flex; gap: 8px; margin-bottom: 12px; }
+        .btn { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: bold; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: #000; }
+        .btn-dark { background: #2c2c2e; color: #fff; }
+        #code-res { width: 100%; min-height: 100px; background: #000; border: 1px solid var(--border); border-radius: 12px; color: var(--primary); padding: 15px; font-family: monospace; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
 
-        footer { 
-            padding: 30px 20px; background: var(--panel); border-top: 1px solid var(--border); 
-            text-align: center; flex-shrink: 0;
-        }
-        footer p { font-size: 11px; color: #555; margin-bottom: 20px; letter-spacing: 1px; }
-        
-        .social-matrix { 
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; 
-            max-width: 300px; margin: 0 auto;
-        }
-        .social-matrix a, .more-btn { 
-            color: var(--text); opacity: 0.7; font-size: 22px; text-decoration: none; 
-            display: flex; flex-direction: column; align-items: center; gap: 5px;
-        }
-        .social-matrix span { font-size: 9px; opacity: 0.5; }
-        .more-btn { cursor: pointer; color: var(--primary); }
+        /* 超強社群頁尾 */
+        footer { padding: 40px 20px; background: var(--panel); border-top: 1px solid var(--border); text-align: center; }
+        .social-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; max-width: 320px; margin: 20px auto; }
+        .social-grid a { color: #fff; text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 8px; opacity: 0.7; }
+        .social-grid i { font-size: 24px; }
+        .social-grid span { font-size: 10px; color: #666; }
+        .share-more { margin-top: 25px; color: var(--primary); font-size: 14px; font-weight: bold; border: 1px solid var(--primary); display: inline-block; padding: 8px 20px; border-radius: 20px; }
     </style>
 </head>
 <body>
 
 <header>
-    <i class="fa-solid fa-chevron-left" onclick="history.back()" style="font-size: 20px;"></i>
-    <span id="title" style="font-weight: 800; letter-spacing: 1px;">EDITOR</span>
+    <i class="fa-solid fa-angle-left" onclick="history.back()" style="font-size: 24px;"></i>
+    <b id="icon-name">LOADING...</b>
     <i class="fa-solid fa-house" onclick="location.href='../index.html'"></i>
 </header>
 
-<div class="main-scroller">
-    <div class="preview-area">
+<div class="app-body">
+    <div class="preview-box">
         <div class="canvas">
             <img id="svg-target" src="">
         </div>
     </div>
 
-    <div class="control-area" id="controls">
+    <div class="config-wrapper" id="ui-root">
         </div>
 
-    <div class="output-section">
-        <div class="action-btns">
-            <button class="btn btn-exec" onclick="generateCode()"><i class="fa-solid fa-wand-magic-sparkles"></i> 執行</button>
-            <button class="btn btn-copy" onclick="copyCode()"><i class="fa-solid fa-copy"></i> 複製</button>
-            <button class="btn btn-share" onclick="shareNative()"><i class="fa-solid fa-share-nodes"></i></button>
+    <div class="output-area">
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="doExecute()"><i class="fa-solid fa-wand-sparkles"></i> 執行</button>
+            <button class="btn btn-dark" onclick="doCopy()"><i class="fa-solid fa-copy"></i> 複製</button>
         </div>
-        <div id="code-output">點擊「執行」產生代碼...</div>
+        <div id="code-res">點擊執行產生代碼...</div>
     </div>
 
     <footer>
-        <p>© 2024-2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 極簡 ‧ 高效 ‧ 流暢</p>
-        <div class="social-matrix">
-            <a href="https://facebook.com"><i class="fa-brands fa-facebook"></i><span>FB</span></a>
-            <a href="https://line.me"><i class="fa-brands fa-line"></i><span>LINE</span></a>
-            <a href="https://instagram.com"><i class="fa-brands fa-instagram"></i><span>IG</span></a>
-            <a href="https://x.com"><i class="fa-brands fa-x-twitter"></i><span>X</span></a>
-            <a href="https://github.com/mobsp"><i class="fa-brands fa-github"></i><span>Git</span></a>
+        <p style="font-size: 10px; color: #444;">© 2024-2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ OFFICIAL</p>
+        <div class="social-grid">
+            <a href="#"><i class="fa-brands fa-facebook"></i><span>Facebook</span></a>
+            <a href="#"><i class="fa-brands fa-line"></i><span>LINE</span></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i><span>Instagram</span></a>
+            <a href="#"><i class="fa-brands fa-x-twitter"></i><span>X</span></a>
+            <a href="#"><i class="fa-brands fa-github"></i><span>GitHub</span></a>
+            <a href="#"><i class="fa-brands fa-threads"></i><span>Threads</span></a>
+            <a href="#"><i class="fa-brands fa-whatsapp"></i><span>WhatsApp</span></a>
+            <a href="#"><i class="fa-brands fa-telegram"></i><span>Telegram</span></a>
         </div>
-        <div class="more-btn" onclick="shareNative()" style="margin-top: 20px; font-size: 14px; font-weight: bold;">
-            <i class="fa-solid fa-ellipsis"></i> 更多分享方式...
-        </div>
+        <div class="share-more" onclick="doShare()"><i class="fa-solid fa-share-nodes"></i> 更多分享方式...</div>
     </footer>
 </div>
 
 <script>
     const params = new URLSearchParams(window.location.search);
-    const iconName = params.get('icon') || '';
-    const svgUrl = `https://mobsp.github.io/assets/icon/svg/${iconName}`;
-    document.getElementById('svg-target').src = svgUrl;
-    document.getElementById('title').textContent = (iconName.replace('.svg', '')).toUpperCase();
+    const rawName = params.get('icon') || 'power.svg';
+    const svgBase = `https://mobsp.github.io/assets/icon/svg/${rawName}`;
+    
+    document.getElementById('svg-target').src = svgBase;
+    document.getElementById('icon-name').textContent = rawName.split('.')[0].toUpperCase();
 
-    async function init() {
+    async function loadConfig() {
         try {
             const res = await fetch('../data/editor-config.json');
-            const config = await res.json();
-            const container = document.getElementById('controls');
+            const data = await res.json();
+            const root = document.getElementById('ui-root');
 
-            config.ui_groups.forEach(group => {
-                const groupDiv = document.createElement('div');
-                groupDiv.className = 'ctrl-group';
-                groupDiv.innerHTML = `<h4>${group.group_name}</h4>`;
+            data.ui_groups.forEach(g => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `<h4><i class="fa-solid fa-sliders"></i> ${g.group_name}</h4>`;
                 
-                group.controls.forEach(ctrl => {
-                    const item = document.createElement('div');
-                    item.className = 'ctrl-item';
-                    item.innerHTML = `<label>${ctrl.label}</label>`;
+                g.controls.forEach(c => {
+                    const field = document.createElement('div');
+                    field.className = 'field';
+                    field.innerHTML = `<label>${c.label}</label>`;
                     
-                    let inputEl = ctrl.type === 'select' ? document.createElement('select') : document.createElement('input');
-                    inputEl.id = ctrl.id;
-                    if(ctrl.type === 'select') {
-                        ctrl.options.forEach(o => inputEl.add(new Option(o, o)));
-                        inputEl.onchange = () => handleLogic(ctrl.id);
+                    const el = c.type === 'select' ? document.createElement('select') : document.createElement('input');
+                    el.id = c.id;
+                    if(c.type === 'select') {
+                        c.options.forEach(o => el.add(new Option(o, o)));
+                        el.onchange = () => { handleSliderTrigger(c.id); updateLive(); };
                     } else {
-                        inputEl.type = ctrl.type;
-                        if(ctrl.default) inputEl.value = ctrl.default;
-                        inputEl.oninput = updatePreview;
+                        el.type = c.type;
+                        if(c.default) el.value = c.default;
+                        el.oninput = updateLive;
                     }
-                    item.appendChild(inputEl);
+                    field.appendChild(el);
 
-                    // 滑桿邏輯
-                    if(['rotate_mode', 'shadow_mode', 'radius_mode'].includes(ctrl.id)) {
-                        const sliderWrap = document.createElement('div');
-                        sliderWrap.className = 'slider-wrap';
-                        sliderWrap.id = `slider-wrap-${ctrl.id}`;
-                        let maxVal = ctrl.id === 'rotate_mode' ? 360 : 50;
-                        sliderWrap.innerHTML = `<input type="range" id="slider-${ctrl.id}" min="0" max="${maxVal}" value="0" oninput="updatePreview()">`;
-                        item.appendChild(sliderWrap);
+                    // 自動判斷是否需要滑桿
+                    if(['rotate_mode', 'shadow_mode', 'radius_mode'].includes(c.id)) {
+                        const sWrap = document.createElement('div');
+                        sWrap.className = 'range-area';
+                        sWrap.id = `wrap-${c.id}`;
+                        const max = c.id === 'rotate_mode' ? 360 : 50;
+                        const unit = c.id === 'rotate_mode' ? '°' : 'px';
+                        sWrap.innerHTML = `
+                            <span class="range-val" id="val-${c.id}">0${unit}</span>
+                            <input type="range" id="range-${c.id}" min="0" max="${max}" value="0" 
+                                   oninput="document.getElementById('val-${c.id}').innerText=this.value+'${unit}'; updateLive();">`;
+                        field.appendChild(sWrap);
                     }
-                    groupDiv.appendChild(item);
+                    card.appendChild(field);
                 });
-                container.appendChild(groupDiv);
+                root.appendChild(card);
             });
-        } catch(e) { console.error("加載配置失敗", e); }
+        } catch(e) { document.getElementById('ui-root').innerHTML = "配置讀取失敗"; }
     }
 
-    function handleLogic(id) {
+    function handleSliderTrigger(id) {
         const val = document.getElementById(id).value;
-        const wrap = document.getElementById(`slider-wrap-${id}`);
+        const wrap = document.getElementById(`wrap-${id}`);
         if(wrap) wrap.style.display = (val.includes('自由') || val.includes('自訂')) ? 'block' : 'none';
-        updatePreview();
     }
 
-    function updatePreview() {
+    function updateLive() {
         const img = document.getElementById('svg-target');
-        const color = document.getElementById('color').value;
-        const rotateVal = document.getElementById('rotate_mode').value === '自由旋轉' ? 
-                          document.getElementById('slider-rotate_mode').value + 'deg' : 
-                          (document.getElementById('rotate_mode').value.match(/\d+/) || [0])[0] + 'deg';
+        const color = document.getElementById('color')?.value || '#00cec9';
         
-        img.style.filter = `drop-shadow(0 0 2px ${color})`;
-        img.style.transform = `rotate(${rotateVal})`;
-        // 模擬著色
-        img.style.background = "transparent";
+        // 旋轉計算
+        let rot = "0deg";
+        const rotMode = document.getElementById('rotate_mode')?.value;
+        if(rotMode === '自由旋轉') {
+            rot = document.getElementById('range-rotate_mode').value + "deg";
+        } else if(rotMode) {
+            rot = rotMode.match(/\d+/) ? rotMode.match(/\d+/)[0] + "deg" : "0deg";
+        }
+
+        // 預覽圖套用濾鏡與變換
+        img.style.filter = `drop-shadow(0 0 1px ${color}) brightness(1.2)`;
+        img.style.transform = `rotate(${rot})`;
+        
+        // 強制改變圖標顏色 (透過 CSS mask 技巧最穩)
+        img.style.webkitMask = `url(${img.src}) no-repeat center / contain`;
+        img.style.backgroundColor = color;
     }
 
-    function generateCode() {
+    function doExecute() {
+        updateLive();
         const img = document.getElementById('svg-target');
-        const code = `<img src="${svgUrl}" \n style="width:${document.getElementById('size').value}; \n filter:${img.style.filter}; \n transform:${img.style.transform};">`;
-        document.getElementById('code-output').textContent = code;
+        const size = document.getElementById('size')?.value || '32px';
+        const code = `<div style="width:${size}; height:${size}; background-color:${img.style.backgroundColor}; -webkit-mask:url('${svgBase}') no-repeat center/contain; transform:${img.style.transform}; filter:${img.style.filter};"></div>`;
+        document.getElementById('code-res').textContent = code;
     }
 
-    function copyCode() {
-        const text = document.getElementById('code-output').textContent;
-        navigator.clipboard.writeText(text).then(() => alert('✅ 代碼已複製！'));
+    function doCopy() {
+        navigator.clipboard.writeText(document.getElementById('code-res').textContent);
+        const btn = event.target;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> 已複製';
+        setTimeout(() => btn.innerHTML = '<i class="fa-solid fa-copy"></i> 複製', 2000);
     }
 
-    function shareNative() {
-        const text = `我在 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 製作了一個超酷的圖標！\n圖標名稱：${iconName}`;
+    function doShare() {
         if (navigator.share) {
-            navigator.share({ title: '莫比空間分享', text: text, url: window.location.href });
+            navigator.share({ title: 'Mobispace SVG Editor', text: `快看我製作的 ${rawName} 圖標！`, url: window.location.href });
         } else {
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(text)}`);
+            alert("瀏覽器不支援原生分享，請手動複製網址。");
         }
     }
 
-    init();
+    window.onload = loadConfig;
 </script>
 </body>
 </html>
