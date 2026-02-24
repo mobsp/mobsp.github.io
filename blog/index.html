@@ -12,11 +12,10 @@
     
     <style>
         :root {
-            --bg-body: #000000; --bg-container: #000000; /* 背景全黑 */
+            --bg-body: #000000; --bg-container: #111111;
             --text-main: #ffffff; --text-sub: #aaaaaa;
-            --accent-color: #00cec9; --nav-bg: #000000; /* 導覽列同步純黑 */
+            --accent-color: #00cec9; --nav-bg: #111111;
             --border-color: #262626;
-            --transition-smooth: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -31,7 +30,7 @@
             position: fixed; inset: 0;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover no-repeat;
             z-index: 10000; display: flex; align-items: center; justify-content: center;
-            transition: opacity var(--transition-smooth);
+            transition: opacity 0.8s ease;
         }
         #ms-splash::after {
             content: ""; width: 24px; height: 24px; 
@@ -82,19 +81,13 @@
         }
         @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* 標題圖樣式 - 高度減少版 */
         .brand-title-link {
             display: block; width: 100%; transition: var(--transition);
             margin-bottom: 5px; padding: 0 5px; box-sizing: border-box;
             text-decoration: none;
         }
         .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
-        .brand-title-img { 
-            width: 100%; 
-            max-height: 55px; /* 限制高度使其更扁平 */
-            object-fit: cover; /* 確保縮放時比例正常 */
-            display: block; border-radius: 8px; 
-        }
+        .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
 
         #main-view { 
             flex: 1; overflow-y: auto; 
@@ -153,9 +146,9 @@
             <nav class="marquee-row">
                 <span class="v-tag" id="v-tag">SYNCING</span>
                 <div class="mq-box">
-                    <div class="mq-text" id="mq-text">正在載入莫比部落格實時數據...</div>
+                    <div class="mq-text" id="mq-text">載入中...</div>
                 </div>
-                <button onclick="location.href='https://mobsp.github.io/'" title="回到首頁" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:10px; cursor:pointer;">
+                <button onclick="location.href='https://mobsp.github.io/'" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:10px; cursor:pointer;">
                     <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
             </nav>
@@ -181,27 +174,20 @@
 
             <div class="list-header">
                 <span style="font-weight: bold;">熱門文章</span>
-                <a href="https://mobsp.github.io/p/list/" class="more-btn">更多</a>
+                <a href="https://mobsp.github.io/blog/" class="more-btn">更多</a>
             </div>
 
             <div id="article-list-container">
-                <div class="article-row" onclick="location.href='#'">
-                    <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img" alt="封面圖">
-                    <div class="row-info">
-                        <div class="row-title">如何優化你的 GitHub Pages 載入速度？</div>
-                        <div style="font-size: 11px; color: var(--text-sub);">2026/02/13 · 莫比空間</div>
-                    </div>
                 </div>
-            </div>
             
             <div id="github-articles"></div>
         </main>
 
         <nav class="bottom-nav">
             <a href="https://mobsp.github.io/music/" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
-            <a href="https://mobsp.github.io/p/#Shorts" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
-            <a href="https://mobsp.github.io/p/#wiki" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援中心</span></a>
-            <a href="https://mobsp.github.io/setting/" class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></a>
+            <a href="https://mobsp.github.io/shorts/" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
+            <a href="https://mobsp.github.io/wiki/" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援中心</span></a>
+            <a href="https://mobsp.github.io/setting" class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></a>
         </nav>
     </div>
 
@@ -219,7 +205,7 @@
         (function() {
             const splash = document.getElementById('ms-splash');
             function hideSplash() {
-                if (!splash.classList.contains('hide')) {
+                if (splash) {
                     splash.classList.add('hide');
                     document.body.classList.add('loaded');
                     setTimeout(() => splash.remove(), 1000);
@@ -229,30 +215,15 @@
             async function initNoticeSystem() {
                 const vTag = document.getElementById('v-tag');
                 const mqText = document.getElementById('mq-text');
-                const cachedData = localStorage.getItem('mobsp_blog_notices');
-                if (cachedData) renderNotice(JSON.parse(cachedData), true);
-
                 try {
-                    if (typeof supabase === 'undefined') return;
                     const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
                     const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
                     if (!error && data.length > 0) {
-                        localStorage.setItem('mobsp_blog_notices', JSON.stringify(data));
-                        renderNotice(data, false);
+                        const item = data[0];
+                        vTag.innerText = `BLOG V2.0 | ${item.type}`;
+                        mqText.innerText = item.message;
                     }
-                } catch (err) { console.warn('公告更新受阻'); }
-            }
-
-            function renderNotice(data, isCached) {
-                const vTag = document.getElementById('v-tag');
-                const mqText = document.getElementById('mq-text');
-                if (!vTag || !mqText || !data.length) return;
-                const item = data[0]; 
-                vTag.classList.remove('tag-important', 'tag-update');
-                if (item.type.match(/重要|守則/)) vTag.classList.add('tag-important');
-                else if (item.type.match(/更新|系統/)) vTag.classList.add('tag-update');
-                vTag.innerText = `${isCached ? 'OFFLINE' : 'BLOG V2.0'} | ${item.type}`;
-                mqText.innerText = item.message;
+                } catch (err) { mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！"; }
             }
 
             async function loadGithubArticles() {
@@ -262,23 +233,20 @@
                     const response = await fetch(api_url);
                     if (!response.ok) return;
                     const files = await response.json();
-                    const htmlFiles = files.filter(file => file.name.endsWith('.html'));
-                    htmlFiles.forEach(file => {
+                    files.filter(f => f.name.endsWith('.html')).forEach(file => {
                         const title = file.name.replace('.html', '').replace(/-/g, ' ').toUpperCase();
-                        const articleUrl = `https://mobsp.github.io/blog/p/list/${file.name}`;
-                        const articleHtml = `
-                            <div class="article-row" onclick="location.href='${articleUrl}'">
-                                <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img" alt="封面圖">
+                        container.insertAdjacentHTML('beforeend', `
+                            <div class="article-row" onclick="location.href='https://mobsp.github.io/blog/p/list/${file.name}'">
+                                <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img">
                                 <div class="row-info">
                                     <div class="row-title">${title}</div>
                                     <div style="font-size: 11px; color: var(--text-sub);">自動同步文章 · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
                                 </div>
-                                <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px; margin-right:5px;"></i>
+                                <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px;"></i>
                             </div>
-                        `;
-                        container.insertAdjacentHTML('beforeend', articleHtml);
+                        `);
                     });
-                } catch (err) { console.error("無法同步 GitHub 文章:", err); }
+                } catch (err) {}
             }
 
             window.addEventListener('load', () => {
@@ -286,7 +254,7 @@
                 loadGithubArticles();
                 setTimeout(hideSplash, 1000);
             });
-            setTimeout(hideSplash, 3000);
+            setTimeout(hideSplash, 3500);
         })();
     </script>
 </body>
