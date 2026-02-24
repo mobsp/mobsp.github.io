@@ -3,62 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>航空母艦編輯器 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <title>航空母艦編輯器 v2.0 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --primary: #00cec9; --bg: #000; --panel: #1c1c1e; --border: #333; --text: #eee; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: var(--text); font-family: -apple-system, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* 💡 修正：鎖定全螢幕，防止內容消失 */
+        html, body { 
+            margin: 0; padding: 0; height: 100vh; width: 100vw;
+            background: var(--bg); color: var(--text); 
+            font-family: -apple-system, sans-serif; overflow: hidden;
+            display: flex; flex-direction: column;
+        }
 
-        header { padding: 15px 20px; background: var(--panel); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        header { 
+            height: 60px; padding: 0 20px; background: var(--panel); 
+            border-bottom: 1px solid var(--border); display: flex; 
+            justify-content: space-between; align-items: center; flex-shrink: 0;
+        }
         
-        .main-content { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+        /* 💡 修正：讓主內容區可獨立滾動，不被擠壓 */
+        .main-scroller { 
+            flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; 
+        }
         
-        /* 預覽區縮小 */
-        .preview-area { height: 180px; background: #111; display: flex; align-items: center; justify-content: center; position: relative; border-bottom: 1px solid var(--border); }
-        .canvas { width: 100px; height: 100px; border: 1px dashed #444; display: flex; align-items: center; justify-content: center; position: relative; }
-        #svg-target { max-width: 100%; transition: 0.1s; }
+        .preview-area { 
+            height: 180px; background: #111; display: flex; 
+            align-items: center; justify-content: center; border-bottom: 1px solid var(--border);
+        }
+        .canvas { width: 100px; height: 100px; border: 1px dashed #444; display: flex; align-items: center; justify-content: center; }
+        #svg-target { max-width: 90%; max-height: 90%; transition: 0.1s ease; }
 
         .control-area { padding: 20px; }
-        .ctrl-group { background: var(--panel); border-radius: 12px; padding: 15px; margin-bottom: 15px; }
-        .ctrl-item { margin-bottom: 15px; }
-        label { font-size: 13px; color: #888; display: block; margin-bottom: 8px; }
-        select, input[type="color"] { width: 100%; padding: 10px; background: #2c2c2e; border: 1px solid var(--border); color: #fff; border-radius: 8px; }
+        .ctrl-group { background: var(--panel); border-radius: 16px; padding: 18px; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.05); }
+        .ctrl-group h4 { font-size: 14px; color: var(--primary); margin-bottom: 15px; border-left: 3px solid var(--primary); padding-left: 10px; }
         
-        /* 滑桿樣式 */
-        .slider-wrap { display: none; margin-top: 10px; animation: slideDown 0.3s forwards; }
+        .ctrl-item { margin-bottom: 18px; }
+        label { font-size: 12px; color: #888; display: block; margin-bottom: 8px; }
+        select, input[type="color"] { 
+            width: 100%; padding: 12px; background: #2c2c2e; border: 1px solid var(--border); 
+            color: #fff; border-radius: 10px; font-size: 14px;
+        }
+        
+        .slider-wrap { display: none; margin-top: 12px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; }
         input[type="range"] { width: 100%; accent-color: var(--primary); }
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 輸出區 */
-        .output-section { padding: 0 20px 20px; }
-        .action-btns { display: flex; gap: 10px; margin-bottom: 10px; }
-        .btn { flex: 1; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .output-section { padding: 0 20px 30px; }
+        .action-btns { display: flex; gap: 10px; margin-bottom: 12px; }
+        .btn { flex: 1; padding: 14px; border-radius: 10px; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 14px; transition: 0.2s; }
         .btn-exec { background: var(--primary); color: #000; }
         .btn-copy { background: #333; color: #fff; }
         .btn-share { background: #333; color: #fff; width: 50px; flex: none; }
         
+        /* 💡 修正：自動換行與寬度自適應 */
         #code-output { 
-            width: 100%; min-height: 80px; background: #111; border: 1px solid var(--border); 
-            border-radius: 8px; color: var(--primary); padding: 12px; font-family: monospace; 
-            font-size: 12px; white-space: pre-wrap; word-break: break-all;
+            width: 100%; min-height: 100px; background: #0a0a0a; border: 1px solid var(--border); 
+            border-radius: 10px; color: var(--primary); padding: 15px; font-family: 'Courier New', monospace; 
+            font-size: 12px; white-space: pre-wrap; word-break: break-all; line-height: 1.5;
         }
 
-        footer { padding: 20px; background: var(--panel); border-top: 1px solid var(--border); text-align: center; }
-        footer p { font-size: 11px; color: #555; margin-bottom: 10px; }
-        .social-links { display: flex; justify-content: center; gap: 20px; font-size: 20px; }
-        .social-links a { color: var(--text); opacity: 0.6; }
+        footer { 
+            padding: 30px 20px; background: var(--panel); border-top: 1px solid var(--border); 
+            text-align: center; flex-shrink: 0;
+        }
+        footer p { font-size: 11px; color: #555; margin-bottom: 20px; letter-spacing: 1px; }
+        
+        .social-matrix { 
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; 
+            max-width: 300px; margin: 0 auto;
+        }
+        .social-matrix a, .more-btn { 
+            color: var(--text); opacity: 0.7; font-size: 22px; text-decoration: none; 
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+        }
+        .social-matrix span { font-size: 9px; opacity: 0.5; }
+        .more-btn { cursor: pointer; color: var(--primary); }
     </style>
 </head>
 <body>
 
 <header>
-    <i class="fa-solid fa-chevron-left" onclick="history.back()"></i>
-    <span id="title">圖標編輯器</span>
-    <i class="fa-solid fa-ellipsis"></i>
+    <i class="fa-solid fa-chevron-left" onclick="history.back()" style="font-size: 20px;"></i>
+    <span id="title" style="font-weight: 800; letter-spacing: 1px;">EDITOR</span>
+    <i class="fa-solid fa-house" onclick="location.href='../index.html'"></i>
 </header>
 
-<div class="main-content">
+<div class="main-scroller">
     <div class="preview-area">
         <div class="canvas">
             <img id="svg-target" src="">
@@ -70,19 +100,24 @@
 
     <div class="output-section">
         <div class="action-btns">
-            <button class="btn btn-exec" onclick="generateCode()"><i class="fa-solid fa-play"></i> 執行</button>
+            <button class="btn btn-exec" onclick="generateCode()"><i class="fa-solid fa-wand-magic-sparkles"></i> 執行</button>
             <button class="btn btn-copy" onclick="copyCode()"><i class="fa-solid fa-copy"></i> 複製</button>
-            <button class="btn btn-share" onclick="share()"><i class="fa-solid fa-share-nodes"></i></button>
+            <button class="btn btn-share" onclick="shareNative()"><i class="fa-solid fa-share-nodes"></i></button>
         </div>
-        <div id="code-output" contenteditable="false">等待產生...</div>
+        <div id="code-output">點擊「執行」產生代碼...</div>
     </div>
 
     <footer>
-        <p>© 2024 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ. All rights reserved.</p>
-        <div class="social-links">
-            <a href="#"><i class="fa-brands fa-github"></i></a>
-            <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        <p>© 2024-2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 極簡 ‧ 高效 ‧ 流暢</p>
+        <div class="social-matrix">
+            <a href="https://facebook.com"><i class="fa-brands fa-facebook"></i><span>FB</span></a>
+            <a href="https://line.me"><i class="fa-brands fa-line"></i><span>LINE</span></a>
+            <a href="https://instagram.com"><i class="fa-brands fa-instagram"></i><span>IG</span></a>
+            <a href="https://x.com"><i class="fa-brands fa-x-twitter"></i><span>X</span></a>
+            <a href="https://github.com/mobsp"><i class="fa-brands fa-github"></i><span>Git</span></a>
+        </div>
+        <div class="more-btn" onclick="shareNative()" style="margin-top: 20px; font-size: 14px; font-weight: bold;">
+            <i class="fa-solid fa-ellipsis"></i> 更多分享方式...
         </div>
     </footer>
 </div>
@@ -92,91 +127,89 @@
     const iconName = params.get('icon') || '';
     const svgUrl = `https://mobsp.github.io/assets/icon/svg/${iconName}`;
     document.getElementById('svg-target').src = svgUrl;
-    document.getElementById('title').textContent = iconName.replace('.svg', '');
+    document.getElementById('title').textContent = (iconName.replace('.svg', '')).toUpperCase();
 
     async function init() {
-        const res = await fetch('../data/editor-config.json');
-        const config = await res.json();
-        const container = document.getElementById('controls');
+        try {
+            const res = await fetch('../data/editor-config.json');
+            const config = await res.json();
+            const container = document.getElementById('controls');
 
-        config.ui_groups.forEach(group => {
-            const groupDiv = document.createElement('div');
-            groupDiv.className = 'ctrl-group';
-            groupDiv.innerHTML = `<h4>${group.group_name}</h4>`;
-            
-            group.controls.forEach(ctrl => {
-                const item = document.createElement('div');
-                item.className = 'ctrl-item';
-                item.innerHTML = `<label>${ctrl.label}</label>`;
+            config.ui_groups.forEach(group => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'ctrl-group';
+                groupDiv.innerHTML = `<h4>${group.group_name}</h4>`;
                 
-                let inputEl = ctrl.type === 'select' ? document.createElement('select') : document.createElement('input');
-                inputEl.id = ctrl.id;
-                if(ctrl.type === 'select') {
-                    ctrl.options.forEach(o => inputEl.add(new Option(o, o)));
-                    inputEl.onchange = () => handleLogic(ctrl.id);
-                } else {
-                    inputEl.type = ctrl.type;
-                    if(ctrl.default) inputEl.value = ctrl.default;
-                    inputEl.oninput = updatePreview;
-                }
-                item.appendChild(inputEl);
+                group.controls.forEach(ctrl => {
+                    const item = document.createElement('div');
+                    item.className = 'ctrl-item';
+                    item.innerHTML = `<label>${ctrl.label}</label>`;
+                    
+                    let inputEl = ctrl.type === 'select' ? document.createElement('select') : document.createElement('input');
+                    inputEl.id = ctrl.id;
+                    if(ctrl.type === 'select') {
+                        ctrl.options.forEach(o => inputEl.add(new Option(o, o)));
+                        inputEl.onchange = () => handleLogic(ctrl.id);
+                    } else {
+                        inputEl.type = ctrl.type;
+                        if(ctrl.default) inputEl.value = ctrl.default;
+                        inputEl.oninput = updatePreview;
+                    }
+                    item.appendChild(inputEl);
 
-                // ✨ 這裡加入隱藏的滑桿 (Slider)
-                if(ctrl.id === 'rotate_mode' || ctrl.id === 'shadow_mode' || ctrl.id === 'radius_mode') {
-                    const sliderWrap = document.createElement('div');
-                    sliderWrap.className = 'slider-wrap';
-                    sliderWrap.id = `slider-wrap-${ctrl.id}`;
-                    sliderWrap.innerHTML = `<input type="range" id="slider-${ctrl.id}" min="0" max="360" value="0" oninput="updatePreview()">`;
-                    item.appendChild(sliderWrap);
-                }
-
-                groupDiv.appendChild(item);
+                    // 滑桿邏輯
+                    if(['rotate_mode', 'shadow_mode', 'radius_mode'].includes(ctrl.id)) {
+                        const sliderWrap = document.createElement('div');
+                        sliderWrap.className = 'slider-wrap';
+                        sliderWrap.id = `slider-wrap-${ctrl.id}`;
+                        let maxVal = ctrl.id === 'rotate_mode' ? 360 : 50;
+                        sliderWrap.innerHTML = `<input type="range" id="slider-${ctrl.id}" min="0" max="${maxVal}" value="0" oninput="updatePreview()">`;
+                        item.appendChild(sliderWrap);
+                    }
+                    groupDiv.appendChild(item);
+                });
+                container.appendChild(groupDiv);
             });
-            container.appendChild(groupDiv);
-        });
+        } catch(e) { console.error("加載配置失敗", e); }
     }
 
     function handleLogic(id) {
         const val = document.getElementById(id).value;
         const wrap = document.getElementById(`slider-wrap-${id}`);
-        if(wrap) {
-            wrap.style.display = (val.includes('自由') || val.includes('自訂')) ? 'block' : 'none';
-        }
+        if(wrap) wrap.style.display = (val.includes('自由') || val.includes('自訂')) ? 'block' : 'none';
         updatePreview();
     }
 
     function updatePreview() {
         const img = document.getElementById('svg-target');
         const color = document.getElementById('color').value;
-        const rotate = document.getElementById('rotate_mode').value === '自由旋轉' ? 
-                       document.getElementById('slider-rotate_mode').value + 'deg' : 
-                       document.getElementById('rotate_mode').value.replace('固定 ', '');
+        const rotateVal = document.getElementById('rotate_mode').value === '自由旋轉' ? 
+                          document.getElementById('slider-rotate_mode').value + 'deg' : 
+                          (document.getElementById('rotate_mode').value.match(/\d+/) || [0])[0] + 'deg';
         
-        // 即時視覺反饋
-        img.style.filter = `drop-shadow(0 0 5px ${color})`;
-        img.style.transform = `rotate(${rotate})`;
-        img.style.fill = color; // 針對部分 SVG 結構
+        img.style.filter = `drop-shadow(0 0 2px ${color})`;
+        img.style.transform = `rotate(${rotateVal})`;
+        // 模擬著色
+        img.style.background = "transparent";
     }
 
     function generateCode() {
-        updatePreview(); // 產出前再同步一次
-        const format = document.getElementById('format').value;
-        const code = `<img src="${svgUrl}" style="transform: ${document.getElementById('svg-target').style.transform}; filter: ${document.getElementById('svg-target').style.filter};">`;
+        const img = document.getElementById('svg-target');
+        const code = `<img src="${svgUrl}" \n style="width:${document.getElementById('size').value}; \n filter:${img.style.filter}; \n transform:${img.style.transform};">`;
         document.getElementById('code-output').textContent = code;
     }
 
     function copyCode() {
         const text = document.getElementById('code-output').textContent;
-        navigator.clipboard.writeText(text);
-        alert('代碼已複製到剪貼簿！');
+        navigator.clipboard.writeText(text).then(() => alert('✅ 代碼已複製！'));
     }
 
-    function share() {
-        const text = `嘿！我在莫比空間編輯了這個圖標：${iconName}\n傳送門：${window.location.href}`;
+    function shareNative() {
+        const text = `我在 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 製作了一個超酷的圖標！\n圖標名稱：${iconName}`;
         if (navigator.share) {
-            navigator.share({ title: '莫比空間圖標分享', text: text, url: window.location.href });
+            navigator.share({ title: '莫比空間分享', text: text, url: window.location.href });
         } else {
-            alert('分享內容已備好：' + text);
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(text)}`);
         }
     }
 
