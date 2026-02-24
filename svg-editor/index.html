@@ -2,78 +2,172 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SVG 編輯器</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>SVG Editor | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
     <style>
-        :root { --bg: #0d1117; --panel: #161b22; --border: #30363d; --accent: #58a6ff; }
-        body { margin: 0; display: flex; flex-direction: column; height: 100vh; background: var(--bg); color: white; font-family: sans-serif; }
-        @media (min-width: 768px) { body { flex-direction: row; } }
+        :root { 
+            --bg: #0d1117; --panel: #161b22; --border: #30363d; 
+            --accent: #58a6ff; --header-h: 60px; --footer-h: 80px;
+        }
         
-        .main-view { flex: 1; display: flex; flex-direction: column; padding: 20px; overflow-y: auto; }
-        .preview { flex: 1; background: #1b1f24; border: 1px solid var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; min-height: 250px; }
-        #svg-target { transition: 0.3s; max-width: 80%; }
-        .code-box { margin-top: 15px; background: #000; padding: 10px; border-radius: 5px; font-family: monospace; font-size: 0.8rem; min-height: 80px; word-break: break-all; }
-        
-        .sidebar { width: 100%; background: var(--panel); border-left: 1px solid var(--border); padding: 20px; box-sizing: border-box; overflow-y: auto; }
-        @media (min-width: 768px) { .sidebar { width: 320px; } }
-        
-        .ctrl-group { margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
-        label { display: block; font-size: 0.8rem; color: #8b949e; margin: 10px 0 5px; }
-        select, input { width: 100%; padding: 8px; background: #0d1117; color: white; border: 1px solid var(--border); border-radius: 4px; }
-        button { width: 100%; padding: 12px; background: var(--accent); border: none; border-radius: 6px; color: white; font-weight: bold; margin-top: 20px; }
+        /* 核心：鎖定視窗高度，禁止外層滾動 */
+        html, body { 
+            margin: 0; padding: 0; height: 100%; overflow: hidden; 
+            background: var(--bg); color: white; font-family: -apple-system, sans-serif;
+        }
+
+        /* 頁首：固定高度 */
+        header {
+            height: var(--header-h);
+            background: var(--panel);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 20px; box-sizing: border-box;
+        }
+
+        /* 容器：扣除頭尾後撐滿 */
+        .app-container {
+            height: calc(100% - var(--header-h) - var(--footer-h));
+            display: flex; flex-direction: column;
+        }
+        @media (min-width: 768px) { .app-container { flex-direction: row; } }
+
+        /* 左側/上方預覽區：可獨立滾動 */
+        .preview-section {
+            flex: 1; overflow-y: auto; padding: 20px;
+            display: flex; flex-direction: column; align-items: center;
+            background: radial-gradient(circle, #1c2128 0%, #0d1117 100%);
+        }
+        .canvas {
+            width: 100%; max-width: 300px; aspect-ratio: 1;
+            background-image: linear-gradient(45deg, #161b22 25%, transparent 25%), 
+                              linear-gradient(-45deg, #161b22 25%, transparent 25%),
+                              linear-gradient(45deg, transparent 75%, #161b22 75%),
+                              linear-gradient(-45deg, transparent 75%, #161b22 75%);
+            background-size: 20px 20px; background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+            border: 1px solid var(--border); border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        #svg-target { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        /* 右側/下方控制區：可獨立滾動 */
+        .control-section {
+            flex: 1; background: var(--panel); border-top: 1px solid var(--border);
+            padding: 20px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+        }
+        @media (min-width: 768px) { 
+            .control-section { width: 350px; flex: none; border-top: none; border-left: 1px solid var(--border); } 
+        }
+
+        /* 頁尾：固定產出按鈕區 */
+        footer {
+            height: var(--footer-h);
+            background: var(--panel);
+            border-top: 1px solid var(--border);
+            padding: 10px 20px; display: flex; align-items: center; gap: 10px;
+            box-sizing: border-box;
+        }
+
+        /* UI 組件樣式 */
+        .ctrl-group { margin-bottom: 25px; }
+        .ctrl-group h4 { margin: 0 0 10px; font-size: 0.9rem; color: var(--accent); }
+        label { display: block; font-size: 0.75rem; color: #8b949e; margin-bottom: 5px; }
+        select, input { 
+            width: 100%; padding: 10px; background: #0d1117; color: white; 
+            border: 1px solid var(--border); border-radius: 8px; appearance: none;
+        }
+        .output-box {
+            flex: 1; background: #000; border-radius: 6px; padding: 10px;
+            font-family: monospace; font-size: 0.7rem; color: #3fb950;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+        }
+        .btn-action {
+            background: var(--accent); color: white; border: none;
+            padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer;
+        }
     </style>
 </head>
 <body>
-    <div class="main-view">
-        <div class="preview"><img id="svg-target" src=""></div>
-        <div class="code-box" id="output">代碼將在此產生...</div>
-        <button onclick="apply()">執行並產生代碼</button>
+
+    <header>
+        <div onclick="history.back()" style="cursor:pointer">✕</div>
+        <div id="icon-title">Editor</div>
+        <div style="color:var(--accent)">儲存</div>
+    </header>
+
+    <div class="app-container">
+        <section class="preview-section">
+            <div class="canvas">
+                <img id="svg-target" src="" alt="Preview">
+            </div>
+            <p style="font-size: 0.7rem; color: #8b949e; margin-top: 15px;">預覽效果</p>
+        </section>
+
+        <section class="control-section" id="config-panel">
+            </section>
     </div>
-    <div class="sidebar" id="ctrl-panel"><h3>配置選項</h3></div>
+
+    <footer>
+        <div class="output-box" id="code-preview">點擊產生代碼...</div>
+        <button class="btn-action" onclick="applySettings()">執行</button>
+    </footer>
 
     <script>
         const params = new URLSearchParams(window.location.search);
-        const icon = params.get('icon') || '';
-        const svgUrl = `https://mobsp.github.io/assets/icon/svg/${icon}`;
+        const iconName = params.get('icon');
+        const svgUrl = `https://mobsp.github.io/assets/icon/svg/${iconName}`;
+        
+        document.getElementById('icon-title').textContent = iconName;
         document.getElementById('svg-target').src = svgUrl;
 
-        async function loadUI() {
-            const res = await fetch('../data/editor_config.json');
-            const config = await res.json();
-            const panel = document.getElementById('ctrl-panel');
-            config.ui_groups.forEach(g => {
-                const div = document.createElement('div');
-                div.className = 'ctrl-group';
-                div.innerHTML = `<h4>${g.group_name}</h4>`;
-                g.controls.forEach(c => {
-                    const label = document.createElement('label');
-                    label.textContent = c.label;
-                    let el;
-                    if(c.type === 'select') {
-                        el = document.createElement('select');
-                        c.options.forEach(o => el.add(new Option(o, o)));
-                    } else {
-                        el = document.createElement('input'); el.type = c.type; if(c.default) el.value = c.default;
-                    }
-                    el.id = c.id;
-                    div.appendChild(label); div.appendChild(el);
+        async function init() {
+            try {
+                const res = await fetch('../data/editor_config.json');
+                const config = await res.json();
+                const panel = document.getElementById('config-panel');
+                
+                config.ui_groups.forEach(group => {
+                    const div = document.createElement('div');
+                    div.className = 'ctrl-group';
+                    div.innerHTML = `<h4>${group.group_name}</h4>`;
+                    group.controls.forEach(ctrl => {
+                        const label = document.createElement('label');
+                        label.textContent = ctrl.label;
+                        const input = ctrl.type === 'select' ? document.createElement('select') : document.createElement('input');
+                        if(ctrl.type === 'select') {
+                            ctrl.options.forEach(opt => input.add(new Option(opt, opt)));
+                        } else {
+                            input.type = ctrl.type;
+                            if(ctrl.default) input.value = ctrl.default;
+                        }
+                        input.id = ctrl.id;
+                        div.appendChild(label);
+                        div.appendChild(input);
+                    });
+                    panel.appendChild(div);
                 });
-                panel.appendChild(div);
-            });
+            } catch (e) { console.error(e); }
         }
 
-        function apply() {
-            const s = document.getElementById('size').value;
-            const c = document.getElementById('color').value;
-            const r = document.getElementById('rotate').value;
-            const img = document.getElementById('svg-target');
-            img.style.width = s;
-            img.style.filter = `drop-shadow(0 0 0 ${c})`;
-            img.style.transform = `rotate(${r})`;
+        function applySettings() {
+            const size = document.getElementById('size').value;
+            const color = document.getElementById('color').value;
+            const rotate = document.getElementById('rotate').value;
             
-            document.getElementById('output').textContent = `<img src="${svgUrl}" style="width:${s}; filter:drop-shadow(0 0 0 ${c}); transform:rotate(${r})">`;
+            const img = document.getElementById('svg-target');
+            img.style.width = size;
+            img.style.filter = `drop-shadow(0 0 0 ${color})`;
+            img.style.transform = `rotate(${rotate})`;
+            
+            const code = `<img src="${svgUrl}" style="width:${size}; filter:drop-shadow(0 0 0 ${color}); transform:rotate(${rotate})">`;
+            document.getElementById('code-preview').textContent = code;
+            
+            // 手機震動回饋 (如果有支援)
+            if(navigator.vibrate) navigator.vibrate(50);
+            alert("代碼已產生！");
         }
-        loadUI();
+
+        init();
     </script>
 </body>
 </html>
