@@ -17,6 +17,7 @@
             --accent-color: #00cec9; --nav-bg: #111111;
             --border-color: #262626;
             --transition-smooth: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
@@ -49,20 +50,47 @@
         }
         body.loaded #app-container { opacity: 1; transform: scale(1); }
 
+        /* 隱藏標題 SEO 專用 */
+        .visually-hidden {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); border: 0;
+        }
+
         .app-header { 
             flex-shrink: 0;
             padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
             background: var(--nav-bg);
             border-bottom: 1px solid var(--border-color);
+            display: flex; flex-direction: column; align-items: center;
         }
+
+        /* 替換為高級跑馬燈樣式 */
         .marquee-row {
-            display: flex; align-items: center; background: #222;
-            padding: 6px 12px; border-radius: 20px;
+            display: flex; align-items: center; background: rgba(255,255,255,0.05);
+            padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+            min-height: 28px; width: 100%;
         }
-        .version-tag { background: var(--accent-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 6px; border-radius: 4px; white-space: nowrap; margin-right: 10px; }
-        .mq-container { flex: 1; overflow: hidden; white-space: nowrap; font-size: 12px; }
-        .mq-content { display: inline-block; animation: marquee 15s linear infinite; color: #ffffff; }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .v-tag { 
+            background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; 
+            padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap;
+        }
+        .tag-important { background: #ff4d4d; color: #fff; }
+        .tag-update { background: #00ff88; color: #000; }
+        .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
+        .mq-text { 
+            display: inline-block; padding-left: 100%;
+            animation: mq 25s linear infinite;
+            font-size: 11px; opacity: 0.9; letter-spacing: 0.5px; color: #fff;
+        }
+        @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        /* 部落格標題圖樣式 */
+        .brand-title-link {
+            display: block; width: 100%; transition: var(--transition);
+            margin-bottom: 5px; padding: 0 5px; box-sizing: border-box;
+        }
+        .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
+        .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
 
         #main-view { 
             flex: 1; overflow-y: auto; 
@@ -116,15 +144,21 @@
 
     <div id="app-container">
         <header class="app-header">
-            <div class="marquee-row">
-                <span class="version-tag">BLOG V1.0</span>
-                <div class="mq-container">
-                    <div class="mq-content" id="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！最新技術文章持續更新中...</div>
+            <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比部落格</h1>
+
+            <nav class="marquee-row">
+                <span class="v-tag" id="v-tag">SYNCING</span>
+                <div class="mq-box">
+                    <div class="mq-text" id="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！最新技術文章持續更新中...</div>
                 </div>
-                <button onclick="location.href='https://mobsp.github.io/'" style="background:none; border:none; color:var(--text-sub); font-size:16px; padding-left:10px; cursor:pointer;">
+                <button onclick="location.href='https://mobsp.github.io/'" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:10px; cursor:pointer;">
                     <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
-            </div>
+            </nav>
+
+            <a href="https://mobsp.github.io/blog/" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
+                <img src="assets/brand/ms-blog-title.JPEG" alt="莫比部落格 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
+            </a>
         </header>
 
         <main id="main-view">
@@ -167,12 +201,16 @@
         </nav>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const GH_CONFIG = {
             user: 'mobsp',
             repo: 'mobsp.github.io',
             path: 'blog/p/list'
         };
+
+        const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
         (function() {
             const splash = document.getElementById('ms-splash');
@@ -182,6 +220,34 @@
                     document.body.classList.add('loaded');
                     setTimeout(() => splash.remove(), 1000);
                 }
+            }
+
+            async function initNoticeSystem() {
+                const vTag = document.getElementById('v-tag');
+                const mqText = document.getElementById('mq-text');
+                const cachedData = localStorage.getItem('mobsp_blog_notices');
+                if (cachedData) renderNotice(JSON.parse(cachedData), true);
+
+                try {
+                    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                    const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
+                    if (!error && data.length > 0) {
+                        localStorage.setItem('mobsp_blog_notices', JSON.stringify(data));
+                        renderNotice(data, false);
+                    }
+                } catch (err) { console.warn('公告更新受阻'); }
+            }
+
+            function renderNotice(data, isCached) {
+                const vTag = document.getElementById('v-tag');
+                const mqText = document.getElementById('mq-text');
+                if (!vTag || !mqText || !data.length) return;
+                const item = data[0]; // 顯示最新的一條
+                vTag.classList.remove('tag-important', 'tag-update');
+                if (item.type.match(/重要|守則/)) vTag.classList.add('tag-important');
+                else if (item.type.match(/更新|系統/)) vTag.classList.add('tag-update');
+                vTag.innerText = `${isCached ? 'OFFLINE' : 'BLOG V2.0'} | ${item.type}`;
+                mqText.innerText = item.message;
             }
 
             async function loadGithubArticles() {
@@ -207,12 +273,11 @@
                         `;
                         container.insertAdjacentHTML('beforeend', articleHtml);
                     });
-                } catch (err) {
-                    console.error("無法同步 GitHub 文章:", err);
-                }
+                } catch (err) { console.error("無法同步 GitHub 文章:", err); }
             }
 
             window.addEventListener('load', () => {
+                initNoticeSystem();
                 loadGithubArticles();
                 setTimeout(hideSplash, 1000);
             });
