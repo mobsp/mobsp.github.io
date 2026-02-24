@@ -1,0 +1,32 @@
+name: Auto Update Icon List
+on:
+  push:
+    paths:
+      - 'assets/icon/svg/**'  # 自動觸發：當 SVG 資料夾變動時
+  workflow_dispatch:          # ✨ 手動觸發：在 GitHub 網頁增加一個「執行」按鈕
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # 給予機器人寫入權限，這行代碼能確保權限沒開也能嘗試執行
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          
+      - name: Run Update Script
+        run: node update_icons.js
+        
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add data/svg.json
+          # 如果沒有檔案變動，git commit 會失敗，所以加上 || exit 0 確保流程不噴紅字
+          git commit -m "🤖 自動更新圖標庫內容 [skip ci]" || exit 0
+          git push
