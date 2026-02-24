@@ -49,7 +49,6 @@
             touch-action: manipulation;
         }
 
-        /* SEO 隱藏標題專用樣式 */
         .visually-hidden {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0,0,0,0); border: 0;
@@ -59,7 +58,7 @@
 
         .app-header {
             flex-shrink: 0;
-            padding: calc(20px + env(safe-area-inset-top)) 20px 15px; 
+            padding: calc(20px + env(safe-area-inset-top)) 20px 10px; 
             background: rgba(11, 11, 12, 0.85);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-color);
@@ -69,13 +68,20 @@
             align-items: center;
         }
 
-        /* 標題圖樣式 */
+        /* 跑馬燈列：上移 */
+        .marquee-row {
+            display: flex; align-items: center; background: rgba(255,255,255,0.05);
+            padding: 6px 12px; border-radius: 10px; margin-bottom: 15px; overflow: hidden;
+            min-height: 28px; width: 100%; box-sizing: border-box;
+        }
+
+        /* 標題圖樣式：下移至跑馬燈下方 */
         .brand-title-link {
             display: block;
             width: 100%;
-            max-width: 280px; /* 根據圖片比例微調 */
-            margin-bottom: 15px;
+            max-width: 260px;
             transition: var(--transition);
+            margin-bottom: 5px;
         }
         .brand-title-link:hover { opacity: 0.8; transform: scale(1.02); }
         .brand-title-img {
@@ -83,12 +89,6 @@
             height: auto;
             display: block;
             border-radius: 4px;
-        }
-
-        .marquee-row {
-            display: flex; align-items: center; background: rgba(255,255,255,0.05);
-            padding: 6px 12px; border-radius: 10px; margin-bottom: 5px; overflow: hidden;
-            min-height: 28px; width: 100%; box-sizing: border-box;
         }
 
         .v-tag { 
@@ -146,16 +146,16 @@
     <header class="app-header">
         <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間</h1>
         
-        <a href="https://mobsp.github.io" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
-            <img src="assets/brand/ms-guide-title.JPEG" alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
-        </a>
-
         <nav class="marquee-row">
             <span class="v-tag" id="v-tag">SYNCING</span>
             <div class="mq-box">
                 <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
             </div>
         </nav>
+
+        <a href="https://mobsp.github.io" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
+            <img src="assets/brand/ms-guide-title.JPEG" alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
+        </a>
     </header>
 
     <main class="app-main">
