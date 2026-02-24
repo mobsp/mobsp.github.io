@@ -12,14 +12,12 @@
     
     <style>
         :root {
-            --bg-body: #000000;          /* 背景改為純黑 */
-            --bg-container: #000000;     /* 容器同步純黑 */
-            --text-main: #ffffff; 
-            --text-sub: #888888;
-            --accent-color: #00cec9; 
-            --nav-bg: #050505;           /* 導覽列極深灰 */
-            --border-color: #1a1a1a;     /* 邊框微弱化 */
-            --transition: all 0.4s ease;
+            --bg-body: #000000; --bg-container: #000000; /* 背景全黑 */
+            --text-main: #ffffff; --text-sub: #aaaaaa;
+            --accent-color: #00cec9; --nav-bg: #000000; /* 導覽列同步純黑 */
+            --border-color: #262626;
+            --transition-smooth: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
@@ -33,85 +31,113 @@
             position: fixed; inset: 0;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover no-repeat;
             z-index: 10000; display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease;
+            transition: opacity var(--transition-smooth);
         }
+        #ms-splash::after {
+            content: ""; width: 24px; height: 24px; 
+            border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--accent-color);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            position: absolute; bottom: 15%;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
         #ms-splash.hide { opacity: 0; pointer-events: none; }
         
         #app-container { 
             max-width: 480px; margin: 0 auto; 
             background-color: var(--bg-container); 
             height: 100%; display: flex; flex-direction: column; 
-            opacity: 0; transition: opacity 0.6s ease;
+            opacity: 0; transform: scale(1.01); transition: opacity 0.6s ease, transform 0.6s ease;
         }
-        body.loaded #app-container { opacity: 1; }
+        body.loaded #app-container { opacity: 1; transform: scale(1); }
 
-        .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+        .visually-hidden {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); border: 0;
+        }
 
         .app-header { 
             flex-shrink: 0;
             padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
-            background: var(--bg-body);
+            background: var(--nav-bg);
             border-bottom: 1px solid var(--border-color);
             display: flex; flex-direction: column; align-items: center;
         }
 
         .marquee-row {
-            display: flex; align-items: center; background: rgba(255,255,255,0.03);
-            padding: 6px 12px; border-radius: 8px; margin-bottom: 10px; overflow: hidden;
+            display: flex; align-items: center; background: rgba(255,255,255,0.05);
+            padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
             min-height: 28px; width: 100%;
         }
-        .v-tag { background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap; }
+        .v-tag { 
+            background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; 
+            padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap;
+        }
+        .tag-important { background: #ff4d4d; color: #fff; }
+        .tag-update { background: #00ff88; color: #000; }
         .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
-        .mq-text { display: inline-block; padding-left: 100%; animation: mq 25s linear infinite; font-size: 11px; color: #fff; }
+        .mq-text { 
+            display: inline-block; padding-left: 100%;
+            animation: mq 25s linear infinite;
+            font-size: 11px; opacity: 0.9; letter-spacing: 0.5px; color: #fff;
+        }
         @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        /* 標題圖樣式 - 高度優化 */
+        /* 標題圖樣式 - 高度減少版 */
         .brand-title-link {
             display: block; width: 100%; transition: var(--transition);
             margin-bottom: 5px; padding: 0 5px; box-sizing: border-box;
             text-decoration: none;
         }
+        .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
         .brand-title-img { 
             width: 100%; 
-            max-height: 65px; /* 限制高度讓它更扁一點 */
-            object-fit: contain; /* 確保圖片不變形 */
-            display: block; 
-            border-radius: 6px;
+            max-height: 55px; /* 限制高度使其更扁平 */
+            object-fit: cover; /* 確保縮放時比例正常 */
+            display: block; border-radius: 8px; 
         }
 
-        #main-view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #000; }
+        #main-view { 
+            flex: 1; overflow-y: auto; 
+            -webkit-overflow-scrolling: touch;
+            background: #000;
+        }
 
-        .section-label { padding: 20px 15px 10px; font-weight: bold; font-size: 1rem; color: #fff; letter-spacing: 1px; }
-        .horizontal-slider { display: flex; gap: 12px; padding: 0 15px 20px; overflow-x: auto; scrollbar-width: none; }
+        .section-label { padding: 20px 15px 10px; font-weight: bold; font-size: 1.1rem; color: #fff; }
+        .horizontal-slider { 
+            display: flex; gap: 15px; padding: 0 15px 20px; 
+            overflow-x: auto; scroll-snap-type: x mandatory; 
+            scrollbar-width: none;
+        }
         .horizontal-slider::-webkit-scrollbar { display: none; }
         
         .mid-card { 
-            min-width: 190px; height: 120px; /* 縮減卡片高度配合主題 */
-            border-radius: 12px; flex-shrink: 0;
-            display: flex; align-items: flex-end; padding: 12px;
+            min-width: 210px; height: 140px; 
+            border-radius: 15px; flex-shrink: 0; scroll-snap-align: start;
+            display: flex; align-items: flex-end; padding: 15px;
             background-size: cover; background-position: center;
-            border: 1px solid #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.08);
             color: #ffffff; font-weight: 600;
         }
 
         .list-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
-        .more-btn { font-size: 11px; color: var(--accent-color); text-decoration: none; border: 1px solid var(--accent-color); padding: 2px 8px; border-radius: 10px; }
+        .more-btn { font-size: 12px; color: var(--accent-color); text-decoration: none; border: 1px solid var(--accent-color); padding: 2px 10px; border-radius: 12px; transition: 0.3s; }
+        .more-btn:active { background: var(--accent-color); color: #000; }
         
-        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; text-decoration: none; }
-        .row-img { width: 70px; height: 70px; border-radius: 10px; object-fit: cover; background: #111; flex-shrink: 0; }
-        .row-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .row-title { font-size: 13.5px; font-weight: 500; color: #ddd; }
+        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; cursor: pointer; text-decoration: none; }
+        .article-row:active { background: rgba(255,255,255,0.05); }
+        .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; flex-shrink: 0; }
+        .row-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .row-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: #eee; }
 
-        /* 底部導覽列 - 重新排序版 */
         .bottom-nav { 
             flex-shrink: 0;
-            height: calc(55px + env(safe-area-inset-bottom)); 
+            height: calc(60px + env(safe-area-inset-bottom)); 
             background-color: var(--nav-bg); 
             border-top: 1px solid var(--border-color); 
             display: flex; justify-content: space-around; align-items: center; 
             padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 10px; gap: 4px; transition: 0.3s; flex: 1; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 10px; gap: 4px; transition: 0.3s; }
         .nav-item.active { color: var(--accent-color); }
         .nav-item i { font-size: 18px; }
     </style>
@@ -127,12 +153,15 @@
             <nav class="marquee-row">
                 <span class="v-tag" id="v-tag">SYNCING</span>
                 <div class="mq-box">
-                    <div class="mq-text" id="mq-text">正在同步莫比部落格最新動態...</div>
+                    <div class="mq-text" id="mq-text">正在載入莫比部落格實時數據...</div>
                 </div>
+                <button onclick="location.href='https://mobsp.github.io/'" title="回到首頁" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:10px; cursor:pointer;">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
             </nav>
 
             <a href="https://mobsp.github.io/blog/" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
-                <img src="https://mobsp.github.io/assets/brand/ms-blog-title.JPEG" alt="莫比部落格" class="brand-title-img">
+                <img src="https://mobsp.github.io/assets/brand/ms-blog-title.JPEG" alt="莫比部落格 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
             </a>
         </header>
 
@@ -140,83 +169,124 @@
             <div class="section-label">最新精選</div>
             <div class="horizontal-slider">
                 <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.JPEG');">
-                    <span style="font-size: 12px;">莫比空間開發日誌</span>
+                    <span style="font-size: 13px;">莫比空間開發日誌</span>
                 </div>
                 <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.JPEG');">
-                    <span style="font-size: 12px;">PWA 技術實踐指南</span>
+                    <span style="font-size: 13px;">PWA 技術實踐指南</span>
+                </div>
+                <div class="mid-card" style="background: #1a1a1a; border: 1px dashed #333; justify-content: center; align-items: center;">
+                    <span style="font-size: 12px; color: #555;">即將推出...</span>
                 </div>
             </div>
 
             <div class="list-header">
-                <span style="font-weight: bold; color: #eee; font-size: 0.9rem;">熱門文章</span>
-                <a href="https://mobsp.github.io/wiki/" class="more-btn">更多</a>
+                <span style="font-weight: bold;">熱門文章</span>
+                <a href="https://mobsp.github.io/p/list/" class="more-btn">更多</a>
             </div>
 
-            <div id="github-articles">
+            <div id="article-list-container">
                 <div class="article-row" onclick="location.href='#'">
                     <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img" alt="封面圖">
                     <div class="row-info">
                         <div class="row-title">如何優化你的 GitHub Pages 載入速度？</div>
-                        <div style="font-size: 10px; color: #555;">2026/02/13 · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+                        <div style="font-size: 11px; color: var(--text-sub);">2026/02/13 · 莫比空間</div>
                     </div>
                 </div>
             </div>
+            
+            <div id="github-articles"></div>
         </main>
 
         <nav class="bottom-nav">
             <a href="https://mobsp.github.io/music/" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
-            <a href="https://mobsp.github.io/shorts/" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
-            <a href="https://mobsp.github.io/wiki/" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援中心</span></a>
+            <a href="https://mobsp.github.io/p/#Shorts" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
+            <a href="https://mobsp.github.io/p/#wiki" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援中心</span></a>
             <a href="https://mobsp.github.io/setting/" class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></a>
         </nav>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const GH_CONFIG = { user: 'mobsp', repo: 'mobsp.github.io', path: 'blog/p/list' };
+        const GH_CONFIG = {
+            user: 'mobsp',
+            repo: 'mobsp.github.io',
+            path: 'blog/p/list'
+        };
+
         const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
         (function() {
             const splash = document.getElementById('ms-splash');
-            window.addEventListener('load', () => {
-                setTimeout(() => {
+            function hideSplash() {
+                if (!splash.classList.contains('hide')) {
                     splash.classList.add('hide');
                     document.body.classList.add('loaded');
-                }, 1000);
-            });
+                    setTimeout(() => splash.remove(), 1000);
+                }
+            }
 
-            async function init() {
-                // Supabase 公告系統
+            async function initNoticeSystem() {
+                const vTag = document.getElementById('v-tag');
+                const mqText = document.getElementById('mq-text');
+                const cachedData = localStorage.getItem('mobsp_blog_notices');
+                if (cachedData) renderNotice(JSON.parse(cachedData), true);
+
                 try {
+                    if (typeof supabase === 'undefined') return;
                     const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                    const { data } = await client.from('notices').select('type, message').order('created_at', { ascending: false }).limit(1);
-                    if (data && data.length > 0) {
-                        document.getElementById('mq-text').innerText = data[0].message;
-                        document.getElementById('v-tag').innerText = `BLOG | ${data[0].type}`;
+                    const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
+                    if (!error && data.length > 0) {
+                        localStorage.setItem('mobsp_blog_notices', JSON.stringify(data));
+                        renderNotice(data, false);
                     }
-                } catch (e) {}
+                } catch (err) { console.warn('公告更新受阻'); }
+            }
 
-                // GitHub 文章同步
+            function renderNotice(data, isCached) {
+                const vTag = document.getElementById('v-tag');
+                const mqText = document.getElementById('mq-text');
+                if (!vTag || !mqText || !data.length) return;
+                const item = data[0]; 
+                vTag.classList.remove('tag-important', 'tag-update');
+                if (item.type.match(/重要|守則/)) vTag.classList.add('tag-important');
+                else if (item.type.match(/更新|系統/)) vTag.classList.add('tag-update');
+                vTag.innerText = `${isCached ? 'OFFLINE' : 'BLOG V2.0'} | ${item.type}`;
+                mqText.innerText = item.message;
+            }
+
+            async function loadGithubArticles() {
+                const container = document.getElementById('github-articles');
+                const api_url = `https://api.github.com/repos/${GH_CONFIG.user}/${GH_CONFIG.repo}/contents/${GH_CONFIG.path}`;
                 try {
-                    const res = await fetch(`https://api.github.com/repos/${GH_CONFIG.user}/${GH_CONFIG.repo}/contents/${GH_CONFIG.path}`);
-                    const files = await res.json();
-                    const container = document.getElementById('github-articles');
-                    files.filter(f => f.name.endsWith('.html')).forEach(file => {
+                    const response = await fetch(api_url);
+                    if (!response.ok) return;
+                    const files = await response.json();
+                    const htmlFiles = files.filter(file => file.name.endsWith('.html'));
+                    htmlFiles.forEach(file => {
                         const title = file.name.replace('.html', '').replace(/-/g, ' ').toUpperCase();
-                        container.insertAdjacentHTML('beforeend', `
-                            <div class="article-row" onclick="location.href='https://mobsp.github.io/blog/p/list/${file.name}'">
-                                <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img">
+                        const articleUrl = `https://mobsp.github.io/blog/p/list/${file.name}`;
+                        const articleHtml = `
+                            <div class="article-row" onclick="location.href='${articleUrl}'">
+                                <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img" alt="封面圖">
                                 <div class="row-info">
                                     <div class="row-title">${title}</div>
-                                    <div style="font-size: 10px; color: #555;">自動同步 · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+                                    <div style="font-size: 11px; color: var(--text-sub);">自動同步文章 · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
                                 </div>
+                                <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px; margin-right:5px;"></i>
                             </div>
-                        `);
+                        `;
+                        container.insertAdjacentHTML('beforeend', articleHtml);
                     });
-                } catch (e) {}
+                } catch (err) { console.error("無法同步 GitHub 文章:", err); }
             }
-            init();
+
+            window.addEventListener('load', () => {
+                initNoticeSystem();
+                loadGithubArticles();
+                setTimeout(hideSplash, 1000);
+            });
+            setTimeout(hideSplash, 3000);
         })();
     </script>
 </body>
