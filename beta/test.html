@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0b0b0c;          
+            --primary-color: #00cec9; 
+            --text-main: #f1f2f6;         
+            --border-color: rgba(255, 255, 255, 0.08); 
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --safe-top: env(safe-area-inset-top);
+            --safe-bottom: env(safe-area-inset-bottom);
+            --transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); font-family: 'PingFang TC', system-ui, sans-serif; color: var(--text-main); height: 100dvh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* --- ✨ Header: 音樂播放器 (隱藏 H1) --- */
+        .app-header { 
+            flex-shrink: 0; padding: calc(15px + var(--safe-top)) 16px 10px; 
+            background: rgba(11, 11, 12, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); 
+            display: flex; align-items: center; border-bottom: 0.5px solid var(--border-color); z-index: 1000;
+        }
+
+        .mini-player {
+            flex: 1; display: flex; align-items: center; gap: 12px;
+            background: rgba(255, 255, 255, 0.03); padding: 6px 12px; border-radius: 30px;
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
+        }
+        .play-btn { color: var(--primary-color); font-size: 14px; cursor: pointer; width: 24px; text-align: center; transition: 0.3s; }
+        .play-btn:active { transform: scale(0.8); }
+        .track-info { flex: 1; font-size: 11px; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: 0.5px; }
+        
+        /* 音頻跳動動畫 */
+        .v-bars { display: flex; align-items: flex-end; gap: 2px; height: 12px; }
+        .v-bars span { width: 2px; background: var(--primary-color); border-radius: 1px; animation: pulse 0.5s ease-in-out infinite alternate; }
+        .v-bars span:nth-child(2) { animation-delay: 0.1s; height: 8px; }
+        .v-bars span:nth-child(3) { animation-delay: 0.2s; height: 12px; }
+        .v-bars span:nth-child(4) { animation-delay: 0.3s; height: 6px; }
+        @keyframes pulse { from { height: 4px; } to { height: 12px; opacity: 0.5; } }
+        .v-bars.paused span { animation-play-state: paused; height: 3px !important; }
+
+        .header-icons { display: flex; gap: 18px; margin-left: 15px; color: #666; font-size: 16px; }
+        .header-icons i { cursor: pointer; transition: 0.3s; }
+        .header-icons i:active { color: var(--primary-color); }
+
+        /* --- Scroll Container --- */
+        .view-container { flex: 1; overflow-y: auto; scrollbar-width: none; padding-bottom: 120px; }
+        .view-container::-webkit-scrollbar { display: none; }
+
+        /* --- Profile Card --- */
+        .profile-card { display: flex; align-items: center; padding: 22px 16px; gap: 15px; }
+        .avatar { width: 62px; height: 62px; border-radius: 22px; border: 1px solid var(--border-color); overflow: hidden; }
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-info h2 { font-size: 18px; font-weight: 700; color: #fff; }
+        .profile-info p { font-size: 11px; color: #777; margin-top: 4px; }
+
+        /* --- 公告系統 --- */
+        .notice-capsule { margin: 0 16px 15px; background: rgba(0, 206, 201, 0.04); border: 1px solid rgba(0, 206, 201, 0.12); border-radius: 10px; padding: 9px 12px; display: flex; align-items: center; overflow: hidden; }
+        .v-tag { background: var(--primary-color); color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 12px; flex-shrink: 0; }
+        .mq-box { flex: 1; overflow: hidden; white-space: nowrap; }
+        .mq-text { display: inline-block; padding-left: 100%; animation: mq 40s linear infinite; font-size: 11px; color: var(--primary-color); }
+        @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        /* --- 搜尋欄 --- */
+        .search-area { padding: 0 16px 20px; }
+        .search-bar { background: #1e2026; border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; border: 1px solid transparent; transition: 0.3s; }
+        .search-bar:focus-within { border-color: var(--primary-color); }
+        .search-bar input { background: none; border: none; color: #fff; outline: none; width: 100%; font-size: 14px; }
+
+        /* --- 核心服務滑塊 --- */
+        .section-label { padding: 0 16px 12px; font-size: 13px; font-weight: bold; color: #555; display: flex; justify-content: space-between; }
+        .service-slider { display: flex; overflow-x: auto; padding: 0 16px 25px; gap: 20px; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .service-slider::-webkit-scrollbar { display: none; }
+        .service-item { flex: 0 0 65px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; scroll-snap-align: start; }
+        .service-icon { width: 54px; height: 54px; border-radius: 20px; background: #16181d; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--primary-color); border: 1px solid var(--border-color); transition: 0.3s; }
+        .service-item:active .service-icon { transform: scale(0.9); background: var(--primary-color); color: #000; }
+        .service-label { font-size: 11px; color: var(--text-main); opacity: 0.8; white-space: nowrap; }
+
+        /* --- README 兩大列表 --- */
+        .list-section { border-top: 8px solid #050505; }
+        .list-header { display: flex; justify-content: space-between; align-items: center; padding: 18px 16px; border-bottom: 0.5px solid var(--border-color); cursor: pointer; transition: 0.2s; }
+        .list-header:active { background: rgba(255,255,255,0.03); }
+        .list-content { display: none; background: #080809; }
+        .expanded + .list-content { display: block; }
+        .list-content a { display: flex; align-items: center; gap: 12px; padding: 14px 20px; color: #aaa; text-decoration: none; font-size: 13px; border-bottom: 0.5px solid rgba(255,255,255,0.02); }
+        .list-content a i { width: 16px; text-align: center; color: var(--primary-color); opacity: 0.7; }
+        .chevron { transition: var(--transition); color: #444; }
+        .expanded .chevron { transform: rotate(180deg); }
+
+        /* --- ✨ 究極動態毛玻璃導覽列 --- */
+        .nav-wrapper { position: fixed; bottom: calc(25px + var(--safe-bottom)); left: 50%; transform: translateX(-50%); z-index: 2000; display: flex; align-items: center; justify-content: center; }
+        .dynamic-nav { background: rgba(40, 44, 52, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 40px; height: 60px; width: 60px; overflow: hidden; display: flex; align-items: center; transition: var(--transition); box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
+        .dynamic-nav.expanded { width: calc(100vw - 32px); max-width: 400px; padding: 0 10px; }
+        .nav-items-container { display: flex; width: 100%; justify-content: space-around; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .dynamic-nav.expanded .nav-items-container { opacity: 1; pointer-events: auto; }
+        .nav-btn { display: flex; flex-direction: column; align-items: center; color: #fff; text-decoration: none; font-size: 10px; transition: 0.3s; padding: 5px; min-width: 60px; }
+        .nav-btn i { font-size: 20px; margin-bottom: 2px; }
+        .nav-btn.active { color: var(--primary-color); }
+        .center-trigger { position: absolute; width: 50px; height: 50px; background: var(--primary-color); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-size: 22px; cursor: pointer; box-shadow: 0 0 15px rgba(0, 206, 201, 0.4); transition: var(--transition); z-index: 2100; }
+        .dynamic-nav.expanded .center-trigger { transform: scale(0.8); background: transparent; color: var(--primary-color); box-shadow: none; position: relative; }
+    </style>
+</head>
+<body>
+
+    <audio id="bgm" loop src="https://mobsp.github.io/assets/audio/default_bgm.mp3"></audio>
+
+    <header class="app-header">
+        <div class="mini-player">
+            <div class="play-btn" onclick="togglePlay()"><i id="play-icon" class="fa-solid fa-play"></i></div>
+            <div class="track-info" id="track-name">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 沉浸音律體驗...</div>
+            <div class="v-bars paused" id="visualizer">
+                <span></span><span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="header-icons">
+            <i class="fa-regular fa-bookmark"></i>
+            <i class="fa-solid fa-gear"></i>
+        </div>
+    </header>
+
+    <main class="view-container">
+        <div class="profile-card">
+            <div class="avatar"><img src="https://mobsp.github.io/assets/brand/ms-logo1.JPEG"></div>
+            <div class="profile-info">
+                <h2>莫比空間</h2>
+                <p>極簡 ‧ 高效 ‧ 流暢 — 您的數位入口</p>
+            </div>
+        </div>
+
+        <div class="notice-capsule">
+            <span class="v-tag" id="v-tag">SYNCING</span>
+            <div class="mq-box"><div class="mq-text" id="mq-text">正在載入雲端公告內容...</div></div>
+        </div>
+
+        <div class="search-area">
+            <div class="search-bar">
+                <i class="fa-solid fa-magnifying-glass" style="color:#555"></i>
+                <input type="text" placeholder="搜尋莫比資源、工具或指南...">
+            </div>
+        </div>
+
+        <div class="section-label"><span>核心服務入口 (CORE)</span></div>
+        <div class="service-slider">
+            <a href="https://mobsp.github.io/blog/" class="service-item"><div class="service-icon"><i class="fa-solid fa-pen-nib"></i></div><div class="service-label">部落格</div></a>
+            <a href="https://mobsp.github.io/tol/" class="service-item"><div class="service-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div><div class="service-label">工具庫</div></a>
+            <a href="https://mobsp.github.io/music/" class="service-item"><div class="service-icon"><i class="fa-solid fa-music"></i></div><div class="service-label">音樂頻道</div></a>
+            <a href="https://mobsp.github.io/shorts/" class="service-item"><div class="service-icon"><i class="fa-brands fa-youtube"></i></div><div class="service-label">Shorts</div></a>
+            <a href="https://mobsp.github.io/wiki/" class="service-item"><div class="service-icon"><i class="fa-solid fa-book"></i></div><div class="service-label">支援中心</div></a>
+            <a href="https://mobsp.github.io/svg-editor/" class="service-item"><div class="service-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div><div class="service-label">編輯器</div></a>
+        </div>
+
+        <div class="list-section">
+            <div class="list-header" onclick="toggleList(this)">
+                <span><i class="fa-solid fa-layer-group" style="color:var(--primary-color); margin-right:10px;"></i>🏗️ 技術架構與聲明</span>
+                <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="list-content">
+                <a href="https://opensource.org/licenses/MIT"><i class="fa-solid fa-shield-check"></i> MIT License (2024–2026)</a>
+                <a href="#"><i class="fa-solid fa-robot"></i> Vue.js + GitHub Actions 支持</a>
+                <a href="#"><i class="fa-solid fa-bolt"></i> PWA 離線訪問優化</a>
+            </div>
+
+            <div class="list-header" onclick="toggleList(this)">
+                <span><i class="fa-solid fa-database" style="color:#666; margin-right:10px;"></i>📂 系統資產矩陣 (Matrix)</span>
+                <i class="fa-solid fa-chevron-down chevron"></i>
+            </div>
+            <div class="list-content">
+                <a href="#"><i class="fa-solid fa-code-branch"></i> Editor Logic (./svg-editor/)</a>
+                <a href="#"><i class="fa-solid fa-file-json"></i> Data Meta (./data/svg.json)</a>
+                <a href="#"><i class="fa-solid fa-file-audio"></i> Audio Assets (./assets/audio/)</a>
+                <a href="#"><i class="fa-solid fa-palette"></i> Brand Identity (./assets/brand/)</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="nav-wrapper">
+        <div class="center-trigger" id="nav-trigger" onclick="toggleNav()">
+            <i class="fa-solid fa-house" id="trigger-icon"></i>
+        </div>
+        <nav class="dynamic-nav" id="dynamic-nav">
+            <div class="nav-items-container">
+                <a href="https://mobsp.github.io/wiki/" class="nav-btn"><i class="fa-solid fa-book-open"></i><span>支援</span></a>
+                <a href="https://mobsp.github.io/blog/" class="nav-btn"><i class="fa-solid fa-pen-fancy"></i><span>部落格</span></a>
+                <div style="min-width: 60px;"></div>
+                <a href="https://mobsp.github.io/shorts/" class="nav-btn"><i class="fa-solid fa-circle-play"></i><span>Shorts</span></a>
+                <a href="https://mobsp.github.io/music/" class="nav-btn"><i class="fa-solid fa-music"></i><span>音樂</span></a>
+            </div>
+        </nav>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // 音樂播放邏輯
+        function togglePlay() {
+            const audio = document.getElementById('bgm');
+            const icon = document.getElementById('play-icon');
+            const viz = document.getElementById('visualizer');
+            const track = document.getElementById('track-name');
+            
+            if (audio.paused) {
+                audio.play();
+                icon.className = "fa-solid fa-pause";
+                viz.classList.remove('paused');
+                track.innerText = "Playing: Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ - Ambient Mix";
+            } else {
+                audio.pause();
+                icon.className = "fa-solid fa-play";
+                viz.classList.add('paused');
+                track.innerText = "Music Paused";
+            }
+        }
+
+        // 導覽列伸縮邏輯
+        function toggleNav() {
+            const nav = document.getElementById('dynamic-nav');
+            const triggerIcon = document.getElementById('trigger-icon');
+            nav.classList.toggle('expanded');
+            triggerIcon.className = nav.classList.contains('expanded') ? "fa-solid fa-xmark" : "fa-solid fa-house";
+        }
+
+        // 摺疊列表
+        function toggleList(el) { el.classList.toggle('expanded'); }
+
+        // Supabase 公告系統
+        const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+
+        async function initNotice() {
+            try {
+                const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { data } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
+                if (data && data.length > 0) {
+                    document.getElementById('v-tag').innerText = `v2.0 | ${data[0].type}`;
+                    document.getElementById('mq-text').innerText = data[0].message;
+                }
+            } catch (e) { console.warn("Notice offline"); }
+        }
+        document.addEventListener('DOMContentLoaded', initNotice);
+    </script>
+</body>
+</html>
