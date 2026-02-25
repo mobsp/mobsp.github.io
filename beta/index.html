@@ -3,71 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 終極 Beta 模板</title>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 系統 Demo</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        body { margin: 0; padding: 0; min-height: 100vh; font-family: -apple-system, sans-serif; overflow-x: hidden; }
-        .app-container { max-width: 500px; margin: 0 auto; min-height: 100vh; position: relative; }
-        .content-area { padding: 20px; text-align: center; color: white; }
-        header { min-height: 100px; } /* 為跑馬燈留位置 */
+        body { background: #000; overflow-x: hidden; }
+        .app-content { 
+            position: relative; z-index: 10; 
+            max-width: 500px; margin: 0 auto; 
+            padding: 80px 20px 100px; text-align: center;
+        }
+        header { position: fixed; top: 0; width: 100%; max-width: 500px; z-index: 100; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
+    <div class="app-content">
         <header id="ms-header"></header>
-
-        <main>
-            <section id="brand-section"></section>
-
-            <article class="content-area">
-                <h2 style="color: #00cec9;">系統組裝成功！</h2>
-                <p style="font-size: 14px; opacity: 0.8;">
-                    目前頁面已成功調用：<br>
-                    1號(背景)、2號(跑馬燈)、3號(啟動畫面)<br>
-                    4號(導覽)、5號(標題圖)、6號(頁尾)
-                </p>
-                <div style="height: 300px; border: 1px dashed #444; margin-top: 20px; display: flex; align-items: center; justify-content: center;">
-                    <span style="color: #666;">[這裡是你的主要內容區]</span>
-                </div>
-            </article>
-        </main>
-
+        
+        <div id="brand-area"></div>
+        
+        <div style="margin-top: 50px;">
+            <h2 style="color: #00cec9;">1-6 號系統組裝測試</h2>
+            <p style="opacity: 0.6; font-size: 14px;">這是一個架構化開發的 Demo 頁面</p>
         </div>
+    </div>
 
     <script type="module">
-        // 導入所有封裝模組
-        import { initTheme } from './mod/theme-engine.js';
-        import { initNotice } from './mod/notice-sync.js';
+        // 1. 導入系統
         import { showSplash } from './mod/splash-screen.js';
-        import { initBottomNav } from './mod/bottom-nav.js';
+        import { initTheme } from './mod/theme-engine.js';
         import { renderBrand } from './mod/brand-layout.js';
+        import { initBottomNav } from './mod/bottom-nav.js';
         import { initFooter } from './mod/footer-sys.js';
 
-        // 1. 背景引擎啟動
+        // 2. 執行順序
+        // 先顯示啟動畫面，確保使用者第一眼看到的是圖片
+        showSplash('https://mobsp.github.io/assets/brand/ms-blog.JPEG');
+
+        // 初始化背景與佈局
         initTheme();
-
-        // 2. 啟動畫面播放
-        showSplash('https://mobsp.github.io/assets/brand/ms-blog.webp');
-
-        // 3. 跑馬燈同步 (填入你的 Supabase 資訊)
-        initNotice(
-            'https://svwrvxomytbfaqpfnifg.supabase.co', 
-            'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-        );
-
-        // 4. 渲染品牌標題區
-        renderBrand('#brand-section');
-
-        // 5. 初始化導覽列
+        renderBrand('#brand-area');
         initBottomNav();
-
-        // 6. 初始化頁尾
         initFooter();
 
-        console.log("🚀 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 模組化系統全數加載完畢！");
+        // 3. 2號系統 (跑馬燈) 放在 DOM 加載後
+        document.addEventListener('DOMContentLoaded', async () => {
+            const { initNotice } = await import('./mod/notice-sync.js');
+            initNotice(
+                'https://svwrvxomytbfaqpfnifg.supabase.co', 
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+            );
+        });
     </script>
 </body>
 </html>
