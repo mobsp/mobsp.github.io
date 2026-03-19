@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>莫比空間 MobiSpace | 探索無限可能</title>
+    <style>
+        /* === 品牌色與流光變數 === */
+        :root[data-theme="light"] {
+            --bg-color: #f8f9fa;
+            --container-bg: rgba(255, 255, 255, 0.9);
+            --text-color: #1a1a1a;
+            --accent-brand: #6366f1; /* 莫比紫藍 */
+            --border-color: #e5e7eb;
+            --gradient-1: #e0e7ff;
+            --gradient-2: #fbcfe8;
+            --gradient-3: #ddd6fe;
+            --gradient-4: #e0f2fe;
+        }
+
+        :root[data-theme="dark"] {
+            --bg-color: #050505;
+            --container-bg: rgba(15, 15, 20, 0.85);
+            --text-color: #f3f4f6;
+            --accent-brand: #818cf8;
+            --border-color: #262626;
+            --gradient-1: #1e1b4b;
+            --gradient-2: #312e81;
+            --gradient-3: #1e293b;
+            --gradient-4: #0f172a;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; }
+        
+        body { background-color: var(--bg-color); color: var(--text-color); transition: 0.3s; overflow-x: hidden; }
+
+        /* === 動態流光背景 (MobiSpace 空間感) === */
+        .mobi-flow-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+            background: linear-gradient(-45deg, var(--gradient-1), var(--gradient-2), var(--gradient-3), var(--gradient-4));
+            background-size: 400% 400%;
+            animation: mobiGradient 12s ease infinite;
+            filter: blur(60px); opacity: 0.8;
+        }
+        @keyframes mobiGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .app-shell {
+            max-width: 480px; margin: 0 auto; background: var(--container-bg);
+            min-height: 100vh; position: relative; backdrop-filter: blur(10px);
+            box-shadow: 0 0 40px rgba(0,0,0,0.1);
+        }
+
+        /* === 頂部：莫比空間品牌 Header === */
+        .mobi-header {
+            position: fixed; top: 0; width: 100%; max-width: 480px;
+            background: var(--container-bg); border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 20px; z-index: 1000; backdrop-filter: blur(15px);
+        }
+
+        .brand-logo {
+            font-weight: 800; font-size: 1.2rem; color: var(--accent-brand);
+            letter-spacing: -0.5px;
+        }
+
+        .mobi-special-font { font-family: serif; font-weight: normal; margin-left: 5px; opacity: 0.8; }
+
+        /* === 內容區樣式 === */
+        .content { padding: 80px 20px 100px; }
+        .post-title { font-size: 1.75rem; line-height: 1.3; margin-bottom: 15px; font-weight: 700; }
+        
+        .author-box { display: flex; align-items: center; margin-bottom: 25px; }
+        .avatar { width: 45px; height: 45px; border-radius: 50%; background: #ccc; margin-right: 12px; }
+        .follow-btn { margin-left: auto; border: 1px solid var(--accent-brand); color: var(--accent-brand); padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; cursor: pointer; background: transparent; }
+
+        .cover-art { width: 100%; aspect-ratio: 16/9; background: #333; border-radius: 12px; margin-bottom: 20px; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.9rem; }
+
+        .article-p { margin-bottom: 1.5rem; font-size: 1.05rem; line-height: 1.8; opacity: 0.9; }
+
+        /* === 底部：互動列 === */
+        .mobi-footer {
+            position: fixed; bottom: 0; width: 100%; max-width: 480px;
+            background: var(--container-bg); border-top: 1px solid var(--border-color);
+            padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(15px);
+        }
+
+        .theme-btn { border: none; background: var(--accent-brand); color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; }
+
+    </style>
+</head>
+<body>
+
+    <div class="mobi-flow-bg"></div>
+
+    <div class="app-shell">
+        <header class="mobi-header">
+            <div class="brand-logo">
+                莫比空間 <span class="mobi-special-font">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</span>
+            </div>
+            <button class="theme-btn" id="themeSwitch">切換模式</button>
+        </header>
+
+        <main class="content">
+            <h1 class="post-title">歡迎來到 MobiSpace：莫比空間的視覺實驗室</h1>
+            
+            <div class="author-box">
+                <div class="avatar"></div>
+                <div>
+                    <div style="font-weight: 600;">MobiSpace Editor</div>
+                    <div style="font-size: 0.8rem; opacity: 0.6;">2026.03.19 · 5 min read</div>
+                </div>
+                <button class="follow-btn">追蹤品牌</button>
+            </div>
+
+            <div class="cover-art">【 品牌封面影像預留位 】</div>
+
+            <div class="article-p">
+                這裡是 <strong>莫比空間 (MobiSpace)</strong>。我們致力於打破物理界限，在數位世界中創造流動、有機且充滿活力的空間感。
+            </div>
+            <div class="article-p">
+                這份模板採用了非線性的流光背景，象徵著「莫比烏斯環」般的無限循環與連接。無論是淺色模式的清新優雅，還是深色模式的深邃神祕，都能完美承載您的內容。
+            </div>
+        </main>
+
+        <footer class="mobi-footer">
+            <div style="display: flex; gap: 20px; font-size: 1.2rem;">
+                <span>❤️ 12</span>
+                <span>💬 8</span>
+            </div>
+            <div style="color: var(--accent-brand); font-weight: bold;">MobiSpace</div>
+        </footer>
+    </div>
+
+    <script>
+        const btn = document.getElementById('themeSwitch');
+        const html = document.documentElement;
+
+        btn.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const target = current === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', target);
+            btn.innerText = target === 'light' ? '🌙 暗模式' : '☀️ 亮模式';
+        });
+
+        // 偵測系統預設
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            html.setAttribute('data-theme', 'dark');
+            btn.innerText = '☀️ 亮模式';
+        }
+    </script>
+</body>
+</html>
