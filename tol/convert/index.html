@@ -3,96 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 智能模板轉換</title>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 文章轉換器</title>
     <style>
-        body { background: #050508; color: #fff; font-family: sans-serif; padding: 15px; }
-        .card { background: #1c1c1e; padding: 20px; border-radius: 20px; border: 1px solid #333; max-width: 500px; margin: auto; }
-        textarea { width: 100%; padding: 12px; margin: 8px 0; background: #000; border: 1px solid #444; color: #00cec9; border-radius: 10px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 15px; background: #00cec9; border: none; border-radius: 12px; font-weight: bold; margin-top: 10px; color: #000; }
-        .auto-info { display: flex; gap: 10px; margin-top: 10px; }
-        .tag-chip { background: #333; padding: 5px 12px; border-radius: 20px; font-size: 12px; color: #00cec9; border: 1px solid #00cec9; }
+        :root { --accent: #00cec9; --nsfw: #ff4757; --glass: rgba(255, 255, 255, 0.1); }
+        body { background: #050508; color: #fff; font-family: sans-serif; padding: 15px; margin: 0; }
+        .card { background: #111; padding: 25px; border-radius: 30px; border: 1px solid #333; max-width: 500px; margin: 20px auto; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        
+        /* 霓虹輸入框 */
+        textarea { width: 100%; padding: 15px; background: #000; border: 1px solid #444; color: var(--accent); border-radius: 15px; box-sizing: border-box; font-size: 16px; margin: 10px 0; transition: 0.3s; }
+        textarea:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,206,201,0.2); outline: none; }
+
+        /* 流光按鈕 */
+        .glow-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: #fff; font-weight: bold; font-size: 17px; background: linear-gradient(45deg, #00cec9, #6c5ce7, #ff4757, #00cec9); background-size: 300%; animation: move 6s infinite; cursor: pointer; }
+        @keyframes move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        /* 標籤視覺 */
+        .tag-list { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
+        .tag { padding: 4px 12px; border-radius: 50px; font-size: 12px; border: 1px solid var(--accent); color: var(--accent); background: rgba(0,206,201,0.1); }
+        .tag.red { border-color: var(--nsfw); color: var(--nsfw); background: rgba(255,71,87,0.1); box-shadow: 0 0 10px rgba(255,71,87,0.2); }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2 style="color:#00cec9; margin:0 0 10px 0;">🤖 智能識別轉換</h2>
-        <p style="font-size:12px; color:#8e8e93;">直接貼上全文，我會嘗試判斷標題與標籤</p>
+        <h2 style="text-align:center; background: linear-gradient(to right, #00cec9, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MOBISPACE ANALYZER</h2>
+        <p style="font-size:12px; color:#888; text-align:center;">針對 網頁文章內容優化的智能分類器</p>
         
-        <textarea id="rawInput" rows="12" placeholder="請直接貼上整篇文章內容..."></textarea>
+        <textarea id="rawInput" rows="12" placeholder="請直接貼上網頁文章全文 (含標題)..."></textarea>
         
-        <button onclick="smartAnalyze()">🧠 智能分析並生成</button>
+        <button class="glow-btn" onclick="process()">⚡ 執行智能封裝</button>
 
-        <div id="outputArea" style="display:none; margin-top:20px;">
-            <div id="detectedInfo" style="margin-bottom:15px;">
-                <label style="font-size:12px; color:#8e8e93;">自動識別結果：</label>
-                <div id="tagContainer" class="auto-info"></div>
-            </div>
-            <textarea id="finalCode" rows="10" readonly></textarea>
-            <button onclick="copyCode()" style="background:#fff;">📋 複製代碼</button>
+        <div id="result" style="display:none; margin-top:20px;">
+            <div id="tags" class="tag-list"></div>
+            <textarea id="finalCode" rows="8" readonly></textarea>
+            <button onclick="copy()" style="background:#fff; color:#000; width:100%; padding:12px; border-radius:12px; font-weight:bold; border:none;">📋 複製 HTML 代碼</button>
         </div>
     </div>
 
-    <script>
-        function smartAnalyze() {
-            const input = document.getElementById('rawInput').value.trim();
-            if(!input) return alert('部長，內容是空的喔！');
+<script>
+// 擴展 18 禁與敏感詞辨識 (針對搜尋引擎與成人內容)
+const NSFW_RE = /成人|18禁|色情|肉文|禁書|私密|裸露|性愛|porn|adult|nsfw|sex/i;
 
-            const lines = input.split('\n').filter(l => l.trim() !== '');
-            
-            // 1. 自動判斷標題：通常第一行就是標題，或最長的那行
-            let title = lines[0].length < 50 ? lines[0] : "未命名文章";
-            
-            // 2. 自動分析標籤 (簡單關鍵字法)
-            const tags = [];
-            const textContent = input.toLowerCase();
-            if(textContent.includes('js') || textContent.includes('code')) tags.push('技術');
-            if(textContent.includes('生活') || textContent.includes('今天')) tags.push('生活');
-            if(textContent.includes('夢') || textContent.includes('深海')) tags.push('隨筆');
-            if(tags.length === 0) tags.push('一般');
+function process() {
+    const input = document.getElementById('rawInput').value.trim();
+    if(!input) return;
 
-            // 顯示標籤給部長看
-            const tagContainer = document.getElementById('tagContainer');
-            tagContainer.innerHTML = tags.map(t => `<span class="tag-chip"># ${t}</span>`).join('');
+    const lines = input.split('\n').filter(l => l.trim());
+    const title = lines[0];
+    const content = input.toLowerCase();
 
-            // 3. 生成段落
-            const paragraphs = lines.slice(1).map(line => `<p>${line.trim()}</p>`).join('\n                ');
+    // 智能標籤判斷
+    let tags = [];
+    let isNSFW = NSFW_RE.test(content);
 
-            // 4. 套用模板 (加入標籤 Meta)
-            const template = `<!DOCTYPE html>
+    if(isNSFW) tags.push('R-18');
+    if(/玄幻|修仙|武俠/.test(content)) tags.push('奇幻');
+    if(/都市|言情|愛/.test(content)) tags.push('都市文學');
+    if(/短篇|散文|日記/.test(content)) tags.push('隨筆');
+    if(tags.length === 0) tags.push('故事回廊');
+
+    // 更新介面標籤
+    const tagBox = document.getElementById('tags');
+    tagBox.innerHTML = tags.map(t => `<span class="tag ${t==='R-18'?'red':''}">${t}</span>`).join('');
+
+    // 段落處理
+    const paragraphs = lines.slice(1).map(l => `<p>${l.trim()}</p>`).join('\n                ');
+
+    // 輸出流光模板 (帶警示窗)
+    const template = `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="keywords" content="${tags.join(',')}">
-    <title>${title} | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <title>${title} | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔢</title>
     <style>
-        body { font-family: -apple-system, sans-serif; background: #000; color: #fff; line-height: 1.8; margin: 0; }
-        .article-container { max-width: 480px; margin: 0 auto; padding: 50px 20px; }
-        .tag-list { color: #00cec9; font-size: 14px; margin-bottom: 10px; }
-        .post-content p { margin-bottom: 25px; text-align: justify; font-size: 18px; }
+        body { background: #000; color: #eee; font-family: -apple-system, "Noto Sans TC", sans-serif; line-height: 1.8; margin: 0; }
+        .article { max-width: 500px; margin: 0 auto; padding: 60px 20px; }
+        h1 { font-size: 26px; color: #fff; text-shadow: 0 0 20px rgba(0,206,201,0.5); margin-bottom: 40px; }
+        .post-p p { margin-bottom: 28px; text-align: justify; font-size: 18px; letter-spacing: 0.8px; }
+        
+        /* 閱讀警示彈窗 */
+        #nsfw-gate { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .gate-box { width: 85%; max-width: 350px; padding: 40px 20px; border: 1px solid #ff4757; border-radius: 30px; text-align: center; background: #0a0000; }
+        .gate-box h2 { color: #ff4757; margin-bottom: 15px; }
+        .gate-btn { background: #ff4757; color: #fff; border: none; padding: 12px 40px; border-radius: 50px; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
-    <div class="article-container">
-        <div class="tag-list">${tags.map(t => '#' + t).join(' ')}</div>
-        <h1 style="font-size:26px;">${title}</h1>
-        <div class="post-content">
+    ${isNSFW ? `
+    <div id="nsfw-gate">
+        <div class="gate-box">
+            <h2>AGE RESTRICTED</h2>
+            <p style="font-size:14px; color:#888;">本內容可能包含成人題材，<br>存取前請確認您已成年。</p>
+            <button class="gate-btn" onclick="document.getElementById('nsfw-gate').remove()">確認成年並進入</button>
+        </div>
+    </div>` : ''}
+
+    <div class="article">
+        <div style="color:#00cec9; font-size:12px; margin-bottom:10px;">${tags.map(t=>'#'+t).join(' ')}</div>
+        <h1>${title}</h1>
+        <div class="post-p">
                 ${paragraphs}
         </div>
     </div>
 </body>
 </html>`;
 
-            document.getElementById('finalCode').value = template;
-            document.getElementById('outputArea').style.display = 'block';
-        }
+    document.getElementById('finalCode').value = template;
+    document.getElementById('result').style.display = 'block';
+}
 
-        function copyCode() {
-            const code = document.getElementById('finalCode');
-            code.select();
-            document.execCommand('copy');
-            alert('✅ 智能轉換完成！代碼已複製。');
-        }
-    </script>
+function copy() {
+    const el = document.getElementById('finalCode');
+    el.select();
+    document.execCommand('copy');
+    alert('✨ 流光代碼已複製！');
+}
+</script>
 </body>
 </html>
