@@ -1,261 +1,258 @@
 <!DOCTYPE html>
-<html lang="zh-TW" data-theme="dark">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比部落格</title>
-    
-    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
-    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
-    
+    <title>大嫂與二哥 | 設定已整合 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root {
-            --bg-body: #000000; --bg-container: #111111;
-            --text-main: #ffffff; --text-sub: #aaaaaa;
-            --accent-color: #00cec9; --nav-bg: #111111;
-            --border-color: #262626;
-            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            --ios-bg: #000000;
+            --ios-card: rgba(28, 28, 30, 0.7);
+            
+            /* 預設字體顏色和大小 */
+            --article-text-color: #ffffff;
+            --article-font-size: 17px;
+
+            --ios-secondary: #8e8e93;
+            --accent-color: #00cec9;
+            --panel-bg: rgba(30, 30, 30, 0.85); /* 彈窗背景 */
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg-body); 
-            height: 100dvh; overflow: hidden; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+            background-color: var(--ios-bg); color: var(--ios-text); line-height: 1.7; overflow-x: hidden;
         }
 
-        #ms-splash {
-            position: fixed; inset: 0;
-            background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover no-repeat;
-            z-index: 10000; display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease;
-        }
-        #ms-splash::after {
-            content: ""; width: 24px; height: 24px; 
-            border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--accent-color);
-            border-radius: 50%; animation: spin 0.8s linear infinite;
-            position: absolute; bottom: 15%;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        #ms-splash.hide { opacity: 0; pointer-events: none; }
+        /* 流光背景 */
+        .glass-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, #1a1a2e 0%, #000 50%), radial-gradient(circle at 80% 70%, #002b2b 0%, #000 50%); z-index: -1; }
         
-        #app-container { 
-            max-width: 480px; margin: 0 auto; 
-            background-color: var(--bg-container); 
-            height: 100%; display: flex; flex-direction: column; 
-            opacity: 0; transform: scale(1.01); transition: opacity 0.6s ease, transform 0.6s ease;
-        }
-        body.loaded #app-container { opacity: 1; transform: scale(1); }
-
-        .visually-hidden {
-            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-            overflow: hidden; clip: rect(0,0,0,0); border: 0;
-        }
-
-        .app-header { 
-            flex-shrink: 0;
-            padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
-            background: var(--nav-bg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        .marquee-row {
-            display: flex; align-items: center; background: rgba(255,255,255,0.05);
-            padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
-            min-height: 28px; width: 100%;
-        }
-        .v-tag { 
-            background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; 
-            padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap;
-        }
-        .tag-important { background: #ff4d4d; color: #fff; }
-        .tag-update { background: #00ff88; color: #000; }
-        .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
-        .mq-text { 
-            display: inline-block; padding-left: 100%;
-            animation: mq 25s linear infinite;
-            font-size: 11px; opacity: 0.9; letter-spacing: 0.5px; color: #fff;
-        }
-        @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
-
-        .brand-title-link {
-            display: block; width: 100%; transition: var(--transition);
-            margin-bottom: 5px; padding: 0 5px; box-sizing: border-box;
-            text-decoration: none;
-        }
-        .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
-        .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
-
-        #main-view { 
-            flex: 1; overflow-y: auto; 
-            -webkit-overflow-scrolling: touch;
-            background: #000;
-        }
-
-        .section-label { padding: 20px 15px 10px; font-weight: bold; font-size: 1.1rem; color: #fff; }
-        .horizontal-slider { 
-            display: flex; gap: 15px; padding: 0 15px 20px; 
-            overflow-x: auto; scroll-snap-type: x mandatory; 
-            scrollbar-width: none;
-        }
-        .horizontal-slider::-webkit-scrollbar { display: none; }
+        /* 文章容器 */
+        .article-container { max-width: 480px; margin: 0 auto; min-height: 100dvh; padding: calc(20px + env(safe-area-inset-top)) 20px 150px; backdrop-filter: blur(10px); }
         
-        .mid-card { 
-            min-width: 210px; height: 140px; 
-            border-radius: 15px; flex-shrink: 0; scroll-snap-align: start;
-            display: flex; align-items: flex-end; padding: 15px;
-            background-size: cover; background-position: center;
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #ffffff; font-weight: 600;
-        }
-
-        .list-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
-        .more-btn { font-size: 12px; color: var(--accent-color); text-decoration: none; border: 1px solid var(--accent-color); padding: 2px 10px; border-radius: 12px; transition: 0.3s; }
-        .more-btn:active { background: var(--accent-color); color: #000; }
+        /* 導覽列 */
+        .nav-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+        .back-btn { color: var(--accent-color); text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 5px; }
         
-        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; cursor: pointer; text-decoration: none; }
-        .article-row:active { background: rgba(255,255,255,0.05); }
-        .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; flex-shrink: 0; }
-        .row-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-        .row-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: #eee; }
-
-        .bottom-nav { 
-            flex-shrink: 0;
-            height: calc(60px + env(safe-area-inset-bottom)); 
-            background-color: var(--nav-bg); 
-            border-top: 1px solid var(--border-color); 
-            display: flex; justify-content: space-around; align-items: center; 
-            padding-bottom: env(safe-area-inset-bottom);
+        /* 文章頭部 */
+        .post-header { margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        .post-category { font-size: 12px; font-weight: 700; color: #ff4d4d; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .post-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; color: #fff; }
+        .post-meta { font-size: 13px; color: var(--ios-secondary); display: flex; gap: 15px; }
+        
+        /* 文章內容：使用 CSS 變數控制顏色和大小 */
+        .post-content { 
+            font-size: var(--article-font-size); 
+            color: var(--article-text-color); 
+            white-space: pre-wrap; 
+            transition: color 0.2s, font-size 0.2s; /* 增加平滑過渡 */
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 10px; gap: 4px; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-color); }
-        .nav-item i { font-size: 18px; }
+        .post-content p { margin-bottom: 20px; text-align: justify; }
+
+        /* =========================================
+           1. 浮動設定按鈕 (iOS 風格齒輪)
+           ========================================= */
+        .mobi-settings-btn {
+            position: fixed; bottom: 30px; right: 20px;
+            width: 50px; height: 50px;
+            background: rgba(44, 44, 46, 0.9);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: #fff; font-size: 24px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+            cursor: pointer; z-index: 1000;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .mobi-settings-btn:active { transform: scale(0.9); opacity: 0.8; }
+
+        /* =========================================
+           2. 設定彈窗控制台 (Settings Panel)
+           ========================================= */
+        .mobi-settings-panel {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--panel-bg);
+            backdrop-filter: blur(20px);
+            border-top-left-radius: 20px; border-top-right-radius: 20px;
+            padding: calc(25px + env(safe-area-inset-top)) 20px calc(40px + env(safe-area-inset-bottom));
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+            transform: translateY(100%); /* 預設隱藏在下方 */
+            transition: transform 0.4s cubic-bezier(0.3, 0.8, 0.4, 1);
+            z-index: 999;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .mobi-settings-panel.show { transform: translateY(0); } /* 顯示彈窗 */
+
+        /* 彈窗標題 */
+        .panel-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 25px;
+        }
+        .panel-title { font-size: 18px; font-weight: 700; color: #fff; }
+        .close-panel { color: var(--accent-color); font-size: 16px; font-weight: 600; cursor: pointer; }
+
+        /* 控制項區塊 */
+        .control-group { margin-bottom: 25px; }
+        .control-label {
+            font-size: 14px; font-weight: 500; color: var(--ios-secondary);
+            margin-bottom: 12px; display: flex; justify-content: space-between;
+        }
+        .control-value { color: #fff; font-weight: 600; font-family: monospace; }
+
+        /* =========================================
+           3. iOS 風格滑塊 (Input Sliders)
+           ========================================= */
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 5px; outline: none; opacity: 0.9;
+            transition: 0.2s;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 24px; height: 24px;
+            background: #ffffff;
+            border-radius: 50%; cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            border: 2px solid #000;
+            transition: 0.2s;
+        }
+        input[type="range"]::-webkit-slider-thumb:active { transform: scale(1.1); box-shadow: 0 0 10px rgba(255,255,255,0.5); }
+
+        /* 特殊滑塊：字體顏色（從黑到白漸層） */
+        #colorSlider {
+            background: linear-gradient(to right, #ffffff 0%, #000000 100%);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        /* 特殊滑塊：字體大小（預設樣式即可） */
+        #fontSizeSlider { background: rgba(0,206,201,0.2); } /* 使用品牌色背景 */
+
+        /* 分享按鈕 */
+        .footer-action { margin-top: 30px; text-align: center; }
+        .share-btn { background: var(--accent-color); color: #000; border: none; width: 100%; padding: 16px; border-radius: 15px; font-size: 16px; font-weight: 600; cursor: pointer; }
+
     </style>
 </head>
 <body>
+    <div class="glass-bg"></div>
 
-    <div id="ms-splash" aria-hidden="true"></div>
-
-    <div id="app-container">
-        <header class="app-header">
-            <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比部落格</h1>
-
-            <nav class="marquee-row">
-                <span class="v-tag" id="v-tag">SYNCING</span>
-                <div class="mq-box">
-                    <div class="mq-text" id="mq-text">載入中...</div>
-                </div>
-                <button onclick="location.href='https://mobsp.github.io/'" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:10px; cursor:pointer;">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                </button>
-            </nav>
-
-            <a href="https://mobsp.github.io/blog/" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
-                <img src="https://mobsp.github.io/assets/brand/ms-blog-title.JPEG" alt="莫比部落格 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
-            </a>
-        </header>
-
-        <main id="main-view">
-            <div class="section-label">最新精選</div>
-            <div class="horizontal-slider">
-                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.JPEG');">
-                    <span style="font-size: 13px;">莫比空間開發日誌</span>
-                </div>
-                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.JPEG');">
-                    <span style="font-size: 13px;">PWA 技術實踐指南</span>
-                </div>
-                <div class="mid-card" style="background: #1a1a1a; border: 1px dashed #333; justify-content: center; align-items: center;">
-                    <span style="font-size: 12px; color: #555;">即將推出...</span>
-                </div>
-            </div>
-
-            <div class="list-header">
-                <span style="font-weight: bold;">熱門文章</span>
-                <a href="https://mobsp.github.io/p/list/" class="more-btn">更多</a>
-            </div>
-
-            <div id="article-list-container">
-                </div>
-            
-            <div id="github-articles"></div>
-        </main>
-
-        <nav class="bottom-nav">
-            <a href="https://mobsp.github.io/music/" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
-            <a href="https://mobsp.github.io/shorts/" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
-            <a href="https://mobsp.github.io/wiki/" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援中心</span></a>
-            <a href="https://mobsp.github.io/setting" class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></a>
-        </nav>
+    <div class="mobi-settings-btn" id="mobiSettingsBtn">
+        <i class="fa-solid fa-gear"></i>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <div class="mobi-settings-panel" id="mobiSettingsPanel">
+        <header class="panel-header">
+            <span class="panel-title">閱讀設定</span>
+            <span class="close-panel" id="closePanelBtn">完成</span>
+        </header>
+
+        <div class="control-group">
+            <label class="control-label">
+                <span>字體顏色 (黑↔白)</span>
+                <span class="control-value" id="colorValue">#ffffff</span>
+            </label>
+            <input type="range" id="colorSlider" min="0" max="255" value="0">
+        </div>
+
+        <div class="control-group">
+            <label class="control-label">
+                <span>字體大小</span>
+                <span class="control-value" id="fontSizeValue">17px</span>
+            </label>
+            <input type="range" id="fontSizeSlider" min="12" max="32" value="17">
+        </div>
+    </div>
+
+    <div class="article-container">
+        <header class="nav-header">
+            <a href="/blog/" class="back-btn"><i class="fa-solid fa-chevron-left"></i> 莫比部落格</a>
+            <i class="fa-solid fa-ellipsis" style="color: var(--ios-secondary);"></i>
+        </header>
+
+        <article>
+            <div class="post-header">
+                <span class="post-category">家庭亂倫</span>
+                <h1 class="post-title">大嫂與二哥</h1>
+                <div class="post-meta">
+                    <span><i class="fa-regular fa-calendar"></i> 2026-03-19</span>
+                    <span><i class="fa-regular fa-user"></i> Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</span>
+                </div>
+            </div>
+
+            <div class="post-content">
+                <p>我從小到大都在台北長大念書，過習慣了都市生活，但在念研究所時，卻跑到雲林讀雲科大，原因很簡單，就是考研究所時考得不理想，實在沒幾所能挑，但心想能離開家也不錯，爸媽觀念那麼保守，我住家裡要交女友會很困難地，交了也不能帶回家幹，真的很討厭。</p>
+<p>就這樣，之後大嫂常常打電話問我在哪裡，我總是帶她到各地方做愛，雲林太多地方可以在戶外做愛了，不像在台北只能當車床族，而在家，只要是沒人時，大嫂都會主動找我，要我幹幹她才行，就這樣我也變成很忙碌的學生了。</p>
+            </div>
+        </article>
+
+        <div class="footer-action">
+            <button class="share-btn" onclick="navigator.share({title: '大嫂與二哥', url: window.location.href})">分享文章</button>
+        </div>
+    </div>
+
     <script>
-        const GH_CONFIG = {
-            user: 'mobsp',
-            repo: 'mobsp.github.io',
-            path: 'blog/p/list'
-        };
+        const settingsBtn = document.getElementById('mobiSettingsBtn');
+        const settingsPanel = document.getElementById('mobiSettingsPanel');
+        const closePanelBtn = document.getElementById('closePanelBtn');
+        const root = document.documentElement; // 獲取 CSS 根元素 (:root)
 
-        const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+        // 色彩控制 (黑到白漸層)
+        const colorSlider = document.getElementById('colorSlider');
+        const colorValue = document.getElementById('colorValue');
 
-        (function() {
-            const splash = document.getElementById('ms-splash');
-            function hideSplash() {
-                if (splash) {
-                    splash.classList.add('hide');
-                    document.body.classList.add('loaded');
-                    setTimeout(() => splash.remove(), 1000);
-                }
-            }
+        // 字體大小控制
+        const fontSizeSlider = document.getElementById('fontSizeSlider');
+        const fontSizeValue = document.getElementById('fontSizeValue');
 
-            async function initNoticeSystem() {
-                const vTag = document.getElementById('v-tag');
-                const mqText = document.getElementById('mq-text');
-                try {
-                    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                    const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
-                    if (!error && data.length > 0) {
-                        const item = data[0];
-                        vTag.innerText = `BLOG V2.0 | ${item.type}`;
-                        mqText.innerText = item.message;
-                    }
-                } catch (err) { mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！"; }
-            }
+        // --- 彈窗顯示/隱藏邏輯 ---
+        function togglePanel() {
+            settingsPanel.classList.toggle('show');
+            // 當彈窗打開時，禁用主體滾動
+            document.body.style.overflow = settingsPanel.classList.contains('show') ? 'hidden' : '';
+        }
 
-            async function loadGithubArticles() {
-                const container = document.getElementById('github-articles');
-                const api_url = `https://api.github.com/repos/${GH_CONFIG.user}/${GH_CONFIG.repo}/contents/${GH_CONFIG.path}`;
-                try {
-                    const response = await fetch(api_url);
-                    if (!response.ok) return;
-                    const files = await response.json();
-                    files.filter(f => f.name.endsWith('.html')).forEach(file => {
-                        const title = file.name.replace('.html', '').replace(/-/g, ' ').toUpperCase();
-                        container.insertAdjacentHTML('beforeend', `
-                            <div class="article-row" onclick="location.href='https://mobsp.github.io/blog/p/list/${file.name}'">
-                                <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img">
-                                <div class="row-info">
-                                    <div class="row-title">${title}</div>
-                                    <div style="font-size: 11px; color: var(--text-sub);">自動同步文章 · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
-                                </div>
-                                <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px;"></i>
-                            </div>
-                        `);
-                    });
-                } catch (err) {}
-            }
+        settingsBtn.addEventListener('click', togglePanel);
+        closePanelBtn.addEventListener('click', togglePanel);
 
-            window.addEventListener('load', () => {
-                initNoticeSystem();
-                loadGithubArticles();
-                setTimeout(hideSplash, 1000);
-            });
-            setTimeout(hideSplash, 3500);
-        })();
+        // --- 字體顏色調整邏輯 ---
+        colorSlider.addEventListener('input', () => {
+            // value 0 -> #ffffff (白)
+            // value 255 -> #000000 (黑)
+            const val = 255 - colorSlider.value; // 反轉值
+            const hex = val.toString(16).padStart(2, '0'); // 轉為 16 進位
+            const finalColor = `#${hex}${hex}${hex}`; // 構建顏色 #xxxxxx
+
+            // 1. 更新 CSS 變數
+            root.style.setProperty('--article-text-color', finalColor);
+            // 2. 更新彈窗數值顯示
+            colorValue.innerText = finalColor;
+
+            // 根據顏色深淺動態調整滑塊頭部顏色，保持對比
+            const thumbColor = colorSlider.value > 128 ? '#ffffff' : '#000000';
+            colorSlider.style.setProperty('--thumb-color', thumbColor); // (可選，需額外 CSS 配合)
+        });
+
+        // --- 字體大小調整邏輯 ---
+        fontSizeSlider.addEventListener('input', () => {
+            const size = fontSizeSlider.value;
+            // 1. 更新 CSS 變數
+            root.style.setProperty('--article-font-size', `${size}px`);
+            // 2. 更新彈窗數值顯示
+            fontSizeValue.innerText = `${size}px`;
+        });
+
+        // 頁面加載時初始化
+        function initSettings() {
+            // 初始化字體大小
+            root.style.setProperty('--article-font-size', '17px');
+            // 初始化字體顏色 (白)
+            root.style.setProperty('--article-text-color', '#ffffff');
+        }
+
+        initSettings();
     </script>
 </body>
-</html> 
+</html>
