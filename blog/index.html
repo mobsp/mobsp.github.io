@@ -1,196 +1,261 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>大嫂與二哥 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比部落格</title>
+    
+    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.webp" type="image/jpeg">
+    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.webp">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
-            --ios-bg: #000000;
-            --ios-card: rgba(28, 28, 30, 0.7);
-            --article-text-color: #ffffff;
-            --article-font-size: 17px;
-            --ios-secondary: #8e8e93;
-            --accent-color: #00cec9;
-            --panel-bg: rgba(30, 30, 30, 0.95);
+            --bg-body: #000000; --bg-container: #111111;
+            --text-main: #ffffff; --text-sub: #aaaaaa;
+            --accent-color: #00cec9; --nav-bg: #111111;
+            --border-color: #262626;
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
-            background-color: var(--ios-bg); color: #fff; line-height: 1.7; overflow-x: hidden;
-        }
-        .glass-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, #1a1a2e 0%, #000 50%), radial-gradient(circle at 80% 70%, #002b2b 0%, #000 50%); z-index: -1; }
-        .article-container { max-width: 480px; margin: 0 auto; min-height: 100dvh; padding: calc(20px + env(safe-area-inset-top)) 20px 150px; backdrop-filter: blur(10px); }
-        .nav-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
-        .back-btn { color: var(--accent-color); text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 5px; }
-        .post-header { margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
-        .post-category { font-size: 12px; font-weight: 700; color: #ff4d4d; text-transform: uppercase; margin-bottom: 8px; display: block; }
-        .post-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; color: #fff; }
-        .post-meta { font-size: 13px; color: var(--ios-secondary); display: flex; gap: 15px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
-        /* 文章內容控制 */
-        .post-content { 
-            font-size: var(--article-font-size); 
-            color: var(--article-text-color); 
-            white-space: pre-wrap; 
-            transition: color 0.1s, font-size 0.1s;
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg-body); 
+            height: 100dvh; overflow: hidden; 
         }
-        .post-content p { margin-bottom: 20px; text-align: justify; }
 
-        /* 設定按鈕與彈窗 */
-        .mobi-settings-btn { position: fixed; bottom: 30px; right: 20px; width: 50px; height: 50px; background: rgba(44, 44, 46, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); cursor: pointer; z-index: 1000; border: 1px solid rgba(255,255,255,0.1); }
-        .mobi-settings-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--panel-bg); backdrop-filter: blur(20px); border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 25px 20px 50px; transform: translateY(100%); transition: transform 0.3s ease; z-index: 999; border-top: 1px solid rgba(255,255,255,0.1); }
-        .mobi-settings-panel.show { transform: translateY(0); }
-        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .panel-title { font-size: 18px; font-weight: 700; color: #fff; }
-        .close-panel { color: var(--accent-color); cursor: pointer; }
-        .control-group { margin-bottom: 25px; }
-        .control-label { font-size: 14px; color: var(--ios-secondary); margin-bottom: 10px; display: flex; justify-content: space-between; }
-        input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: #333; border-radius: 3px; outline: none; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: #fff; border-radius: 50%; border: 2px solid #000; cursor: pointer; }
-        #colorSlider { background: linear-gradient(to right, #ffffff, #000000); }
+        #ms-splash {
+            position: fixed; inset: 0;
+            background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.webp') center/cover no-repeat;
+            z-index: 10000; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease;
+        }
+        #ms-splash::after {
+            content: ""; width: 24px; height: 24px; 
+            border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--accent-color);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+            position: absolute; bottom: 15%;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #ms-splash.hide { opacity: 0; pointer-events: none; }
+        
+        #app-container { 
+            max-width: 480px; margin: 0 auto; 
+            background-color: var(--bg-container); 
+            height: 100%; display: flex; flex-direction: column; 
+            opacity: 0; transform: scale(1.01); transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        body.loaded #app-container { opacity: 1; transform: scale(1); }
+
+        .visually-hidden {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+            overflow: hidden; clip: rect(0,0,0,0); border: 0;
+        }
+
+        .app-header { 
+            flex-shrink: 0;
+            padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
+            background: var(--nav-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .marquee-row {
+            display: flex; align-items: center; background: rgba(255,255,255,0.05);
+            padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
+            min-height: 28px; width: 100%;
+        }
+        .v-tag { 
+            background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; 
+            padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap;
+        }
+        .tag-important { background: #ff4d4d; color: #fff; }
+        .tag-update { background: #00ff88; color: #000; }
+        .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
+        .mq-text { 
+            display: inline-block; padding-left: 100%;
+            animation: mq 25s linear infinite;
+            font-size: 11px; opacity: 0.9; letter-spacing: 0.5px; color: #fff;
+        }
+        @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        .brand-title-link {
+            display: block; width: 100%; transition: var(--transition);
+            margin-bottom: 5px; padding: 0 5px; box-sizing: border-box;
+            text-decoration: none;
+        }
+        .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
+        .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
+
+        #main-view { 
+            flex: 1; overflow-y: auto; 
+            -webkit-overflow-scrolling: touch;
+            background: #000;
+        }
+
+        .section-label { padding: 20px 15px 10px; font-weight: bold; font-size: 1.1rem; color: #fff; }
+        .horizontal-slider { 
+            display: flex; gap: 15px; padding: 0 15px 20px; 
+            overflow-x: auto; scroll-snap-type: x mandatory; 
+            scrollbar-width: none;
+        }
+        .horizontal-slider::-webkit-scrollbar { display: none; }
+        
+        .mid-card { 
+            min-width: 210px; height: 140px; 
+            border-radius: 15px; flex-shrink: 0; scroll-snap-align: start;
+            display: flex; align-items: flex-end; padding: 15px;
+            background-size: cover; background-position: center;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #ffffff; font-weight: 600;
+        }
+
+        .list-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
+        .more-btn { font-size: 12px; color: var(--accent-color); text-decoration: none; border: 1px solid var(--accent-color); padding: 2px 10px; border-radius: 12px; transition: 0.3s; }
+        .more-btn:active { background: var(--accent-color); color: #000; }
+        
+        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; cursor: pointer; text-decoration: none; }
+        .article-row:active { background: rgba(255,255,255,0.05); }
+        .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; flex-shrink: 0; }
+        .row-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
+        .row-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: #eee; }
+
+        .bottom-nav { 
+            flex-shrink: 0;
+            height: calc(60px + env(safe-area-inset-bottom)); 
+            background-color: var(--nav-bg); 
+            border-top: 1px solid var(--border-color); 
+            display: flex; justify-content: space-around; align-items: center; 
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 10px; gap: 4px; transition: 0.3s; }
+        .nav-item.active { color: var(--accent-color); }
+        .nav-item i { font-size: 18px; }
     </style>
 </head>
 <body>
-    <div class="glass-bg"></div>
 
-    <div class="mobi-settings-btn" onclick="document.getElementById('mobiSettingsPanel').classList.add('show')">
-        <i class="fa-solid fa-gear"></i>
-    </div>
+    <div id="ms-splash" aria-hidden="true"></div>
 
-    <div class="mobi-settings-panel" id="mobiSettingsPanel">
-        <header class="panel-header">
-            <span class="panel-title">閱讀設定</span>
-            <span class="close-panel" onclick="document.getElementById('mobiSettingsPanel').classList.remove('show')">完成</span>
-        </header>
-        <div class="control-group">
-            <label class="control-label">字體顏色 (白 ↔ 黑) <span id="colorVal">#ffffff</span></label>
-            <input type="range" id="colorSlider" min="0" max="255" value="0" oninput="updateColor(this.value)">
-        </div>
-        <div class="control-group">
-            <label class="control-label">字體大小 <span id="sizeVal">17px</span></label>
-            <input type="range" min="14" max="30" value="17" oninput="updateSize(this.value)">
-        </div>
-    </div>
+    <div id="app-container">
+        <header class="app-header">
+            <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比部落格</h1>
 
-    <div class="article-container">
-        <header class="nav-header">
-            <a href="/blog/" class="back-btn"><i class="fa-solid fa-chevron-left"></i> 莫比部落格</a>
+            <nav class="marquee-row">
+                <span class="v-tag" id="v-tag">SYNCING</span>
+                <div class="mq-box">
+                    <div class="mq-text" id="mq-text">載入中...</div>
+                </div>
+                <button onclick="location.href='https://mobsp.github.io/'" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:10px; cursor:pointer;">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+            </nav>
+
+            <a href="https://mobsp.github.io/blog/" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
+                <img src="https://mobsp.github.io/assets/brand/ms-blog-title.webp" alt="莫比部落格 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
+            </a>
         </header>
 
-        <article>
-            <div class="post-header">
-                <span class="post-category">家庭亂倫</span>
-                <h1 class="post-title">大嫂與二哥</h1>
-                <div class="post-meta"><span>2026-03-19</span><span>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</span></div>
+        <main id="main-view">
+            <div class="section-label">最新精選</div>
+            <div class="horizontal-slider">
+                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.webp');">
+                    <span style="font-size: 13px;">莫比空間開發日誌</span>
+                </div>
+                <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.webp');">
+                    <span style="font-size: 13px;">PWA 技術實踐指南</span>
+                </div>
+                <div class="mid-card" style="background: #1a1a1a; border: 1px dashed #333; justify-content: center; align-items: center;">
+                    <span style="font-size: 12px; color: #555;">即將推出...</span>
+                </div>
             </div>
 
-            <div class="post-content">
-<p>我從小到大都在台北長大念書，過習慣了都市生活，但在念研究所時，卻跑到雲林讀雲科大，原因很簡單，就是考研究所時考得不理想，實在沒幾所能挑，但心想能離開家也不錯，爸媽觀念那麼保守，我住家裡要交女友會很困難地，交了也不能帶回家幹，真的很討厭。</p>
-
-<p>而到雲林，剛開始還挺不能適應地，跟台北生活截然不同，同學們都半來至四面八方，當然以中南部人為居多，而爸媽是叫我住宿，我當然不從，難得離開家，當然是要在外租房子，可是外面房子有限，真的無法跟台北比，但我還是稍微挑了一下，最後住進一戶人家裡。</p>
-
-<p>我租的房子，是一間套房沒錯，但好玩的是，我是跟一個家庭和住，這個家庭家境不知是不是沒有很好，就把他們家的一個房間租給我，房東是一個６０幾歲的阿嬤，媽媽看他很和善，也就願意讓我住那，而阿嬤有兩個兒子，老大３３歲，老二３０歲，而老大已經結婚了，老婆才２７歲而已。</p>
-
-<p>就這樣我的生活，是跟這四個人住在同個屋簷下，過了一年，跟大家打成一遍，阿嬤有煮飯，總是會叫我一起吃，我也很自然地的稱呼，阿嬤、大哥、大嫂、二哥，叫的都很習慣，大哥跟大嫂，結婚兩年多，但都沒生小孩，我也不知是甚麼原因，而他們生活方式，三個年輕人，下班時間都好不固定，早一點５點多回到家，晚點就半夜才到家，且三人順序都不一樣，可能大家都很忙碌吧！阿嬤也挺忙碌地，跟她的朋友到處爬爬走，甚至還常跑去大陸玩，我還時常想，他們究竟是家境好還是不好呢？就這樣有時家裡只有我一個人在。</p>
-
-<p>同學也有一些人跟我一樣住外面，大家租的房子，其實都相去不遠，反正就是在學校的四周圍。有一天我在同學家討論報告，討論到十點多，心想該回去了，我望著外面的窗戶，無意間發現，黃色的路燈下，正慢慢散步走著，不是大嫂與二哥嗎！由於鄉下挺冷清的，周遭沒甚麼路人，很容易看清楚，我心想剛好可以一起回家，我就匆忙跟同學們道別，趕緊下樓走到外面。</p>
-
-<p>我看到大嫂與二哥兩人，在我右邊不遠處，正轉向一個防火巷，我心想那個不是個死巷嗎？我已經在這住一年了，學校周遭的地形，也都寥落指掌，我好奇地走了過去，眼見防火巷，停了一部水泥攪拌車，從兩旁的細縫，都沒看到有人，我心想怎麼可能，於時側身慢慢往前走，走到車頭，終於發現他們兩人。</p>
-
-<p>大嫂靠在牆壁上，二哥正親吻著她，哇！心想著這事情被大哥知道還得了，大嫂臉長的普通，但身材卻是很好，在加上她穿著短裙，更是性感迷人，我看見二哥一邊親，手也開始伸進大嫂的裙子裡，似乎在開始摸小穴了吧！我好興奮地看到這個場景，二哥把大嫂上衣往上拉，胸罩也拉了起來，我看到大嫂的胸部，並沒有很大，但二哥卻饑渴地又吸又舔，大嫂不動地，任二哥舔弄著，我看見二哥雙手都在撫摸著大嫂的小穴。</p>
-
-<p>我深怕他們會發現我，看了幾分鐘，她們有新動作時，頭還要趕緊伸回來，而我在伸回去時，大嫂則蹲在地上，慢慢吸著二哥的雞巴，二哥褲子脫到一半，四角褲露出老二，大嫂似乎很享受地，閉著眼睛，慢慢地吸著二哥的雞巴，二哥拉著自己的衣服，很享受地看著大嫂含著他的雞巴，就這樣大嫂含了幾分鐘，當她要站起來時，我趕緊又躲了起來，自己算了個幾分鐘，又伸頭去看。</p>
-
-<p>這時她們換了個姿勢，大嫂趴在牆壁上，二哥正從後面幹著大嫂，大嫂並沒有發出太大聲的伸吟，可能是夜深寧靜，周遭還有點少數住戶，大嫂與其說是隨著二哥插動著，二哥把大嫂的裙襬給拉了起來，他可能想看著他的雞巴，桶大嫂小穴的樣子，而我卻是看到大嫂那白嫩嫩的屁股，二哥扶著大嫂的腰，不斷地插動著，就這樣過了幾分鐘，他們又換姿勢，這時他們坐到地上，背對著我，我只能看到二哥的背部，心想著要換個偷窺地點才行，但換到他們前面也不對，於是我走到另一側，趴在地上，剛好看到大嫂的臉。</p>
-
-<p>我看到大嫂的臉，似乎像是有小聲叫著，任著二哥插，我心想這比剛剛距離稍微遠一點，就大膽拿起自己手機，把攝影模式調成夜間模式，試了一下，幸虧我的手機功能不差，影像居然還蠻清晰，可以清楚拍到大嫂的臉，二哥還不時趴下親大嫂幾下，這擺明就是讓我也把他的臉照了進來，二哥的襯衫鈕扣已經全解開，大嫂抱著二哥的身體，似乎希望他能幹更大力點，這時大嫂又躺回地上，我發現大嫂眼睛飄向我，我趕緊閃了一下，再回去錄影，大嫂依然躺在地上被二哥幹，幸好沒被發現，就這樣我錄了４分２１秒，大嫂躺著被二哥幹著樣子，直到大嫂站起來，穿起內褲，我才趕緊離開。</p>
-
-<p>可是我回到家，心想原來大嫂跟二哥原來有一腿唷！我看著自己今天拍攝的傑作，打了好幾次的手槍，真是太興奮了，就這樣後來我看到大嫂，都有一種想幹她的衝動感，持續這種感覺，到有一天。</p>
-
-<p>大嫂：「我剛好今天休假啦！」</p>
-<p>我：「那沒跟阿嬤出去逛逛嗎？」</p>
-<p>大嫂：「媽參加進香團去高雄了，今天要很晚回來吧！」</p>
-
-<p>我寒暄了幾句，走回房間把包包放下，心想著今天那麼好的時機，一定不能放過，於時走回飯廳，我站在大嫂旁。</p>
-
-<p>我：「大嫂，平常看大哥那麼忙碌，妳會不會覺得很無聊呀！」</p>
-<p>大嫂：「還好啦！習慣就好呀！」</p>
-<p>我：「那沒人陪，妳會不會找其他男生陪妳呢？」</p>
-<p>大嫂：「你怎麼會這樣說，」大嫂很吃驚的也站了起來</p>
-
-<p>我：「因為我昨晚收到同學的給我情色偷拍短片，裡面男女主角好像大嫂與二哥唷！」我哪敢說是我自己偷拍的</p>
-<p>我：「妳自己看，」我把手機影片放給大嫂看</p>
-<p>大嫂：「那阿成（我的小名），我知道你對大嫂最好了，可不可以刪除它，不要告訴其他人」</p>
-
-<p>我看見大嫂裝傻，大膽地伸手，伸進大嫂的裙子裡，隔著內褲，撫摸的大嫂的小穴，大嫂被我摸一下，就雙手搭在我肩上，我知道大嫂上鉤了，就開始舌吻的大嫂，大嫂果真很老練，舌頭比我還靈活。</p>
-
-<p>我：「大嫂妳坐到餐桌上」</p>
-<p>大嫂：「這樣子嗎？」</p>
-<p>大嫂：「嗯……嗯……很好，只是在家感覺有點怪」</p>
-<p>我：「不喜歡嗎？」</p>
-<p>大嫂：「不是，只是在家只有跟老公做而已」</p>
-<p>我：「那我今天讓妳破這個例」</p>
-
-<p>我把大嫂細肩帶往下，讓兩科胸部露出來，我站起來，把大嫂內褲給脫了，把自己褲子也多了，也沒管那麼多，就直接給她插下去，大嫂淫水已經流了好多出來，所以很好插，我開始親親的桶著，雙手一下放在大嫂的大腿上，一下抓著她的胸部，有時我摸著大嫂的手，可以感覺到她無名指上的結婚戒指，也看到她帶著結婚項鍊，心想著自己也能幹到人妻。</p>
-
-<p>大嫂：「嗯……嗯……嗯……」</p>
-<p>我：「感覺怎樣」</p>
-<p>大嫂：「阿成，你的雞巴怎麼那麼大，嗯……嗯……」</p>
-<p>我：「真的嗎」</p>
-
-<p>我雙手趕緊扶著大嫂的腰，更用力桶著。</p>
-
-<p>大嫂：「啊……啊……啊……好……爽……好……爽……」</p>
-<p>我：「在家幹沒關係吧！」</p>
-<p>大嫂：「嗯……嗯……人家有點怕」</p>
-<p>大嫂：「人家怕等等又人回來怎麼辦，嗯……嗯……」</p>
-<p>我：「那就讓他看，我怎麼幹妳呀！」</p>
-
-<p>我繼續桶著大嫂，之後我做到椅子上，我雙腳張開，扶著大嫂的臀部，讓她的小穴對準我的雞巴，順勢讓臀部壓下來，大嫂很舒服地，一隻手壓在我大腿上，一隻手扶著餐桌，我雙手抱在大嫂的腰部附近，大嫂自己上下擺動著。</p>
-
-<p>大嫂：「嗯……嗯……嗯……真的好爽唷！」</p>
-<p>我：「那妳以後還要找二哥做愛嗎？」</p>
-<p>大嫂：「不要……嗯……嗯……我以後只找阿成」</p>
-
-<p>我看見大嫂，被我幹到，已經成為我的玩具了，我說甚麼，她都說好</p>
-
-<p>我：「那我想要幹人時，大嫂就要到我房間讓我幹，可以嗎」</p>
-<p>大嫂：「嗯……嗯……好……我要阿成每天都幹我……啊……啊……」</p>
-
-<p>我心裡太高興了，把大嫂抬起，讓她趴在飯桌上，自己從後面桶她，我還興奮地拍大嫂屁股幾下</p>
-
-<p>大嫂：「嗯……嗯……你幹嘛打人家」</p>
-<p>我：「妳不喜歡嗎？」我親親地又打了幾下</p>
-<p>大嫂：「你好壞唷……嗯……嗯……」</p>
-<p>大嫂：「我最喜歡壞男人了……我……還……要……啊……啊……」</p>
-<p>我：「那我看我怎樣幹死妳」</p>
-
-<p>我繼續猛力桶，還加拍打，只見大嫂叫得更大聲，似乎比我還興奮，我幹一幹，休息時，還摸著大嫂的小穴，就是要讓她一直呈現興奮狀態，我還把大嫂的大腿，抬起來放在餐桌上，大嫂的小穴被撐開，可以感覺淫水更是多，這只會讓我更興奮，不斷地桶著大嫂，自己還把上衣給脫了，真的挺熱地，最後我再把大嫂，躺回飯桌上，因為我也快出來了，我身體壓著大嫂的雙腿，讓自己雞巴可以更深入。</p>
-
-<p>我：「嗯……嗯……嗯……要射了要……」</p>
-<p>大嫂：「啊……啊……啊……」</p>
-
-<p>最後我拔了出來，大嫂還蹲了下來，讓射在在她臉上，還幫我雞巴給舔乾淨。</p>
-
-<p>就這樣，之後大嫂常常打電話問我在哪裡，我總是帶她到各地方做愛，雲林太多地方可以在戶外做愛了，不像在台北只能當車床族，而在家，只要是沒人時，大嫂都會主動找我，要我幹幹她才行，就這樣我也變成很忙碌的學生了。</p>
+            <div class="list-header">
+                <span style="font-weight: bold;">熱門文章</span>
+                <a href="https://mobsp.github.io/p/list/" class="more-btn">更多</a>
             </div>
-        </article>
+
+            <div id="article-list-container">
+                </div>
+            
+            <div id="github-articles"></div>
+        </main>
+
+        <nav class="bottom-nav">
+            <a href="https://mobsp.github.io/music/" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
+            <a href="https://mobsp.github.io/shorts/" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
+            <a href="https://mobsp.github.io/wiki/" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援中心</span></a>
+            <a href="https://mobsp.github.io/setting" class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></a>
+        </nav>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        function updateColor(val) {
-            const v = 255 - val;
-            const hex = v.toString(16).padStart(2, '0');
-            const color = `#${hex}${hex}${hex}`;
-            document.documentElement.style.setProperty('--article-text-color', color);
-            document.getElementById('colorVal').innerText = color;
-        }
-        function updateSize(val) {
-            document.documentElement.style.setProperty('--article-font-size', val + 'px');
-            document.getElementById('sizeVal').innerText = val + 'px';
-        }
+        const GH_CONFIG = {
+            user: 'mobsp',
+            repo: 'mobsp.github.io',
+            path: 'blog/p/list'
+        };
+
+        const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+
+        (function() {
+            const splash = document.getElementById('ms-splash');
+            function hideSplash() {
+                if (splash) {
+                    splash.classList.add('hide');
+                    document.body.classList.add('loaded');
+                    setTimeout(() => splash.remove(), 1000);
+                }
+            }
+
+            async function initNoticeSystem() {
+                const vTag = document.getElementById('v-tag');
+                const mqText = document.getElementById('mq-text');
+                try {
+                    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                    const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
+                    if (!error && data.length > 0) {
+                        const item = data[0];
+                        vTag.innerText = `BLOG V2.0 | ${item.type}`;
+                        mqText.innerText = item.message;
+                    }
+                } catch (err) { mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！"; }
+            }
+
+            async function loadGithubArticles() {
+                const container = document.getElementById('github-articles');
+                const api_url = `https://api.github.com/repos/${GH_CONFIG.user}/${GH_CONFIG.repo}/contents/${GH_CONFIG.path}`;
+                try {
+                    const response = await fetch(api_url);
+                    if (!response.ok) return;
+                    const files = await response.json();
+                    files.filter(f => f.name.endsWith('.html')).forEach(file => {
+                        const title = file.name.replace('.html', '').replace(/-/g, ' ').toUpperCase();
+                        container.insertAdjacentHTML('beforeend', `
+                            <div class="article-row" onclick="location.href='https://mobsp.github.io/blog/p/list/${file.name}'">
+                                <img src="https://mobsp.github.io/assets/brand/ms-post.webp" class="row-img">
+                                <div class="row-info">
+                                    <div class="row-title">${title}</div>
+                                    <div style="font-size: 11px; color: var(--text-sub);">自動同步文章 · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+                                </div>
+                                <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px;"></i>
+                            </div>
+                        `);
+                    });
+                } catch (err) {}
+            }
+
+            window.addEventListener('load', () => {
+                initNoticeSystem();
+                loadGithubArticles();
+                setTimeout(hideSplash, 1000);
+            });
+            setTimeout(hideSplash, 3500);
+        })();
     </script>
 </body>
 </html>
