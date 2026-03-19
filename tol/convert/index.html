@@ -3,72 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 文章轉換器</title>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 終極智能轉換</title>
     <style>
-        :root { --accent: #00cec9; --nsfw: #ff4757; --glass: rgba(255, 255, 255, 0.1); }
-        body { background: #050508; color: #fff; font-family: sans-serif; padding: 15px; margin: 0; }
-        .card { background: #111; padding: 25px; border-radius: 30px; border: 1px solid #333; max-width: 500px; margin: 20px auto; box-shadow: 0 20px 50px rgba(0,0,0,0.8); }
+        :root { --accent: #00cec9; --danger: #ff4757; --bg: #050508; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; padding: 15px; margin: 0; }
+        .card { background: #111; padding: 25px; border-radius: 30px; border: 1px solid #333; max-width: 500px; margin: 20px auto; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
         
         /* 霓虹輸入框 */
         textarea { width: 100%; padding: 15px; background: #000; border: 1px solid #444; color: var(--accent); border-radius: 15px; box-sizing: border-box; font-size: 16px; margin: 10px 0; transition: 0.3s; }
         textarea:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,206,201,0.2); outline: none; }
 
-        /* 流光按鈕 */
+        /* 全螢幕流光按鈕 */
         .glow-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: #fff; font-weight: bold; font-size: 17px; background: linear-gradient(45deg, #00cec9, #6c5ce7, #ff4757, #00cec9); background-size: 300%; animation: move 6s infinite; cursor: pointer; }
         @keyframes move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* 標籤視覺 */
         .tag-list { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
-        .tag { padding: 4px 12px; border-radius: 50px; font-size: 12px; border: 1px solid var(--accent); color: var(--accent); background: rgba(0,206,201,0.1); }
-        .tag.red { border-color: var(--nsfw); color: var(--nsfw); background: rgba(255,71,87,0.1); box-shadow: 0 0 10px rgba(255,71,87,0.2); }
+        .tag { padding: 4px 12px; border-radius: 50px; font-size: 12px; border: 1px solid #444; color: #888; background: rgba(255,255,255,0.05); }
+        .tag.nsfw { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 10px rgba(255,71,87,0.3); }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2 style="text-align:center; background: linear-gradient(to right, #00cec9, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MOBISPACE ANALYZER</h2>
-        <p style="font-size:12px; color:#888; text-align:center;">針對 網頁文章內容優化的智能分類器</p>
+        <h2 style="text-align:center; letter-spacing:3px; background: linear-gradient(to right, #00cec9, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MOBISPACE</h2>
+        <p style="font-size:11px; color:#666; text-align:center; margin-bottom:20px;">🛡️ 智能內容審查與自動分類系統</p>
         
-        <textarea id="rawInput" rows="12" placeholder="請直接貼上網頁文章全文 (含標題)..."></textarea>
+        <textarea id="rawInput" rows="12" placeholder="直接貼上全文內容..."></textarea>
         
-        <button class="glow-btn" onclick="process()">⚡ 執行智能封裝</button>
+        <button class="glow-btn" onclick="process()">⚡ 執行 AI 智能封裝</button>
 
         <div id="result" style="display:none; margin-top:20px;">
             <div id="tags" class="tag-list"></div>
             <textarea id="finalCode" rows="8" readonly></textarea>
-            <button onclick="copy()" style="background:#fff; color:#000; width:100%; padding:12px; border-radius:12px; font-weight:bold; border:none;">📋 複製 HTML 代碼</button>
+            <button onclick="copy()" style="background:#fff; color:#000; width:100%; padding:14px; border-radius:15px; font-weight:bold; border:none;">📋 複製 HTML 代碼</button>
         </div>
     </div>
 
 <script>
-// 擴展 18 禁與敏感詞辨識 (針對搜尋引擎與成人內容)
-const NSFW_RE = /成人|18禁|色情|肉文|禁書|私密|裸露|性愛|porn|adult|nsfw|sex/i;
+// 終極關鍵字庫
+const NSFW_RE = /亂倫|人妻|熟女|母子|母女|父女|兄妹|姐弟|禁忌|成人|色情|性愛|18禁|porn|adult|nsfw|sex|內射|高潮|抽送|肉棒|陰道|陰莖|乳房|巨乳|調教|奴隸|拘束|SM|凌辱|強姦|強暴|騷麥|自慰|擼管/i;
+const FAMILY_RE = /家庭|倫理|家訪|嫂子|岳母|小姨子|姑姑|阿姨|繼母|後媽|養女|公公|婆婆|兒媳|女婿|舅媽|嬸嬸/;
+const ROLE_RE = /老師|學生|校長|護士|醫生|警察|犯人|上司|下屬|秘書|女僕|空姐|模特|主播/;
 
 function process() {
     const input = document.getElementById('rawInput').value.trim();
     if(!input) return;
 
     const lines = input.split('\n').filter(l => l.trim());
-    const title = lines[0];
+    const title = lines[0]; // 預判第一行為標題
     const content = input.toLowerCase();
 
-    // 智能標籤判斷
+    // 智能標籤
     let tags = [];
     let isNSFW = NSFW_RE.test(content);
-
     if(isNSFW) tags.push('R-18');
-    if(/玄幻|修仙|武俠/.test(content)) tags.push('奇幻');
-    if(/都市|言情|愛/.test(content)) tags.push('都市文學');
-    if(/短篇|散文|日記/.test(content)) tags.push('隨筆');
+    if(FAMILY_RE.test(content)) tags.push('倫理敘事');
+    if(ROLE_RE.test(content)) tags.push('身分禁忌');
+    if(/人妻|熟女|少婦/.test(content)) tags.push('熟女專欄');
     if(tags.length === 0) tags.push('故事回廊');
 
-    // 更新介面標籤
     const tagBox = document.getElementById('tags');
-    tagBox.innerHTML = tags.map(t => `<span class="tag ${t==='R-18'?'red':''}">${t}</span>`).join('');
+    tagBox.innerHTML = tags.map(t => `<span class="tag ${t==='R-18'?'nsfw':''}">${t}</span>`).join('');
 
-    // 段落處理
     const paragraphs = lines.slice(1).map(l => `<p>${l.trim()}</p>`).join('\n                ');
 
-    // 輸出流光模板 (帶警示窗)
     const template = `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -76,30 +73,41 @@ function process() {
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>${title} | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔢</title>
     <style>
-        body { background: #000; color: #eee; font-family: -apple-system, "Noto Sans TC", sans-serif; line-height: 1.8; margin: 0; }
-        .article { max-width: 500px; margin: 0 auto; padding: 60px 20px; }
-        h1 { font-size: 26px; color: #fff; text-shadow: 0 0 20px rgba(0,206,201,0.5); margin-bottom: 40px; }
-        .post-p p { margin-bottom: 28px; text-align: justify; font-size: 18px; letter-spacing: 0.8px; }
+        body { background: #000; color: #d1d1d1; font-family: -apple-system, sans-serif; line-height: 1.8; margin: 0; }
+        .article { max-width: 500px; margin: 0 auto; padding: 70px 20px; }
         
-        /* 閱讀警示彈窗 */
-        #nsfw-gate { position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(20px); z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .gate-box { width: 85%; max-width: 350px; padding: 40px 20px; border: 1px solid #ff4757; border-radius: 30px; text-align: center; background: #0a0000; }
-        .gate-box h2 { color: #ff4757; margin-bottom: 15px; }
-        .gate-btn { background: #ff4757; color: #fff; border: none; padding: 12px 40px; border-radius: 50px; font-weight: bold; margin-top: 20px; }
+        /* 流光標題動畫 */
+        h1 { 
+            font-size: 28px; 
+            margin-bottom: 40px; 
+            background: linear-gradient(90deg, #fff, #00cec9, #ff4757, #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .post-p p { margin-bottom: 30px; text-align: justify; font-size: 18px; letter-spacing: 0.5px; }
+        
+        /* 霓虹警示窗 */
+        #gate { position: fixed; inset: 0; background: radial-gradient(circle at center, #1a0000 0%, #000 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        .gate-box { width: 80%; max-width: 350px; padding: 40px 20px; border: 2px solid #ff4757; border-radius: 30px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 0 30px rgba(255,71,87,0.4); }
+        .gate-btn { background: #ff4757; color: #fff; border: none; padding: 12px 40px; border-radius: 50px; font-weight: bold; margin-top: 25px; cursor: pointer; }
     </style>
 </head>
 <body>
     ${isNSFW ? `
-    <div id="nsfw-gate">
+    <div id="gate">
         <div class="gate-box">
-            <h2>AGE RESTRICTED</h2>
-            <p style="font-size:14px; color:#888;">本內容可能包含成人題材，<br>存取前請確認您已成年。</p>
-            <button class="gate-btn" onclick="document.getElementById('nsfw-gate').remove()">確認成年並進入</button>
+            <h2 style="color:#ff4757; letter-spacing:2px; margin:0;">18禁警告</h2>
+            <p style="font-size:14px; color:#888; margin-top:10px;">本內容涉及成人題材與倫理情節<br>未成年者請立即離開</p>
+            <button class="gate-btn" onclick="document.getElementById('gate').remove()">我已年滿18歲</button>
         </div>
     </div>` : ''}
 
     <div class="article">
-        <div style="color:#00cec9; font-size:12px; margin-bottom:10px;">${tags.map(t=>'#'+t).join(' ')}</div>
+        <div style="color:${isNSFW?'#ff4757':'#00cec9'}; font-size:13px; margin-bottom:10px; font-weight:bold;">${tags.map(t=>'#'+t).join(' ')}</div>
         <h1>${title}</h1>
         <div class="post-p">
                 ${paragraphs}
@@ -116,7 +124,7 @@ function copy() {
     const el = document.getElementById('finalCode');
     el.select();
     document.execCommand('copy');
-    alert('✨ 流光代碼已複製！');
+    alert('✨ 終極流光代碼已複製！');
 }
 </script>
 </body>
