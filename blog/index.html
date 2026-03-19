@@ -26,6 +26,7 @@
             height: 100dvh; overflow: hidden; 
         }
 
+        /* Splash Screen */
         #ms-splash {
             position: fixed; inset: 0;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.webp') center/cover no-repeat;
@@ -54,6 +55,7 @@
             overflow: hidden; clip: rect(0,0,0,0); border: 0;
         }
 
+        /* Header */
         .app-header { 
             flex-shrink: 0;
             padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
@@ -71,8 +73,6 @@
             background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; 
             padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap;
         }
-        .tag-important { background: #ff4d4d; color: #fff; }
-        .tag-update { background: #00ff88; color: #000; }
         .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
         .mq-text { 
             display: inline-block; padding-left: 100%;
@@ -89,6 +89,7 @@
         .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
         .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
 
+        /* Main Content */
         #main-view { 
             flex: 1; overflow-y: auto; 
             -webkit-overflow-scrolling: touch;
@@ -114,14 +115,21 @@
 
         .list-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
         .more-btn { font-size: 12px; color: var(--accent-color); text-decoration: none; border: 1px solid var(--accent-color); padding: 2px 10px; border-radius: 12px; transition: 0.3s; }
-        .more-btn:active { background: var(--accent-color); color: #000; }
         
-        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; cursor: pointer; text-decoration: none; }
-        .article-row:active { background: rgba(255,255,255,0.05); }
+        /* 文章列表樣式修正 */
+        .article-row { 
+            display: flex; gap: 12px; padding: 12px 15px; 
+            border-bottom: 1px solid var(--border-color); 
+            align-items: center; cursor: pointer; text-decoration: none; 
+            transition: background 0.2s;
+        }
+        .article-row:active { background: rgba(255,255,255,0.1); }
         .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; flex-shrink: 0; }
-        .row-info { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-        .row-title { font-size: 14px; font-weight: 500; line-height: 1.4; color: #eee; }
+        .row-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .row-title { font-size: 14px; font-weight: 600; line-height: 1.4; color: #eee; }
+        .row-meta { font-size: 11px; color: var(--text-sub); display: flex; align-items: center; gap: 5px; }
 
+        /* Footer Nav */
         .bottom-nav { 
             flex-shrink: 0;
             height: calc(60px + env(safe-area-inset-bottom)); 
@@ -146,7 +154,7 @@
             <nav class="marquee-row">
                 <span class="v-tag" id="v-tag">SYNCING</span>
                 <div class="mq-box">
-                    <div class="mq-text" id="mq-text">載入中...</div>
+                    <div class="mq-text" id="mq-text">正在從 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 伺服器同步內容...</div>
                 </div>
                 <button onclick="location.href='https://mobsp.github.io/'" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:10px; cursor:pointer;">
                     <i class="fa-solid fa-arrow-right-to-bracket"></i>
@@ -162,24 +170,18 @@
             <div class="section-label">最新精選</div>
             <div class="horizontal-slider">
                 <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.webp');">
-                    <span style="font-size: 13px;">莫比空間開發日誌</span>
+                    <span style="font-size: 13px;">雲林租屋紀實</span>
                 </div>
                 <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.webp');">
                     <span style="font-size: 13px;">PWA 技術實踐指南</span>
                 </div>
-                <div class="mid-card" style="background: #1a1a1a; border: 1px dashed #333; justify-content: center; align-items: center;">
-                    <span style="font-size: 12px; color: #555;">即將推出...</span>
-                </div>
             </div>
 
             <div class="list-header">
-                <span style="font-weight: bold;">熱門文章</span>
-                <a href="https://mobsp.github.io/p/list/" class="more-btn">更多</a>
+                <span style="font-weight: bold;">全部文章</span>
+                <a href="#" class="more-btn">REFRESH</a>
             </div>
 
-            <div id="article-list-container">
-                </div>
-            
             <div id="github-articles"></div>
         </main>
 
@@ -196,7 +198,7 @@
         const GH_CONFIG = {
             user: 'mobsp',
             repo: 'mobsp.github.io',
-            path: 'blog/p/list'
+            path: 'blog/p/list' // 文章存放路徑
         };
 
         const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
@@ -220,42 +222,4 @@
                     const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
                     if (!error && data.length > 0) {
                         const item = data[0];
-                        vTag.innerText = `BLOG V2.0 | ${item.type}`;
-                        mqText.innerText = item.message;
-                    }
-                } catch (err) { mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！"; }
-            }
-
-            async function loadGithubArticles() {
-                const container = document.getElementById('github-articles');
-                const api_url = `https://api.github.com/repos/${GH_CONFIG.user}/${GH_CONFIG.repo}/contents/${GH_CONFIG.path}`;
-                try {
-                    const response = await fetch(api_url);
-                    if (!response.ok) return;
-                    const files = await response.json();
-                    files.filter(f => f.name.endsWith('.html')).forEach(file => {
-                        const title = file.name.replace('.html', '').replace(/-/g, ' ').toUpperCase();
-                        container.insertAdjacentHTML('beforeend', `
-                            <div class="article-row" onclick="location.href='https://mobsp.github.io/blog/p/list/${file.name}'">
-                                <img src="https://mobsp.github.io/assets/brand/ms-post.webp" class="row-img">
-                                <div class="row-info">
-                                    <div class="row-title">${title}</div>
-                                    <div style="font-size: 11px; color: var(--text-sub);">自動同步文章 · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
-                                </div>
-                                <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px;"></i>
-                            </div>
-                        `);
-                    });
-                } catch (err) {}
-            }
-
-            window.addEventListener('load', () => {
-                initNoticeSystem();
-                loadGithubArticles();
-                setTimeout(hideSplash, 1000);
-            });
-            setTimeout(hideSplash, 3500);
-        })();
-    </script>
-</body>
-</html>
+                        vTag.innerText = `BLOG V2.0 | ${item
