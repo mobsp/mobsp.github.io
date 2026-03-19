@@ -15,42 +15,20 @@
             --text-main: #ffffff; --text-sub: #aaaaaa;
             --accent-color: #00cec9; --nav-bg: #111111;
             --border-color: #262626;
-            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg-body); 
-            height: 100dvh; overflow: hidden; 
-        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-body); height: 100dvh; overflow: hidden; }
 
-        /* 啟動畫面修正：確保 z-index 足夠高 */
-        #ms-splash {
-            position: fixed; inset: 0;
-            background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover no-repeat;
-            z-index: 100000; display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        #ms-splash::after {
-            content: ""; width: 28px; height: 28px; 
-            border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent-color);
-            border-radius: 50%; animation: spin 0.8s linear infinite;
-            position: absolute; bottom: 20%;
-        }
+        /* 啟動畫面 */
+        #ms-splash { position: fixed; inset: 0; background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover no-repeat; z-index: 100000; display: flex; align-items: center; justify-content: center; transition: opacity 0.6s ease-out; }
+        #ms-splash::after { content: ""; width: 28px; height: 28px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent-color); border-radius: 50%; animation: spin 0.8s linear infinite; position: absolute; bottom: 20%; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        #ms-splash.hide { opacity: 0; pointer-events: none; }
         
-        /* 隱藏狀態 */
-        #ms-splash.hide { opacity: 0; pointer-events: none; transform: scale(1.1); }
-        
-        #app-container { 
-            max-width: 480px; margin: 0 auto; 
-            background-color: var(--bg-container); 
-            height: 100%; display: flex; flex-direction: column; 
-            opacity: 0; transition: opacity 0.5s ease;
-        }
+        #app-container { max-width: 480px; margin: 0 auto; background-color: var(--bg-container); height: 100%; display: flex; flex-direction: column; opacity: 0; transition: opacity 0.5s ease; }
         body.loaded #app-container { opacity: 1; }
 
+        /* Header */
         .app-header { flex-shrink: 0; padding: calc(15px + env(safe-area-inset-top)) 15px 10px; background: var(--nav-bg); border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; }
         .marquee-row { display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden; width: 100%; }
         .v-tag { background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px; }
@@ -61,17 +39,19 @@
         .brand-title-link { display: block; width: 100%; margin-bottom: 5px; text-decoration: none; }
         .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
 
+        /* Content */
         #main-view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #000; }
         .section-label { padding: 20px 15px 10px; font-weight: bold; font-size: 1.1rem; color: #fff; }
         .horizontal-slider { display: flex; gap: 15px; padding: 0 15px 20px; overflow-x: auto; scrollbar-width: none; }
         .horizontal-slider::-webkit-scrollbar { display: none; }
         .mid-card { min-width: 210px; height: 140px; border-radius: 15px; display: flex; align-items: flex-end; padding: 15px; background-size: cover; background-position: center; border: 1px solid rgba(255,255,255,0.08); color: #fff; font-weight: 600; }
 
-        .list-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
-        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; text-decoration: none; }
-        .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; }
-        .row-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .row-title { font-size: 14px; font-weight: 600; color: #eee; }
+        /* 文章列表 */
+        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; text-decoration: none; transition: background 0.2s; }
+        .article-row:active { background: rgba(255,255,255,0.1); }
+        .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; flex-shrink: 0; }
+        .row-info { flex: 1; display: flex; flex-direction: column; gap: 4px; overflow: hidden; }
+        .row-title { font-size: 14px; font-weight: 600; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .row-meta { font-size: 11px; color: var(--text-sub); }
 
         .bottom-nav { flex-shrink: 0; height: calc(60px + env(safe-area-inset-bottom)); background-color: var(--nav-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
@@ -104,7 +84,7 @@
                     <span style="font-size: 13px;">PWA 技術實踐</span>
                 </div>
             </div>
-            <div class="list-header"><span style="font-weight: bold; color: #fff;">全部文章</span></div>
+            <div class="list-header"><span style="font-weight: bold; color: #fff; padding-left:15px;">全部文章</span></div>
             <div id="github-articles"></div>
         </main>
 
@@ -116,27 +96,19 @@
         </nav>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // 1. 修正啟動畫面：暴力隱藏法，確保不卡死
+        // 1. 強制解除啟動畫面的邏輯
         const splash = document.getElementById('ms-splash');
         function forceHideSplash() {
             if (splash && !splash.classList.contains('hide')) {
                 splash.classList.add('hide');
                 document.body.classList.add('loaded');
-                console.log("Splash hidden.");
             }
         }
+        window.addEventListener('load', () => setTimeout(forceHideSplash, 800));
+        setTimeout(forceHideSplash, 3000); // 兜底保障
 
-        // 超時保障：3秒內沒加載完也強行進入
-        const splashTimeout = setTimeout(forceHideSplash, 3000);
-
-        window.addEventListener('load', () => {
-            clearTimeout(splashTimeout);
-            setTimeout(forceHideSplash, 800); // 稍微留白，體驗更佳
-        });
-
-        // 2. GitHub 文章加載
+        // 2. GitHub 文章加載：核心 URL 修正
         const GH_CONFIG = { user: 'mobsp', repo: 'mobsp.github.io', path: 'blog/p/list' };
         
         async function loadGithubArticles() {
@@ -146,32 +118,47 @@
                 const response = await fetch(api_url);
                 if (!response.ok) return;
                 const files = await response.json();
+                
+                // 只抓 .md 檔案
                 const mdFiles = files.filter(f => f.name.endsWith('.md'));
                 
                 if (mdFiles.length === 0) {
-                    container.innerHTML = '<div style="color:#555; text-align:center; padding:20px;">尚無文章</div>';
+                    container.innerHTML = '<div style="color:#555; text-align:center; padding:50px;">尚無文章內容</div>';
                     return;
                 }
 
                 container.innerHTML = '';
                 mdFiles.forEach(file => {
-                    const rawName = file.name.replace('.md', '');
-                    const title = rawName.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/-/g, ' ').toUpperCase();
-                    const date = rawName.substring(0, 10);
-                    const finalUrl = `https://mobsp.github.io/blog/p/list/${rawName}.html`;
+                    // --- 關鍵路徑轉換邏輯 ---
+                    // 原始檔名: 2026-03-19-yunlin-full.md
+                    // Jekyll 生成網址: https://mobsp.github.io/blog/p/list/yunlin-full/
+                    
+                    const fileNameNoExt = file.name.replace('.md', ''); // 2026-03-19-yunlin-full
+                    
+                    // 去除前綴日期 (前 11 個字元: YYYY-MM-DD-)
+                    const cleanSlug = fileNameNoExt.replace(/^\d{4}-\d{2}-\d{2}-/, ''); // yunlin-full
+                    
+                    // 顯示標題與日期
+                    const displayTitle = cleanSlug.replace(/-/g, ' ').toUpperCase();
+                    const postDate = fileNameNoExt.substring(0, 10);
+
+                    // 構建正確的 Jekyll URL 路徑
+                    const finalUrl = `https://mobsp.github.io/blog/p/list/${cleanSlug}.html`;
 
                     container.insertAdjacentHTML('beforeend', `
                         <a href="${finalUrl}" class="article-row">
                             <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img">
                             <div class="row-info">
-                                <div class="row-title">${title}</div>
-                                <div class="row-meta"><i class="fa-regular fa-clock"></i> ${date} · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+                                <div class="row-title">${displayTitle}</div>
+                                <div class="row-meta"><i class="fa-regular fa-clock"></i> ${postDate} · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
                             </div>
-                            <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px;"></i>
+                            <i class="fa-solid fa-chevron-right" style="color:#262626; font-size:12px;"></i>
                         </a>
                     `);
                 });
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                container.innerHTML = '<div style="color:red; text-align:center; padding:20px;">加載失敗，請檢查網路連接</div>';
+            }
         }
 
         loadGithubArticles();
