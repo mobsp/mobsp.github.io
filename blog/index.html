@@ -7,7 +7,6 @@
     
     <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
     <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -26,143 +25,72 @@
             height: 100dvh; overflow: hidden; 
         }
 
-        /* Splash Screen */
+        /* 啟動畫面修正：確保 z-index 足夠高 */
         #ms-splash {
             position: fixed; inset: 0;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover no-repeat;
-            z-index: 10000; display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease;
+            z-index: 100000; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
         }
         #ms-splash::after {
-            content: ""; width: 24px; height: 24px; 
-            border: 2px solid rgba(255,255,255,0.2); border-top-color: var(--accent-color);
+            content: ""; width: 28px; height: 28px; 
+            border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent-color);
             border-radius: 50%; animation: spin 0.8s linear infinite;
-            position: absolute; bottom: 15%;
+            position: absolute; bottom: 20%;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        #ms-splash.hide { opacity: 0; pointer-events: none; }
+        
+        /* 隱藏狀態 */
+        #ms-splash.hide { opacity: 0; pointer-events: none; transform: scale(1.1); }
         
         #app-container { 
             max-width: 480px; margin: 0 auto; 
             background-color: var(--bg-container); 
             height: 100%; display: flex; flex-direction: column; 
-            opacity: 0; transform: scale(1.01); transition: opacity 0.6s ease, transform 0.6s ease;
+            opacity: 0; transition: opacity 0.5s ease;
         }
-        body.loaded #app-container { opacity: 1; transform: scale(1); }
+        body.loaded #app-container { opacity: 1; }
 
-        .visually-hidden {
-            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-            overflow: hidden; clip: rect(0,0,0,0); border: 0;
-        }
-
-        /* Header */
-        .app-header { 
-            flex-shrink: 0;
-            padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
-            background: var(--nav-bg);
-            border-bottom: 1px solid var(--border-color);
-            display: flex; flex-direction: column; align-items: center;
-        }
-
-        .marquee-row {
-            display: flex; align-items: center; background: rgba(255,255,255,0.05);
-            padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
-            min-height: 28px; width: 100%;
-        }
-        .v-tag { 
-            background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; 
-            padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap;
-        }
-        .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
-        .mq-text { 
-            display: inline-block; padding-left: 100%;
-            animation: mq 25s linear infinite;
-            font-size: 11px; opacity: 0.9; letter-spacing: 0.5px; color: #fff;
-        }
+        .app-header { flex-shrink: 0; padding: calc(15px + env(safe-area-inset-top)) 15px 10px; background: var(--nav-bg); border-bottom: 1px solid var(--border-color); display: flex; flex-direction: column; align-items: center; }
+        .marquee-row { display: flex; align-items: center; background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden; width: 100%; }
+        .v-tag { background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px; }
+        .mq-box { flex: 1; overflow: hidden; white-space: nowrap; }
+        .mq-text { display: inline-block; padding-left: 100%; animation: mq 25s linear infinite; font-size: 11px; color: #fff; }
         @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
-        .brand-title-link {
-            display: block; width: 100%; transition: var(--transition);
-            margin-bottom: 5px; padding: 0 5px; box-sizing: border-box;
-            text-decoration: none;
-        }
-        .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
+        .brand-title-link { display: block; width: 100%; margin-bottom: 5px; text-decoration: none; }
         .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
 
-        /* Main Content */
-        #main-view { 
-            flex: 1; overflow-y: auto; 
-            -webkit-overflow-scrolling: touch;
-            background: #000;
-        }
-
+        #main-view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; background: #000; }
         .section-label { padding: 20px 15px 10px; font-weight: bold; font-size: 1.1rem; color: #fff; }
-        .horizontal-slider { 
-            display: flex; gap: 15px; padding: 0 15px 20px; 
-            overflow-x: auto; scroll-snap-type: x mandatory; 
-            scrollbar-width: none;
-        }
+        .horizontal-slider { display: flex; gap: 15px; padding: 0 15px 20px; overflow-x: auto; scrollbar-width: none; }
         .horizontal-slider::-webkit-scrollbar { display: none; }
-        
-        .mid-card { 
-            min-width: 210px; height: 140px; 
-            border-radius: 15px; flex-shrink: 0; scroll-snap-align: start;
-            display: flex; align-items: flex-end; padding: 15px;
-            background-size: cover; background-position: center;
-            border: 1px solid rgba(255,255,255,0.08);
-            color: #ffffff; font-weight: 600;
-        }
+        .mid-card { min-width: 210px; height: 140px; border-radius: 15px; display: flex; align-items: flex-end; padding: 15px; background-size: cover; background-position: center; border: 1px solid rgba(255,255,255,0.08); color: #fff; font-weight: 600; }
 
         .list-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; }
-        .more-btn { font-size: 12px; color: var(--accent-color); text-decoration: none; border: 1px solid var(--accent-color); padding: 2px 10px; border-radius: 12px; transition: 0.3s; }
-        
-        /* 文章列表樣式修正 */
-        .article-row { 
-            display: flex; gap: 12px; padding: 12px 15px; 
-            border-bottom: 1px solid var(--border-color); 
-            align-items: center; cursor: pointer; text-decoration: none; 
-            transition: background 0.2s;
-        }
-        .article-row:active { background: rgba(255,255,255,0.1); }
-        .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; flex-shrink: 0; }
+        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; text-decoration: none; }
+        .row-img { width: 75px; height: 75px; border-radius: 12px; object-fit: cover; background: #222; }
         .row-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .row-title { font-size: 14px; font-weight: 600; line-height: 1.4; color: #eee; }
-        .row-meta { font-size: 11px; color: var(--text-sub); display: flex; align-items: center; gap: 5px; }
+        .row-title { font-size: 14px; font-weight: 600; color: #eee; }
+        .row-meta { font-size: 11px; color: var(--text-sub); }
 
-        /* Footer Nav */
-        .bottom-nav { 
-            flex-shrink: 0;
-            height: calc(60px + env(safe-area-inset-bottom)); 
-            background-color: var(--nav-bg); 
-            border-top: 1px solid var(--border-color); 
-            display: flex; justify-content: space-around; align-items: center; 
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 10px; gap: 4px; transition: 0.3s; }
-        .nav-item.active { color: var(--accent-color); }
+        .bottom-nav { flex-shrink: 0; height: calc(60px + env(safe-area-inset-bottom)); background-color: var(--nav-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 10px; gap: 4px; }
         .nav-item i { font-size: 18px; }
     </style>
 </head>
 <body>
 
-    <div id="ms-splash" aria-hidden="true"></div>
+    <div id="ms-splash"></div>
 
     <div id="app-container">
         <header class="app-header">
-            <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比部落格</h1>
-
             <nav class="marquee-row">
                 <span class="v-tag" id="v-tag">SYNCING</span>
-                <div class="mq-box">
-                    <div class="mq-text" id="mq-text">正在從 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 伺服器同步內容...</div>
-                </div>
-                <button onclick="location.href='https://mobsp.github.io/'" style="background:none; border:none; color:var(--text-sub); font-size:14px; padding-left:10px; cursor:pointer;">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                </button>
+                <div class="mq-box"><div class="mq-text" id="mq-text">正在同步 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 數據...</div></div>
             </nav>
-
-            <a href="https://mobsp.github.io/blog/" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
-                <img src="https://mobsp.github.io/assets/brand/ms-blog-title.JPEG" alt="莫比部落格 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
+            <a href="https://mobsp.github.io/blog/" class="brand-title-link">
+                <img src="https://mobsp.github.io/assets/brand/ms-blog-title.JPEG" alt="莫比部落格" class="brand-title-img">
             </a>
         </header>
 
@@ -173,53 +101,80 @@
                     <span style="font-size: 13px;">雲林租屋紀實</span>
                 </div>
                 <div class="mid-card" style="background-image: linear-gradient(transparent, rgba(0,0,0,0.85)), url('https://mobsp.github.io/assets/brand/ms-post.JPEG');">
-                    <span style="font-size: 13px;">PWA 技術實踐指南</span>
+                    <span style="font-size: 13px;">PWA 技術實踐</span>
                 </div>
             </div>
-
-            <div class="list-header">
-                <span style="font-weight: bold;">全部文章</span>
-                <a href="#" class="more-btn">REFRESH</a>
-            </div>
-
+            <div class="list-header"><span style="font-weight: bold; color: #fff;">全部文章</span></div>
             <div id="github-articles"></div>
         </main>
 
         <nav class="bottom-nav">
-            <a href="https://mobsp.github.io/music/" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
-            <a href="https://mobsp.github.io/shorts/" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
-            <a href="https://mobsp.github.io/wiki/" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援中心</span></a>
-            <a href="https://mobsp.github.io/setting" class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></a>
+            <a href="/music/" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
+            <a href="/shorts/" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
+            <a href="/wiki/" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援</span></a>
+            <a href="/setting" class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></a>
         </nav>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const GH_CONFIG = {
-            user: 'mobsp',
-            repo: 'mobsp.github.io',
-            path: 'blog/p/list' // 文章存放路徑
-        };
-
-        const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
-
-        (function() {
-            const splash = document.getElementById('ms-splash');
-            function hideSplash() {
-                if (splash) {
-                    splash.classList.add('hide');
-                    document.body.classList.add('loaded');
-                    setTimeout(() => splash.remove(), 1000);
-                }
+        // 1. 修正啟動畫面：暴力隱藏法，確保不卡死
+        const splash = document.getElementById('ms-splash');
+        function forceHideSplash() {
+            if (splash && !splash.classList.contains('hide')) {
+                splash.classList.add('hide');
+                document.body.classList.add('loaded');
+                console.log("Splash hidden.");
             }
+        }
 
-            async function initNoticeSystem() {
-                const vTag = document.getElementById('v-tag');
-                const mqText = document.getElementById('mq-text');
-                try {
-                    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                    const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
-                    if (!error && data.length > 0) {
-                        const item = data[0];
-                        vTag.innerText = `BLOG V2.0 | ${item
+        // 超時保障：3秒內沒加載完也強行進入
+        const splashTimeout = setTimeout(forceHideSplash, 3000);
+
+        window.addEventListener('load', () => {
+            clearTimeout(splashTimeout);
+            setTimeout(forceHideSplash, 800); // 稍微留白，體驗更佳
+        });
+
+        // 2. GitHub 文章加載
+        const GH_CONFIG = { user: 'mobsp', repo: 'mobsp.github.io', path: 'blog/p/list' };
+        
+        async function loadGithubArticles() {
+            const container = document.getElementById('github-articles');
+            const api_url = `https://api.github.com/repos/${GH_CONFIG.user}/${GH_CONFIG.repo}/contents/${GH_CONFIG.path}`;
+            try {
+                const response = await fetch(api_url);
+                if (!response.ok) return;
+                const files = await response.json();
+                const mdFiles = files.filter(f => f.name.endsWith('.md'));
+                
+                if (mdFiles.length === 0) {
+                    container.innerHTML = '<div style="color:#555; text-align:center; padding:20px;">尚無文章</div>';
+                    return;
+                }
+
+                container.innerHTML = '';
+                mdFiles.forEach(file => {
+                    const rawName = file.name.replace('.md', '');
+                    const title = rawName.replace(/^\d{4}-\d{2}-\d{2}-/, '').replace(/-/g, ' ').toUpperCase();
+                    const date = rawName.substring(0, 10);
+                    const finalUrl = `https://mobsp.github.io/blog/p/list/${rawName}.html`;
+
+                    container.insertAdjacentHTML('beforeend', `
+                        <a href="${finalUrl}" class="article-row">
+                            <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img">
+                            <div class="row-info">
+                                <div class="row-title">${title}</div>
+                                <div class="row-meta"><i class="fa-regular fa-clock"></i> ${date} · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+                            </div>
+                            <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px;"></i>
+                        </a>
+                    `);
+                });
+            } catch (err) { console.error(err); }
+        }
+
+        loadGithubArticles();
+    </script>
+</body>
+</html>
