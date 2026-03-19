@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>RSS 鑄造工坊-莫比空間｜MospSpace.
+    </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --accent: #00cec9; --ios-bg: #050508; --card-bg: rgba(28, 28, 30, 0.7); }
+        body { background: var(--ios-bg); color: #fff; font-family: -apple-system, sans-serif; margin: 0; padding: 20px; overflow-x: hidden; }
+        .glass-bg { position: fixed; inset: 0; background: radial-gradient(circle at 20% 30%, #1a1a2e 0%, #000 70%); z-index: -1; }
+        
+        .container { max-width: 650px; margin: 0 auto; padding-bottom: 100px; }
+        .tool-card { background: var(--card-bg); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 35px; box-shadow: 0 25px 50px rgba(0,0,0,0.6); }
+        
+        h2 { text-align: center; letter-spacing: 3px; background: linear-gradient(135deg, var(--accent), #a29bfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 30px; }
+        
+        /* 表單樣式 */
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; color: #8e8e93; margin-bottom: 8px; margin-left: 5px; }
+        input, select { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid #333; color: #fff; border-radius: 15px; font-size: 15px; outline: none; transition: 0.3s; box-sizing: border-box; }
+        input:focus { border-color: var(--accent); box-shadow: 0 0 10px rgba(0,206,201,0.2); }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .forge-btn { width: 100%; padding: 20px; border: none; border-radius: 20px; color: #fff; font-weight: 800; font-size: 18px; background: linear-gradient(45deg, #00cec9, #6c5ce7); cursor: pointer; margin-top: 10px; transition: 0.3s; }
+        .forge-btn:active { transform: scale(0.98); opacity: 0.8; }
+
+        /* 代碼預覽區 */
+        #resultArea { display: none; margin-top: 30px; animation: fadeIn 0.5s; }
+        pre { background: #000; padding: 20px; border-radius: 20px; border: 1px solid #222; overflow-x: auto; font-size: 13px; color: #a29bfe; position: relative; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* 標籤提示 */
+        .tip { font-size: 11px; color: #555; margin-top: 5px; line-height: 1.4; }
+    </style>
+</head>
+<body>
+    <div class="glass-bg"></div>
+    <div class="container">
+        <div class="tool-card">
+            <h2>RSS FORGE</h2>
+            
+            <div class="input-group">
+                <label><i class="fa-solid fa-link"></i> 目標站點網址</label>
+                <input type="text" id="targetUrl" placeholder="https://example.com/blog">
+            </div>
+
+            <div class="grid">
+                <div class="input-group">
+                    <label><i class="fa-solid fa-layer-group"></i> 文章列表選擇器 (CSS)</label>
+                    <input type="text" id="listSelector" placeholder=".post-item 或 article">
+                    <p class="tip">定義每個文章區塊的標籤</p>
+                </div>
+                <div class="input-group">
+                    <label><i class="fa-solid fa-heading"></i> 標題選擇器</label>
+                    <input type="text" id="titleSelector" placeholder="h2 或 .title">
+                    <p class="tip">文章塊內的標題標籤</p>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-file-contract"></i> 抓取深度 (頁數)</label>
+                <input type="number" id="maxPages" value="1" min="1" max="50">
+            </div>
+
+            <div class="input-group">
+                <label><i class="fa-solid fa-code-branch"></i> 輸出格式</label>
+                <select id="outputFormat">
+                    <option value="rss">標準 RSS (XML)</option>
+                    <option value="json">莫比專用 JSON Feed</option>
+                </select>
+            </div>
+
+            <button class="forge-btn" onclick="generateForgeCode()">⚡ 鑄造專屬爬蟲邏輯</button>
+
+            <div id="resultArea">
+                <label style="color:var(--accent);">✨ 您的自定義爬蟲腳本已就緒：</label>
+                <pre id="codeDisplay"></pre>
+                <button onclick="copyForgeCode()" style="background:#fff; color:#000; width:100%; padding:12px; border-radius:15px; font-weight:bold; border:none; margin-top:10px;">📋 複製腳本</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+function generateForgeCode() {
+    const url = document.getElementById('targetUrl').value || 'https://example.com';
+    const list = document.getElementById('listSelector').value || '.post-item';
+    const title = document.getElementById('titleSelector').value || 'h2';
+    const pages = document.getElementById('maxPages').value;
+    const format = document.getElementById('outputFormat').value;
+
+    // 根據部長輸入生成的 Python 腳本
+    const script = `import requests
+from bs4 import BeautifulSoup
+${format === 'rss' ? 'from feedgen.feed import FeedGenerator' : 'import json'}
+
+# --- Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔢 自動生成的自定義配置 ---
+BASE_URL = "${url}"
+LIST_SELECTOR = "${list}"
+TITLE_SELECTOR = "${title}"
+PAGES = ${pages}
+
+def forge_content():
+    results = []
+    print(f"🚀 開始抓取 {BASE_URL}...")
+    
+    for i in range(1, PAGES + 1):
+        # 這裡會自動處理常見的分頁網址格式
+        current_url = BASE_URL if i == 1 else f"{BASE_URL}?page={i}"
+        res = requests.get(current_url, headers={'User-Agent': 'Mozilla/5.0'})
+        res.encoding = 'utf-8'
+        soup = BeautifulSoup(res.text, 'html.parser')
+        
+        items = soup.select(LIST_SELECTOR)
+        for item in items:
+            t_tag = item.select_one(TITLE_SELECTOR)
+            l_tag = item.find('a')
+            if t_tag and l_tag:
+                results.append({
+                    "title": t_tag.text.strip(),
+                    "link": l_tag['href'] if l_tag['href'].startswith('http') else BASE_URL + l_tag['href']
+                })
+    
+    # 輸出為 ${format.toUpperCase()}
+    ${format === 'rss' ? `
+    fg = FeedGenerator()
+    fg.title('莫比空間RSS')
+    fg.link(href=BASE_URL)
+    fg.description('自動化聚合內容')
+    for r in results:
+        fe = fg.add_entry()
+        fe.title(r['title'])
+        fe.link(href=r['link'])
+    fg.rss_file('mobi_feed.xml')
+    print("✅ RSS 檔案已生成: mobi_feed.xml")` : `
+    with open('mobi_data.json', 'w', encoding='utf-8') as f:
+        json.dump(results, f, ensure_ascii=False, indent=2)
+    print("✅ JSON 檔案已生成: mobi_data.json")`}
+
+if __name__ == "__main__":
+    forge_content()`;
+
+    document.getElementById('codeDisplay').innerText = script;
+    document.getElementById('resultArea').style.display = 'block';
+}
+
+function copyForgeCode() {
+    const text = document.getElementById('codeDisplay').innerText;
+    navigator.clipboard.writeText(text);
+    alert('🔥 專屬鑄造腳本已複製！請將其放入您的 Python 環境執行。');
+}
+</script>
+</body>
+</html>
