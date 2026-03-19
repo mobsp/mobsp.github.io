@@ -2,48 +2,68 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>風月文學網 – 成人小說 情色文學 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔢</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>辛首的家人都移民加拿大了，因爲他考上了一所不錯的大學所以留在台灣。 父母留了一棟屋子讓他住，平常除了練練擡拳道他就是在家看看色情網站。聯考剛放 榜，他花了一些時間把入學手續都完成後整個署假便都在家�無所事事。 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #000; color: #d1d1d1; font-family: -apple-system, sans-serif; line-height: 1.8; margin: 0; }
-        .article { max-width: 500px; margin: 0 auto; padding: 70px 20px; }
+        :root { --ios-bg: #000; --text-color: #fff; --font-size: 18px; --accent: #00cec9; --danger: #ff4d4d; --panel-bg: rgba(28, 28, 30, 0.95); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, sans-serif; background: var(--ios-bg); color: var(--text-color); line-height: 1.8; }
         
-        /* 流光標題動畫 */
-        h1 { 
-            font-size: 28px; 
-            margin-bottom: 40px; 
-            background: linear-gradient(90deg, #fff, #00cec9, #ff4757, #fff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
-        }
-        @keyframes shine { to { background-position: 200% center; } }
+        /* 固定頁首 */
+        .header-fixed { position: fixed; top: 0; left: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; padding: 0 20px; justify-content: space-between; padding-top: env(safe-area-inset-top); height: calc(60px + env(safe-area-inset-top)); }
+        .back-link { color: var(--accent); text-decoration: none; font-size: 16px; font-weight: 500; }
+        
+        /* 文章區域 */
+        .main-content { max-width: 500px; margin: 0 auto; padding: calc(80px + env(safe-area-inset-top)) 20px 150px; }
+        .post-label { font-size: 12px; color: var(--danger); font-weight: bold; margin-bottom: 10px; display: block; letter-spacing: 1px; }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 30px; line-height: 1.3; }
+        .content-body { font-size: var(--font-size); color: var(--text-color); }
+        .content-body p { margin-bottom: 25px; text-align: justify; }
 
-        .post-p p { margin-bottom: 30px; text-align: justify; font-size: 18px; letter-spacing: 0.5px; }
-        
-        /* 霓虹警示窗 */
-        #gate { position: fixed; inset: 0; background: radial-gradient(circle at center, #1a0000 0%, #000 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .gate-box { width: 80%; max-width: 350px; padding: 40px 20px; border: 2px solid #ff4757; border-radius: 30px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 0 30px rgba(255,71,87,0.4); }
-        .gate-btn { background: #ff4757; color: #fff; border: none; padding: 12px 40px; border-radius: 50px; font-weight: bold; margin-top: 25px; cursor: pointer; }
+        /* 版權聲明頁尾 */
+        .footer-copyright { margin-top: 50px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #555; font-size: 12px; line-height: 1.6; }
+
+        /* 固定底部導覽 */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(70px + env(safe-area-inset-bottom)); background: rgba(20,20,22,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); z-index: 100; display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
+        .nav-item { color: #8e8e93; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 5px; cursor: pointer; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item i { font-size: 20px; }
+
+        /* 設定面板 */
+        .mobi-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--panel-bg); backdrop-filter: blur(30px); border-radius: 25px 25px 0 0; padding: 30px 20px 60px; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); }
+        .mobi-panel.show { transform: translateY(0); }
+        .panel-row { margin-bottom: 25px; }
+        .panel-label { font-size: 13px; color: #8e8e93; margin-bottom: 12px; display: flex; justify-content: space-between; }
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: #333; border-radius: 2px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; background: #fff; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+
+        /* 18禁警示 */
+        #gate { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .gate-box { padding: 40px 25px; border: 1px solid var(--danger); border-radius: 30px; background: #0a0000; box-shadow: 0 0 50px rgba(255,77,77,0.2); }
+        .gate-btn { background: var(--danger); color: #fff; border: none; padding: 15px 50px; border-radius: 50px; font-weight: bold; margin-top: 30px; }
     </style>
 </head>
 <body>
     
     <div id="gate">
         <div class="gate-box">
-            <h2 style="color:#ff4757; letter-spacing:2px; margin:0;">18禁警告</h2>
-            <p style="font-size:14px; color:#888; margin-top:10px;">本內容涉及成人題材與倫理情節<br>未成年者請立即離開</p>
-            <button class="gate-btn" onclick="document.getElementById('gate').remove()">我已年滿18歲</button>
+            <h2 style="color:var(--danger); letter-spacing:2px;">18禁限制內容</h2>
+            <p style="color:#666; font-size:14px; margin-top:15px;">本文章包含成人題材，存取前請確認您已滿 18 歲。</p>
+            <button class="gate-btn" onclick="document.getElementById('gate').remove()">確認成年並進入</button>
         </div>
     </div>
 
-    <div class="article">
-        <div style="color:#ff4757; font-size:13px; margin-bottom:10px; font-weight:bold;">#R-18 #倫理敘事 #身分禁忌</div>
-        <h1>風月文學網 – 成人小說 情色文學</h1>
-        <div class="post-p">
-                <p>辛首的家人都移民加拿大了，因爲他考上了一所不錯的大學所以留在台灣。 父母留了一棟屋子讓他住，平常除了練練擡拳道他就是在家看看色情網站。聯考剛放 榜，他花了一些時間把入學手續都完成後整個署假便都在家�無所事事。</p>
-                <p>正是暑氣的七月，媽媽的小妹說要到家�住個幾個禮拜順便等在國外工作 的小姨丈回國。小阿姨今年二十九歲，結婚三年了還沒生小孩。以前辛首就喜歡和她聊 天，因爲她晚生，差了媽媽十歲，所以想法和年輕人接近。也比較有新潮的觀念。</p>
+    <header class="header-fixed">
+        <a href="/blog/" class="back-link"><i class="fa-solid fa-chevron-left"></i> 返回部落格</a>
+        <div style="font-weight:bold; font-size:14px; letter-spacing:1px; color:var(--accent);">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</div>
+        <div style="width:50px;"></div> </header>
+
+    <div class="main-content">
+        <span class="post-label">#R-18 #倫理禁忌 #身分制服</span>
+        <h1>辛首的家人都移民加拿大了，因爲他考上了一所不錯的大學所以留在台灣。 父母留了一棟屋子讓他住，平常除了練練擡拳道他就是在家看看色情網站。聯考剛放 榜，他花了一些時間把入學手續都完成後整個署假便都在家�無所事事。</h1>
+        <div class="content-body" id="articleBody">
+            <p>正是暑氣的七月，媽媽的小妹說要到家�住個幾個禮拜順便等在國外工作 的小姨丈回國。小阿姨今年二十九歲，結婚三年了還沒生小孩。以前辛首就喜歡和她聊 天，因爲她晚生，差了媽媽十歲，所以想法和年輕人接近。也比較有新潮的觀念。</p>
                 <p>她到的那天辛首自己下廚煮了幾道菜給小阿姨，兩人東扯西扯的討論著過 幾天要去哪玩，吃過了飯小阿姨去洗澡，辛首便收拾了一下桌子。她洗完時辛首正在客 廳看電視，小阿姨穿著一件淡藍的睡衣也坐了下來一起看，邊看她邊捶自己的肩</p>
                 <p>"真是的，拿個行李而已就酸成這樣。"</p>
                 <p>"要不要我幫忙抓抓?"辛首挺關心的。</p>
@@ -175,8 +195,44 @@
                 <p>".啊..啊..好爽..快幹我…幹死我..啊..嗯.喔…."</p>
                 <p>肛門陰道也不知道被幹了幾次，學生們才停下來。教官的手依然拉著拉環。 她突然想起龜頭的話，從包包�拿出一支刮胡刀，對著還在摸她的學生說</p>
                 <p>"你們幫我刮毛好嗎?"</p>
-                <p>Copyright © 2026 風月文學網 – 成人小說 情色文學. All Rights Reserved.</p>
+        </div>
+
+        <footer class="footer-copyright">
+            <p>© 2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ 莫比空間 - 版權所有</p>
+            <p style="font-size:10px; opacity:0.5;">所有內容僅供文學交流，嚴禁非法傳播。</p>
+        </footer>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item"><i class="fa-solid fa-house"></i><span>首頁</span></a>
+        <a href="/blog/" class="nav-item active"><i class="fa-solid fa-book-open"></i><span>閱讀</span></a>
+        <div class="nav-item" onclick="document.getElementById('mobiPanel').classList.add('show')"><i class="fa-solid fa-sliders"></i><span>設定</span></div>
+        <a href="/tol/" class="nav-item"><i class="fa-solid fa-screwdriver-wrench"></i><span>工具</span></a>
+    </nav>
+
+    <div class="mobi-panel" id="mobiPanel">
+        <div class="panel-row" style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:bold; font-size:18px;">閱讀設定</span>
+            <span style="color:var(--accent); cursor:pointer; font-weight:bold;" onclick="document.getElementById('mobiPanel').classList.remove('show')">完成</span>
+        </div>
+        <div class="panel-row">
+            <label class="panel-label">字體顏色 (黑 ↔ 白)</label>
+            <input type="range" min="0" max="255" value="255" oninput="updateColor(this.value)">
+        </div>
+        <div class="panel-row">
+            <label class="panel-label">字體大小</label>
+            <input type="range" min="15" max="30" value="18" oninput="updateSize(this.value)">
         </div>
     </div>
+
+    <script>
+        function updateColor(val) {
+            const color = `rgb(${val},${val},${val})`;
+            document.documentElement.style.setProperty('--text-color', color);
+        }
+        function updateSize(val) {
+            document.documentElement.style.setProperty('--font-size', val + 'px');
+        }
+    </script>
 </body>
 </html>
