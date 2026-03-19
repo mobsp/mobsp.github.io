@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 文章上架儀表板</title>
+    <style>
+        body { background: #050508; color: #fff; font-family: -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: rgba(28, 28, 30, 0.8); backdrop-filter: blur(20px); padding: 40px; border-radius: 24px; width: 90%; max-width: 400px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+        h2 { margin: 0 0 10px; font-weight: 800; letter-spacing: -1px; background: linear-gradient(to right, #00cec9, #81ecec); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        p { color: #8e8e93; font-size: 14px; margin-bottom: 30px; }
+        input { width: 100%; padding: 16px; background: #000; border: 1px solid #333; color: #00cec9; border-radius: 12px; margin-bottom: 20px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        input:focus { border-color: #00cec9; box-shadow: 0 0 10px rgba(0,206,201,0.2); }
+        button { width: 100%; padding: 16px; background: #00cec9; color: #000; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; transition: 0.3s; font-size: 16px; }
+        button:hover { transform: translateY(-2px); opacity: 0.9; }
+        #status { margin-top: 25px; font-size: 13px; line-height: 1.6; color: #8e8e93; text-align: center; }
+        .success { color: #00cec9; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>文章自動上架</h2>
+        <p>輸入網址，系統將自動抓取全文並生成 iOS 風格頁面至清單中。</p>
+        
+        <input type="text" id="url" placeholder="請貼上文章網址 (h528.com)..." autocomplete="off">
+        <button onclick="submitGrab()">開始生成檔案</button>
+        
+        <div id="status">準備就緒</div>
+    </div>
+
+    <script>
+        async function submitGrab() {
+            const urlInput = document.getElementById('url');
+            const status = document.getElementById('status');
+            
+            if (!urlInput.value) return alert('部長，請先輸入網址！');
+
+            status.innerHTML = "⏳ 正在連結後台並執行抓取...";
+            
+            try {
+                // 自動抓取當前 Codespaces 的基礎網址，並指向 3000 埠位
+                const baseUrl = window.location.origin.replace('-4000', '-3000').replace('-8080', '-3000');
+                
+                const response = await fetch(`${baseUrl}/api/grab`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: urlInput.value })
+                });
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    status.innerHTML = `<span class="success">✅ 生成成功！</span><br>文章：${result.title}<br>檔名：${result.fileName}`;
+                    urlInput.value = "";
+                } else {
+                    status.innerText = "❌ 錯誤：" + result.error;
+                }
+            } catch (err) {
+                status.innerText = "❌ 無法連線至後台，請確認終端機 node server.js 已啟動。";
+            }
+        }
+    </script>
+</body>
+</html>
