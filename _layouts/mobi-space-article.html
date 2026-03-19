@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" data-theme="auto">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{ page.title }} | MobiSpace Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    
+    <style>
+        /* =========================================
+           1. 顏色系統 (修正版：根據部長指引精確提取) 
+           ========================================= */
+        :root[data-theme="light"] {
+            --bg-base: #ffffff;
+            --container-bg: rgba(255, 255, 255, 0.92);
+            --gradient-1: #f0f4ff; --gradient-2: #fff0f6; --gradient-3: #f5f3ff; --gradient-4: #f0f9ff;
+
+            /* 文章內容字體顏色 (圖3左側指處：深灰) */
+            --text-main: #1c1c1e;
+            /* 發佈時間 (圖3綠色箭頭指處：中性灰) */
+            --color-publish-date: #8e8e93; 
+            /* 段落標題 h2/h3 (圖3紅色箭頭指處：墨黑) */
+            --color-article-h2-h3: #000000;
+            
+            --border-color: #efeff4;
+            --accent-brand: #007aff;
+        }
+
+        :root[data-theme="dark"] {
+            /* 網站背景 (圖3底色) */
+            --bg-base: #050508; 
+            --container-bg: rgba(15, 15, 20, 0.85);
+            --gradient-1: #0f172a; --gradient-2: #1e1b4b; --gradient-3: #312e81; --gradient-4: #020617;
+
+            /* 文章內容字體顏色 (圖3左側指處：純白) */
+            --text-main: #ffffff;
+            /* 發佈時間 (圖3綠色箭頭指處：iOS 灰) */
+            --color-publish-date: #8e8e93; 
+            /* 段落標題 h2/h3 (圖3紅色箭頭指處：極淺灰/白) */
+            --color-article-h2-h3: #f5f5f7;
+            
+            --border-color: #262626;
+            --accent-brand: #58a6ff;
+        }
+
+        /* =========================================
+           2. 核心佈局與動態背景
+           ========================================= */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, system-ui, sans-serif; }
+        body { background-color: var(--bg-base); color: var(--text-main); transition: 0.5s; overflow-x: hidden; }
+        
+        .mobi-flow-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1;
+            background: linear-gradient(-45deg, var(--gradient-1), var(--gradient-2), var(--gradient-3), var(--gradient-4));
+            background-size: 400% 400%; animation: mobiFlow 15s ease infinite; filter: blur(50px); opacity: 0.7;
+        }
+        @keyframes mobiFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .app-shell { max-width: 480px; margin: 0 auto; background: var(--container-bg); min-height: 100vh; position: relative; backdrop-filter: blur(15px); border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color); }
+
+        /* =========================================
+           3. 頂部導覽列 (自動分類辨識)
+           ========================================= */
+        .mobi-header {
+            position: fixed; top: 0; width: 100%; max-width: 480px;
+            background: var(--container-bg); border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; z-index: 1000;
+        }
+
+        .header-left { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
+        .mobi-forward-icon { width: 12px; height: 12px; fill: none; stroke: var(--accent-brand); stroke-width: 2.5; animation: arrowMove 1.5s infinite; }
+        @keyframes arrowMove { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+
+        /* 右上角切換 (純圖示) */
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .theme-toggle { width: 24px; height: 24px; cursor: pointer; background-size: contain; background-repeat: no-repeat; border: none; background-color: transparent; }
+        [data-theme="light"] .theme-toggle { background-image: url('https://mobsp.qzz.io/svg-editor/index.html?icon=dark.svg'); }
+        [data-theme="dark"] .theme-toggle { background-image: url('https://mobsp.qzz.io/svg-editor/index.html?icon=light.svg'); }
+
+        /* =========================================
+           4. 文章內容樣式 (精確顏色套用)
+           ========================================= */
+        .main-content { padding: 80px 20px 100px; }
+        .post-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 20px; color: var(--color-article-h2-h3); }
+
+        .meta-box { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .author-info { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 44px; height: 44px; border-radius: 50%; background: #ccc; overflow: hidden; }
+        .publish-date { font-size: 0.8rem; color: var(--color-publish-date); } /* 圖3綠箭頭指處 */
+
+        .follow-btn { border: 1px solid #ccc; padding: 4px 14px; border-radius: 16px; font-size: 0.85rem; background: transparent; color: var(--text-main); cursor: pointer; }
+
+        .cover-img { width: 100%; border-radius: 12px; margin-bottom: 20px; border: 1px solid var(--border-color); }
+
+        .article-body { font-size: 1.1rem; line-height: 1.8; }
+        .article-body h2, .article-body h3 { color: var(--color-article-h2-h3); margin: 30px 0 15px; font-weight: 700; } /* 圖3紅箭頭指處 */
+        .article-body p { margin-bottom: 1.5rem; color: var(--text-main); } /* 圖3左側指處 */
+        .article-body b, .article-body strong { font-weight: 700; }
+
+        /* 標籤雲區塊 */
+        .tag-box { padding: 15px; background: rgba(128,128,128,0.05); border-radius: 10px; border: 1px solid var(--border-color); margin-top: 40px; }
+        .tag-item { display: inline-block; font-size: 0.8rem; margin-right: 8px; color: var(--accent-brand); }
+
+        /* 版權聲明 (替換圖3圈起處) */
+        .mobi-copyright { margin-top: 50px; text-align: center; font-size: 0.8rem; color: var(--color-publish-date); border-top: 1px solid var(--border-color); padding-top: 20px; }
+
+        /* =========================================
+           5. 底部固定列
+           ========================================= */
+        .mobi-footer {
+            position: fixed; bottom: 0; width: 100%; max-width: 480px;
+            background: var(--container-bg); border-top: 1px solid var(--border-color);
+            padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px);
+        }
+        .action-icons { display: flex; gap: 15px; align-items: center; color: var(--color-publish-date); }
+        .action-item { display: flex; align-items: center; gap: 4px; font-size: 0.9rem; }
+        .svg-icon { width: 20px; height: 20px; fill: currentColor; }
+
+    </style>
+</head>
+<body>
+
+    <div class="mobi-flow-bg"></div>
+
+    <div class="app-shell">
+        <header class="mobi-header">
+            <div class="header-left">
+                <img src="https://mobsp.qzz.io/svg-editor/index.html?icon=list.svg" style="width:18px; height:18px;">
+                <a href="/">MobiSpace</a>
+                <svg class="mobi-forward-icon" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+                <span style="font-weight:600;">{{ page.category | default: "探索空間" }}</span>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="themeBtn" aria-label="切換模式"></button>
+                <img src="https://mobsp.qzz.io/svg-editor/index.html?icon=close.svg" style="width:20px; height:20px; cursor:pointer;">
+            </div>
+        </header>
+
+        <main class="main-content">
+            <h1 class="post-title">{{ page.title }}</h1>
+            
+            <div class="meta-box">
+                <div class="author-info">
+                    <div class="avatar">
+                        <img src="{{ site.baseurl }}/assets/img/avatar.png" onerror="this.style.display='none'">
+                    </div>
+                    <div style="display:flex; flex-direction:column;">
+                        <span style="font-weight:600; font-size:0.95rem;">{{ page.author }}</span>
+                        <span class="publish-date">發佈時間：{{ page.date | date: "%Y-%m-%d" }}</span>
+                    </div>
+                </div>
+                <button class="follow-btn">追蹤</button>
+            </div>
+
+            {% if page.cover_image %}
+            <img src="{{ page.cover_image }}" class="cover-img">
+            {% endif %}
+
+            <div class="article-body">
+                {{ content }}
+            </div>
+
+            <div class="tag-box">
+                <div style="font-size:0.8rem; margin-bottom:8px; opacity:0.6;">麵包屑 / 標籤雲</div>
+                {% for tag in page.tags %}
+                <span class="tag-item">#{{ tag }}</span>
+                {% endfor %}
+            </div>
+
+            <footer class="mobi-copyright">
+                © 2026 Mobius Space Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ. 版權所有。
+            </footer>
+        </main>
+
+        <footer class="mobi-footer">
+            <div class="action-icons">
+                <div class="action-item">❤️ 128</div>
+                <div class="action-item">💬 42</div>
+                <div class="action-item">🔗 分享</div>
+            </div>
+            <a href="https://social-plugins.line.me/lineit/share?url={{ site.url }}{{ page.url }}" target="_blank">
+                <img src="https://github.com/mobsp/mobsp.github.io/raw/main/assets/icon/svg/line.svg" style="width:24px; height:24px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/124/124034.png'">
+            </a>
+        </footer>
+    </div>
+
+    <script>
+        const btn = document.getElementById('themeBtn');
+        const html = document.documentElement;
+        
+        // 初始檢測
+        if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            html.setAttribute('data-theme', 'dark');
+        }
+
+        btn.addEventListener('click', () => {
+            const current = html.getAttribute('data-theme');
+            const target = current === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', target);
+            localStorage.setItem('theme', target);
+        });
+    </script>
+</body>
+</html>
