@@ -3,128 +3,221 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 終極智能轉換</title>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 終極智能生成器</title>
     <style>
         :root { --accent: #00cec9; --danger: #ff4757; --bg: #050508; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; padding: 15px; margin: 0; }
-        .card { background: #111; padding: 25px; border-radius: 30px; border: 1px solid #333; max-width: 500px; margin: 20px auto; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        body { background: var(--bg); color: #fff; font-family: -apple-system, sans-serif; padding: 15px; margin: 0; padding-bottom: 50px; }
+        .card { background: #111; padding: 25px; border-radius: 30px; border: 1px solid #333; max-width: 550px; margin: 20px auto; box-shadow: 0 20px 50px rgba(0,0,0,0.9); }
+        h2.tools-title { text-align: center; letter-spacing: 3px; background: linear-gradient(to right, var(--accent), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-top: 0; }
         
         /* 霓虹輸入框 */
         textarea { width: 100%; padding: 15px; background: #000; border: 1px solid #444; color: var(--accent); border-radius: 15px; box-sizing: border-box; font-size: 16px; margin: 10px 0; transition: 0.3s; }
         textarea:focus { border-color: var(--accent); box-shadow: 0 0 15px rgba(0,206,201,0.2); outline: none; }
 
         /* 全螢幕流光按鈕 */
-        .glow-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: #fff; font-weight: bold; font-size: 17px; background: linear-gradient(45deg, #00cec9, #6c5ce7, #ff4757, #00cec9); background-size: 300%; animation: move 6s infinite; cursor: pointer; }
+        .glow-btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: #fff; font-weight: bold; font-size: 17px; background: linear-gradient(45deg, var(--accent), #6c5ce7, var(--danger), var(--accent)); background-size: 300%; animation: move 6s infinite; cursor: pointer; transition: 0.3s; }
+        .glow-btn:hover { box-shadow: 0 0 20px rgba(0,206,201,0.5); }
         @keyframes move { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        .tag-list { display: flex; gap: 8px; margin: 10px 0; flex-wrap: wrap; }
-        .tag { padding: 4px 12px; border-radius: 50px; font-size: 12px; border: 1px solid #444; color: #888; background: rgba(255,255,255,0.05); }
-        .tag.nsfw { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 10px rgba(255,71,87,0.3); }
+        /* 結果區域 */
+        #resultArea { display: none; margin-top: 25px; border-top: 1px solid #333; padding-top: 20px; }
+        .status-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .tag-detected { padding: 4px 12px; border-radius: 50px; font-size: 12px; border: 1px solid #444; color: #888; background: rgba(255,255,255,0.05); }
+        .tag-detected.nsfw { border-color: var(--danger); color: var(--danger); box-shadow: 0 0 10px rgba(255,71,87,0.3); font-weight: bold; }
+        #copyBtn { background: #fff; color: #000; width: 100%; padding: 14px; border-radius: 15px; font-weight: bold; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2 style="text-align:center; letter-spacing:3px; background: linear-gradient(to right, #00cec9, #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">MOBISPACE</h2>
-        <p style="font-size:11px; color:#666; text-align:center; margin-bottom:20px;">🛡️ 智能內容審查與自動分類系統</p>
+        <h2 class="tools-title">MOBISPACE</h2>
+        <p style="font-size:11px; color:#666; text-align:center; margin-bottom:20px; margin-top:-10px;">🛡️ 終極智能內容封裝系統 (針對 h528 優化)</p>
         
-        <textarea id="rawInput" rows="12" placeholder="直接貼上全文內容..."></textarea>
+        <textarea id="rawInput" rows="15" placeholder="請直接貼上全文內容 (第一行將被識別為標題)..."></textarea>
         
-        <button class="glow-btn" onclick="process()">⚡ 執行 AI 智能封裝</button>
+        <button class="glow-btn" onclick="processArticle()">⚡ 執行智能流光封裝</button>
 
-        <div id="result" style="display:none; margin-top:20px;">
-            <div id="tags" class="tag-list"></div>
-            <textarea id="finalCode" rows="8" readonly></textarea>
-            <button onclick="copy()" style="background:#fff; color:#000; width:100%; padding:14px; border-radius:15px; font-weight:bold; border:none;">📋 複製 HTML 代碼</button>
+        <div id="resultArea">
+            <div class="status-bar">
+                <span style="font-size:13px; color:#888;">識別標籤:</span>
+                <div id="tagsOutput"></div>
+            </div>
+            <textarea id="finalCode" rows="10" readonly></textarea>
+            <button id="copyBtn" onclick="copyFinalCode()">📋 複製成品 HTML 代碼</button>
         </div>
     </div>
 
 <script>
-// 終極關鍵字庫
+// --- 核心終極關鍵字庫 (SEO 18禁標準 + h528 特性) ---
 const NSFW_RE = /亂倫|人妻|熟女|母子|母女|父女|兄妹|姐弟|禁忌|成人|色情|性愛|18禁|porn|adult|nsfw|sex|內射|高潮|抽送|肉棒|陰道|陰莖|乳房|巨乳|調教|奴隸|拘束|SM|凌辱|強姦|強暴|騷麥|自慰|擼管/i;
 const FAMILY_RE = /家庭|倫理|家訪|嫂子|岳母|小姨子|姑姑|阿姨|繼母|後媽|養女|公公|婆婆|兒媳|女婿|舅媽|嬸嬸/;
 const ROLE_RE = /老師|學生|校長|護士|醫生|警察|犯人|上司|下屬|秘書|女僕|空姐|模特|主播/;
 
-function process() {
+function processArticle() {
     const input = document.getElementById('rawInput').value.trim();
-    if(!input) return;
+    if(!input) { alert('部長，內容是空的喔！'); return; }
 
     const lines = input.split('\n').filter(l => l.trim());
-    const title = lines[0]; // 預判第一行為標題
-    const content = input.toLowerCase();
+    if(lines.length < 2) { alert('內容太少，無法解析'); return; }
 
-    // 智能標籤
+    const title = lines[0]; // 識別第一行為標題
+    const contentText = input.toLowerCase();
+
+    // 智能標籤與 18禁 判斷
+    let isNSFW = NSFW_RE.test(contentText);
     let tags = [];
-    let isNSFW = NSFW_RE.test(content);
     if(isNSFW) tags.push('R-18');
-    if(FAMILY_RE.test(content)) tags.push('倫理敘事');
-    if(ROLE_RE.test(content)) tags.push('身分禁忌');
-    if(/人妻|熟女|少婦/.test(content)) tags.push('熟女專欄');
+    if(FAMILY_RE.test(contentText)) tags.push('倫理敘事');
+    if(ROLE_RE.test(contentText)) tags.push('身分禁忌');
+    if(/人妻|熟女|少婦/.test(contentText)) tags.push('熟女專欄');
     if(tags.length === 0) tags.push('故事回廊');
 
-    const tagBox = document.getElementById('tags');
-    tagBox.innerHTML = tags.map(t => `<span class="tag ${t==='R-18'?'nsfw':''}">${t}</span>`).join('');
+    // 顯示識別結果
+    const tagsOutput = document.getElementById('tagsOutput');
+    tagsOutput.innerHTML = tags.map(t => `<span class="tag-detected ${t==='R-18'?'nsfw':''}">${t}</span>`).join('');
 
+    // 段落處理
     const paragraphs = lines.slice(1).map(l => `<p>${l.trim()}</p>`).join('\n                ');
 
-    const template = `<!DOCTYPE html>
+    // --- 構建終極成品模板 (部長指定的帶設定面板模板) ---
+    const finalHTML = `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>${title} | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔢</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #000; color: #d1d1d1; font-family: -apple-system, sans-serif; line-height: 1.8; margin: 0; }
-        .article { max-width: 500px; margin: 0 auto; padding: 70px 20px; }
-        
-        /* 流光標題動畫 */
-        h1 { 
-            font-size: 28px; 
-            margin-bottom: 40px; 
-            background: linear-gradient(90deg, #fff, #00cec9, #ff4757, #fff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: shine 5s linear infinite;
+        :root {
+            --ios-bg: #000000;
+            --ios-card: rgba(28, 28, 30, 0.7);
+            --article-text-color: #ffffff;
+            --article-font-size: 17px;
+            --ios-secondary: #8e8e93;
+            --accent-color: #00cec9;
+            --danger-color: #ff4d4d;
+            --panel-bg: rgba(30, 30, 30, 0.95);
         }
-        @keyframes shine { to { background-position: 200% center; } }
-
-        .post-p p { margin-bottom: 30px; text-align: justify; font-size: 18px; letter-spacing: 0.5px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+            background-color: var(--ios-bg); color: #fff; line-height: 1.7; overflow-x: hidden;
+        }
+        .glass-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: radial-gradient(circle at 20% 30%, #1a1a2e 0%, #000 50%), radial-gradient(circle at 80% 70%, #002b2b 0%, #000 50%); z-index: -1; }
+        .article-container { max-width: 480px; margin: 0 auto; min-height: 100dvh; padding: calc(20px + env(safe-area-inset-top)) 20px 150px; backdrop-filter: blur(10px); }
+        .nav-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; }
+        .back-btn { color: var(--accent-color); text-decoration: none; font-size: 17px; display: flex; align-items: center; gap: 5px; }
         
-        /* 霓虹警示窗 */
-        #gate { position: fixed; inset: 0; background: radial-gradient(circle at center, #1a0000 0%, #000 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; }
-        .gate-box { width: 80%; max-width: 350px; padding: 40px 20px; border: 2px solid #ff4757; border-radius: 30px; text-align: center; backdrop-filter: blur(15px); box-shadow: 0 0 30px rgba(255,71,87,0.4); }
-        .gate-btn { background: #ff4757; color: #fff; border: none; padding: 12px 40px; border-radius: 50px; font-weight: bold; margin-top: 25px; cursor: pointer; }
+        .post-header { margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
+        /* 智能分類標籤視覺 (如果 18禁 則變紅) */
+        .post-category { font-size: 12px; font-weight: 700; color: ${isNSFW ? 'var(--danger-color)' : 'var(--accent-color)'}; text-transform: uppercase; margin-bottom: 8px; display: block; }
+        .post-title { font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 10px; color: #fff; }
+        .post-meta { font-size: 13px; color: var(--ios-secondary); display: flex; gap: 15px; }
+        
+        .post-content { 
+            font-size: var(--article-font-size); 
+            color: var(--article-text-color); 
+            transition: color 0.1s, font-size 0.1s;
+        }
+        /* 保留原模板的 p 標籤樣式，不使用 pre-wrap 以免手機排版混亂 */
+        .post-content p { margin-bottom: 20px; text-align: justify; }
+
+        /* 設定按鈕與彈窗 */
+        .mobi-settings-btn { position: fixed; bottom: 30px; right: 20px; width: 50px; height: 50px; background: rgba(44, 44, 46, 0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 24px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); cursor: pointer; z-index: 1000; border: 1px solid rgba(255,255,255,0.1); }
+        .mobi-settings-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--panel-bg); backdrop-filter: blur(20px); border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 25px 20px 50px; transform: translateY(100%); transition: transform 0.3s ease; z-index: 999; border-top: 1px solid rgba(255,255,255,0.1); }
+        .mobi-settings-panel.show { transform: translateY(0); }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .panel-title { font-size: 18px; font-weight: 700; color: #fff; }
+        .close-panel { color: var(--accent-color); cursor: pointer; }
+        .control-group { margin-bottom: 25px; }
+        .control-label { font-size: 14px; color: var(--ios-secondary); margin-bottom: 10px; display: flex; justify-content: space-between; }
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 6px; background: #333; border-radius: 3px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; background: #fff; border-radius: 50%; border: 2px solid #000; cursor: pointer; }
+        #colorSlider { background: linear-gradient(to right, #ffffff, #000000); }
+
+        /* --- 智能注入：18禁警示彈窗樣式 --- */
+        #mobi-gate { position: fixed; inset: 0; background: rgba(0,0,0,0.98); backdrop-filter: blur(20px); z-index: 20000; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        .gate-box { width: 100%; max-width: 350px; padding: 40px 20px; border: 1px solid var(--danger-color); border-radius: 30px; background: #0a0000; box-shadow: 0 0 50px rgba(255,77,77,0.3); }
+        .gate-title { color: var(--danger-color); font-size: 24px; font-weight: 800; letter-spacing: 2px; margin-bottom: 15px; }
+        .gate-text { color: var(--ios-secondary); font-size: 15px; margin-bottom: 30px; line-height: 1.6; }
+        .gate-btn { background: var(--danger-color); color: #fff; border: none; padding: 14px 0; width: 100%; border-radius: 50px; font-weight: bold; font-size: 17px; cursor: pointer; }
     </style>
 </head>
 <body>
-    ${isNSFW ? `
-    <div id="gate">
-        <div class="gate-box">
-            <h2 style="color:#ff4757; letter-spacing:2px; margin:0;">18禁警告</h2>
-            <p style="font-size:14px; color:#888; margin-top:10px;">本內容涉及成人題材與倫理情節<br>未成年者請立即離開</p>
-            <button class="gate-btn" onclick="document.getElementById('gate').remove()">我已年滿18歲</button>
-        </div>
-    </div>` : ''}
+    <div class="glass-bg"></div>
 
-    <div class="article">
-        <div style="color:${isNSFW?'#ff4757':'#00cec9'}; font-size:13px; margin-bottom:10px; font-weight:bold;">${tags.map(t=>'#'+t).join(' ')}</div>
-        <h1>${title}</h1>
-        <div class="post-p">
-                ${paragraphs}
+    ${isNSFW ? `
+    <div id="mobi-gate">
+        <div class="gate-box">
+            <div class="gate-title">AGE RESTRICTED</div>
+            <p class="gate-text">本文章包含成人題材或倫理情節，<br>存取前請確認您已滿 18 歲。</p>
+            <button class="gate-btn" onclick="document.getElementById('mobi-gate').remove()">我已年滿 18 歲</button>
         </div>
     </div>
+    ` : ''}
+
+    <div class="mobi-settings-btn" onclick="document.getElementById('mobiSettingsPanel').classList.add('show')">
+        <i class="fa-solid fa-gear"></i>
+    </div>
+
+    <div class="mobi-settings-panel" id="mobiSettingsPanel">
+        <header class="panel-header">
+            <span class="panel-title">閱讀設定</span>
+            <span class="close-panel" onclick="document.getElementById('mobiSettingsPanel').classList.remove('show')">完成</span>
+        </header>
+        <div class="control-group">
+            <label class="control-label">字體顏色 (白 ↔ 黑) <span id="colorVal">#ffffff</span></label>
+            <input type="range" id="colorSlider" min="0" max="255" value="0" oninput="updateColor(this.value)">
+        </div>
+        <div class="control-group">
+            <label class="control-label">字體大小 <span id="sizeVal">17px</span></label>
+            <input type="range" min="14" max="30" value="17" oninput="updateSize(this.value)">
+        </div>
+    </div>
+
+    <div class="article-container">
+        <header class="nav-header">
+            <a href="/blog/" class="back-btn"><i class="fa-solid fa-chevron-left"></i> 莫比部落格</a>
+        </header>
+
+        <article>
+            <div class="post-header">
+                <span class="post-category">${tags.join(' ')}</span>
+                <h1 class="post-title">${title}</h1>
+                <div class="post-meta"><span>${new Date().toISOString().split('T')[0]}</span><span>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</span></div>
+            </div>
+
+            <div class="post-content">
+                ${paragraphs}
+            </div>
+        </article>
+    </div>
+
+    <script>
+        // 原模板自帶的閱讀設定腳本
+        function updateColor(val) {
+            const v = 255 - val;
+            const hex = v.toString(16).padStart(2, '0');
+            const color = \`#\${hex}\${hex}\${hex}\`;
+            document.documentElement.style.setProperty('--article-text-color', color);
+            document.getElementById('colorVal').innerText = color;
+        }
+        function updateSize(val) {
+            document.documentElement.style.setProperty('--article-font-size', val + 'px');
+            document.getElementById('sizeVal').innerText = val + 'px';
+        }
+    </script>
 </body>
 </html>`;
 
-    document.getElementById('finalCode').value = template;
-    document.getElementById('result').style.display = 'block';
+    document.getElementById('finalCode').value = finalHTML;
+    document.getElementById('resultArea').style.display = 'block';
 }
 
-function copy() {
+function copyFinalCode() {
     const el = document.getElementById('finalCode');
     el.select();
     document.execCommand('copy');
-    alert('✨ 終極流光代碼已複製！');
+    alert('✨ 終極成品代碼已複製！');
 }
 </script>
 </body>
