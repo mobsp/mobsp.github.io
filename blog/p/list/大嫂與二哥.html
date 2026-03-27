@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>大嫂與二哥 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --ios-bg: #000; 
+            --text-color: #fff; 
+            --font-size: 18px; 
+            --accent: #00cec9; 
+            --danger: #ff4d4d; 
+            --panel-bg: rgba(28, 28, 30, 0.95); 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--ios-bg); 
+            color: var(--text-color); 
+            line-height: 1.8; 
+            overflow-x: hidden;
+        }
+        
+        .header-fixed { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); 
+            display: flex; align-items: center; padding: 0 20px; justify-content: space-between; 
+            padding-top: env(safe-area-inset-top); height: calc(60px + env(safe-area-inset-top)); 
+        }
+        .back-link { color: var(--accent); text-decoration: none; font-size: 16px; font-weight: 500; }
+        
+        .main-content { max-width: 600px; margin: 0 auto; padding: calc(80px + env(safe-area-inset-top)) 20px 150px; }
+        .post-label { font-size: 12px; color: var(--danger); font-weight: bold; margin-bottom: 10px; display: block; letter-spacing: 1px; }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 30px; line-height: 1.3; color: #fff; }
+        .content-body { font-size: var(--font-size); color: var(--text-color); text-align: justify; }
+        .content-body p { margin-bottom: 25px; }
+
+        .footer-copyright { margin-top: 50px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #555; font-size: 12px; line-height: 1.6; }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            height: calc(70px + env(safe-area-inset-bottom)); 
+            background: rgba(20,20,22,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 100; 
+            display: flex; justify-content: space-around; align-items: center; 
+            padding-bottom: env(safe-area-inset-bottom); 
+        }
+        .nav-item { color: #8e8e93; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 5px; cursor: pointer; transition: 0.2s; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item i { font-size: 20px; }
+
+        .mobi-panel { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: var(--panel-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-radius: 25px 25px 0 0; padding: 30px 20px calc(40px + env(safe-area-inset-bottom)); 
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); 
+        }
+        .mobi-panel.show { transform: translateY(0); }
+        .panel-row { margin-bottom: 25px; }
+        .panel-label { font-size: 13px; color: #8e8e93; margin-bottom: 12px; display: flex; justify-content: space-between; }
+        
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: #333; border-radius: 2px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 28px; height: 28px; background: #fff; 
+            border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer;
+        }
+
+        #gate { 
+            position: fixed; inset: 0; background: #000; z-index: 10000; 
+            display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; 
+        }
+        .gate-box { 
+            padding: 40px 25px; border: 1px solid var(--danger); border-radius: 30px; 
+            background: #0a0000; box-shadow: 0 0 50px rgba(255,77,77,0.2); max-width: 400px;
+        }
+        .gate-btn { 
+            background: var(--danger); color: #fff; border: none; padding: 15px 50px; 
+            border-radius: 50px; font-weight: bold; margin-top: 30px; cursor: pointer; font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="gate">
+        <div class="gate-box">
+            <h2 style="color:var(--danger); letter-spacing:2px;">18禁限制內容</h2>
+            <p style="color:#666; font-size:14px; margin-top:15px;">本文章包含成人題材，存取前請確認您已滿 18 歲。</p>
+            <button class="gate-btn" onclick="document.getElementById('gate').style.display='none'">確認成年並進入</button>
+        </div>
+    </div>
+
+    <header class="header-fixed">
+        <a href="/blog/" class="back-link"><i class="fa-solid fa-chevron-left"></i> 返回</a>
+        <div style="font-weight:bold; font-size:14px; letter-spacing:1px; color:var(--accent);">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</div>
+        <div style="width:40px;"></div> 
+    </header>
+
+    <div class="main-content">
+        <span class="post-label"># 鄉村實錄</span>
+        <h1>大嫂與二哥</h1>
+        <div class="content-body" id="articleBody">
+            <p>我從小到大都在台北長大念書，過習慣了都市生活，但在念研究所時，卻跑到雲林讀雲科大，原因很簡單，就是考研究所時考得不理想，實在沒幾所能挑，但心想能離開家也不錯，爸媽觀念那麼保守，我住家裡要交女友會很困難地，交了也不能帶回家幹，真的很討厭。而到雲林，剛開始還挺不能適應地，跟台北生活截然不同，同學們都半來至四面八方，當然以中南部人為居多，而爸媽是叫我住宿，我當然不從，難得離開家，當然是要在外租房子，可是外面房子有限，真的無法跟台北比，但我還是稍微挑了一下，最後住進一戶人家裡。</p>
+            <p>我租的房子，是一間套房沒錯，但好玩的是，我是跟一個家庭和住，這個家庭家境不知是不是沒有很好，就把他們家的一個房間租給我，房東是一個６０幾歲的阿嬤，媽媽看他很和善，也就願意讓我住那，而阿嬤有兩個兒子，老大３３歲，老二３０歲，而老大已經結婚了，老婆才２７歲而已。</p>
+            <p>就這樣我的生活，是跟這四個人住在同個屋簷下，過了一年，跟大家打成一遍，阿嬤有煮飯，總是會叫我一起吃，我也很自然地的稱呼，阿嬤、大哥、大嫂、二哥，叫的都很習慣，大哥跟大嫂，結婚兩年多，但都沒生小孩，我也不知是甚麼原因，而他們生活方式，三個年輕人，下班時間都好不固定，早一點５點多回到家，晚點就半夜才到家，且三人順序都不一樣，可能大家都很忙碌吧！阿嬤也挺忙碌地，跟她的朋友到處爬爬走，甚至還常跑去大陸玩，我還時常想，他們究竟是家境好還是不好呢？就這樣有時家裡只有我一個人在。</p>
+            <p>同學也有一些人跟我一樣住外面，大家租的房子，其實都相去不遠，反正就是在學校的四周圍。有一天我在同學家討論報告，討論到十點多，心想該回去了，我望著外面的窗戶，無意間發現，黃色的路燈下，正慢慢散步走著，不是大嫂與二哥嗎！由於鄉下挺冷清的，周遭沒甚麼路人，很容易看清楚，我心想剛好可以一起回家，我就匆忙跟同學們道別，趕緊下樓走到外面。</p>
+            <p>我看到大嫂與二哥兩人，在我右邊不遠處，正轉向一個防火巷，我心想那個不是個死巷嗎？我已經在這住一年了，學校周遭的地形，也都寥落指掌，我好奇地走了過去，眼見防火巷，停了一部水泥攪拌車，從兩旁的細縫，都沒看到有人，我心想怎麼可能，於時側身慢慢往前走，走到車頭，終於發現他們兩人。</p>
+            <p>大嫂靠在牆壁上，二哥正親吻著她，哇！心想著這事情被大哥知道還得了，大嫂臉長的普通，但身材卻是很好，在加上她穿著短裙，更是性感迷人，我看見二哥一邊親，手也開始伸進大嫂的裙子裡，似乎在開始摸小穴了吧！我好興奮地看到這個場景，二哥把大嫂上衣往上拉，胸罩也拉了起來，我看到大嫂的胸部，並沒有很大，但二哥卻饑渴地又吸又舔，大嫂不動地，任二哥舔弄著，我看見二哥雙手都在撫摸著大嫂的小穴。</p>
+            <p>我深怕他們會發現我，看了幾分鐘，她們有新動作時，頭還要趕緊伸回來，而我在伸回去時，大嫂則蹲在地上，慢慢吸著二哥的雞巴，二哥褲子脫到一半，四角褲露出老二，大嫂似乎很享受地，閉著眼睛，慢慢地吸著二哥的雞巴，二哥拉著自己的衣服，很享受地看著大嫂含著他的雞巴，就這樣大嫂含了幾分鐘，當她要站起來時，我趕緊又躲了起來，自己算了個幾分鐘，又伸頭去看。</p>
+            <p>這時她們換了個姿勢，大嫂趴在牆壁上，二哥正從後面幹著大嫂，大嫂並沒有發出太大聲的伸吟，可能是夜深寧靜，周遭還有點少數住戶，大嫂與其說是隨著二哥插動著，二哥把大嫂的裙襬給拉了起來，他可能想看著他的雞巴，桶大嫂小穴的樣子，而我卻是看到大嫂那白嫩嫩的屁股，二哥扶著大嫂的腰，不斷地插動著，就這樣過了幾分鐘，他們又換姿勢，這時他們坐到地上，背對著我，我只能看到二哥的背部，心想著要換個偷窺地點才行，但換到他們前面也不對，於是我走到另一側，趴在地上，剛好看到大嫂的臉。</p>
+            <p>我看到大嫂的臉，似乎像是有小聲叫著，任著二哥插，我心想這比剛剛距離稍微遠一點，就大膽拿起自己手機，把攝影模式調成夜間模式，試了一下，幸虧我的手機功能不差，影像居然還蠻清晰，可以清楚拍到大嫂的臉，二哥還不時趴下親大嫂幾下，這擺明就是讓我也把他的臉照了進來，二哥的襯衫鈕扣已經全解開，大嫂抱著二哥的身體，似乎希望他能幹更大力點，這時大嫂又躺回地上，我發現大嫂眼睛飄向我，我趕緊閃了一下，再回去錄影，大嫂依然躺在地上被二哥幹，幸好沒被發現，就這樣我錄了４分２１秒，大嫂躺著被二哥幹著樣子，直到大嫂站起來，穿起內褲，我才趕緊離開。</p>
+            <p>可是我回到家，心想原來大嫂跟二哥原來有一腿唷！我看著自己今天拍攝的傑作，打了好幾次的手槍，真是太興奮了，就這樣後來我看到大嫂，都有一種想幹她的衝動感，持續這種感覺，到有一天。</p>
+            <p>大嫂：「我剛好今天休假啦！」</p>
+            <p>我：「那沒跟阿嬤出去逛逛嗎？」</p>
+            <p>大嫂：「媽參加進香團去高雄了，今天要很晚回來吧！」</p>
+            <p>我寒暄了幾句，走回房間把包包放下，心想著今天那麼好的時機，一定不能放過，於時走回飯廳，我站在大嫂旁。</p>
+            <p>我：「大嫂，平常看大哥那麼忙碌，妳會不會覺得很無聊呀！」</p>
+            <p>大嫂：「還好啦！習慣就好呀！」</p>
+            <p>我：「那沒人陪，妳會不會找其他男生陪妳呢？」</p>
+            <p>大嫂：「你怎麼會這樣說，」大嫂很吃驚的也站了起來</p>
+            <p>我：「因為我昨晚收到同學的給我情色偷拍短片，裡面男女主角好像大嫂與二哥唷！」我哪敢說是我自己偷拍的</p>
+            <p>我：「妳自己看，」我把手機影片放給大嫂看</p>
+            <p>大嫂：「那阿成（我的小名），我知道你對大嫂最好了，可不可以刪除它，不要告訴其他人」</p>
+            <p>我看見大嫂裝傻，大膽地伸手，伸進大嫂的裙子裡，隔著內褲，撫摸的大嫂的小穴，大嫂被我摸一下，就雙手搭在我肩上，我知道大嫂上鉤了，就開始舌吻的大嫂，大嫂果真很老練，舌頭比我還靈活。</p>
+            <p>我：「大嫂妳坐到餐桌上」</p>
+            <p>大嫂：「這樣子嗎？」</p>
+            <p>大嫂：「嗯……嗯……很好，只是在家感覺有點怪」</p>
+            <p>我：「不喜歡嗎？」</p>
+            <p>大嫂：「不是，只是在家只有跟老公做而已」</p>
+            <p>我：「那我今天讓妳破這個例」</p>
+            <p>我把大嫂細肩帶往下，讓兩科胸部露出來，我站起來，把大嫂內褲給脫了，把自己褲子也多了，也沒管那麼多，就直接給她插下去，大嫂淫水已經流了好多出來，所以很好插，我開始親親的桶著，雙手一下放在大嫂的大腿上，一下抓著她的胸部，有時我摸著大嫂的手，可以感覺到她無名指上的結婚戒指，也看到她帶著結婚項鍊，心想著自己也能幹到人妻。</p>
+            <p>大嫂：「嗯……嗯……嗯……」</p>
+            <p>我：「感覺怎樣」</p>
+            <p>大嫂：「阿成，你的雞巴怎麼那麼大，嗯……嗯……」</p>
+            <p>我：「真的嗎」</p>
+            <p>我雙手趕緊扶著大嫂的腰，更用力桶著。</p>
+            <p>大嫂：「啊……啊……啊……好……爽……好……爽……」</p>
+            <p>我：「在家幹沒關係吧！」</p>
+            <p>大嫂：「嗯……嗯……人家有點怕」</p>
+            <p>大嫂：「人家怕等等又人回來怎麼辦，嗯……嗯……」</p>
+            <p>我：「那就讓他看，我怎麼幹妳呀！」</p>
+            <p>我繼續桶著大嫂，之後我做到椅子上，我雙腳張開，扶著大嫂的臀部，讓她的小穴對準我的雞巴，順勢讓臀部壓下來，大嫂很舒服地，一隻手壓在我大腿上，一隻手扶著餐桌，我雙手抱在大嫂的腰部附近，大嫂自己上下擺動著。</p>
+            <p>大嫂：「嗯……嗯……嗯……真的好爽唷！」</p>
+            <p>我：「那妳以後還要找二哥做愛嗎？」</p>
+            <p>大嫂：「不要……嗯……嗯……我以後只找阿成」</p>
+            <p>我看見大嫂，被我幹到，已經成為我的玩具了，我說甚麼，她都說好</p>
+            <p>我：「那我想要幹人時，大嫂就要到我房間讓我幹，可以嗎」</p>
+            <p>大嫂：「嗯……嗯……好……我要阿成每天都幹我……啊……啊……」</p>
+            <p>我心裡太高興了，把大嫂抬起，讓她趴在飯桌上，自己從後面桶她，我還興奮地拍大嫂屁股幾下</p>
+            <p>大嫂：「嗯……嗯……你幹嘛打人家」</p>
+            <p>我：「妳不喜歡嗎？」我親親地又打了幾下</p>
+            <p>大嫂：「你好壞唷……嗯……嗯……」</p>
+            <p>大嫂：「我最喜歡壞男人了……我……還……要……啊……啊……」</p>
+            <p>我：「那我看我怎樣幹死妳」</p>
+            <p>我繼續猛力桶，還加拍打，只見大嫂叫得更大聲，似乎比我還興奮，我幹一幹，休息時，還摸著大嫂的小穴，就是要讓她一直呈現興奮狀態，我還把大嫂的大腿，抬起來放在餐桌上，大嫂的小穴被撐開，可以感覺淫水更是多，這只會讓我更興奮，不斷地桶著大嫂，自己還把上衣給脫了，真的挺熱地，最後我再把大嫂，躺回飯桌上，因為我也快出來了，我身體壓著大嫂的雙腿，讓自己雞巴可以更深入。</p>
+            <p>我：「嗯……嗯……嗯……要射了要……」</p>
+            <p>大嫂：「啊……啊……啊……」</p>
+            <p>最後我拔了出來，大嫂還蹲了下來，讓射在在她臉上，還幫我雞巴給舔乾淨。</p>
+            <p>就這樣，之後大嫂常常打電話問我在哪裡，我總是帶她到各地方做愛，雲林太多地方可以在戶外做愛了，不像在台北只能當車床族，而在家，只要是沒人時，大嫂都會主動找我，要我幹幹她才行，就這樣我也變成很忙碌的學生了。</p>
+        </div>
+
+        <footer class="footer-copyright">
+            <p>© 2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ 莫比空間 - 版權所有</p>
+            <p style="font-size:10px; opacity:0.5;">所有內容僅供文學交流，嚴禁非法傳播。</p>
+        </footer>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item"><i class="fa-solid fa-house"></i><span>首頁</span></a>
+        <a href="/blog/" class="nav-item active"><i class="fa-solid fa-book-open"></i><span>閱讀</span></a>
+        <div class="nav-item" onclick="togglePanel(true)"><i class="fa-solid fa-sliders"></i><span>設定</span></div>
+    </nav>
+
+    <div class="mobi-panel" id="mobiPanel">
+        <div class="panel-row" style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:bold; font-size:18px;">閱讀設定</span>
+            <span style="color:var(--accent); cursor:pointer; font-weight:bold;" onclick="togglePanel(false)">完成</span>
+        </div>
+        <div class="panel-row">
+            <label class="panel-label"><span>文字亮度</span><span id="val-color">100%</span></label>
+            <input type="range" min="50" max="255" value="255" oninput="updateColor(this.value)">
+        </div>
+        <div class="panel-row">
+            <label class="panel-label"><span>字體大小</span><span id="val-size">18px</span></label>
+            <input type="range" min="14" max="32" value="18" oninput="updateSize(this.value)">
+        </div>
+    </div>
+
+    <script>
+        function togglePanel(show) {
+            const panel = document.getElementById('mobiPanel');
+            if (show) panel.classList.add('show');
+            else panel.classList.remove('show');
+        }
+        function updateColor(val) {
+            const color = `rgb(${val},${val},${val})`;
+            document.documentElement.style.setProperty('--text-color', color);
+            document.getElementById('val-color').innerText = Math.round((val / 255) * 100) + '%';
+        }
+        function updateSize(val) {
+            document.documentElement.style.setProperty('--font-size', val + 'px');
+            document.getElementById('val-size').innerText = val + 'px';
+        }
+    </script>
+</body>
+</html>
