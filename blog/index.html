@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Terminal | v5.5 Cloud Sync</title>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Terminal | Portal & Filter</title>
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,6 +13,7 @@
             --accent: #00cec9; --bg: #000; --container: #0a0a0a;
             --text: #e0e0e0; --sub: #666; --border: #222;
             --font-main: -apple-system, sans-serif; --fs-base: 14px;
+            --danger: #ff4d4d;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
@@ -35,6 +36,20 @@
         .view { flex: 1; overflow-y: auto; padding: 20px 20px 120px; display: none; }
         .view.active { display: block; }
 
+        /* 類別切換條 (新增) */
+        .filter-bar { 
+            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; 
+            margin-bottom: 10px; border-bottom: 1px solid #111;
+            scrollbar-width: none; -ms-overflow-style: none;
+        }
+        .filter-bar::-webkit-scrollbar { display: none; }
+        .filter-btn { 
+            flex: 0 0 auto; padding: 6px 14px; border-radius: 20px; 
+            background: #111; border: 1px solid var(--border); 
+            color: var(--sub); font-size: 11px; cursor: pointer; transition: 0.3s;
+        }
+        .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
+
         /* 表單與 UI 組件 */
         .field { margin-bottom: 20px; }
         label { display: block; font-size: 11px; color: var(--sub); margin-bottom: 8px; text-transform: uppercase; }
@@ -43,16 +58,14 @@
             color: #fff; padding: 12px; border-radius: 8px; font-size: 14px;
         }
         
-        .btn { border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; }
+        .btn { border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; text-decoration: none; }
         .btn-primary { background: var(--accent); color: #000; padding: 15px; width: 100%; margin-top: 10px; }
         .btn-ghost { background: #1a1a1a; color: #ccc; padding: 8px 12px; font-size: 11px; border: 1px solid var(--border); }
         
-        /* 檔案卡片 (II-8/11) */
         .file-card { 
             background: #080808; border: 1px solid var(--border); padding: 15px; 
             border-radius: 10px; margin-bottom: 12px; transition: 0.3s;
         }
-        .file-card:active { border-color: var(--accent); }
 
         nav { 
             position: absolute; bottom: 0; width: 100%; 
@@ -71,10 +84,6 @@
             border-radius: 30px; z-index: 3000; transition: 0.4s; opacity: 0; font-size: 12px;
         }
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
-        /* 伸縮面板 */
-        details { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 15px; }
-        summary { padding: 12px; font-size: 12px; color: var(--accent); cursor: pointer; list-style: none; }
     </style>
 </head>
 <body>
@@ -84,101 +93,85 @@
 
     <div id="app">
         <header>
-            <div style="font-size: 11px; color: var(--accent); font-weight: bold;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ AUTHORITY V5.5</div>
-            <div id="sync-status" style="font-size: 9px; color: #444;">[系統狀態] 雲端同步就緒 (II-11/12)</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="font-size: 11px; color: var(--accent); font-weight: bold;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ AUTHORITY V5.6</div>
+                <a href="https://mobsp.qzz.io/tol/publisher/" class="btn btn-ghost" style="border-radius: 20px; padding: 4px 12px;">
+                    <i class="fa-solid fa-rocket"></i> 傳送門
+                </a>
+            </div>
         </header>
 
         <div id="main-stage">
             <div id="view-pub" class="view active">
                 <div class="field">
-                    <label>GitHub Token (IV-12 監控中)</label>
+                    <label>GitHub Token</label>
                     <input type="password" id="token" placeholder="ghp_xxxxxxxx">
                 </div>
                 <div class="field">
-                    <label>標題 (VI-1 AI支援)</label>
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" id="title" placeholder="文章標題">
-                        <button class="btn btn-ghost" onclick="localAI('title')">AI產標</button>
-                    </div>
+                    <label>標題</label>
+                    <input type="text" id="title" placeholder="文章標題">
                 </div>
                 <div class="field">
-                    <label>內容 (I-1 Markdown)</label>
-                    <div style="display:flex; gap:8px; margin-bottom:8px;">
-                        <button class="btn btn-ghost" onclick="document.getElementById('upload').click()">手機照片</button>
-                        <button class="btn btn-ghost" onclick="localAI('img')">AI配圖</button>
-                    </div>
-                    <textarea id="content" rows="12" placeholder="內容..."></textarea>
-                    <input type="file" id="upload" hidden accept="image/*">
+                    <label>類別標籤</label>
+                    <select id="pub-cate">
+                        <option value="教程">教程 (Tutorial)</option>
+                        <option value="開發">開發 (Dev)</option>
+                        <option value="其它">其它 (Misc)</option>
+                        <option value="🔞">🔞 (Adult Only)</option>
+                    </select>
                 </div>
-
-                <details>
-                    <summary>進階發佈擴充 (III / IV / VI)</summary>
-                    <div style="padding: 15px; background: #080808;">
-                        <div class="field">
-                            <label>文章分類路徑 (二-1/6)</label>
-                            <input type="text" id="cate-path" value="blog/p/list" placeholder="例如: tech/notes">
-                        </div>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:11px;">
-                            <label><input type="checkbox" id="up-sitemap" checked> 更新 Sitemap (III-7)</label>
-                            <label><input type="checkbox" id="add-disclaim" checked> 免責聲明 (IV-14)</label>
-                        </div>
-                    </div>
-                </details>
-
-                <button class="btn btn-primary" onclick="publish()">執行雲端發佈 (II-19 查重)</button>
+                <div class="field">
+                    <label>Markdown 內容</label>
+                    <textarea id="content" rows="12" placeholder="內容..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="publish()">執行雲端發佈</button>
             </div>
 
             <div id="view-files" class="view">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    <h4 style="color:var(--accent); margin:0;">文件宇宙 / blog/p/list</h4>
-                    <button class="btn btn-ghost" onclick="syncRepo()"><i class="fa-solid fa-rotate"></i> 同步雲端</button>
+                    <h4 style="color:var(--accent); margin:0;">文件管理中心</h4>
+                    <button class="btn btn-ghost" onclick="syncRepo()"><i class="fa-solid fa-rotate"></i> 同步</button>
                 </div>
+
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="filterCate('全部', this)">全部</button>
+                    <button class="filter-btn" onclick="filterCate('教程', this)">教程</button>
+                    <button class="filter-btn" onclick="filterCate('開發', this)">開發</button>
+                    <button class="filter-btn" onclick="filterCate('其它', this)">其它</button>
+                    <button class="filter-btn" onclick="filterCate('🔞', this)">🔞</button>
+                </div>
+
                 <div class="field">
-                    <input type="text" id="search" oninput="searchFiles(this.value)" placeholder="全站搜尋 (二-8)...">
+                    <input type="text" id="search" oninput="searchFiles(this.value)" placeholder="搜尋文章名稱...">
                 </div>
                 
                 <div id="file-list" style="min-height:200px;">
-                    <p style="text-align:center; color:#444; margin-top:50px;">點擊「同步雲端」讀取文章列表</p>
-                </div>
-
-                <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:15px;">
-                    <label>二-12 MOD 模組封裝</label>
-                    <button class="btn btn-ghost" style="width:100%" onclick="exportMOD()">
-                        <i class="fa-solid fa-file-code"></i> 匯出 Articles.json MOD
-                    </button>
+                    <p style="text-align:center; color:#444; margin-top:50px;">請先點擊「同步」按鈕</p>
                 </div>
             </div>
 
             <div id="view-set" class="view">
-                <h4 style="color:var(--accent)">系統與樣式</h4>
+                <h4 style="color:var(--accent)">樣式設定</h4>
                 <div class="field">
-                    <label>Proton級密碼產生器 (IV-15)</label>
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" id="pw-out" readonly>
-                        <button class="btn btn-ghost" onclick="genSecurePw()">產生</button>
-                    </div>
-                </div>
-                <div class="field">
-                    <label>介面 Hue 調整 (V-14)</label>
+                    <label>介面 Hue 調整</label>
                     <input type="range" min="0" max="360" value="180" oninput="updateHue(this.value)">
                 </div>
-                <button class="btn btn-ghost" style="width:100%; color:#ff4d4d;" onclick="localStorage.clear();location.reload();">重置所有資料</button>
+                <button class="btn btn-ghost" style="width:100%; color:var(--danger);" onclick="localStorage.clear();location.reload();">重置應用</button>
             </div>
         </div>
 
         <nav>
-            <div class="nav-item active" onclick="go(0, this)"><i class="fa-solid fa-paper-plane"></i><span>發佈</span></div>
-            <div class="nav-item" onclick="go(1, this)"><i class="fa-solid fa-folder-tree"></i><span>文件</span></div>
-            <div class="nav-item" onclick="go(2, this)"><i class="fa-solid fa-sliders"></i><span>設定</span></div>
+            <div class="nav-item active" onclick="go(0, this)"><i class="fa-solid fa-pen-nib"></i><span>發佈</span></div>
+            <div class="nav-item" onclick="go(1, this)"><i class="fa-solid fa-box-archive"></i><span>文件</span></div>
+            <div class="nav-item" onclick="go(2, this)"><i class="fa-solid fa-gear"></i><span>設定</span></div>
         </nav>
     </div>
 
     <script>
-        let state = { articles: [], hue: 180 };
+        let state = { articles: [], currentFilter: '全部' };
 
-        // --- 1. 初始化與同步 (核心修正) ---
         window.onload = () => {
-            const saved = JSON.parse(localStorage.getItem('mob_v55') || '{}');
+            const saved = JSON.parse(localStorage.getItem('mob_v56') || '{}');
             if(saved.token) document.getElementById('token').value = saved.token;
             if(saved.hue) updateHue(saved.hue);
             initBg();
@@ -190,132 +183,118 @@
             el.classList.add('active');
         }
 
+        // --- 同步與類別過濾核心 ---
         async function syncRepo() {
             const token = document.getElementById('token').value;
             const list = document.getElementById('file-list');
-            if(!token) return msg("請輸入 Token", true);
+            if(!token) return msg("Token 缺失", true);
 
-            list.innerHTML = `<p style="text-align:center; color:var(--accent);">同步中...</p>`;
+            list.innerHTML = `<p style="text-align:center; color:var(--accent);">數據對接中...</p>`;
             
             try {
-                // 直接向 GitHub API 請求 blog/p/list 路徑 (二-11)
+                // 讀取 blog/p/list 內容
                 const res = await fetch(`https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p/list`, {
                     headers: { "Authorization": `token ${token}` }
                 });
-                if(!res.ok) throw new Error("路徑讀取失敗");
-                
+                if(!res.ok) throw new Error("讀取失敗");
                 const data = await res.json();
-                state.articles = data.filter(f => f.name.endsWith('.html'));
                 
-                renderFiles(state.articles);
-                msg(`已同步 ${state.articles.length} 篇文章`);
+                // 整理數據並嘗試從檔名解析類別 (假設檔名規則含類別)
+                state.articles = data.filter(f => f.name.endsWith('.html')).map(f => {
+                    // 這裡做一個簡單解析：如果檔名含類別關鍵字則歸類
+                    let cate = '其它';
+                    if(f.name.includes('教程')) cate = '教程';
+                    else if(f.name.includes('開發')) cate = '開發';
+                    else if(f.name.includes('🔞')) cate = '🔞';
+                    return { ...f, cate };
+                });
+                
+                filterCate(state.currentFilter);
+                msg(`同步成功: ${state.articles.length} 件`);
             } catch(e) {
-                list.innerHTML = `<p style="text-align:center; color:red;">同步失敗: ${e.message}</p>`;
+                list.innerHTML = `<p style="text-align:center; color:red;">${e.message}</p>`;
             }
+        }
+
+        function filterCate(cate, btnEl) {
+            state.currentFilter = cate;
+            if(btnEl) {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btnEl.classList.add('active');
+            }
+            
+            const filtered = state.currentFilter === '全部' 
+                ? state.articles 
+                : state.articles.filter(a => a.cate === state.currentFilter);
+            
+            renderFiles(filtered);
         }
 
         function renderFiles(files) {
             const list = document.getElementById('file-list');
+            if(files.length === 0) {
+                list.innerHTML = `<p style="text-align:center; color:#444; margin-top:50px;">此類別暫無內容</p>`;
+                return;
+            }
             list.innerHTML = files.map(f => `
                 <div class="file-card">
-                    <div style="display:flex; justify-content:space-between;">
-                        <b style="color:var(--accent); font-size:13px;">${f.name}</b>
-                        <span style="font-size:9px; color:#444;">HTML</span>
+                    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                        <div>
+                            <span style="font-size:9px; background:#222; color:var(--accent); padding:2px 6px; border-radius:4px; margin-bottom:5px; display:inline-block;">${f.cate}</span>
+                            <div style="font-weight:bold; font-size:13px;">${f.name}</div>
+                        </div>
+                        <button class="btn btn-ghost" style="color:red; border:none;" onclick="delFile('${f.path}','${f.sha}')"><i class="fa-solid fa-trash"></i></button>
                     </div>
-                    <div style="font-size:10px; color:#555; margin:5px 0;">SHA: ${f.sha.substring(0,10)}</div>
-                    <div style="display:flex; gap:8px; margin-top:8px;">
-                        <button class="btn btn-ghost" onclick="window.open('https://mobsp.github.io/${f.path}')">預覽</button>
-                        <button class="btn btn-ghost" style="color:red" onclick="delFile('${f.path}','${f.sha}')">刪除</button>
+                    <div style="display:flex; gap:8px; margin-top:10px;">
+                        <button class="btn btn-ghost" style="flex:1" onclick="window.open('https://mobsp.github.io/${f.path}')">預覽</button>
+                        <button class="btn btn-ghost" onclick="copyUrl('https://mobsp.github.io/${f.path}')"><i class="fa-solid fa-link"></i></button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // --- 2. 發佈與 MOD 封裝 (二-12/19) ---
         async function publish() {
             const token = document.getElementById('token').value;
             const title = document.getElementById('title').value;
-            let content = document.getElementById('content').value;
-            const pathBase = document.getElementById('cate-path').value;
+            const cate = document.getElementById('pub-cate').value;
+            const content = document.getElementById('content').value;
 
-            if(!token || !title) return msg("標題與 Token 必填", true);
+            if(!token || !title) return msg("請輸入完整資訊", true);
 
-            // 二-19: 相似度偵測 (簡易模擬)
-            if(state.articles.some(a => a.name.includes(title))) {
-                if(!confirm("偵測到相似標題文章，確定重複發佈嗎？")) return;
-            }
-
-            if(document.getElementById('add-disclaim').checked) {
-                content += `\n\n---\n> 免責聲明: 本文由 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ 終端機發佈。`;
-            }
-
-            const fileName = `${new Date().toISOString().split('T')[0]}-${title}.html`;
-            const fullPath = `${pathBase}/${fileName}`;
-            const html = `<!DOCTYPE html><html><head><title>${title}</title></head><body>${marked.parse(content)}</body></html>`;
+            // 檔名加入類別標籤以便後續同步過濾 (II-6)
+            const fileName = `${new Date().toISOString().split('T')[0]}-[${cate}]-${title}.html`;
+            const path = `blog/p/list/${fileName}`;
+            const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title></head><body>${marked.parse(content)}</body></html>`;
 
             try {
-                const res = await fetch(`https://api.github.com/repos/mobsp/mobsp.github.io/contents/${fullPath}`, {
+                const res = await fetch(`https://api.github.com/repos/mobsp/mobsp.github.io/contents/${path}`, {
                     method: "PUT",
                     headers: { "Authorization": `token ${token}` },
-                    body: JSON.stringify({
-                        message: `Pub: ${title}`,
-                        content: btoa(unescape(encodeURIComponent(html)))
-                    })
+                    body: JSON.stringify({ message: `Pub: ${title}`, content: btoa(unescape(encodeURIComponent(html))) })
                 });
                 if(res.ok) {
                     msg("發佈成功！");
-                    syncRepo(); // 自動更新列表
+                    syncRepo();
                 }
-            } catch(e) { msg("發佈出錯", true); }
+            } catch(e) { msg("發佈失敗", true); }
         }
 
-        function exportMOD() {
-            // 二-12: 封裝成 articles.json 模組
-            const mod = {
-                generator: "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ V5.5",
-                updated: new Date().toISOString(),
-                list: state.articles.map(a => ({ name: a.name, path: a.path, url: `https://mobsp.github.io/${a.path}` }))
-            };
-            const blob = new Blob([JSON.stringify(mod, null, 2)], {type:'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = 'articles-mod.json';
-            a.click();
-            msg("MOD 模組已下載");
-        }
-
-        // --- 3. 工具類 (IV-15, V-14, VI) ---
-        function genSecurePw() {
-            const c = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*";
-            let r = "";
-            const v = new Uint32Array(16);
-            window.crypto.getRandomValues(v);
-            for(let i=0; i<16; i++) r += c[v[i] % c.length];
-            document.getElementById('pw-out').value = r;
-        }
-
-        function localAI(type) {
-            const c = document.getElementById('content').value;
-            if(type === 'title') {
-                document.getElementById('title').value = `解析：${c.substring(0,10)}...`;
-            } else {
-                const url = `https://picsum.photos/seed/${Math.random()}/800/400`;
-                document.getElementById('content').value += `\n![AI封面](${url})\n`;
-            }
-            msg("AI 運算完成");
+        // --- 其他工具 ---
+        function copyUrl(url) {
+            navigator.clipboard.writeText(url);
+            msg("連結已複製");
         }
 
         function msg(m, err=false) {
             const t = document.getElementById('toast');
-            t.innerText = m; t.style.borderColor = err ? 'red' : 'var(--accent)';
+            t.innerText = m; t.style.borderColor = err ? 'var(--danger)' : 'var(--accent)';
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 3000);
         }
 
         function updateHue(v) {
-            state.hue = v;
             document.documentElement.style.setProperty('--accent', `hsl(${v}, 100%, 40%)`);
-            localStorage.setItem('mob_v55', JSON.stringify({token: document.getElementById('token').value, hue: v}));
+            localStorage.setItem('mob_v56', JSON.stringify({token: document.getElementById('token').value, hue: v}));
         }
 
         function initBg() {
@@ -324,10 +303,9 @@
             let w = cvs.width = window.innerWidth;
             let h = cvs.height = window.innerHeight;
             function draw() {
-                ctx.fillStyle = "rgba(0,0,0,0.1)";
-                ctx.fillRect(0,0,w,h);
+                ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,w,h);
                 ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-                for(let i=0; i<20; i++) ctx.fillRect(Math.random()*w, Math.random()*h, 1, 10);
+                for(let i=0; i<15; i++) ctx.fillRect(Math.random()*w, Math.random()*h, 1, 8);
                 requestAnimationFrame(draw);
             }
             draw();
