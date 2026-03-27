@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>小姨子的菊穴 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --ios-bg: #000; 
+            --text-color: #e0e0e0; 
+            --font-size: 18px; 
+            --accent: #00cec9; 
+            --danger: #ff4d4d; 
+            --panel-bg: rgba(28, 28, 30, 0.95); 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--ios-bg); 
+            color: var(--text-color); 
+            line-height: 1.8; 
+            overflow-x: hidden;
+        }
+        
+        .header-fixed { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); 
+            display: flex; align-items: center; padding: 0 20px; justify-content: space-between; 
+            padding-top: env(safe-area-inset-top); height: calc(60px + env(safe-area-inset-top)); 
+        }
+        .back-link { color: var(--accent); text-decoration: none; font-size: 16px; font-weight: 500; }
+        
+        .main-content { max-width: 650px; margin: 0 auto; padding: calc(80px + env(safe-area-inset-top)) 20px 150px; }
+        .post-label { font-size: 12px; color: var(--danger); font-weight: bold; margin-bottom: 10px; display: block; letter-spacing: 1px; text-transform: uppercase; }
+        h1 { font-size: 26px; font-weight: 800; margin-bottom: 25px; line-height: 1.4; color: #fff; }
+        
+        .tag-box { margin-bottom: 30px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; font-size: 14px; color: #8e8e93; border: 1px solid rgba(255,255,255,0.1); }
+        .content-body { font-size: var(--font-size); color: var(--text-color); text-align: justify; }
+        .content-body p { margin-bottom: 20px; }
+        .section-divider { height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); margin: 40px 0; opacity: 0.5; }
+        .chapter-title { color: var(--accent); font-weight: bold; font-size: 20px; margin: 30px 0 15px; display: block; }
+
+        .footer-copyright { margin-top: 50px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #555; font-size: 12px; }
+
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            height: calc(70px + env(safe-area-inset-bottom)); 
+            background: rgba(20,20,22,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 100; 
+            display: flex; justify-content: space-around; align-items: center; 
+            padding-bottom: env(safe-area-inset-bottom); 
+        }
+        .nav-item { color: #8e8e93; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 5px; cursor: pointer; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item i { font-size: 20px; }
+
+        .mobi-panel { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: var(--panel-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-radius: 25px 25px 0 0; padding: 30px 20px calc(40px + env(safe-area-inset-bottom)); 
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); 
+        }
+        .mobi-panel.show { transform: translateY(0); }
+        .panel-row { margin-bottom: 25px; }
+        .panel-label { font-size: 13px; color: #8e8e93; margin-bottom: 12px; display: flex; justify-content: space-between; }
+        
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: #333; border-radius: 2px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 28px; height: 28px; background: #fff; 
+            border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer;
+        }
+
+        #gate { 
+            position: fixed; inset: 0; background: #000; z-index: 10000; 
+            display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; 
+        }
+        .gate-box { 
+            padding: 40px 25px; border: 1px solid var(--danger); border-radius: 30px; 
+            background: #0a0000; box-shadow: 0 0 50px rgba(255,77,77,0.2); max-width: 400px;
+        }
+        .gate-btn { 
+            background: var(--danger); color: #fff; border: none; padding: 15px 50px; 
+            border-radius: 50px; font-weight: bold; margin-top: 30px; cursor: pointer; font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="gate">
+        <div class="gate-box">
+            <h2 style="color:var(--danger); letter-spacing:2px;">18禁限制內容</h2>
+            <p style="color:#666; font-size:14px; margin-top:15px;">本文章包含倫理禁忌與高度成人題材，進入前請確認您已滿 18 歲。</p>
+            <button class="gate-btn" onclick="document.getElementById('gate').style.display='none'">確認成年並進入</button>
+        </div>
+    </div>
+
+    <header class="header-fixed">
+        <a href="#" class="back-link"><i class="fa-solid fa-chevron-left"></i> 返回</a>
+        <div style="font-weight:bold; font-size:14px; letter-spacing:1px; color:var(--accent);">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</div>
+        <div style="width:40px;"></div> 
+    </header>
+
+    <div class="main-content">
+        <span class="post-label"># 倫理禁忌 / 身分制服 / 黑道開發</span>
+        <h1>小姨子的菊穴：五爺傳說系列</h1>
+        
+        <div class="tag-box">
+            標籤：小姨子 / 亂倫 / 凌辱 / 奴隸調教 / 暴露 / 公車羞辱 / 腋毛愛好 / 高跟鞋
+        </div>
+
+        <div class="content-body" id="articleBody">
+            <span class="chapter-title">【序章：暑氣中的小阿姨】</span>
+            <p>辛首的家人都移民加拿大了，因為他考上了一所不錯的大學所以留在台灣。父母留了一棟屋子讓他住，平常除了練練跆拳道他就是在家看看色情網站。正是暑氣的七月，媽媽的小妹——小阿姨，說要到家裡住個幾個禮拜。</p>
+            <p>小阿姨今年二十九歲，結婚三年了還沒生小孩。以前辛首就喜歡和她聊天，因為她只差了媽媽十歲，想法和年輕人接近。她到的那天，辛首幫她按摩，發現小阿姨已經睡著了。他看著阿姨粉白的大腿與可愛的腳趾，辛首對女人的腳一直有嗜好，光是這樣看他就幾乎要受不了了。</p>
+            <p>這一天兩人逛了一天街，阿姨一直說腳酸，辛首幫她按腳底時，從按摩變成了撫摸，更毛手毛腳的摸到了阿姨的胸部。正當他神志不清時阿姨醒了，捉住他的手說：「你會出事的。」</p>
+            <p>辛首不理會轉身就吻了她。他把阿姨抱到沙發上脫了她的衣服，用嘴輕輕的舔著阿姨的乳頭，移到了腋下，阿姨讓他舔得癢了忍不住抽動。辛首慢慢把老二頂進阿姨的蜜穴裡，阿姨爽的叫了出來，辛首一直插了好幾百下，直到阿姨高潮了五次才射了出來。</p>
+
+            <div class="section-divider"></div>
+            <span class="chapter-title">【五爺傳說：黑道老爺的義子】</span>
+            <p>不久後辛首救了一位被追殺的老先生，沒想到那老頭是黑道慕後大老「老爺」。老爺收他當義子，大家都叫他「五爺」。</p>
+            <p>在老爺清光敵對幫派的酒店後，辛首挑了酒店經理徐經理來玩。他拽著經理的頭髮把她推倒，用鞋踩在她頭上，剝開她的衣服，撕裂內褲。辛首命令她像狗一樣趴著，然後把一只高跟鞋的鞋跟塞進她的屁眼，徐經理一痛又哭了出來。最後辛首讓坐台小姐麗麗與徐經理互相打鬥，現場一片混亂與淫靡。</p>
+
+            <div class="section-divider"></div>
+            <span class="chapter-title">【悠子的反調教】</span>
+            <p>老爺的兒子們送了一個日本奴隸悠子給辛首，還附帶了一個調教師龍子。辛首卻反過來調教龍子，把她剥光吊起來，揉捏乳房。悠子把龍子當成狗，在她的屁眼塞進一根狗尾。隨後辛首把龍子載到熱鬧的街市放下，可憐的調教師被迫穿著遮不住陰毛的超短裙在街上行走，最終被一群醉漢在暗巷輪奸。</p>
+
+            <div class="section-divider"></div>
+            <span class="chapter-title">【被剃毛的教官】</span>
+            <p>開學後，悠子的女教官因為父親欠債被帶到辛首面前。教官一臉嚴肅，卻被辛首命令手下綁了起來。辛首看著教官雜亂的腋毛，輕輕扯動：「教官是不是都沒剃過毛？」</p>
+            <p>他讓學生「龜頭」在教官面前展示權威，龜頭猛力抽插著教官，教官被插得爽叫出來：「好深……快插死我！」隨後辛首錄下了教官的淫態。第二天，教官被迫穿著極其暴露的熱褲與高跟涼鞋在路口指揮交通，腋毛全被看的一清二楚。</p>
+            <p>下課後，教官又被龜頭威脅，在公車上被一群問題學生集體猥褻。學生舔著她的腋毛，拉起她的腳。最後教官的手拉著拉環，顫抖著從包包拿出一支刮鬍刀，對著學生說：「你們幫我刮毛好嗎？」</p>
+        </div>
+
+        <footer class="footer-copyright">
+            <p>© 2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ 莫比空間 - 版權所有</p>
+            <p style="font-size:10px; opacity:0.5;">純屬虛構文學，請勿於現實模仿。</p>
+        </footer>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="#" class="nav-item"><i class="fa-solid fa-house"></i><span>首頁</span></a>
+        <a href="#" class="nav-item active"><i class="fa-solid fa-book-open"></i><span>閱讀</span></a>
+        <div class="nav-item" onclick="togglePanel(true)"><i class="fa-solid fa-sliders"></i><span>設定</span></div>
+    </nav>
+
+    <div class="mobi-panel" id="mobiPanel">
+        <div class="panel-row" style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:bold; font-size:18px;">閱讀設定</span>
+            <span style="color:var(--accent); cursor:pointer; font-weight:bold;" onclick="togglePanel(false)">完成</span>
+        </div>
+        <div class="panel-row">
+            <label class="panel-label"><span>亮度</span><span id="val-color">100%</span></label>
+            <input type="range" min="100" max="255" value="224" oninput="updateColor(this.value)">
+        </div>
+        <div class="panel-row">
+            <label class="panel-label"><span>字體大小</span><span id="val-size">18px</span></label>
+            <input type="range" min="14" max="28" value="18" oninput="updateSize(this.value)">
+        </div>
+    </div>
+
+    <script>
+        function togglePanel(show) {
+            const panel = document.getElementById('mobiPanel');
+            if (show) panel.classList.add('show');
+            else panel.classList.remove('show');
+        }
+        function updateColor(val) {
+            const color = `rgb(${val},${val},${val})`;
+            document.documentElement.style.setProperty('--text-color', color);
+            document.getElementById('val-color').innerText = Math.round((val / 255) * 100) + '%';
+        }
+        function updateSize(val) {
+            document.documentElement.style.setProperty('--font-size', val + 'px');
+            document.getElementById('val-size').innerText = val + 'px';
+        }
+    </script>
+</body>
+</html>
