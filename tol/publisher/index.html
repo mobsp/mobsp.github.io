@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 文章發佈終端</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --accent: #00cec9; --bg: #000; --card: #111; }
+        body { font-family: -apple-system, sans-serif; background: var(--bg); color: #fff; padding: 20px; margin: 0; display: flex; justify-content: center; }
+        .box { width: 100%; max-width: 650px; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #222; }
+        label { display: block; font-size: 11px; color: #666; margin-bottom: 5px; text-transform: uppercase; }
+        input, textarea { width: 100%; padding: 12px; margin-bottom: 20px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; }
+        button { width: 100%; padding: 16px; background: var(--accent); border: none; font-weight: 800; border-radius: 8px; cursor: pointer; color: #000; }
+        button:disabled { background: #444; opacity: 0.5; }
+        #log { margin-top: 15px; font-family: monospace; font-size: 12px; color: #00ff88; background: #000; padding: 10px; border-radius: 5px; display: none; border: 1px solid #222; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h2 style="color:var(--accent)"><i class="fa-solid fa-paper-plane"></i> Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 發佈器</h2>
+    <label>GitHub Token (每次使用需重新輸入)</label>
+    <input type="password" id="token" placeholder="貼入你的 PAT" autocomplete="off">
+    <div style="display: flex; gap:10px;">
+        <div style="flex:1;"><label>檔案名稱 (含 .html)</label><input type="text" id="fileName" placeholder="story.html"></div>
+        <div style="flex:2;"><label>文章標題</label><input type="text" id="title" placeholder="標題內容"></div>
+    </div>
+    <label>文章內容 (自動轉為 P 標籤)</label>
+    <textarea id="content" rows="10" placeholder="貼入純文字內容..."></textarea>
+    <button id="runBtn">⚡ 立即發佈並推送至 GitHub</button>
+    <div id="log"></div>
+</div>
+
+<script>
+    const GH_USER = "mobsp";
+    const GH_REPO = "mobsp.github.io";
+    const logArea = document.getElementById('log');
+
+    const addLog = (m) => { logArea.style.display='block'; logArea.innerHTML += `> ${m}<br>`; };
+
+    document.getElementById('runBtn').onclick = async () => {
+        const token = document.getElementById('token').value.trim();
+        const title = document.getElementById('title').value.trim();
+        const fileName = document.getElementById('fileName').value.trim();
+        const content = document.getElementById('content').value;
+        const date = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+        if(!token || !fileName || !title) return alert("臭寶！資料填完整再點喔～");
+        
+        document.getElementById('runBtn').disabled = true;
+        logArea.innerHTML = '';
+        addLog("正在準備文章模板...");
+
+        // 🎯 套用你最愛的 HTML 模板 (含 18 禁 Gate)
+        const htmlBody = content.split('\n').filter(p=>p.trim()).map(p=>`<p>${p.trim()}</p>`).join('');
+        const fullHtml = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${title}</title><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px;line-height:1.8;}p{margin-bottom:25px;}</style></head><body><div id="gate" style="position:fixed;inset:0;background:#000;z-index:9;display:flex;align-items:center;justify-content:center;"><div style="border:1px solid #ff4d4d;padding:40px;border-radius:20px;text-align:center;"><h2 style="color:#ff4d4d;">🔞 限制內容</h2><button onclick="document.getElementById('gate').remove()" style="background:#ff4d4d;color:#fff;border:none;padding:10px 30px;border-radius:20px;cursor:pointer;">我已滿18歲</button></div></div><h1>${title}</h1>${htmlBody}</body></html>`;
+
+        try {
+            // 1. 上傳 HTML
+            addLog(`正在推送檔案: blog/p/list/${fileName}`);
+            await pushToGH(`blog/p/list/${fileName}`, fullHtml, `Publish: ${title}`, token);
+
+            // 2. 更新索引
+            addLog("正在同步 articles.json...");
+            const indexUrl = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/articles.json`;
+            let sha = ""; let articles = [];
+            
+            const res = await fetch(indexUrl, { headers: { "Authorization": `token ${token}` } });
+            if(res.ok) {
+                const data = await res.json();
+                sha = data.sha;
+                articles = JSON.parse(decodeURIComponent(escape(atob(data.content))));
+            }
+
+            articles.unshift({ title, url: `https://mobsp.github.io/blog/p/list/${fileName}`, date, fileName });
+            await pushToGH("articles.json", JSON.stringify(articles, null, 2), "Index updated", token, sha);
+
+            addLog("🎉 發佈大成功！老公快去休息吧～");
+            alert("✅ 發佈成功！");
+        } catch (e) {
+            addLog(`❌ 出錯了: ${e.message}`);
+        } finally {
+            document.getElementById('runBtn').disabled = false;
+        }
+    };
+
+    async function pushToGH(path, content, msg, token, sha) {
+        const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`;
+        const res = await fetch(url, {
+            method: "PUT",
+            headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+            body: JSON.stringify({ message: msg, content: btoa(unescape(encodeURIComponent(content))), sha: sha || undefined })
+        });
+        if(!res.ok) throw new Error(await res.text());
+    }
+</script>
+</body>
+</html>
