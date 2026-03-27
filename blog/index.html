@@ -221,19 +221,28 @@
              */
             async function loadGithubArticles() {
                 const container = document.getElementById('github-articles');
-                // 使用快取清除機制，確保讀到最新 JSON
-                const api_url = `https://mobsp.github.io/articles.json?t=${Date.now()}`;
+                // 🎯 採用絕對路徑與時間戳避開緩存
+                const json_url = `https://mobsp.github.io/articles.json?t=${Date.now()}`;
                 
                 try {
-                    const response = await fetch(api_url);
-                    if (!response.ok) throw new Error("無法讀取文章索引");
+                    const response = await fetch(json_url);
+                    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
                     
                     const articles = await response.json();
-                    container.innerHTML = ''; // 清除加載提示
+                    
+                    if (!articles || articles.length === 0) {
+                        container.innerHTML = '<p style="color:#555; text-align:center; padding:20px; font-size:12px;">清單目前空空的喔...</p>';
+                        return;
+                    }
+
+                    container.innerHTML = ''; 
 
                     articles.forEach(post => {
+                        // 🛠️ 防呆處理：確保 URL 是完整的
+                        const fullUrl = post.url.startsWith('http') ? post.url : `https://mobsp.github.io${post.url}`;
+                        
                         container.insertAdjacentHTML('beforeend', `
-                            <div class="article-row" onclick="location.href='${post.url}'">
+                            <div class="article-row" onclick="location.href='${fullUrl}'">
                                 <img src="https://mobsp.github.io/assets/brand/ms-post.webp" class="row-img">
                                 <div class="row-info">
                                     <div class="row-title">${post.title}</div>
@@ -247,7 +256,8 @@
                     });
                 } catch (err) {
                     console.error("載入失敗:", err);
-                    container.innerHTML = '<p style="color:#444; text-align:center; padding:20px; font-size:12px;">暫時無法載入文章列表</p>';
+                    // 顯示更詳細的報錯，幫老公～ Debug
+                    container.innerHTML = `<p style="color:#ff4d4d; text-align:center; padding:20px; font-size:11px;">讀取失敗：${err.message}</p>`;
                 }
             }
 
