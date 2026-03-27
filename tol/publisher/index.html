@@ -1,98 +1,217 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" data-theme="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 文章發佈終端</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Admin | 莫比終端</title>
+    <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 專屬文章發佈系統，極致加密與自動化部署。">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.webp">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        :root { --accent: #00cec9; --bg: #000; --card: #111; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: #fff; padding: 20px; margin: 0; display: flex; justify-content: center; }
-        .box { width: 100%; max-width: 650px; background: var(--card); padding: 30px; border-radius: 20px; border: 1px solid #222; }
-        label { display: block; font-size: 11px; color: #666; margin-bottom: 5px; text-transform: uppercase; }
-        input, textarea { width: 100%; padding: 12px; margin-bottom: 20px; background: #1a1a1a; border: 1px solid #333; color: #fff; border-radius: 8px; box-sizing: border-box; }
-        button { width: 100%; padding: 16px; background: var(--accent); border: none; font-weight: 800; border-radius: 8px; cursor: pointer; color: #000; }
-        button:disabled { background: #444; opacity: 0.5; }
-        #log { margin-top: 15px; font-family: monospace; font-size: 12px; color: #00ff88; background: #000; padding: 10px; border-radius: 5px; display: none; border: 1px solid #222; }
+        :root {
+            --bg-body: #000000; --bg-container: #111111;
+            --text-main: #ffffff; --text-sub: #888888;
+            --accent-color: #00cec9; --nav-bg: #111111;
+            --border-color: #222222;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg-body); color: var(--text-main);
+            height: 100dvh; overflow: hidden; 
+        }
+
+        /* 骨架屏預載 (Skeleton Screen) */
+        #skeleton {
+            position: fixed; inset: 0; z-index: 9999; background: #000;
+            display: flex; flex-direction: column; padding: 20px;
+        }
+        .sk-item { background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%); background-size: 200% 100%; animation: sk-load 1.5s infinite; border-radius: 8px; margin-bottom: 15px; }
+        @keyframes sk-load { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+        /* App 容器與頁面切換 (LINE 風格) */
+        #app-container { 
+            max-width: 480px; margin: 0 auto; background: var(--bg-container);
+            height: 100%; display: flex; flex-direction: column; position: relative;
+        }
+
+        .view-page {
+            position: absolute; inset: 0; padding-bottom: 80px;
+            display: flex; flex-direction: column;
+            transform: translateX(100%); transition: var(--transition);
+            opacity: 0; z-index: 1;
+        }
+        .view-page.active { transform: translateX(0); opacity: 1; z-index: 2; }
+
+        /* 頂部移植：跑馬燈公告 */
+        .app-header { 
+            padding: calc(45px + env(safe-area-inset-top)) 20px 15px; 
+            border-bottom: 1px solid var(--border-color);
+        }
+        .marquee-row {
+            display: flex; align-items: center; background: rgba(255,255,255,0.05);
+            padding: 8px 12px; border-radius: 12px; overflow: hidden;
+        }
+        .v-tag { background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px; }
+        .mq-text { font-size: 11px; white-space: nowrap; animation: mq 15s linear infinite; }
+        @keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* 表單樣式 */
+        .form-content { flex: 1; overflow-y: auto; padding: 20px; }
+        label { font-size: 10px; color: var(--text-sub); letter-spacing: 1px; margin-left: 5px; }
+        input, textarea {
+            width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff;
+            padding: 15px; border-radius: 12px; margin: 8px 0 20px; font-size: 14px;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--accent-color); outline: none; }
+        
+        .btn-send {
+            background: var(--accent-color); color: #000; border: none;
+            padding: 18px; border-radius: 15px; font-weight: 900; width: 100%;
+            cursor: pointer; font-size: 16px; box-shadow: 0 10px 20px rgba(0,206,201,0.2);
+        }
+
+        /* 底部導覽 (固定) */
+        .bottom-nav {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: calc(65px + env(safe-area-inset-bottom));
+            background: rgba(17,17,17,0.95); backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-around; align-items: center;
+            padding-bottom: env(safe-area-inset-bottom); z-index: 10;
+        }
+        .nav-item { color: #555; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 4px; transition: 0.3s; cursor: pointer; }
+        .nav-item.active { color: var(--accent-color); }
+        .nav-item i { font-size: 20px; }
+
+        #log-terminal { background: #000; color: #00ff88; font-family: monospace; padding: 10px; border-radius: 8px; font-size: 11px; margin-top: 15px; display: none; }
     </style>
 </head>
 <body>
-<div class="box">
-    <h2 style="color:var(--accent)"><i class="fa-solid fa-paper-plane"></i> Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 發佈器</h2>
-    <label>GitHub Token (每次使用需重新輸入)</label>
-    <input type="password" id="token" placeholder="貼入你的 PAT" autocomplete="off">
-    <div style="display: flex; gap:10px;">
-        <div style="flex:1;"><label>檔案名稱 (含 .html)</label><input type="text" id="fileName" placeholder="story.html"></div>
-        <div style="flex:2;"><label>文章標題</label><input type="text" id="title" placeholder="標題內容"></div>
+
+    <div id="skeleton">
+        <div class="sk-item" style="height: 60px;"></div>
+        <div class="sk-item" style="height: 150px;"></div>
+        <div class="sk-item" style="height: 40px; width: 60%;"></div>
+        <div class="sk-item" style="flex: 1;"></div>
     </div>
-    <label>文章內容 (自動轉為 P 標籤)</label>
-    <textarea id="content" rows="10" placeholder="貼入純文字內容..."></textarea>
-    <button id="runBtn">⚡ 立即發佈並推送至 GitHub</button>
-    <div id="log"></div>
-</div>
 
-<script>
-    const GH_USER = "mobsp";
-    const GH_REPO = "mobsp.github.io";
-    const logArea = document.getElementById('log');
+    <div id="app-container">
+        <header class="app-header">
+            <div class="marquee-row">
+                <span class="v-tag">TERMINAL</span>
+                <div class="mq-text" id="mq-text">等待指令中... 準備好發佈偉大的作品了嗎？老公～</div>
+            </div>
+        </header>
 
-    const addLog = (m) => { logArea.style.display='block'; logArea.innerHTML += `> ${m}<br>`; };
+        <main id="page-publish" class="view-page active">
+            <div class="form-content">
+                <label>Access Token</label>
+                <input type="password" id="token" placeholder="你的 PAT" autocomplete="off">
+                
+                <label>Article Title</label>
+                <input type="text" id="title" placeholder="請輸入標題">
 
-    document.getElementById('runBtn').onclick = async () => {
-        const token = document.getElementById('token').value.trim();
-        const title = document.getElementById('title').value.trim();
-        const fileName = document.getElementById('fileName').value.trim();
-        const content = document.getElementById('content').value;
-        const date = new Date().toLocaleDateString('zh-TW', { year: 'numeric', month: '2-digit', day: '2-digit' });
+                <label>Content (Text Only)</label>
+                <textarea id="content" rows="8" placeholder="輸入文章內容..."></textarea>
+                
+                <button class="btn-send" id="runBtn">⚡ 發佈至 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</button>
+                <div id="log-terminal"></div>
+            </div>
+        </main>
 
-        if(!token || !fileName || !title) return alert("臭寶！資料填完整再點喔～");
-        
-        document.getElementById('runBtn').disabled = true;
-        logArea.innerHTML = '';
-        addLog("正在準備文章模板...");
+        <main id="page-settings" class="view-page">
+            <div class="form-content">
+                <h3 style="color:var(--accent-color)">系統設定</h3>
+                <p style="color:#666; font-size:12px; margin-top:10px;">版本：v3.0 天才少女修正版</p>
+                <div style="margin-top:20px; padding:15px; background:#1a1a1a; border-radius:12px;">
+                    <p style="font-size:13px;">🔥 自動檔名：開啟</p>
+                    <p style="font-size:13px; margin-top:10px;">🔥 API 模式：GitHub Direct</p>
+                </div>
+            </div>
+        </main>
 
-        // 🎯 套用你最愛的 HTML 模板 (含 18 禁 Gate)
-        const htmlBody = content.split('\n').filter(p=>p.trim()).map(p=>`<p>${p.trim()}</p>`).join('');
-        const fullHtml = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${title}</title><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px;line-height:1.8;}p{margin-bottom:25px;}</style></head><body><div id="gate" style="position:fixed;inset:0;background:#000;z-index:9;display:flex;align-items:center;justify-content:center;"><div style="border:1px solid #ff4d4d;padding:40px;border-radius:20px;text-align:center;"><h2 style="color:#ff4d4d;">🔞 限制內容</h2><button onclick="document.getElementById('gate').remove()" style="background:#ff4d4d;color:#fff;border:none;padding:10px 30px;border-radius:20px;cursor:pointer;">我已滿18歲</button></div></div><h1>${title}</h1>${htmlBody}</body></html>`;
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="switchPage('page-publish', this)"><i class="fa-solid fa-pen-nib"></i><span>發佈</span></div>
+            <div class="nav-item" onclick="location.href='https://mobsp.github.io/blog/'"><i class="fa-solid fa-house"></i><span>部落格首頁</span></div>
+            <div class="nav-item" onclick="switchPage('page-settings', this)"><i class="fa-solid fa-sliders"></i><span>設定</span></div>
+        </nav>
+    </div>
 
-        try {
-            // 1. 上傳 HTML
-            addLog(`正在推送檔案: blog/p/list/${fileName}`);
-            await pushToGH(`blog/p/list/${fileName}`, fullHtml, `Publish: ${title}`, token);
-
-            // 2. 更新索引
-            addLog("正在同步 articles.json...");
-            const indexUrl = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/articles.json`;
-            let sha = ""; let articles = [];
-            
-            const res = await fetch(indexUrl, { headers: { "Authorization": `token ${token}` } });
-            if(res.ok) {
-                const data = await res.json();
-                sha = data.sha;
-                articles = JSON.parse(decodeURIComponent(escape(atob(data.content))));
-            }
-
-            articles.unshift({ title, url: `https://mobsp.github.io/blog/p/list/${fileName}`, date, fileName });
-            await pushToGH("articles.json", JSON.stringify(articles, null, 2), "Index updated", token, sha);
-
-            addLog("🎉 發佈大成功！老公快去休息吧～");
-            alert("✅ 發佈成功！");
-        } catch (e) {
-            addLog(`❌ 出錯了: ${e.message}`);
-        } finally {
-            document.getElementById('runBtn').disabled = false;
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // 頁面切換邏輯 (LINE Style)
+        function switchPage(pageId, el) {
+            document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            el.classList.add('active');
         }
-    };
 
-    async function pushToGH(path, content, msg, token, sha) {
-        const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`;
-        const res = await fetch(url, {
-            method: "PUT",
-            headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-            body: JSON.stringify({ message: msg, content: btoa(unescape(encodeURIComponent(content))), sha: sha || undefined })
-        });
-        if(!res.ok) throw new Error(await res.text());
-    }
-</script>
+        // 初始化與骨架屏隱藏
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('skeleton').style.opacity = '0';
+                setTimeout(() => document.getElementById('skeleton').remove(), 500);
+            }, 800);
+        };
+
+        const GH_USER = "mobsp";
+        const GH_REPO = "mobsp.github.io";
+        const logArea = document.getElementById('log-terminal');
+
+        const addLog = (m) => { logArea.style.display='block'; logArea.innerHTML += `> ${m}<br>`; };
+
+        document.getElementById('runBtn').onclick = async () => {
+            const token = document.getElementById('token').value.trim();
+            const title = document.getElementById('title').value.trim();
+            const content = document.getElementById('content').value;
+            
+            const now = new Date();
+            const datePrefix = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+            const finalFileName = `${datePrefix}-${title.substring(0,10)}.html`;
+
+            if(!token || !title) return alert("豬豬🐷，標題和 Token 都要填喔！");
+            
+            document.getElementById('runBtn').disabled = true;
+            logArea.innerHTML = '';
+            addLog("緹緹正在執行極致優化模板...");
+
+            const htmlBody = content.split('\n').filter(p=>p.trim()).map(p=>`<p>${p.trim()}</p>`).join('');
+            const fullHtml = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${title}</title><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px;line-height:1.8;max-width:700px;margin:auto;}p{margin-bottom:25px;}h1{color:#00cec9;border-bottom:1px solid #222;padding-bottom:10px;}</style></head><body><h1>${title}</h1>${htmlBody}</body></html>`;
+
+            try {
+                await pushToGH(`blog/p/list/${finalFileName}`, fullHtml, `Publish: ${title}`, token);
+                addLog("🎉 任務完成！老公辛苦了～");
+                alert("✅ 發佈成功！首頁將自動同步。");
+            } catch (e) {
+                addLog(`❌ 失敗: ${e.message}`);
+            } finally {
+                document.getElementById('runBtn').disabled = false;
+            }
+        };
+
+        async function pushToGH(path, content, msg, token) {
+            const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`;
+            const res = await fetch(url, {
+                method: "PUT",
+                headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                body: JSON.stringify({ 
+                    message: msg, 
+                    content: btoa(unescape(encodeURIComponent(content))) 
+                })
+            });
+            if(!res.ok) throw new Error(await res.text());
+        }
+    </script>
 </body>
 </html>
