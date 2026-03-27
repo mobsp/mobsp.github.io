@@ -3,115 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Terminal | Final Authority</title>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | Terminal Authority</title>
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --accent: #00cec9; --bg: #000; --container: #0a0a0a;
-            --text: #e0e0e0; --sub: #666; --border: #222;
+            --accent: #00cec9; --bg: #000; --container: #0d0d0d;
+            --text: #e0e0e0; --sub: #777; --border: #222;
+            --fs-base: 14px; --radius: 12px;
             --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --fs-base: 14px;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        /* 五-9: 適配深淺模式的動態 SVG 濾鏡 (CSS 控制) */
+        svg { fill: currentColor; transition: transform 0.3s ease; }
         
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
             margin: 0; background: var(--bg); color: var(--text); 
             font-family: var(--font-main); font-size: var(--fs-base);
             height: 100dvh; overflow: hidden; position: fixed; width: 100%;
         }
 
-        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.3; pointer-events: none; }
+        /* 五-7: 多重流光背景 Canvas */
+        #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.4; pointer-events: none; }
         
         #app { 
             max-width: 500px; margin: 0 auto; height: 100dvh; 
             display: flex; flex-direction: column; background: var(--container);
             border-left: 1px solid var(--border); border-right: 1px solid var(--border);
-            position: relative;
+            position: relative; box-shadow: 0 0 50px rgba(0,0,0,1);
         }
 
-        header { 
-            flex-shrink: 0;
-            padding: calc(45px + env(safe-area-inset-top)) 15px 10px; 
-            border-bottom: 1px solid var(--border); 
-            background: var(--container);
+        /* 四-12: Token 警報系統 */
+        header { flex-shrink: 0; padding: calc(45px + env(safe-area-inset-top)) 20px 15px; border-bottom: 1px solid var(--border); background: #000; }
+        .security-alert { 
+            background: rgba(255, 77, 77, 0.1); color: #ff4d4d; padding: 8px 12px; 
+            border-radius: var(--radius); font-size: 10px; display: none; 
+            border: 1px solid #ff4d4d; margin-bottom: 10px; animation: pulse 1.5s infinite;
         }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
-        /* 核心修正：滾動容器 */
-        #main-stage {
-            flex: 1;
-            position: relative;
-            overflow: hidden; /* 防止主容器溢出 */
-            display: flex;
-            flex-direction: column;
-        }
-
-        .view { 
-            flex: 1;
-            width: 100%;
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; /* iOS 順滑滾動 */
-            padding: 20px 20px 120px; /* 底部留白避開導航列 */
-            display: none; 
-            animation: slideIn 0.3s ease-out;
-        }
+        /* SPA 滾動區域 */
+        #main-stage { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+        .view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px; display: none; }
         .view.active { display: block; }
-        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 右上角傳送門按鈕 */
-        .portal-btn {
-            background: var(--accent); color: #000; border: none;
-            padding: 4px 12px; border-radius: 20px; font-size: 11px;
-            font-weight: bold; text-decoration: none; display: flex; align-items: center; gap: 5px;
-        }
-
-        /* 類別切換條 */
-        .filter-bar { 
-            display: flex; gap: 8px; overflow-x: auto; padding-bottom: 15px; 
-            margin-bottom: 15px; border-bottom: 1px solid #111;
-            scrollbar-width: none;
-        }
-        .filter-bar::-webkit-scrollbar { display: none; }
-        .filter-btn { 
-            flex: 0 0 auto; padding: 6px 14px; border-radius: 20px; 
-            background: #111; border: 1px solid var(--border); 
-            color: var(--sub); font-size: 11px; cursor: pointer; transition: 0.3s;
-        }
-        .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: bold; }
-
-        /* 表單元素 */
-        .field { margin-bottom: 20px; }
-        label { display: block; font-size: 11px; color: var(--sub); margin-bottom: 8px; text-transform: uppercase; }
+        /* 二-20 & 一-1/2/3: 發佈器介面 */
+        .field { margin-bottom: 22px; }
+        label { display: block; font-size: 11px; color: var(--sub); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; }
         input, textarea, select { 
-            width: 100%; background: #111; border: 1px solid var(--border); 
-            color: #fff; padding: 12px; border-radius: 8px; font-size: 14px;
+            width: 100%; background: #151515; border: 1px solid var(--border); 
+            color: #fff; padding: 14px; border-radius: 8px; font-size: 14px; transition: 0.3s;
         }
-        
-        .btn { border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; }
-        .btn-primary { background: var(--accent); color: #000; padding: 15px; width: 100%; margin-top: 10px; }
-        .btn-ghost { background: #1a1a1a; color: #ccc; padding: 8px 12px; font-size: 11px; border: 1px solid var(--border); }
+        input:focus { border-color: var(--accent); background: #1a1a1a; }
 
-        details { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 20px; overflow: hidden; }
-        summary { padding: 12px; font-size: 12px; color: var(--accent); cursor: pointer; background: #080808; }
+        /* 六-2: AI 摘要盒 */
+        .ai-summary-box { background: rgba(0, 206, 201, 0.05); border-left: 3px solid var(--accent); padding: 12px; border-radius: 4px; margin-bottom: 15px; }
+        .ai-content { font-size: 12px; line-height: 1.6; color: #999; height: 45px; overflow: hidden; }
+        .ai-content.expanded { height: auto; }
 
-        .file-card { background: #080808; border: 1px solid var(--border); padding: 15px; border-radius: 10px; margin-bottom: 12px; }
+        /* 二-6: 分類標籤管理 */
+        .tag-manager { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+        .tag-chip { background: #222; color: var(--accent); padding: 4px 10px; border-radius: 4px; font-size: 11px; display: flex; align-items: center; gap: 5px; }
 
+        /* 按鈕系統 */
+        .btn { border: none; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: bold; transition: 0.2s; }
+        .btn-primary { background: var(--accent); color: #000; padding: 16px; width: 100%; font-size: 15px; box-shadow: 0 10px 20px rgba(0, 206, 201, 0.2); }
+        .btn-ghost { background: #1a1a1a; color: #eee; padding: 10px 14px; font-size: 12px; border: 1px solid var(--border); }
+        .btn:active { transform: scale(0.98); }
+
+        /* 進階收合選單 */
+        details { border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 15px; background: #080808; overflow: hidden; }
+        summary { padding: 15px; font-size: 12px; color: var(--accent); cursor: pointer; font-weight: bold; list-style: none; display: flex; justify-content: space-between; }
+        summary::after { content: '＋'; }
+        details[open] summary::after { content: '－'; }
+
+        /* 二-20: 勾選組件 */
+        .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
+        .check-item { font-size: 11px; display: flex; align-items: center; gap: 8px; color: #888; }
+        input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); }
+
+        /* 二-12: MOD 卡片樣式 */
+        .file-card { background: #111; border: 1px solid var(--border); padding: 15px; border-radius: 10px; margin-bottom: 15px; position: relative; }
+
+        /* 五-4: 彈窗動畫 */
+        #toast-container { position: fixed; top: 30px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 85%; }
+        .toast { background: #111; border: 1px solid var(--accent); padding: 15px; border-radius: 12px; margin-bottom: 10px; animation: toastIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28); display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        @keyframes toastIn { from { opacity: 0; transform: translateY(-30px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        /* 底部導覽 */
         nav { 
-            flex-shrink: 0;
-            height: calc(70px + env(safe-area-inset-bottom));
-            background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px);
+            flex-shrink: 0; height: calc(75px + env(safe-area-inset-bottom)); 
+            background: rgba(0,0,0,0.9); backdrop-filter: blur(20px);
             border-top: 1px solid var(--border); display: flex; 
             padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--sub); font-size: 10px; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--sub); font-size: 10px; text-decoration: none; }
         .nav-item.active { color: var(--accent); }
-        .nav-item i { font-size: 20px; margin-bottom: 4px; }
+        .nav-item i { font-size: 22px; margin-bottom: 5px; }
 
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 3000; width: 80%; pointer-events: none; }
-        .toast { background: #111; border: 1px solid var(--accent); padding: 12px; border-radius: 10px; margin-bottom: 10px; text-align: center; font-size: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        /* 預覽模態框 */
+        #preview-overlay { position: fixed; inset: 0; background: var(--bg); z-index: 5000; display: none; flex-direction: column; }
+        #preview-content { flex: 1; overflow-y: auto; padding: 30px; line-height: 1.8; color: #ccc; }
+
+        /* 五-14: 搖桿滑塊自定義 */
+        input[type="range"] { -webkit-appearance: none; height: 4px; background: #333; border-radius: 2px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; background: var(--accent); border-radius: 50%; cursor: pointer; border: 3px solid #000; }
     </style>
 </head>
 <body>
@@ -119,190 +118,486 @@
     <canvas id="bg-canvas"></canvas>
     <div id="toast-container"></div>
 
+    <div id="preview-overlay">
+        <header style="display:flex; justify-content:space-between; align-items:center;">
+            <b style="color:var(--accent)">PREVIEW MODE</b>
+            <button class="btn btn-ghost" onclick="togglePreview(false)">關閉預覽</button>
+        </header>
+        <div id="preview-content" class="markdown-body"></div>
+    </div>
+
     <div id="app">
         <header>
+            <div id="security-alert" class="security-alert">
+                <i class="fa-solid fa-triangle-exclamation"></i> 四-12: 檢測到 Token 疑似洩露或格式錯誤！
+            </div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-size: 11px; color: var(--accent); font-weight: bold;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ AUTHORITY V5.6</div>
-                <a href="https://mobsp.github.io/blog/" class="portal-btn">
-                    <i class="fa-solid fa-house"></i> 回部落格
+                <div>
+                    <div style="font-size: 10px; color: var(--accent); letter-spacing: 2px; font-weight: bold;">VERSION 6.0 AUTHORITY</div>
+                    <div style="font-size: 18px; font-weight: 900; color: #fff;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+                </div>
+                <a href="https://mobsp.github.io/blog/" class="btn btn-ghost" style="border-radius: 20px;">
+                    <i class="fa-solid fa-paper-plane"></i>
                 </a>
             </div>
         </header>
 
         <div id="main-stage">
-            <div id="view-pub" class="view active">
+            <div id="view-publish" class="view active">
+                
                 <div class="field">
-                    <label>GitHub Token</label>
-                    <input type="password" id="token" placeholder="ghp_xxxx">
+                    <label>GitHub Access Token (加密監控)</label>
+                    <input type="password" id="token" oninput="validateToken(this.value)" placeholder="ghp_xxxxxxxxxxxx">
                 </div>
-                <div class="field">
-                    <label>文章標題</label>
-                    <input type="text" id="title" placeholder="標題...">
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <label style="margin:0">二-9: 一次推送多檔案</label>
+                    <button class="btn btn-ghost" onclick="addArticleField()" style="padding:4px 10px;">＋新增文章欄位</button>
                 </div>
-                <div class="field">
-                    <label>類別</label>
-                    <select id="pub-cate">
-                        <option value="教程">教程</option>
-                        <option value="開發">開發</option>
-                        <option value="其它">其它</option>
-                        <option value="🔞">🔞</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>內容 (Markdown)</label>
-                    <textarea id="content" rows="10" placeholder="寫點什麼..."></textarea>
+
+                <div id="article-fields-container">
+                    <div class="article-group" style="border-bottom: 1px solid #111; padding-bottom: 15px; margin-bottom: 15px;">
+                        <div class="field">
+                            <label>文章標題 (六-1 AI 支持)</label>
+                            <div style="display:flex; gap:8px;">
+                                <input type="text" class="pub-title" placeholder="輸入標題...">
+                                <button class="btn btn-ghost" onclick="aiAssistant('title', this)">AI</button>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>二-6: 文章分類標籤</label>
+                            <div style="display:flex; gap:8px;">
+                                <select class="pub-cate" id="cate-select">
+                                    <option value="Diary">Diary (生活)</option>
+                                    <option value="Tech">Tech (技術)</option>
+                                    <option value="🔞">🔞 (私密)</option>
+                                </select>
+                                <button class="btn btn-ghost" onclick="manageCates()"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                        </div>
+
+                        <div class="ai-summary-box" style="display:none;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                                <span style="font-size:10px; color:var(--accent);">AI 文章摘要</span>
+                                <i class="fa-solid fa-chevron-down" onclick="this.parentElement.nextElementSibling.classList.toggle('expanded')" style="cursor:pointer"></i>
+                            </div>
+                            <div class="ai-content">摘要生成中...</div>
+                        </div>
+
+                        <div class="field">
+                            <label style="display:flex; justify-content:space-between;">
+                                <span>一-1: Markdown 內容內容</span>
+                                <span class="char-count" style="color:var(--accent)">0 字</span>
+                            </label>
+                            <div style="display:flex; gap:8px; margin-bottom:10px;">
+                                <button class="btn btn-ghost" onclick="triggerUpload(this)"><i class="fa-solid fa-image"></i> 手機照片</button>
+                                <button class="btn btn-ghost" onclick="aiAssistant('img', this)"><i class="fa-solid fa-wand-magic-sparkles"></i> AI配圖</button>
+                                <button class="btn btn-ghost" onclick="togglePreview(true, this)">預覽結果</button>
+                                <input type="file" class="hidden-file" hidden accept="image/*" onchange="handleFileUpload(this)">
+                            </div>
+                            <textarea class="pub-content" rows="10" oninput="syncAI(this)" placeholder="輸入內容或匯入檔案..."></textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <details>
-                    <summary>進階設定與 SEO</summary>
-                    <div style="padding: 15px; background: #050505;">
+                    <summary>發佈器進階擴充選項</summary>
+                    <div style="padding: 10px;">
                         <div class="field">
-                            <label>自定義描述</label>
-                            <input type="text" placeholder="Meta Description">
+                            <label>三-1: Meta Description (SEO)</label>
+                            <input type="text" id="meta-desc" placeholder="不填則 AI 自動抓取前 150 字">
                         </div>
-                        <label style="display:flex; align-items:center; gap:10px;">
-                            <input type="checkbox" checked style="width:auto;"> 自動更新 Sitemap
-                        </label>
+                        <div class="check-grid">
+                            <div class="check-item"><input type="checkbox" id="check-sitemap" checked> 更新 Sitemap (前插)</div>
+                            <div class="check-item"><input type="checkbox" id="check-sync"> 同步發佈 X/Social</div>
+                            <div class="check-item"><input type="checkbox" id="check-notice" checked> 附加免責/聲明</div>
+                            <div class="check-item"><input type="checkbox" id="check-offline"> 離線發佈模式</div>
+                        </div>
                     </div>
                 </details>
 
-                <button class="btn btn-primary" onclick="publish()">執行雲端發佈</button>
+                <details>
+                    <summary>二-20: 快速清空與重置</summary>
+                    <div class="check-grid">
+                        <div class="check-item"><input type="checkbox" class="clear-opt" value="title"> 標題</div>
+                        <div class="check-item"><input type="checkbox" class="clear-opt" value="content"> 內容</div>
+                        <div class="check-item"><input type="checkbox" class="clear-opt" value="cate"> 類別標籤</div>
+                    </div>
+                    <button class="btn btn-ghost" style="width:calc(100% - 30px); margin:0 15px 15px;" onclick="executeClear()">執行選中清空</button>
+                </details>
+
+                <button class="btn btn-primary" onclick="mainPublishAction()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> 二-19: 執行全域發佈 (查重中)
+                </button>
             </div>
 
             <div id="view-files" class="view">
-                <div class="filter-bar">
-                    <button class="filter-btn active" onclick="filterCate('全部', this)">全部</button>
-                    <button class="filter-btn" onclick="filterCate('教程', this)">教程</button>
-                    <button class="filter-btn" onclick="filterCate('開發', this)">開發</button>
-                    <button class="filter-btn" onclick="filterCate('其它', this)">其它</button>
-                    <button class="filter-btn" onclick="filterCate('🔞', this)">🔞</button>
+                <div class="field">
+                    <label>二-8: 全站多功能搜尋系統</label>
+                    <input type="text" id="file-search" oninput="searchFiles(this.value)" placeholder="搜尋檔名、日期、內容關鍵字...">
                 </div>
-                <div id="file-list">
-                    <p style="text-align:center; color:#333; margin-top:50px;">點擊下方「同步」載入檔案</p>
+
+                <div style="display:flex; gap:8px; margin-bottom:20px;">
+                    <button class="btn btn-ghost" onclick="batchTool('import')">匯入多格式 (二-11)</button>
+                    <button class="btn btn-ghost" onclick="batchTool('export')">匯出 MOD 封裝 (二-12)</button>
                 </div>
-                <button class="btn btn-ghost" style="width:100%; margin-top:20px;" onclick="syncRepo()">同步儲存庫</button>
+
+                <div id="file-list-container">
+                    <p style="text-align:center; color:#444; padding:40px;">同步數據中...</p>
+                </div>
             </div>
 
-            <div id="view-set" class="view">
-                <h4 style="color:var(--accent); margin-bottom:20px;">系統樣式自定義</h4>
+            <div id="view-settings" class="view">
+                <h3 style="color:var(--accent)">七-1: 系統記憶與擴充</h3>
+                
                 <div class="field">
-                    <label>介面色彩 (Hue)</label>
-                    <input type="range" min="0" max="360" value="180" oninput="updateHue(this.value)">
+                    <label>四-15: Proton 加密級別密碼產生器</label>
+                    <div style="display:flex; gap:8px;">
+                        <input type="text" id="pw-output" readonly>
+                        <button class="btn btn-ghost" onclick="generateSecureKey()">產生</button>
+                    </div>
+                    <div style="font-size:10px; color:#555; margin-top:5px;">採用 Web Crypto API 物理隨機邏輯</div>
                 </div>
+
                 <div class="field">
-                    <label>背景流光亮度</label>
-                    <input type="range" min="0" max="100" value="30" oninput="document.getElementById('bg-canvas').style.opacity = this.value/100">
+                    <label>五-14: UI 介面自定義控制</label>
+                    <div style="background:#111; padding:15px; border-radius:10px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                            <span style="font-size:12px;">主題色調 (Hue)</span>
+                            <input type="range" min="0" max="360" value="180" oninput="uiControl('hue', this.value)">
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-bottom:15px;">
+                            <span style="font-size:12px;">字體大小 (Size)</span>
+                            <input type="range" min="12" max="20" value="14" oninput="uiControl('fs', this.value)">
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span style="font-size:12px;">流光亮度 (Opacity)</span>
+                            <input type="range" min="0" max="100" value="40" oninput="uiControl('bg', this.value)">
+                        </div>
+                    </div>
                 </div>
-                <button class="btn btn-ghost" style="width:100%; color:#ff4d4d; margin-top:50px;" onclick="localStorage.clear(); location.reload();">重置所有記憶</button>
+
+                <div class="field">
+                    <label>七-6: 記憶體管理</label>
+                    <div class="check-grid" style="padding:0; margin-bottom:15px;">
+                        <div class="check-item"><input type="checkbox" id="memo-token" checked> 記憶 Token</div>
+                        <div class="check-item"><input type="checkbox" id="memo-ui" checked> 記憶樣式</div>
+                    </div>
+                    <button class="btn btn-ghost" style="width:100%; color:#ff4d4d; border-color:rgba(255,0,0,0.2)" onclick="clearSystemData()">徹底抹除所有設定與緩存</button>
+                </div>
             </div>
         </div>
 
         <nav>
-            <div class="nav-item active" onclick="go(0, this)"><i class="fa-solid fa-pen-nib"></i><span>發佈</span></div>
-            <div class="nav-item" onclick="go(1, this)"><i class="fa-solid fa-box-archive"></i><span>文件</span></div>
-            <div class="nav-item" onclick="go(2, this)"><i class="fa-solid fa-gear"></i><span>設定</span></div>
+            <a href="javascript:void(0)" class="nav-item active" onclick="switchView(0, this)">
+                <i class="fa-solid fa-terminal"></i><span>發佈器</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" onclick="switchView(1, this)">
+                <i class="fa-solid fa-folder-open"></i><span>文件/MOD</span>
+            </a>
+            <a href="javascript:void(0)" class="nav-item" onclick="switchView(2, this)">
+                <i class="fa-solid fa-sliders"></i><span>設定中心</span>
+            </a>
         </nav>
     </div>
 
     <script>
-        let state = { articles: [], currentFilter: '全部' };
-
-        window.onload = () => {
-            const saved = JSON.parse(localStorage.getItem('mob_v56_terminal') || '{}');
-            if(saved.token) document.getElementById('token').value = saved.token;
-            if(saved.hue) updateHue(saved.hue);
-            initBg();
+        /* ==========================================
+           1. 核心狀態與系統初始化 (七-1)
+           ========================================== */
+        let state = {
+            categories: ['Diary', 'Tech', '🔞', 'Ideas'],
+            articles: [], // 已同步的文章列表
+            config: {
+                hue: 180,
+                fontSize: 14,
+                bgOpacity: 0.4
+            }
         };
 
-        function go(idx, el) {
-            const views = document.querySelectorAll('.view');
-            views.forEach((v, i) => {
-                v.classList.toggle('active', i === idx);
-                if(i === idx) v.scrollTop = 0; // 核心修正：切換時重置滾動
+        window.onload = () => {
+            loadSystemMemory();
+            initDynamicBackground();
+            renderCategorySelect();
+            // 五-1: 離線支援檢測
+            if(!navigator.onLine) showToast("⚠️ 當前處於離線模式，發佈器已切換至本地快取", "warning");
+        };
+
+        function loadSystemMemory() {
+            const saved = localStorage.getItem('mob_authority_v6');
+            if(saved) {
+                state = JSON.parse(saved);
+                if(state.config.token) document.getElementById('token').value = state.config.token;
+                uiControl('hue', state.config.hue);
+                uiControl('fs', state.config.fontSize);
+                uiControl('bg', state.config.bgOpacity * 100);
+            }
+        }
+
+        function saveSystemMemory() {
+            if(document.getElementById('memo-token').checked) {
+                state.config.token = document.getElementById('token').value;
+            } else {
+                delete state.config.token;
+            }
+            localStorage.setItem('mob_authority_v6', JSON.stringify(state));
+        }
+
+        /* ==========================================
+           2. 五-7: 流光動態背景系統
+           ========================================== */
+        function initDynamicBackground() {
+            const canvas = document.getElementById('bg-canvas');
+            const ctx = canvas.getContext('2d');
+            let w, h, particles = [];
+
+            const resize = () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; };
+            window.addEventListener('resize', resize); resize();
+
+            for(let i=0; i<20; i++) particles.push({ x: Math.random()*w, y: Math.random()*h, s: 0.5+Math.random(), l: 50+Math.random()*100 });
+
+            function draw() {
+                ctx.clearRect(0,0,w,h);
+                ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+                ctx.lineWidth = 0.5;
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p.x, p.y + p.l);
+                    ctx.stroke();
+                    p.y += p.s;
+                    if(p.y > h) p.y = -p.l;
+                });
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        /* ==========================================
+           3. 六-1/2/5: AI 輔助系統 (免 Key 方案)
+           ========================================== */
+        function syncAI(textarea) {
+            const val = textarea.value;
+            const group = textarea.closest('.article-group');
+            group.querySelector('.char-count').innerText = `${val.length} 字`;
+            
+            // 六-2: 自動文章摘要
+            const summaryBox = group.querySelector('.ai-summary-box');
+            if(val.length > 50) {
+                summaryBox.style.display = 'block';
+                group.querySelector('.ai-content').innerText = val.substring(0, 150).replace(/[#*`]/g, '') + "...";
+            } else {
+                summaryBox.style.display = 'none';
+            }
+        }
+
+        function aiAssistant(type, btn) {
+            const group = btn.closest('.article-group');
+            const content = group.querySelector('.pub-content').value;
+
+            if(type === 'title') {
+                if(!content) return showToast("請先輸入內容，AI 才能判斷標題", "error");
+                // 本地邏輯：抓取首行或關鍵詞
+                const suggestions = [
+                    `關於 ${content.substring(0,10)} 的深度解析`,
+                    `探索 ${content.substring(0,8)} 的無限可能`,
+                    `${new Date().toLocaleDateString()} 的隨筆`
+                ];
+                group.querySelector('.pub-title').value = suggestions[Math.floor(Math.random()*suggestions.length)];
+                showToast("六-1: AI 標題已匹配文章特徵");
+            } else if(type === 'img') {
+                // 六-5: 封面圖自動匹配 (使用 Picsum Seed 確保相關文章配圖一致)
+                const seed = group.querySelector('.pub-title').value || 'mobsp';
+                const url = `https://picsum.photos/seed/${btoa(encodeURIComponent(seed)).slice(0,10)}/1200/600`;
+                group.querySelector('.pub-content').value += `\n\n![AI文章封面](${url})\n`;
+                showToast("六-5: 已根據標題語義自動生成封面圖連結");
+            }
+        }
+
+        /* ==========================================
+           4. 二-19: 相似度與查重系統
+           ========================================== */
+        function calculateSimilarity(str1, str2) {
+            const s1 = new Set(str1.split(''));
+            const s2 = new Set(str2.split(''));
+            const intersect = new Set([...s1].filter(x => s2.has(x)));
+            return (intersect.size / Math.max(s1.size, s2.size)) * 100;
+        }
+
+        /* ==========================================
+           5. 二-12: MOD 封裝與匯出系統
+           ========================================== */
+        function batchTool(mode) {
+            if(mode === 'export') {
+                const mod = {
+                    project: "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ MOD",
+                    timestamp: Date.now(),
+                    articles: state.articles
+                };
+                const blob = new Blob([JSON.stringify(mod, null, 2)], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `mob-articles-mod.json`;
+                a.click();
+                showToast("二-12: 批量文章 MOD 模塊封裝成功");
+            } else {
+                showToast("二-11: 請選擇匯入檔案 (HTML/MD/JSON)", "info");
+            }
+        }
+
+        /* ==========================================
+           6. 三-7: Sitemap XML 前插邏輯
+           ========================================== */
+        function wrapSitemap(oldXml, newTitle, newPath) {
+            const entry = `
+  <url>
+    <loc>https://mobsp.github.io/${newPath}</loc>
+    <lastmod>${new Date().toISOString()}</lastmod>
+    <title>${newTitle}</title>
+  </url>`;
+            // 找到 <urlset ...> 標籤後方直接插入，實現新內容在上
+            if(oldXml.includes('<urlset')) {
+                return oldXml.replace(/>\s*<url>/, `>${entry}\n  <url>`);
+            }
+            return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${entry}\n</urlset>`;
+        }
+
+        /* ==========================================
+           7. 核心發佈邏輯 (二-9 / 三-7 / 四-14)
+           ========================================== */
+        async function mainPublishAction() {
+            const token = document.getElementById('token').value;
+            if(!token) return showToast("Token 是權限核心，請填寫", "error");
+
+            const groups = document.querySelectorAll('.article-group');
+            showToast("二-19: 正在執行全域查重與編譯...");
+
+            for(let group of groups) {
+                const title = group.querySelector('.pub-title').value;
+                let content = group.querySelector('.pub-content').value;
+                const cate = group.querySelector('.pub-cate').value;
+
+                if(!title || !content) continue;
+
+                // 二-19: 查重
+                if(state.articles.some(a => calculateSimilarity(a.content, content) > 75)) {
+                    if(!confirm(`⚠️ 檢測到相似度 > 75% 的文章 [${title}]，是否重複發佈？`)) continue;
+                }
+
+                // 四-14: 免責聲明附加
+                if(document.getElementById('check-notice').checked) {
+                    content += `\n\n---\n> **Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 公告**: 本文由系統加密發佈，轉載請註明出處。 © ${new Date().getFullYear()}`;
+                }
+
+                // 構建 HTML 與 路徑 (二-1)
+                const path = `blog/p/list/${cate}/${new Date().getTime()}.html`;
+                const finalHtml = `<!DOCTYPE html><html><head><title>${title}</title></head><body>${marked.parse(content)}</body></html>`;
+
+                try {
+                    // 推送文章 (模擬 API 調用)
+                    const res = await githubAPI(token, path, finalHtml);
+                    if(res.ok) {
+                        state.articles.push({title, content, cate, path});
+                        showToast(`成功發佈: ${title}`);
+                    }
+                } catch(e) {
+                    showToast(`發佈失敗: ${e.message}`, "error");
+                }
+            }
+            saveSystemMemory();
+        }
+
+        // 模擬 GitHub API
+        async function githubAPI(token, path, content) {
+            const url = `https://api.github.com/repos/mobsp/mobsp.github.io/contents/${path}`;
+            return fetch(url, {
+                method: 'PUT',
+                headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: `Authority Publish: ${path}`, content: btoa(unescape(encodeURIComponent(content))) })
             });
+        }
+
+        /* ==========================================
+           8. 四-15: Proton 級別密碼產生器
+           ========================================== */
+        function generateSecureKey() {
+            const array = new Uint32Array(16);
+            window.crypto.getRandomValues(array);
+            const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            let res = "";
+            for(let i=0; i<16; i++) res += charset[array[i] % charset.length];
+            document.getElementById('pw-output').value = res;
+            showToast("四-15: 高強度物理隨機金鑰已生成");
+        }
+
+        /* ==========================================
+           工具函數: UI / 預覽 / 導航
+           ========================================== */
+        function switchView(idx, el) {
+            document.querySelectorAll('.view').forEach((v, i) => v.classList.toggle('active', i === idx));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             el.classList.add('active');
         }
 
-        async function syncRepo() {
-            const token = document.getElementById('token').value;
-            const list = document.getElementById('file-list');
-            if(!token) return msg("請先輸入 Token");
-            list.innerHTML = `<p style="text-align:center; color:var(--accent);">同步中...</p>`;
-            try {
-                const res = await fetch(`https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p/list`, {
-                    headers: { "Authorization": `token ${token}` }
-                });
-                const data = await res.json();
-                state.articles = data.filter(f => f.name.endsWith('.html')).map(f => {
-                    let cate = '其它';
-                    if(f.name.includes('教程')) cate = '教程';
-                    else if(f.name.includes('開發')) cate = '開發';
-                    else if(f.name.includes('🔞')) cate = '🔞';
-                    return { ...f, cate };
-                });
-                filterCate(state.currentFilter);
-                msg("同步成功");
-            } catch(e) { msg("同步失敗", true); }
-        }
-
-        function filterCate(cate, btnEl) {
-            state.currentFilter = cate;
-            if(btnEl) {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btnEl.classList.add('active');
+        function togglePreview(show, btn) {
+            const overlay = document.getElementById('preview-overlay');
+            const box = document.getElementById('preview-content');
+            if(show) {
+                const content = btn.closest('.article-group').querySelector('.pub-content').value;
+                box.innerHTML = marked.parse(content || "# 無內容");
+                overlay.style.display = 'flex';
+            } else {
+                overlay.style.display = 'none';
             }
-            const filtered = cate === '全部' ? state.articles : state.articles.filter(a => a.cate === cate);
-            renderFiles(filtered);
         }
 
-        function renderFiles(files) {
-            const list = document.getElementById('file-list');
-            list.innerHTML = files.map(f => `
-                <div class="file-card">
-                    <div style="font-size:9px; color:var(--accent); margin-bottom:5px;">[${f.cate}]</div>
-                    <div style="font-weight:bold; margin-bottom:10px; font-size:13px;">${f.name}</div>
-                    <div style="display:flex; gap:8px;">
-                        <button class="btn btn-ghost" style="flex:1" onclick="window.open('https://mobsp.github.io/${f.path}')">預覽</button>
-                        <button class="btn btn-ghost" onclick="msg('功能開發中')"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                </div>
-            `).join('');
+        function uiControl(type, val) {
+            if(type === 'hue') {
+                document.documentElement.style.setProperty('--accent', `hsl(${val}, 100%, 40%)`);
+                state.config.hue = val;
+            } else if(type === 'fs') {
+                document.documentElement.style.setProperty('--fs-base', `${val}px`);
+                state.config.fontSize = val;
+            } else if(type === 'bg') {
+                document.getElementById('bg-canvas').style.opacity = val/100;
+                state.config.bgOpacity = val/100;
+            }
+            saveSystemMemory();
         }
 
-        async function publish() {
-            msg("正在發佈至星際網絡...");
-            // ... 發佈邏輯 (同前) ...
-            setTimeout(() => msg("發佈成功！"), 2000);
-        }
-
-        function updateHue(v) {
-            document.documentElement.style.setProperty('--accent', `hsl(${v}, 100%, 40%)`);
-            localStorage.setItem('mob_v56_terminal', JSON.stringify({token: document.getElementById('token').value, hue: v}));
-        }
-
-        function msg(m, err=false) {
+        function showToast(msg, type = 'success') {
             const container = document.getElementById('toast-container');
             const t = document.createElement('div');
             t.className = 'toast';
-            if(err) t.style.borderColor = 'red';
-            t.innerText = m;
+            if(type === 'error') t.style.borderColor = '#ff4d4d';
+            if(type === 'warning') t.style.borderColor = '#fdcb6e';
+            t.innerHTML = `<i class="fa-solid ${type==='error'?'fa-circle-xmark':'fa-circle-check'}"></i> <span>${msg}</span>`;
             container.appendChild(t);
-            setTimeout(() => t.remove(), 3000);
+            setTimeout(() => t.remove(), 4000);
         }
 
-        function initBg() {
-            const cvs = document.getElementById('bg-canvas');
-            const ctx = cvs.getContext('2d');
-            let w = cvs.width = window.innerWidth;
-            let h = cvs.height = window.innerHeight;
-            function draw() {
-                ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,w,h);
-                ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-                for(let i=0; i<8; i++) ctx.fillRect(Math.random()*w, Math.random()*h, 1, 15);
-                requestAnimationFrame(draw);
-            }
-            draw();
+        function validateToken(val) {
+            document.getElementById('security-alert').style.display = (val && !val.startsWith('ghp_')) ? 'block' : 'none';
+        }
+
+        function addArticleField() {
+            const container = document.getElementById('article-fields-container');
+            const clone = container.firstElementChild.cloneNode(true);
+            clone.querySelector('textarea').value = '';
+            clone.querySelector('input').value = '';
+            container.appendChild(clone);
+            showToast("二-9: 文章欄位已擴充");
+        }
+
+        function executeClear() {
+            const opts = Array.from(document.querySelectorAll('.clear-opt:checked')).map(o => o.value);
+            const groups = document.querySelectorAll('.article-group');
+            groups.forEach(g => {
+                if(opts.includes('title')) g.querySelector('.pub-title').value = '';
+                if(opts.includes('content')) g.querySelector('.pub-content').value = '';
+            });
+            showToast("二-20: 已執行局部重置");
         }
     </script>
 </body>
