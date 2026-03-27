@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Terminal Authority V7.0</title>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Authority V7.0 | 實戰發佈器</title>
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -14,60 +14,41 @@
             --text: #e0e0e0; --sub: #666; --border: #222;
             --danger: #ff4d4d; --fs-base: 14px;
         }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { 
             margin: 0; background: var(--bg); color: var(--text); 
             font-family: -apple-system, sans-serif; font-size: var(--fs-base);
             height: 100dvh; overflow: hidden; position: fixed; width: 100%;
         }
-
-        /* 五-7: 流光動態背景 */
         #bg-canvas { position: fixed; inset: 0; z-index: -1; opacity: 0.3; pointer-events: none; }
-        
         #app { 
             max-width: 500px; margin: 0 auto; height: 100dvh; 
             display: flex; flex-direction: column; background: var(--container);
             border-left: 1px solid var(--border); border-right: 1px solid var(--border);
             position: relative;
         }
-
-        /* 四-12: Token 偵測警報 */
         #security-alert { background: rgba(255, 77, 77, 0.1); color: var(--danger); padding: 10px; font-size: 11px; display: none; border-bottom: 1px solid var(--danger); text-align: center; }
-
         header { flex-shrink: 0; padding: calc(45px + env(safe-area-inset-top)) 20px 10px; border-bottom: 1px solid var(--border); }
-
         #main-stage { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
         .view { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 20px 20px 100px; display: none; }
         .view.active { display: block; }
-
-        /* UI 元件 */
         .field { margin-bottom: 20px; }
         label { display: block; font-size: 11px; color: var(--sub); margin-bottom: 8px; text-transform: uppercase; font-weight: bold; }
-        input, textarea, select { width: 100%; background: #111; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; font-size: 14px; }
-        
+        input, textarea, select { width: 100%; background: #111; border: 1px solid var(--border); color: #fff; padding: 12px; border-radius: 10px; font-size: 14px; outline: none; }
+        input:focus { border-color: var(--accent); }
         .btn { border: none; border-radius: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; transition: 0.2s; }
         .btn-primary { background: var(--accent); color: #000; padding: 15px; width: 100%; margin-top: 10px; }
         .btn-ghost { background: #1a1a1a; color: #ccc; padding: 8px 12px; font-size: 11px; border: 1px solid var(--border); }
-        
-        /* 二-20: 清空選項與進階選單 */
         details { background: #080808; border: 1px solid var(--border); border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
         summary { padding: 12px; font-size: 12px; color: var(--accent); cursor: pointer; }
         .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
         .check-item { font-size: 11px; display: flex; align-items: center; gap: 5px; color: #888; }
-
-        /* 五-4: 彈窗提示 */
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 5000; width: 80%; }
-        .toast { background: #111; border: 1px solid var(--accent); padding: 12px; border-radius: 10px; margin-bottom: 10px; text-align: center; font-size: 12px; animation: toastIn 0.3s; }
+        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 9999; width: 80%; }
+        .toast { background: #111; border: 1px solid var(--accent); padding: 12px; border-radius: 10px; margin-bottom: 10px; text-align: center; font-size: 12px; animation: toastIn 0.3s; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         @keyframes toastIn { from { transform: translateY(-20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-
-        /* 底部導覽 */
         nav { flex-shrink: 0; height: calc(70px + env(safe-area-inset-bottom)); background: #000; border-top: 1px solid var(--border); display: flex; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--sub); font-size: 10px; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--sub); font-size: 10px; text-decoration: none; }
         .nav-item.active { color: var(--accent); }
-        .nav-item i { font-size: 20px; margin-bottom: 4px; }
-
-        /* 一-2: 預覽 */
         #preview-box { position: fixed; inset: 0; background: #000; z-index: 6000; display: none; flex-direction: column; padding-top: env(safe-area-inset-top); }
     </style>
 </head>
@@ -75,7 +56,7 @@
 
     <canvas id="bg-canvas"></canvas>
     <div id="toast-container"></div>
-    <div id="security-alert">⚠️ 四-12: TOKEN 自動偵測外洩風險，請檢查格式</div>
+    <div id="security-alert">⚠️ Token 格式不正確，發佈可能會失敗</div>
 
     <div id="preview-box">
         <div style="padding: 20px; display: flex; justify-content: space-between; border-bottom: 1px solid #222;">
@@ -88,7 +69,7 @@
     <div id="app">
         <header>
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-size: 12px; font-weight: 900; color: var(--accent); letter-spacing: 2px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ AUTHORITY V7</div>
+                <div style="font-size: 12px; font-weight: 900; color: var(--accent); letter-spacing: 2px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ AUTHORITY V7.0</div>
                 <a href="https://mobsp.github.io/blog/" class="btn btn-ghost" style="border-radius: 50px;"><i class="fa-solid fa-house"></i></a>
             </div>
         </header>
@@ -96,148 +77,81 @@
         <div id="main-stage">
             <div id="view-pub" class="view active">
                 <div class="field">
-                    <label>GitHub Access Token (IV-12 監控)</label>
-                    <input type="password" id="gh-token" placeholder="ghp_xxxx" oninput="checkToken(this.value)">
+                    <label>GitHub Access Token</label>
+                    <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxx" oninput="checkToken(this.value)">
                 </div>
 
                 <div id="article-list">
                     <div class="article-item" style="border-bottom: 1px solid #222; padding-bottom: 20px; margin-bottom: 20px;">
                         <div class="field">
-                            <label>文章標題 (VI-1 AI 支援)</label>
-                            <div style="display:flex; gap:8px;">
-                                <input type="text" class="post-title" placeholder="輸入標題...">
-                                <button class="btn btn-ghost" onclick="aiTitle(this)">AI 生成</button>
-                            </div>
+                            <label>文章標題</label>
+                            <input type="text" class="post-title" placeholder="標題名稱...">
                         </div>
                         <div class="field">
-                            <label>分類標籤 (二-6 自定義)</label>
-                            <div style="display:flex; gap:8px;">
-                                <select class="post-cate">
-                                    <option value="R-18">🔞 R-18</option>
-                                    <option value="Diary">Diary</option>
-                                    <option value="Tech">Tech</option>
-                                </select>
-                                <button class="btn btn-ghost" onclick="addCategory()"><i class="fa-solid fa-plus"></i></button>
-                            </div>
+                            <label>分類標籤</label>
+                            <select class="post-cate">
+                                <option value="🔞">🔞 18禁</option>
+                                <option value="教程">教程</option>
+                                <option value="開發">開發</option>
+                                <option value="其它">其它</option>
+                            </select>
                         </div>
                         <div class="field">
-                            <label>內容 (I-1 Markdown / 一-3 圖片)</label>
+                            <label>內容 (Markdown)</label>
                             <div style="display:flex; gap:8px; margin-bottom:10px;">
-                                <button class="btn btn-ghost" onclick="triggerImgUpload(this)"><i class="fa-solid fa-camera"></i> 上傳</button>
                                 <button class="btn btn-ghost" onclick="aiCover(this)"><i class="fa-solid fa-wand-magic-sparkles"></i> AI配圖</button>
-                                <button class="btn btn-ghost" onclick="showPreview(this)">預覽結果</button>
+                                <button class="btn btn-ghost" onclick="showPreview(this)">預覽</button>
                             </div>
-                            <textarea class="post-content" rows="10" placeholder="在此輸入文章內容..."></textarea>
-                            <input type="file" class="img-input" hidden accept="image/*" onchange="processImg(this)">
+                            <textarea class="post-content" rows="12" placeholder="在此輸入內容..."></textarea>
                         </div>
                     </div>
                 </div>
 
-                <button class="btn btn-ghost" style="width:100%; margin-bottom:20px;" onclick="addMoreArticle()">＋新增多重檔案發佈 (二-9)</button>
-
                 <details>
-                    <summary>進階發佈器設定 (SEO / Sitemap / 安全)</summary>
-                    <div style="padding: 15px;">
-                        <div class="field">
-                            <label>三-1: Meta Description</label>
-                            <input type="text" id="seo-desc" placeholder="不填則 AI 自動抓取...">
-                        </div>
-                        <div class="check-grid">
-                            <div class="check-item"><input type="checkbox" id="sync-sitemap" checked> 更新 Sitemap (三-7)</div>
-                            <div class="check-item"><input type="checkbox" id="add-notice" checked> 附加免責聲明 (四-14)</div>
-                            <div class="check-item"><input type="checkbox" id="check-dup" checked> 75% 相似度偵測 (二-19)</div>
-                            <div class="check-item"><input type="checkbox" id="push-ask" checked> 發佈後同步詢問 (三-9)</div>
-                        </div>
-                        <div class="field">
-                            <label>二-20: 快速清空選項</label>
-                            <div class="check-grid" style="padding:0;">
-                                <div class="check-item"><input type="checkbox" class="clear-opt" value="title"> 標題</div>
-                                <div class="check-item"><input type="checkbox" class="clear-opt" value="content"> 內容</div>
-                                <div class="check-item"><input type="checkbox" class="clear-opt" value="cate"> 標籤</div>
-                            </div>
-                            <button class="btn btn-ghost" style="width:100%; margin-top:10px;" onclick="batchClear()">執行清空</button>
-                        </div>
+                    <summary>發佈進階設定</summary>
+                    <div class="check-grid">
+                        <div class="check-item"><input type="checkbox" id="add-notice" checked> 免責聲明</div>
+                        <div class="check-item"><input type="checkbox" id="clear-after" checked> 發佈後清空</div>
                     </div>
                 </details>
 
                 <button class="btn btn-primary" onclick="finalPublish()"><i class="fa-solid fa-paper-plane"></i> 執行全權限發佈</button>
             </div>
 
-            <div id="view-files" class="view">
-                <div class="field">
-                    <label>二-8: 全站多功能搜尋</label>
-                    <input type="text" placeholder="輸入關鍵字搜尋現有文章..." oninput="searchPosts(this.value)">
-                </div>
-                <div style="display:flex; gap:10px; margin-bottom:20px;">
-                    <button class="btn btn-ghost" style="flex:1" onclick="importFile()">匯入檔案 (二-11)</button>
-                    <button class="btn btn-ghost" style="flex:1" onclick="exportMOD()">匯出 MOD (二-12)</button>
-                </div>
-                <div id="post-container"></div>
-            </div>
-
             <div id="view-settings" class="view">
-                <h3 style="color:var(--accent)">系統設定與安全</h3>
+                <h3 style="color:var(--accent)">系統設定</h3>
                 <div class="field">
-                    <label>四-15: Proton 加密級密碼產生器</label>
-                    <div style="display:flex; gap:8px;">
-                        <input type="text" id="pw-res" readonly>
-                        <button class="btn btn-ghost" onclick="makePw()">產生</button>
-                    </div>
+                    <label>UI 色相調控</label>
+                    <input type="range" min="0" max="360" value="180" oninput="changeUI('hue', this.value)">
                 </div>
-                <div class="field">
-                    <label>五-14: UI 自定義 (字體/色相)</label>
-                    <div style="background:#111; padding:15px; border-radius:10px;">
-                        <p style="font-size:10px;">主題顏色</p>
-                        <input type="range" min="0" max="360" value="180" oninput="changeUI('hue', this.value)">
-                        <p style="font-size:10px; margin-top:10px;">背景流光</p>
-                        <input type="range" min="0" max="100" value="30" oninput="changeUI('bg', this.value)">
-                    </div>
-                </div>
-                <button class="btn btn-ghost" style="width:100%; color:var(--danger); margin-top:50px;" onclick="resetSystem()">移除所有儲存設定 (七-6)</button>
+                <button class="btn btn-ghost" style="width:100%; color:var(--danger);" onclick="localStorage.clear(); location.reload();">重置系統</button>
             </div>
         </div>
 
         <nav>
             <div class="nav-item active" onclick="tabs(0, this)"><i class="fa-solid fa-pen-nib"></i><span>發佈器</span></div>
-            <div class="nav-item" onclick="tabs(1, this)"><i class="fa-solid fa-folder-tree"></i><span>文件/MOD</span></div>
-            <div class="nav-item" onclick="tabs(2, this)"><i class="fa-solid fa-microchip"></i><span>設定</span></div>
+            <div class="nav-item" onclick="tabs(2, this)"><i class="fa-solid fa-gear"></i><span>設定</span></div>
         </nav>
     </div>
 
     <script>
-        /* === 七-1: 記憶與初始化 === */
-        let state = {
-            posts: [],
-            config: { hue: 180, bg: 0.3 }
-        };
+        let state = { config: { hue: 180 } };
 
         window.onload = () => {
-            const saved = localStorage.getItem('mob_v7_data');
-            if(saved) {
-                state = JSON.parse(saved);
-                if(state.token) document.getElementById('gh-token').value = state.token;
-                changeUI('hue', state.config.hue);
-            }
+            const savedToken = localStorage.getItem('gh_token');
+            if(savedToken) document.getElementById('gh-token').value = savedToken;
             initBg();
         };
 
-        /* === 核心功能邏輯 === */
         function checkToken(v) {
             document.getElementById('security-alert').style.display = (v && !v.startsWith('ghp_')) ? 'block' : 'none';
-        }
-
-        function aiTitle(btn) {
-            const content = btn.closest('.article-item').querySelector('.post-content').value;
-            if(!content) return toast("請先輸入內容", "error");
-            btn.closest('.article-item').querySelector('.post-title').value = "【解析】" + content.substring(0, 10);
-            toast("AI 標題已生成 (VI-1)");
+            localStorage.setItem('gh_token', v);
         }
 
         function aiCover(btn) {
             const title = btn.closest('.article-item').querySelector('.post-title').value || "random";
             const url = `https://picsum.photos/seed/${encodeURIComponent(title)}/800/450`;
-            btn.closest('.article-item').querySelector('.post-content').value += `\n\n![AI文章封面](${url})\n`;
-            toast("AI 封面圖已插入 (VI-5)");
+            btn.closest('.article-item').querySelector('.post-content').value += `\n\n![文章封面](${url})\n`;
         }
 
         function showPreview(btn) {
@@ -248,137 +162,108 @@
 
         function closePreview() { document.getElementById('preview-box').style.display = 'none'; }
 
-        /* === 二-19: 相似度偵測 (75%) === */
-        function checkSimilarity(newContent) {
-            if(!document.getElementById('check-dup').checked) return true;
-            for(let p of state.posts) {
-                let intersection = 0;
-                const s1 = new Set(newContent.split(''));
-                const s2 = new Set(p.content.split(''));
-                s1.forEach(c => { if(s2.has(c)) intersection++; });
-                if((intersection / Math.max(s1.size, s2.size)) > 0.75) return confirm(`偵測到內容與現有文章 [${p.title}] 相似度超過 75%，是否繼續？`);
-            }
-            return true;
-        }
-
-        /* === 核心：文章模板注入 (你提供的文章頁面 HTML) === */
+        /* === 核心：生成部落格 HTML 模板 === */
         function generatePostHTML(title, content, cate) {
-            // 自動生成 Meta Description (三-1)
-            const meta = document.getElementById('seo-desc').value || content.substring(0, 150).replace(/[#*`]/g, '');
-            // 處理標籤
-            const tags = cate.split(',').map(t => `#${t.trim()}`).join(' ');
-            
-            // 返回你提供的完整 HTML 結構
+            const isAdult = cate === "🔞";
             return `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>${title} | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</title>
+    <title>${title} | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --ios-bg: #000; --text-color: #fff; --font-size: 18px; --accent: #00cec9; --danger: #ff4d4d; --panel-bg: rgba(28, 28, 30, 0.95); }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, sans-serif; background: var(--ios-bg); color: var(--text-color); line-height: 1.8; }
-        .header-fixed { position: fixed; top: 0; left: 0; width: 100%; height: calc(60px + env(safe-area-inset-top)); background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; padding: 0 20px; justify-content: space-between; padding-top: env(safe-area-inset-top); }
-        .back-link { color: var(--accent); text-decoration: none; font-size: 16px; font-weight: 500; }
-        .main-content { max-width: 500px; margin: 0 auto; padding: calc(80px + env(safe-area-inset-top)) 20px 150px; }
-        .post-label { font-size: 12px; color: var(--danger); font-weight: bold; margin-bottom: 10px; display: block; letter-spacing: 1px; }
-        h1 { font-size: 28px; font-weight: 800; margin-bottom: 30px; line-height: 1.3; }
-        .content-body { font-size: var(--font-size); color: var(--text-color); }
-        .content-body p { margin-bottom: 25px; text-align: justify; }
-        .footer-copyright { margin-top: 50px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #555; font-size: 12px; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; height: calc(70px + env(safe-area-inset-bottom)); background: rgba(20,20,22,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); z-index: 100; display: flex; justify-content: space-around; align-items: center; padding-bottom: env(safe-area-inset-bottom); }
-        .nav-item { color: #8e8e93; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 5px; }
-        .mobi-panel { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--panel-bg); backdrop-filter: blur(30px); border-radius: 25px 25px 0 0; padding: 30px 20px 60px; transform: translateY(100%); transition: 0.4s ease; z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); }
-        .mobi-panel.show { transform: translateY(0); }
-        #gate { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; }
-        .gate-box { padding: 40px 25px; border: 1px solid var(--danger); border-radius: 30px; background: #0a0000; }
-        .gate-btn { background: var(--danger); color: #fff; border: none; padding: 15px 50px; border-radius: 50px; font-weight: bold; margin-top: 30px; }
+        :root { --ios-bg: #000; --text-color: #fff; --accent: #00cec9; --danger: #ff4d4d; }
+        body { margin: 0; background: var(--ios-bg); color: var(--text-color); font-family: -apple-system, sans-serif; line-height: 1.8; }
+        .header { position: fixed; top: 0; width: 100%; height: 60px; background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); display: flex; align-items: center; padding: 0 20px; z-index: 100; border-bottom: 1px solid #222; }
+        .main { max-width: 600px; margin: 0 auto; padding: 100px 20px 150px; }
+        .tag { color: var(--accent); font-size: 12px; font-weight: bold; }
+        h1 { margin: 15px 0 30px; font-size: 28px; }
+        .content img { max-width: 100%; border-radius: 12px; margin: 20px 0; }
+        #gate { position: fixed; inset: 0; background: #000; z-index: 9999; display: ${isAdult ? 'flex' : 'none'}; align-items: center; justify-content: center; text-align: center; }
+        .gate-btn { background: var(--danger); color: #fff; border: none; padding: 15px 40px; border-radius: 30px; font-weight: bold; margin-top: 20px; }
     </style>
 </head>
 <body>
     <div id="gate">
-        <div class="gate-box">
-            <h2 style="color:var(--danger);">18禁限制內容</h2>
-            <p style="color:#666; font-size:14px; margin-top:15px;">本文章包含成人題材，存取前請確認您已滿 18 歲。</p>
-            <button class="gate-btn" onclick="document.getElementById('gate').remove()">確認成年並進入</button>
+        <div style="border: 1px solid var(--danger); padding: 40px; border-radius: 20px;">
+            <h2 style="color:var(--danger)">🔞 內容限制</h2>
+            <p style="color:#666; margin-top:10px;">本內容包含成人題材，存取前請確認您已成年。</p>
+            <button class="gate-btn" onclick="document.getElementById('gate').remove()">確認並進入</button>
         </div>
     </div>
-    <header class="header-fixed">
-        <a href="/blog/" class="back-link"><i class="fa-solid fa-chevron-left"></i> 返回部落格</a>
-        <div style="font-weight:bold; color:var(--accent);">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</div>
-        <div style="width:50px;"></div>
+    <header class="header">
+        <a href="/blog/" style="color:var(--accent); text-decoration:none;"><i class="fa-solid fa-chevron-left"></i> 返回</a>
     </header>
-    <div class="main-content">
-        <span class="post-label">${tags}</span>
+    <div class="main">
+        <div class="tag">#${cate}</div>
         <h1>${title}</h1>
-        <div class="content-body">${marked.parse(content)}</div>
-        <footer class="footer-copyright">
-            <p>© ${new Date().getFullYear()} Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ - 版權所有</p>
-        </footer>
-    </div>
-    <nav class="bottom-nav">
-        <a href="/" class="nav-item"><i class="fa-solid fa-house"></i><span>首頁</span></a>
-        <a href="/blog/" class="nav-item"><i class="fa-solid fa-book-open"></i><span>閱讀</span></a>
-        <div class="nav-item" onclick="document.getElementById('mobiPanel').classList.add('show')"><i class="fa-solid fa-sliders"></i><span>設定</span></div>
-    </nav>
-    <div class="mobi-panel" id="mobiPanel">
-        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-            <b>閱讀設定</b>
-            <span style="color:var(--accent);" onclick="document.getElementById('mobiPanel').classList.remove('show')">完成</span>
-        </div>
-        <input type="range" min="15" max="30" value="18" oninput="document.documentElement.style.setProperty('--font-size', this.value + 'px')">
+        <div class="content" id="render">${marked.parse(content)}</div>
     </div>
 </body>
 </html>`;
         }
 
-        /* === 執行發佈 === */
+        /* === 實戰：GitHub API 發佈功能 === */
         async function finalPublish() {
             const token = document.getElementById('gh-token').value;
-            if(!token) return toast("請輸入 Token", "error");
+            const repo = "mobsp/mobsp.github.io"; // 你的 Repo
+            
+            if(!token) return toast("請輸入 GitHub Token", "error");
 
             const items = document.querySelectorAll('.article-item');
             for(let item of items) {
-                const title = item.querySelector('.post-title').value;
+                const title = item.querySelector('.post-title').value.trim();
                 let content = item.querySelector('.post-content').value;
                 const cate = item.querySelector('.post-cate').value;
 
                 if(!title || !content) continue;
-                if(!checkSimilarity(content)) continue;
 
-                // 四-14: 免責聲明自動附加
                 if(document.getElementById('add-notice').checked) {
-                    content += `\n\n> **免責聲明**: 本文內容僅供交流，請遵守法律法規。`;
+                    content += `\n\n---\n> **免責聲明**: 本文內容僅供技術交流。`;
                 }
 
                 const finalHTML = generatePostHTML(title, content, cate);
-                const path = `blog/p/${cate}/${Date.now()}.html`;
+                const fileName = `[${cate}]-${encodeURIComponent(title)}.html`;
+                const path = `blog/p/list/${fileName}`;
 
-                // 模擬發送
-                toast(`正在發佈: ${title}...`);
-                // 這裡會串接 GitHub API PUT 操作 (同上個版本)
-                state.posts.push({title, content, cate, path});
+                toast(`同步至 GitHub: ${title}...`);
+
+                try {
+                    // UTF-8 轉 Base64 處理 (避免中文亂碼)
+                    const base64Content = btoa(unescape(encodeURIComponent(finalHTML)));
+
+                    const res = await fetch(`https://api.github.com/repos/${repo}/contents/${path}`, {
+                        method: "PUT",
+                        headers: {
+                            "Authorization": `token ${token}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            message: `Authority V7 Auto Publish: ${title}`,
+                            content: base64Content,
+                            branch: "main"
+                        })
+                    });
+
+                    if(res.ok) {
+                        toast(`✅ ${title} 已成功顯示在儲存庫！`);
+                        if(document.getElementById('clear-after').checked) {
+                            item.querySelector('.post-title').value = "";
+                            item.querySelector('.post-content').value = "";
+                        }
+                    } else {
+                        const err = await res.json();
+                        toast(`❌ 失敗: ${err.message}`, "error");
+                    }
+                } catch (e) {
+                    toast("連線失敗，檢查網路", "error");
+                }
             }
-            saveData();
-            toast("全數發佈成功！(五-4)");
-            if(document.getElementById('push-ask').checked) confirm("是否同步推送至社交平台？(三-9)");
         }
 
-        /* === 系統工具 === */
-        function makePw() {
-            const arr = new Uint32Array(10);
-            window.crypto.getRandomValues(arr);
-            document.getElementById('pw-res').value = btoa(arr.join('')).substring(0, 16);
-            toast("Proton 級金鑰已生成 (四-15)");
-        }
-
-        function changeUI(type, v) {
-            if(type === 'hue') document.documentElement.style.setProperty('--accent', `hsl(${v}, 100%, 40%)`);
-            if(type === 'bg') document.getElementById('bg-canvas').style.opacity = v/100;
-        }
-
+        /* === 工具類 === */
         function tabs(i, el) {
             document.querySelectorAll('.view').forEach((v, idx) => v.classList.toggle('active', i === idx));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -395,9 +280,8 @@
             setTimeout(() => t.remove(), 3000);
         }
 
-        function saveData() {
-            state.token = document.getElementById('gh-token').value;
-            localStorage.setItem('mob_v7_data', JSON.stringify(state));
+        function changeUI(type, v) {
+            if(type === 'hue') document.documentElement.style.setProperty('--accent', `hsl(${v}, 100%, 40%)`);
         }
 
         function initBg() {
@@ -407,7 +291,7 @@
             function draw() {
                 ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,w,h);
                 ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent');
-                for(let i=0; i<3; i++) ctx.fillRect(Math.random()*w, Math.random()*h, 2, 10);
+                for(let i=0; i<2; i++) ctx.fillRect(Math.random()*w, Math.random()*h, 2, 8);
                 requestAnimationFrame(draw);
             }
             draw();
