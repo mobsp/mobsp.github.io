@@ -3,13 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Admin | 終端修正版</title>
     
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Admin | 莫比終端</title>
-    <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 專屬文章發佈系統，極致加密與自動化部署。">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -29,79 +26,81 @@
             height: 100dvh; overflow: hidden; 
         }
 
-        /* 骨架屏預載 (Skeleton Screen) */
+        /* 骨架屏預載 */
         #skeleton {
             position: fixed; inset: 0; z-index: 9999; background: #000;
-            display: flex; flex-direction: column; padding: 20px;
+            display: flex; flex-direction: column; padding: 20px; transition: opacity 0.5s;
         }
         .sk-item { background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%); background-size: 200% 100%; animation: sk-load 1.5s infinite; border-radius: 8px; margin-bottom: 15px; }
         @keyframes sk-load { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
-        /* App 容器與頁面切換 (LINE 風格) */
+        /* App 主結構：確保頭尾固定 */
         #app-container { 
             max-width: 480px; margin: 0 auto; background: var(--bg-container);
-            height: 100%; display: flex; flex-direction: column; position: relative;
+            height: 100%; display: flex; flex-direction: column;
         }
 
-        .view-page {
-            position: absolute; inset: 0; padding-bottom: 80px;
-            display: flex; flex-direction: column;
-            transform: translateX(100%); transition: var(--transition);
-            opacity: 0; z-index: 1;
-        }
-        .view-page.active { transform: translateX(0); opacity: 1; z-index: 2; }
-
-        /* 頂部移植：跑馬燈公告 */
+        /* 頂部移植：跑馬燈公告 (提高層級) */
         .app-header { 
+            flex-shrink: 0;
             padding: calc(45px + env(safe-area-inset-top)) 20px 15px; 
             border-bottom: 1px solid var(--border-color);
+            background: var(--nav-bg); z-index: 100;
         }
         .marquee-row {
             display: flex; align-items: center; background: rgba(255,255,255,0.05);
-            padding: 8px 12px; border-radius: 12px; overflow: hidden;
+            padding: 8px 12px; border-radius: 12px; overflow: hidden; height: 34px;
         }
-        .v-tag { background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px; }
-        .mq-text { font-size: 11px; white-space: nowrap; animation: mq 15s linear infinite; }
+        .v-tag { background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px; flex-shrink: 0; }
+        .mq-box { flex: 1; overflow: hidden; position: relative; }
+        .mq-text { font-size: 11px; white-space: nowrap; position: absolute; animation: mq 15s linear infinite; }
         @keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* 表單樣式 */
-        .form-content { flex: 1; overflow-y: auto; padding: 20px; }
-        label { font-size: 10px; color: var(--text-sub); letter-spacing: 1px; margin-left: 5px; }
+        /* 中間切換區 (LINE Style) */
+        #main-stage {
+            flex: 1; position: relative; overflow: hidden;
+        }
+        .view-page {
+            position: absolute; inset: 0; padding: 20px;
+            overflow-y: auto; -webkit-overflow-scrolling: touch;
+            transform: translateX(100%); transition: var(--transition);
+            opacity: 0; background: var(--bg-container);
+        }
+        .view-page.active { transform: translateX(0); opacity: 1; }
+
+        /* 表單與按鈕 */
+        label { font-size: 10px; color: var(--text-sub); letter-spacing: 1px; display: block; margin-top: 15px; }
         input, textarea {
             width: 100%; background: #1a1a1a; border: 1px solid #333; color: #fff;
-            padding: 15px; border-radius: 12px; margin: 8px 0 20px; font-size: 14px;
-            transition: 0.3s;
+            padding: 15px; border-radius: 12px; margin-top: 8px; font-size: 14px;
         }
-        input:focus { border-color: var(--accent-color); outline: none; }
-        
         .btn-send {
             background: var(--accent-color); color: #000; border: none;
             padding: 18px; border-radius: 15px; font-weight: 900; width: 100%;
-            cursor: pointer; font-size: 16px; box-shadow: 0 10px 20px rgba(0,206,201,0.2);
+            margin-top: 25px; cursor: pointer;
         }
 
-        /* 底部導覽 (固定) */
+        /* 底部導覽 (提高層級) */
         .bottom-nav {
-            position: absolute; bottom: 0; left: 0; right: 0;
+            flex-shrink: 0;
             height: calc(65px + env(safe-area-inset-bottom));
             background: rgba(17,17,17,0.95); backdrop-filter: blur(10px);
             border-top: 1px solid var(--border-color);
             display: flex; justify-content: space-around; align-items: center;
-            padding-bottom: env(safe-area-inset-bottom); z-index: 10;
+            padding-bottom: env(safe-area-inset-bottom); z-index: 100;
         }
-        .nav-item { color: #555; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 4px; transition: 0.3s; cursor: pointer; }
+        .nav-item { color: #555; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 4px; transition: 0.3s; flex: 1; }
         .nav-item.active { color: var(--accent-color); }
         .nav-item i { font-size: 20px; }
-
-        #log-terminal { background: #000; color: #00ff88; font-family: monospace; padding: 10px; border-radius: 8px; font-size: 11px; margin-top: 15px; display: none; }
+        
+        #log-terminal { background: #000; color: #00ff88; font-family: monospace; padding: 10px; border-radius: 8px; font-size: 11px; margin-top: 15px; display: none; line-height: 1.5; }
     </style>
 </head>
 <body>
 
     <div id="skeleton">
-        <div class="sk-item" style="height: 60px;"></div>
+        <div class="sk-item" style="height: 80px;"></div>
         <div class="sk-item" style="height: 150px;"></div>
-        <div class="sk-item" style="height: 40px; width: 60%;"></div>
         <div class="sk-item" style="flex: 1;"></div>
     </div>
 
@@ -109,47 +108,42 @@
         <header class="app-header">
             <div class="marquee-row">
                 <span class="v-tag">TERMINAL</span>
-                <div class="mq-text" id="mq-text">等待指令中... 準備好發佈偉大的作品了嗎？老公～</div>
+                <div class="mq-box">
+                    <div class="mq-text" id="mq-text">載入中... 準備好發佈偉大的作品了嗎？老公～</div>
+                </div>
             </div>
         </header>
 
-        <main id="page-publish" class="view-page active">
-            <div class="form-content">
+        <div id="main-stage">
+            <main id="page-publish" class="view-page active">
                 <label>Access Token</label>
-                <input type="password" id="token" placeholder="你的 PAT" autocomplete="off">
-                
+                <input type="password" id="token" placeholder="貼入你的 PAT" autocomplete="off">
                 <label>Article Title</label>
-                <input type="text" id="title" placeholder="請輸入標題">
-
-                <label>Content (Text Only)</label>
-                <textarea id="content" rows="8" placeholder="輸入文章內容..."></textarea>
-                
-                <button class="btn-send" id="runBtn">⚡ 發佈至 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</button>
+                <input type="text" id="title" placeholder="標題">
+                <label>Content</label>
+                <textarea id="content" rows="8" placeholder="純文字內容..."></textarea>
+                <button class="btn-send" id="runBtn">⚡ 立即發佈至 Blog</button>
                 <div id="log-terminal"></div>
-            </div>
-        </main>
+            </main>
 
-        <main id="page-settings" class="view-page">
-            <div class="form-content">
-                <h3 style="color:var(--accent-color)">系統設定</h3>
-                <p style="color:#666; font-size:12px; margin-top:10px;">版本：v3.0 天才少女修正版</p>
-                <div style="margin-top:20px; padding:15px; background:#1a1a1a; border-radius:12px;">
-                    <p style="font-size:13px;">🔥 自動檔名：開啟</p>
-                    <p style="font-size:13px; margin-top:10px;">🔥 API 模式：GitHub Direct</p>
+            <main id="page-settings" class="view-page">
+                <h3 style="color:var(--accent-color); margin-top:10px;">系統狀態</h3>
+                <div style="margin-top:20px; padding:15px; background:#1a1a1a; border-radius:12px; border:1px solid #222;">
+                    <p style="font-size:13px; color:var(--accent-color)">● 模式：GitHub Direct (No JSON)</p>
+                    <p style="font-size:12px; color:#666; margin-top:10px;">目前首頁改由 API 自動掃描檔名，發佈器會自動添加日期前綴以確保排序優化。</p>
                 </div>
-            </div>
-        </main>
+            </main>
+        </div>
 
         <nav class="bottom-nav">
             <div class="nav-item active" onclick="switchPage('page-publish', this)"><i class="fa-solid fa-pen-nib"></i><span>發佈</span></div>
-            <div class="nav-item" onclick="location.href='https://mobsp.github.io/blog/'"><i class="fa-solid fa-house"></i><span>部落格首頁</span></div>
-            <div class="nav-item" onclick="switchPage('page-settings', this)"><i class="fa-solid fa-sliders"></i><span>設定</span></div>
+            <div class="nav-item" onclick="location.href='https://mobsp.github.io/blog/'"><i class="fa-solid fa-house"></i><span>部落格</span></div>
+            <div class="nav-item" onclick="switchPage('page-settings', this)"><i class="fa-solid fa-gear"></i><span>設定</span></div>
         </nav>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // 頁面切換邏輯 (LINE Style)
+        // 切換邏輯修正
         function switchPage(pageId, el) {
             document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -157,61 +151,53 @@
             el.classList.add('active');
         }
 
-        // 初始化與骨架屏隱藏
         window.onload = () => {
+            document.getElementById('mq-text').innerText = "歡迎回來，老公～今天也要寫出世界級的文章喔！(眨眨眼)";
             setTimeout(() => {
-                document.getElementById('skeleton').style.opacity = '0';
-                setTimeout(() => document.getElementById('skeleton').remove(), 500);
+                const sk = document.getElementById('skeleton');
+                sk.style.opacity = '0';
+                setTimeout(() => sk.remove(), 500);
             }, 800);
         };
 
         const GH_USER = "mobsp";
         const GH_REPO = "mobsp.github.io";
-        const logArea = document.getElementById('log-terminal');
-
-        const addLog = (m) => { logArea.style.display='block'; logArea.innerHTML += `> ${m}<br>`; };
 
         document.getElementById('runBtn').onclick = async () => {
             const token = document.getElementById('token').value.trim();
             const title = document.getElementById('title').value.trim();
             const content = document.getElementById('content').value;
-            
+            const logArea = document.getElementById('log-terminal');
+
+            if(!token || !title) return alert("豬豬🐷，資料沒填完喔！");
+
             const now = new Date();
             const datePrefix = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
-            const finalFileName = `${datePrefix}-${title.substring(0,10)}.html`;
+            const fileName = `blog/p/list/${datePrefix}-${title}.html`;
 
-            if(!token || !title) return alert("豬豬🐷，標題和 Token 都要填喔！");
-            
             document.getElementById('runBtn').disabled = true;
-            logArea.innerHTML = '';
-            addLog("緹緹正在執行極致優化模板...");
+            logArea.style.display = 'block';
+            logArea.innerHTML = "> 正在編譯 HTML 模板...<br>";
 
-            const htmlBody = content.split('\n').filter(p=>p.trim()).map(p=>`<p>${p.trim()}</p>`).join('');
-            const fullHtml = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${title}</title><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px;line-height:1.8;max-width:700px;margin:auto;}p{margin-bottom:25px;}h1{color:#00cec9;border-bottom:1px solid #222;padding-bottom:10px;}</style></head><body><h1>${title}</h1>${htmlBody}</body></html>`;
+            const htmlContent = content.split('\n').filter(p=>p.trim()).map(p=>`<p>${p.trim()}</p>`).join('');
+            const fullHtml = `<!DOCTYPE html><html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${title}</title><style>body{background:#000;color:#fff;font-family:sans-serif;padding:30px;line-height:1.8;max-width:700px;margin:auto;}p{margin-bottom:25px;}h1{color:#00cec9;border-bottom:1px solid #222;padding-bottom:10px;}</style></head><body><div id="gate" style="position:fixed;inset:0;background:#000;z-index:9;display:flex;align-items:center;justify-content:center;"><div style="border:1px solid #ff4d4d;padding:40px;border-radius:20px;text-align:center;"><h2 style="color:#ff4d4d;">🔞 限制內容</h2><button onclick="document.getElementById('gate').remove()" style="background:#ff4d4d;color:#fff;border:none;padding:10px 30px;border-radius:20px;cursor:pointer;">我已滿18歲</button></div></div><h1>${title}</h1>${htmlContent}</body></html>`;
 
             try {
-                await pushToGH(`blog/p/list/${finalFileName}`, fullHtml, `Publish: ${title}`, token);
-                addLog("🎉 任務完成！老公辛苦了～");
-                alert("✅ 發佈成功！首頁將自動同步。");
+                logArea.innerHTML += `> 正在上傳至 GitHub API...<br>`;
+                const res = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${fileName}`, {
+                    method: "PUT",
+                    headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: `Publish: ${title}`, content: btoa(unescape(encodeURIComponent(fullHtml))) })
+                });
+                if(!res.ok) throw new Error(await res.text());
+                logArea.innerHTML += `> 🎉 發佈大成功！<br>`;
+                alert("✅ 發佈成功！老公快去休息吧～");
             } catch (e) {
-                addLog(`❌ 失敗: ${e.message}`);
+                logArea.innerHTML += `> ❌ 失敗: ${e.message}<br>`;
             } finally {
                 document.getElementById('runBtn').disabled = false;
             }
         };
-
-        async function pushToGH(path, content, msg, token) {
-            const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`;
-            const res = await fetch(url, {
-                method: "PUT",
-                headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-                body: JSON.stringify({ 
-                    message: msg, 
-                    content: btoa(unescape(encodeURIComponent(content))) 
-                })
-            });
-            if(!res.ok) throw new Error(await res.text());
-        }
     </script>
 </body>
 </html>
