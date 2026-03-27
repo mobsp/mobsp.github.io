@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>【公公與媳婦：閣樓裡的紅潤家法開發】 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --ios-bg: #000; 
+            --text-color: #fff; 
+            --font-size: 18px; 
+            --accent: #00cec9; 
+            --danger: #ff4d4d; 
+            --panel-bg: rgba(28, 28, 30, 0.95); 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--ios-bg); 
+            color: var(--text-color); 
+            line-height: 1.8; 
+            overflow-x: hidden;
+        }
+        
+        /* 固定頁首 */
+        .header-fixed { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); 
+            display: flex; align-items: center; padding: 0 20px; justify-content: space-between; 
+            padding-top: env(safe-area-inset-top); height: calc(60px + env(safe-area-inset-top)); 
+        }
+        .back-link { color: var(--accent); text-decoration: none; font-size: 16px; font-weight: 500; }
+        
+        /* 文章區域 */
+        .main-content { max-width: 600px; margin: 0 auto; padding: calc(80px + env(safe-area-inset-top)) 20px 150px; }
+        .post-label { font-size: 12px; color: var(--danger); font-weight: bold; margin-bottom: 10px; display: block; letter-spacing: 1px; }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 30px; line-height: 1.3; color: #fff; }
+        .tag-box { margin-bottom: 30px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; font-size: 14px; color: #8e8e93; line-height: 1.5; }
+        .content-body { font-size: var(--font-size); color: var(--text-color); text-align: justify; }
+        .content-body p { margin-bottom: 25px; }
+        .content-body strong { color: var(--accent); display: block; margin-top: 40px; font-size: 1.1em; }
+
+        /* 版權聲明頁尾 */
+        .footer-copyright { margin-top: 50px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #555; font-size: 12px; line-height: 1.6; }
+
+        /* 固定底部導覽 */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            height: calc(70px + env(safe-area-inset-bottom)); 
+            background: rgba(20,20,22,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 100; 
+            display: flex; justify-content: space-around; align-items: center; 
+            padding-bottom: env(safe-area-inset-bottom); 
+        }
+        .nav-item { color: #8e8e93; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 5px; cursor: pointer; transition: 0.2s; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item i { font-size: 20px; }
+
+        /* 設定面板 */
+        .mobi-panel { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: var(--panel-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-radius: 25px 25px 0 0; padding: 30px 20px calc(40px + env(safe-area-inset-bottom)); 
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); 
+        }
+        .mobi-panel.show { transform: translateY(0); }
+        .panel-row { margin-bottom: 25px; }
+        .panel-label { font-size: 13px; color: #8e8e93; margin-bottom: 12px; display: flex; justify-content: space-between; }
+        
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: #333; border-radius: 2px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 28px; height: 28px; background: #fff; 
+            border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer;
+        }
+
+        /* 18禁門控 */
+        #gate { 
+            position: fixed; inset: 0; background: #000; z-index: 10000; 
+            display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; 
+        }
+        .gate-box { 
+            padding: 40px 25px; border: 1px solid var(--danger); border-radius: 30px; 
+            background: #0a0000; box-shadow: 0 0 50px rgba(255,77,77,0.2); max-width: 400px;
+        }
+        .gate-btn { 
+            background: var(--danger); color: #fff; border: none; padding: 15px 50px; 
+            border-radius: 50px; font-weight: bold; margin-top: 30px; cursor: pointer; font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="gate">
+        <div class="gate-box">
+            <h2 style="color:var(--danger); letter-spacing:2px;">18禁限制內容</h2>
+            <p style="color:#666; font-size:14px; margin-top:15px;">本文章包含成人題材，存取前請確認您已滿 18 歲。</p>
+            <button class="gate-btn" onclick="document.getElementById('gate').style.display='none'">確認成年並進入</button>
+        </div>
+    </div>
+
+    <header class="header-fixed">
+        <a href="/blog/" class="back-link"><i class="fa-solid fa-chevron-left"></i> 返回</a>
+        <div style="font-weight:bold; font-size:14px; letter-spacing:1px; color:var(--accent);">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</div>
+        <div style="width:40px;"></div> 
+    </header>
+
+    <div class="main-content">
+        <span class="post-label"># 媳婦 / 姻親亂倫 / 調教</span>
+        <h1>【公公與媳婦：閣樓裡的紅潤家法開發】</h1>
+        
+        <div class="tag-box">
+            標籤：媳婦 / 姻親亂倫 / 三穴開發 / 秘密調教 / 菊花擴張 / 噴尿噴水 / 內射灌漿 / 口爆吞精
+        </div>
+
+        <div class="content-body" id="articleBody">
+            <p><strong>第一章：寂靜的蟬鳴與腐爛的倫理</strong></p>
+            <p>盛夏的正午，陽光熾熱得彷彿要點燃空氣。別墅二樓的閣樓裡，百葉窗被拉得死緊，只有幾縷細碎的光線透進來，照在空氣中漂浮的灰塵上。這裡原本是儲藏間，但自從兒子出差後，這裡就成了我和媳婦——婉柔，每天下午「修身養性」的秘密場所。</p>
+            <p>婉柔今年二十六歲，曾是知名的芭蕾舞演員，那具身體的柔韌性與比例，簡直是上天的傑作。她今天穿了一件極薄的米色絲綢旗袍，那旗袍是特別訂製的，側邊的盤扣一直延伸到腋下。而最讓我屏息的，是她那雙始終包裹在高級超薄、帶有珍珠光澤的灰紫色絲襪裡的長腿。那絲襪細膩得幾乎透明，勾勒出她那對因為長年練舞而圓潤、充滿張力的足踝。</p>
+            <p>「爸爸……今天的『功課』能不能少一點？我昨晚腰疼得厲害……」婉柔低著頭，聲音像蚊子叫一樣，雙手不安地絞著旗袍的下擺。</p>
+            <p>我——老李，坐在那張鋪著黑色皮革的躺椅上，手裡握著一支暗紅色的檀木教鞭。我看著她，這是我花了兩年時間，一點一滴調教出來的傑作。</p>
+            <p>「婉柔，『家規』是不能改的。妳既然進了李家的門，就要學會怎麼伺候李家的男人。」我冷冷地說，教鞭輕輕敲打著皮革，發出沉悶的聲響，「跪下，把妳這雙價值連城的舞者之足，奉獻給妳的主人。」</p>
+
+            <p><strong>第二章：足尖上的紅潤序章</strong></p>
+            <p>婉柔顫抖著跪了下來。她那對塗著珍珠粉色指甲油、足弓如新月般圓潤的玉足，在我的視線中微微蜷縮。我看著灰紫色絲襪在那精緻的足心處擠壓出的細微褶皺，那裡浸透了少女特有的微汗，散發出一種淡淡的、混合著絲織品與體溫的氣息。</p>
+            <p>我將那根早已在襠部撐得發紫、布滿猙獰青筋的巨物彈了出來。那是一根帶著權威與野蠻氣息的硬鐵，馬眼處正溢出大顆透明的黏液，滴落在冰冷的木地板上。</p>
+            <p>「用妳的腳，幫我『熱身』。」我命令道。</p>
+            <p>婉柔眼眶通紅，恥辱地用那對穿著絲襪的足心夾住了我那腥臭的巨物。絲襪細膩的纖維與那灼熱的馬眼摩擦，發出「滋滋」的淫靡聲響。我按住她的後腦勺，看著她那張原本在舞台上高雅聖潔的臉蛋，此刻卻在我的胯下卑微地蠕動著。</p>
+            <p>「用力一點，婉柔。想像妳是在跳天鵝湖，用妳的足尖來取悅我。」</p>
+            <p>隨著她的動作，那根黑紫色的巨龍變得更加猙獰。我猛地一用力，將她整個人掀翻在躺椅上。在那刺耳的帛裂聲中，那件昂貴的絲綢旗袍被我從側邊生生撕開，鈕扣蹦彈一地。</p>
+
+            <p><strong>第三章：三穴的終極洗禮</strong></p>
+            <p>婉柔那具如藝術品般的肉體徹底暴露在昏暗的光線下。那對挺拔如雪山的乳房，紅褐色的乳暈因為恐懼而瘋狂挺立。我沒有給她喘息的機會，直接抓起桌上的擴張油，大量的、冰冷的油液直接澆灌在她那對絲襪包裹的肉球中間。</p>
+            <p>「爸爸……不要……那裡還沒好……」</p>
+            <p>我盯著她那朵在燈光下顯得格外紅潤、緊閉的菊穴。那是李家最私密的「家法」所在地。因為極度的羞恥與長期的開發，那紅潤的小孔正瘋狂地蠕動著，彷彿在渴求著被再次填充。</p>
+            <p>我沒有溫柔，直接將四根粗壯的手指強行捅了進去，瘋狂地擴張著那緊緻得近乎變態的括約肌。</p>
+            <p>「啊——！要裂開了！爸爸……救命……」婉柔發出一聲淒厲的尖叫，指甲死死摳進了皮革座椅，在那昂貴的皮面上留下了深長的抓痕。</p>
+            <p>那狹窄的後門在我的蹂說下迅速充血，呈現出一種透明而鮮艷的血紅，像是一朵在黑暗中強行綻放的玫瑰。我挺起早已堅硬如鐵的巨物，對準那收縮不已的紅潤紅門，狠狠地捅進了最深處。</p>
+            <p>那一瞬間，婉柔的身體劇烈抽搐，那對超模般的長腿在空中亂蹬，灰紫色絲襪的殘片在撞擊中不斷磨損。那根黑紫色的巨龍帶著毀滅性的力量撞開了防線，一捅到底，直接撞擊在她的直腸最深處。</p>
+            <p>「啊——！太深了！要把腸子都撞斷了……」</p>
+            <p>與此同時，我將另一隻手探入她那泥濘不堪的前穴。雙穴同入的極致快感與劇痛，讓婉柔的大腦徹底當機。她開始瘋狂地擺動臀部，前穴因為極度興奮猛地噴出一大片透明的噴尿液體，將黑色的皮革躺椅淋得透濕。</p>
+
+            <p><strong>第四章：紅潤的終結與灌漿</strong></p>
+            <p>我瘋狂地抽送著，每一次撞擊都發出沉重的、黏膩的肉體碰撞聲。我看著那根黑紫巨物在那紅潤外翻的肉孔中進進出出，帶出鮮紅的血絲與透明的噴水。這種在背德感與極限開發下的崩壞，讓婉柔發出了徹底墮落的囈語。</p>
+            <p>「爸爸……快射給我……把老公的那份也射進去……婉柔是爸爸的……」</p>
+            <p>最後幾百次狂暴的衝擊後，我發出一聲野獸般的吼叫，將碩大的頂端死死抵在她的腸壁深處。那一刻，巨量的、帶著濃烈腥氣的種子灌滿了婉柔的體內。</p>
+            <p>那是一股足以灼傷靈魂的熱流。婉柔覺得自己的肚子都被充填得微微隆起。隨後，我抽出那根依然半硬的巨物，直接塞進了她那張早已張開求饒的小嘴裡。</p>
+            <p>「吞下去，一滴都不准剩。」</p>
+            <p>我按住她的後腦勺猛烈衝刺，在那狹窄的喉嚨深處再次噴發。婉柔眼眶通紅，乾嘔不止，但她卻乖巧地喉頭滑動，將那些帶著腥味的液體一滴不漏地吞下。</p>
+            <p>閣樓裡再次歸於寂靜。婉柔癱軟在皮革椅上，旗袍的殘片、撕裂的絲襪，以及滿身的污穢，都在訴說著這場長達萬字的開發紀錄。</p>
+            <p>「明天的課，準時一點。」我冷冷地拍了拍她那被打得紅腫發紫的臀部，轉身走出了閣樓。</p>
+        </div>
+
+        <footer class="footer-copyright">
+            <p>© 2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ 莫比空間 - 版權所有</p>
+            <p style="font-size:10px; opacity:0.5;">所有內容僅供文學交流，嚴禁非法傳播。</p>
+        </footer>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item"><i class="fa-solid fa-house"></i><span>首頁</span></a>
+        <a href="/blog/" class="nav-item active"><i class="fa-solid fa-book-open"></i><span>閱讀</span></a>
+        <div class="nav-item" onclick="togglePanel(true)"><i class="fa-solid fa-sliders"></i><span>設定</span></div>
+    </nav>
+
+    <div class="mobi-panel" id="mobiPanel">
+        <div class="panel-row" style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:bold; font-size:18px;">閱讀設定</span>
+            <span style="color:var(--accent); cursor:pointer; font-weight:bold;" onclick="togglePanel(false)">完成</span>
+        </div>
+        <div class="panel-row">
+            <label class="panel-label"><span>文字亮度</span><span id="val-color">100%</span></label>
+            <input type="range" min="50" max="255" value="255" oninput="updateColor(this.value)">
+        </div>
+        <div class="panel-row">
+            <label class="panel-label"><span>字體大小</span><span id="val-size">18px</span></label>
+            <input type="range" min="14" max="32" value="18" oninput="updateSize(this.value)">
+        </div>
+    </div>
+
+    <script>
+        function togglePanel(show) {
+            const panel = document.getElementById('mobiPanel');
+            if (show) panel.classList.add('show');
+            else panel.classList.remove('show');
+        }
+
+        function updateColor(val) {
+            const color = `rgb(${val},${val},${val})`;
+            document.documentElement.style.setProperty('--text-color', color);
+            document.getElementById('val-color').innerText = Math.round((val / 255) * 100) + '%';
+        }
+
+        function updateSize(val) {
+            document.documentElement.style.setProperty('--font-size', val + 'px');
+            document.getElementById('val-size').innerText = val + 'px';
+        }
+    </script>
+</body>
+</html>
