@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>${title} | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { 
+            --ios-bg: #000; 
+            --text-color: #fff; 
+            --font-size: 18px; 
+            --accent: #00cec9; 
+            --danger: #ff4d4d; 
+            --panel-bg: rgba(28, 28, 30, 0.95); 
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--ios-bg); 
+            color: var(--text-color); 
+            line-height: 1.8; 
+            overflow-x: hidden;
+        }
+        
+        /* 固定頁首 (支援 iOS 安全區域) */
+        .header-fixed { 
+            position: fixed; top: 0; left: 0; width: 100%; 
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.1); 
+            display: flex; align-items: center; padding: 0 20px; justify-content: space-between; 
+            padding-top: env(safe-area-inset-top); height: calc(60px + env(safe-area-inset-top)); 
+        }
+        .back-link { color: var(--accent); text-decoration: none; font-size: 16px; font-weight: 500; }
+        
+        /* 文章區域 */
+        .main-content { max-width: 600px; margin: 0 auto; padding: calc(80px + env(safe-area-inset-top)) 20px 150px; }
+        .post-label { font-size: 12px; color: var(--danger); font-weight: bold; margin-bottom: 10px; display: block; letter-spacing: 1px; }
+        h1 { font-size: 28px; font-weight: 800; margin-bottom: 30px; line-height: 1.3; color: #fff; }
+        .content-body { font-size: var(--font-size); color: var(--text-color); text-align: justify; }
+        .content-body p { margin-bottom: 25px; }
+        .content-body img { max-width: 100%; border-radius: 12px; margin: 10px 0; }
+
+        /* 版權聲明頁尾 */
+        .footer-copyright { margin-top: 50px; padding: 30px 0; border-top: 1px solid rgba(255,255,255,0.1); text-align: center; color: #555; font-size: 12px; line-height: 1.6; }
+
+        /* 固定底部導覽 (支援 iOS 安全區域) */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            height: calc(70px + env(safe-area-inset-bottom)); 
+            background: rgba(20,20,22,0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.1); z-index: 100; 
+            display: flex; justify-content: space-around; align-items: center; 
+            padding-bottom: env(safe-area-inset-bottom); 
+        }
+        .nav-item { color: #8e8e93; text-decoration: none; display: flex; flex-direction: column; align-items: center; font-size: 10px; gap: 5px; cursor: pointer; transition: 0.2s; }
+        .nav-item.active { color: var(--accent); }
+        .nav-item i { font-size: 20px; }
+
+        /* 設定面板 (抽屜式動畫) */
+        .mobi-panel { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: var(--panel-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border-radius: 25px 25px 0 0; padding: 30px 20px calc(40px + env(safe-area-inset-bottom)); 
+            transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); 
+            z-index: 1000; border-top: 1px solid rgba(255,255,255,0.1); 
+        }
+        .mobi-panel.show { transform: translateY(0); }
+        .panel-row { margin-bottom: 25px; }
+        .panel-label { font-size: 13px; color: #8e8e93; margin-bottom: 12px; display: flex; justify-content: space-between; }
+        
+        /* 自定義滑桿樣式 */
+        input[type="range"] { -webkit-appearance: none; width: 100%; height: 4px; background: #333; border-radius: 2px; outline: none; }
+        input[type="range"]::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 28px; height: 28px; background: #fff; 
+            border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.5); cursor: pointer;
+        }
+
+        /* 18禁門控 */
+        #gate { 
+            position: fixed; inset: 0; background: #000; z-index: 10000; 
+            display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px; 
+        }
+        .gate-box { 
+            padding: 40px 25px; border: 1px solid var(--danger); border-radius: 30px; 
+            background: #0a0000; box-shadow: 0 0 50px rgba(255,77,77,0.2); max-width: 400px;
+        }
+        .gate-btn { 
+            background: var(--danger); color: #fff; border: none; padding: 15px 50px; 
+            border-radius: 50px; font-weight: bold; margin-top: 30px; cursor: pointer; font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    
+    <div id="gate">
+        <div class="gate-box">
+            <h2 style="color:var(--danger); letter-spacing:2px;">18禁限制內容</h2>
+            <p style="color:#666; font-size:14px; margin-top:15px;">本文章包含成人題材，存取前請確認您已滿 18 歲。</p>
+            <button class="gate-btn" onclick="document.getElementById('gate').style.display='none'">確認成年並進入</button>
+        </div>
+    </div>
+
+    <header class="header-fixed">
+        <a href="/blog/" class="back-link"><i class="fa-solid fa-chevron-left"></i> 返回</a>
+        <div style="font-weight:bold; font-size:14px; letter-spacing:1px; color:var(--accent);">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</div>
+        <div style="width:40px;"></div> 
+    </header>
+
+    <div class="main-content">
+        <span class="post-label"># ${category}</span>
+        <h1>${title}</h1>
+        <div class="content-body" id="articleBody">
+            ${markdownContent}
+        </div>
+
+        <footer class="footer-copyright">
+            <p>© 2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ 莫比空間 - 版權所有</p>
+            <p style="font-size:10px; opacity:0.5;">所有內容僅供文學交流，嚴禁非法傳播。</p>
+        </footer>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="/" class="nav-item"><i class="fa-solid fa-house"></i><span>首頁</span></a>
+        <a href="/blog/" class="nav-item active"><i class="fa-solid fa-book-open"></i><span>閱讀</span></a>
+        <div class="nav-item" onclick="togglePanel(true)"><i class="fa-solid fa-sliders"></i><span>設定</span></div>
+        <a href="/tol/" class="nav-item"><i class="fa-solid fa-screwdriver-wrench"></i><span>工具</span></a>
+    </nav>
+
+    <div class="mobi-panel" id="mobiPanel">
+        <div class="panel-row" style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:bold; font-size:18px;">閱讀設定</span>
+            <span style="color:var(--accent); cursor:pointer; font-weight:bold;" onclick="togglePanel(false)">完成</span>
+        </div>
+        <div class="panel-row">
+            <label class="panel-label"><span>文字亮度</span><span id="val-color">100%</span></label>
+            <input type="range" min="50" max="255" value="255" oninput="updateColor(this.value)">
+        </div>
+        <div class="panel-row">
+            <label class="panel-label"><span>字體大小</span><span id="val-size">18px</span></label>
+            <input type="range" min="14" max="32" value="18" oninput="updateSize(this.value)">
+        </div>
+    </div>
+
+    <script>
+        // 切換設定面板
+        function togglePanel(show) {
+            const panel = document.getElementById('mobiPanel');
+            if (show) panel.classList.add('show');
+            else panel.classList.remove('show');
+        }
+
+        // 更新文字亮度 (RGB 同步)
+        function updateColor(val) {
+            const color = `rgb(${val},${val},${val})`;
+            document.documentElement.style.setProperty('--text-color', color);
+            const percent = Math.round((val / 255) * 100);
+            document.getElementById('val-color').innerText = percent + '%';
+        }
+
+        // 更新字體大小
+        function updateSize(val) {
+            document.documentElement.style.setProperty('--font-size', val + 'px');
+            document.getElementById('val-size').innerText = val + 'px';
+        }
+
+        // 初始化 Markdown (如果有 marked 庫的話)
+        window.onload = () => {
+            // 如果內容尚未解析，可以在這裡觸發 marked.parse
+            // const body = document.getElementById('articleBody');
+            // body.innerHTML = marked.parse(body.innerText);
+        };
+    </script>
+</body>
+</html>
