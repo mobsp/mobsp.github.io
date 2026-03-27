@@ -174,12 +174,9 @@
 
             <div class="list-header">
                 <span style="font-weight: bold;">熱門文章</span>
-                <a href="https://mobsp.github.io/p/list/" class="more-btn">更多</a>
+                <a href="https://mobsp.github.io/blog/p/list/" class="more-btn">更多</a>
             </div>
 
-            <div id="article-list-container">
-                </div>
-            
             <div id="github-articles"></div>
         </main>
 
@@ -193,12 +190,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const GH_CONFIG = {
-            user: 'mobsp',
-            repo: 'mobsp.github.io',
-            path: 'blog/p/list'
-        };
-
         const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
@@ -226,27 +217,38 @@
                 } catch (err) { mqText.innerText = "歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 部落格！"; }
             }
 
+            /** * 修正版：讀取 articles.json 獲取完整文章資訊
+             */
             async function loadGithubArticles() {
                 const container = document.getElementById('github-articles');
-                const api_url = `https://api.github.com/repos/${GH_CONFIG.user}/${GH_CONFIG.repo}/contents/${GH_CONFIG.path}`;
+                // 使用快取清除機制，確保讀到最新 JSON
+                const api_url = `https://mobsp.github.io/articles.json?t=${Date.now()}`;
+                
                 try {
                     const response = await fetch(api_url);
-                    if (!response.ok) return;
-                    const files = await response.json();
-                    files.filter(f => f.name.endsWith('.html')).forEach(file => {
-                        const title = file.name.replace('.html', '').replace(/-/g, ' ').toUpperCase();
+                    if (!response.ok) throw new Error("無法讀取文章索引");
+                    
+                    const articles = await response.json();
+                    container.innerHTML = ''; // 清除加載提示
+
+                    articles.forEach(post => {
                         container.insertAdjacentHTML('beforeend', `
-                            <div class="article-row" onclick="location.href='https://mobsp.github.io/blog/p/list/${file.name}'">
+                            <div class="article-row" onclick="location.href='${post.url}'">
                                 <img src="https://mobsp.github.io/assets/brand/ms-post.webp" class="row-img">
                                 <div class="row-info">
-                                    <div class="row-title">${title}</div>
-                                    <div style="font-size: 11px; color: var(--text-sub);">自動同步文章 · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+                                    <div class="row-title">${post.title}</div>
+                                    <div style="font-size: 11px; color: var(--text-sub);">
+                                        ${post.date} · Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 自動同步
+                                    </div>
                                 </div>
                                 <i class="fa-solid fa-chevron-right" style="color:#333; font-size:12px;"></i>
                             </div>
                         `);
                     });
-                } catch (err) {}
+                } catch (err) {
+                    console.error("載入失敗:", err);
+                    container.innerHTML = '<p style="color:#444; text-align:center; padding:20px; font-size:12px;">暫時無法載入文章列表</p>';
+                }
             }
 
             window.addEventListener('load', () => {
