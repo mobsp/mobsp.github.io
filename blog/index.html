@@ -11,20 +11,21 @@
     
     <style>
         :root {
-            --bg-body: #000000; --bg-container: #111111;
-            --text-main: #ffffff; --text-sub: #aaaaaa;
+            --bg-body: #000000; --bg-container: #0a0a0a;
+            --text-main: #ffffff; --text-sub: #888888;
             --accent-color: #00cec9; --nav-bg: #111111;
-            --border-color: #262626;
-            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            --border-color: #222222;
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Helvetica, sans-serif; 
             background-color: var(--bg-body); 
             height: 100dvh; overflow: hidden; 
         }
 
+        /* 啟動動畫 */
         #ms-splash {
             position: fixed; inset: 0;
             background: #000 url('https://mobsp.github.io/assets/brand/ms-blog.JPEG') center/cover no-repeat;
@@ -34,10 +35,11 @@
         #ms-splash.hide { opacity: 0; pointer-events: none; }
         
         #app-container { 
-            max-width: 480px; margin: 0 auto; 
+            max-width: 500px; margin: 0 auto; 
             background-color: var(--bg-container); 
             height: 100%; display: flex; flex-direction: column; 
-            opacity: 0; transform: scale(1.01); transition: opacity 0.6s ease, transform 0.6s ease;
+            opacity: 0; transform: scale(1.02); transition: opacity 0.6s ease, transform 0.6s ease;
+            border-left: 1px solid var(--border-color); border-right: 1px solid var(--border-color);
         }
         body.loaded #app-container { opacity: 1; transform: scale(1); }
 
@@ -45,60 +47,73 @@
             flex-shrink: 0;
             padding: calc(15px + env(safe-area-inset-top)) 15px 10px; 
             background: var(--nav-bg); border-bottom: 1px solid var(--border-color);
-            display: flex; flex-direction: column; align-items: center;
         }
 
+        /* 頂部跑馬燈與傳送門 */
         .marquee-row {
-            display: flex; align-items: center; background: rgba(255,255,255,0.05);
-            padding: 6px 12px; border-radius: 10px; margin-bottom: 12px; overflow: hidden;
-            min-height: 28px; width: 100%;
+            display: flex; align-items: center; background: rgba(255,255,255,0.03);
+            padding: 8px 12px; border-radius: 12px; margin-bottom: 12px; overflow: hidden;
         }
-        .v-tag { background: var(--accent-color); color: #000; font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 4px; margin-right: 10px; }
+        .v-tag { background: var(--accent-color); color: #000; font-size: 10px; font-weight: 900; padding: 2px 8px; border-radius: 6px; margin-right: 10px; flex-shrink: 0; }
         .mq-box { flex: 1; overflow: hidden; white-space: nowrap; }
-        .mq-text { display: inline-block; padding-left: 100%; animation: mq 25s linear infinite; font-size: 11px; color: #fff; }
-        @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+        .mq-text { display: inline-block; animation: mq 20s linear infinite; font-size: 11px; color: #aaa; }
+        @keyframes mq { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        /* 修正：右上角傳送門按鈕 */
         .portal-link {
             background: var(--accent-color); color: #000; border-radius: 50%;
-            width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
-            text-decoration: none; font-size: 14px; transition: 0.3s; margin-left: 10px;
+            width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+            text-decoration: none; font-size: 14px; transition: 0.3s; margin-left: 10px; flex-shrink: 0;
+            box-shadow: 0 0 10px rgba(0,206,201,0.3);
         }
-        .portal-link:active { transform: scale(0.9); }
 
-        /* 新增：類別切換條樣式 */
+        .brand-title-img { width: 100%; height: auto; border-radius: 10px; display: block; }
+
+        /* 修正：類別切換條 - 滿版自適應版本 */
+        .filter-wrapper {
+            background: #000; border-bottom: 1px solid var(--border-color);
+            padding: 10px 15px; overflow-x: auto; scrollbar-width: none;
+        }
+        .filter-wrapper::-webkit-scrollbar { display: none; }
         .filter-scroll {
-            display: flex; gap: 10px; padding: 10px 15px; overflow-x: auto;
-            scrollbar-width: none; background: #000; border-bottom: 1px solid var(--border-color);
+            display: flex; gap: 8px; min-width: 100%;
         }
-        .filter-scroll::-webkit-scrollbar { display: none; }
         .filter-btn {
-            flex: 0 0 auto; padding: 6px 15px; border-radius: 20px;
-            background: #1a1a1a; border: 1px solid var(--border-color);
-            color: #888; font-size: 11px; cursor: pointer; transition: 0.3s;
+            flex: 1; /* 平分寬度 */
+            min-width: 65px; text-align: center;
+            padding: 10px 12px; border-radius: 10px;
+            background: #111; border: 1px solid var(--border-color);
+            color: #666; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.3s;
+            white-space: nowrap;
         }
-        .filter-btn.active { background: var(--accent-color); color: #000; border-color: var(--accent-color); font-weight: bold; }
+        .filter-btn.active { 
+            background: var(--accent-color); color: #000; border-color: var(--accent-color); 
+            box-shadow: 0 4px 12px rgba(0, 206, 201, 0.2);
+        }
 
-        .brand-title-link { display: block; width: 100%; margin-bottom: 5px; }
-        .brand-title-img { width: 100%; height: auto; border-radius: 8px; }
-
-        #main-view { flex: 1; overflow-y: auto; background: #000; }
-        .section-label { padding: 15px 15px 5px; font-weight: bold; font-size: 14px; color: #fff; opacity: 0.6; }
+        #main-view { flex: 1; overflow-y: auto; background: #000; -webkit-overflow-scrolling: touch; }
         
-        .article-row { display: flex; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--border-color); align-items: center; text-decoration: none; }
-        .row-img { width: 65px; height: 65px; border-radius: 10px; object-fit: cover; background: #222; }
-        .row-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-        .row-title { font-size: 14px; font-weight: 500; color: #eee; }
-        .row-cate { font-size: 9px; color: var(--accent-color); text-transform: uppercase; letter-spacing: 1px; }
+        /* 文章列表樣式 */
+        .article-row { display: flex; gap: 15px; padding: 15px; border-bottom: 1px solid #111; align-items: center; text-decoration: none; transition: 0.2s; }
+        .article-row:active { background: #080808; }
+        .row-img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; background: #1a1a1a; flex-shrink: 0; }
+        .row-info { flex: 1; display: flex; flex-direction: column; gap: 5px; overflow: hidden; }
+        .row-cate { font-size: 10px; color: var(--accent-color); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+        .row-title { font-size: 15px; font-weight: 600; color: #fff; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .row-meta { font-size: 10px; color: #444; display: flex; justify-content: space-between; margin-top: 2px; }
 
+        /* 底部導覽 */
         .bottom-nav { 
-            height: calc(60px + env(safe-area-inset-bottom)); 
+            height: calc(65px + env(safe-area-inset-bottom)); 
             background-color: var(--nav-bg); border-top: 1px solid var(--border-color); 
             display: flex; justify-content: space-around; align-items: center; 
             padding-bottom: env(safe-area-inset-bottom);
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-sub); text-decoration: none; font-size: 10px; gap: 4px; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #555; text-decoration: none; font-size: 10px; gap: 5px; flex: 1; }
+        .nav-item i { font-size: 18px; }
         .nav-item.active { color: var(--accent-color); }
+
+        /* 載入中動畫 */
+        .loader { text-align: center; padding: 50px; color: #333; font-size: 12px; letter-spacing: 2px; }
     </style>
 </head>
 <body>
@@ -108,121 +123,147 @@
     <div id="app-container">
         <header class="app-header">
             <nav class="marquee-row">
-                <span class="v-tag" id="v-tag">SYNC</span>
-                <div class="mq-box"><div class="mq-text" id="mq-text">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ！系統連線中...</div></div>
-                <a href="https://mobsp.qzz.io/tol/publisher/" class="portal-link" title="前往發佈器">
+                <span class="v-tag">SYNC</span>
+                <div class="mq-box"><div class="mq-text" id="mq-text">歡迎回到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ！系統正在從 GitHub 儲存庫同步最新內容...</div></div>
+                <a href="https://mobsp.qzz.io/tol/publisher/" class="portal-link">
                     <i class="fa-solid fa-paper-plane"></i>
                 </a>
             </nav>
 
-            <a href="https://mobsp.github.io/blog/" class="brand-title-link">
+            <a href="https://mobsp.github.io/blog/" style="display:block;">
                 <img src="https://mobsp.github.io/assets/brand/ms-blog-title.JPEG" alt="莫比部落格" class="brand-title-img">
             </a>
         </header>
 
-        <div class="filter-scroll">
-            <button class="filter-btn active" onclick="filterData('全部', this)">全部</button>
-            <button class="filter-btn" onclick="filterData('教程', this)">教程</button>
-            <button class="filter-btn" onclick="filterData('開發', this)">開發</button>
-            <button class="filter-btn" onclick="filterData('其它', this)">其它</button>
-            <button class="filter-btn" onclick="filterData('🔞', this)">🔞</button>
+        <div class="filter-wrapper">
+            <div class="filter-scroll">
+                <button class="filter-btn active" onclick="filterData('全部', this)">全部</button>
+                <button class="filter-btn" onclick="filterData('教程', this)">教程</button>
+                <button class="filter-btn" onclick="filterData('開發', this)">開發</button>
+                <button class="filter-btn" onclick="filterData('🔞', this)">🔞</button>
+                <button class="filter-btn" onclick="filterData('其它', this)">其它</button>
+            </div>
         </div>
 
         <main id="main-view">
             <div id="github-articles">
-                <p style="color:#444; text-align:center; padding:50px; font-size:12px;">正在同步儲存庫檔案...</p>
+                <div class="loader">CONNECTING TO REPO...</div>
             </div>
         </main>
 
         <nav class="bottom-nav">
-            <a href="https://mobsp.github.io/music/" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
-            <a href="https://mobsp.github.io/shorts/" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
-            <a href="https://mobsp.github.io/wiki/" class="nav-item"><i class="fa-solid fa-circle-info"></i><span>支援中心</span></a>
-            <a href="https://mobsp.github.io/setting" class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></a>
+            <a href="https://mobsp.github.io/music/" class="nav-item"><i class="fa-solid fa-circle-play"></i><span>音樂</span></a>
+            <a href="https://mobsp.github.io/shorts/" class="nav-item"><i class="fa-solid fa-bolt"></i><span>Shorts</span></a>
+            <a href="https://mobsp.github.io/blog/" class="nav-item active"><i class="fa-solid fa-book-open"></i><span>閱讀</span></a>
+            <a href="https://mobsp.github.io/setting" class="nav-item"><i class="fa-solid fa-sliders"></i><span>設定</span></a>
         </nav>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        let rawArticles = []; // 儲存原始抓取的文章數據
+        let rawArticles = [];
 
-        (function() {
-            const splash = document.getElementById('ms-splash');
-            function hideSplash() {
-                splash.classList.add('hide');
-                document.body.classList.add('loaded');
-                setTimeout(() => splash.remove(), 1000);
-            }
+        // 核心智慧分類判斷邏輯
+        function smartClassify(filename) {
+            const name = filename.toLowerCase();
+            
+            // 權重 1: 🔞 內容 (最優先判斷)
+            const adultKeys = ['🔞', 'r18', 'sex', '淫', '肉', '穴', '棒', '騷', '插', '蜜', '禁', '獸', '噴'];
+            if (adultKeys.some(key => name.includes(key))) return "🔞";
 
-            // 1. 抓取文章並解析類別
-            async function loadGithubArticles() {
-                const container = document.getElementById('github-articles');
-                const api_url = "https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p/list";
+            // 權重 2: 教程/教學
+            const tutorialKeys = ['教程', '教學', 'guide', 'how', 'install', '教你', '攻略'];
+            if (tutorialKeys.some(key => name.includes(key))) return "教程";
+
+            // 權重 3: 開發相關
+            const devKeys = ['開發', 'dev', 'code', 'api', 'github', '程式', '腳本', 'script', '修正'];
+            if (devKeys.some(key => name.includes(key))) return "開發";
+
+            return "其它";
+        }
+
+        async function loadGithubArticles() {
+            const container = document.getElementById('github-articles');
+            // 防止 API 快取
+            const api_url = "https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p/list?t=" + Date.now();
+            
+            try {
+                const response = await fetch(api_url);
+                const files = await response.json();
                 
-                try {
-                    const response = await fetch(api_url);
-                    const files = await response.json();
-                    
-                    rawArticles = files.filter(f => f.name.endsWith('.html')).reverse().map(file => {
-                        const name = file.name;
-                        // 自動解析檔名中的類別標籤
-                        let cate = "其它";
-                        if (name.includes("教程") || name.includes("[教程]")) cate = "教程";
-                        else if (name.includes("開發") || name.includes("[開發]")) cate = "開發";
-                        else if (name.includes("🔞")) cate = "🔞";
+                if (!Array.isArray(files)) throw new Error("API Limit or Error");
 
-                        return {
-                            name: name,
-                            title: decodeURIComponent(name.replace('.html', '').replace(/\[.*?\]-?/g, '')),
-                            cate: cate,
-                            path: file.path
-                        };
-                    });
+                rawArticles = files.filter(f => f.name.endsWith('.html')).reverse().map(file => {
+                    const cate = smartClassify(file.name);
+                    // 標題美化：移除副檔名與所有標籤內容
+                    let cleanTitle = decodeURIComponent(file.name)
+                        .replace('.html', '')
+                        .replace(/\[.*?\]/g, '') // 移除 [教程]
+                        .replace(/🔞/g, '')      // 移除 🔞
+                        .trim();
 
-                    renderList(rawArticles);
-                } catch (err) {
-                    container.innerHTML = '<p style="color:red; text-align:center; padding:20px;">API 載入失敗</p>';
-                }
+                    return {
+                        title: cleanTitle || "未命名文章",
+                        cate: cate,
+                        path: file.path,
+                        date: new Date().toLocaleDateString() // 這裡可以改為抓取 GitHub commit 時間
+                    };
+                });
+
+                renderList(rawArticles);
+            } catch (err) {
+                container.innerHTML = `<div style="color:#444; text-align:center; padding:50px; font-size:11px;">
+                    <i class="fa-solid fa-circle-exclamation" style="font-size:24px; color:var(--accent-color); margin-bottom:10px;"></i><br>
+                    同步暫時中斷，請稍後再試
+                </div>`;
             }
+        }
 
-            // 2. 渲染列表
-            window.renderList = function(items) {
-                const container = document.getElementById('github-articles');
-                if (items.length === 0) {
-                    container.innerHTML = '<p style="color:#444; text-align:center; padding:50px;">此分類尚無內容</p>';
-                    return;
-                }
-                container.innerHTML = items.map(post => `
-                    <a class="article-row" href="https://mobsp.github.io/${post.path}">
-                        <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img">
-                        <div class="row-info">
-                            <div class="row-cate">${post.cate}</div>
-                            <div class="row-title">${post.title}</div>
-                            <div style="font-size: 10px; color: #444;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Archive</div>
+        window.renderList = function(items) {
+            const container = document.getElementById('github-articles');
+            if (items.length === 0) {
+                container.innerHTML = '<p style="color:#333; text-align:center; padding:80px; font-size:12px;">此分類目前沒有內容</p>';
+                return;
+            }
+            container.innerHTML = items.map(post => `
+                <a class="article-row" href="https://mobsp.github.io/${post.path}">
+                    <img src="https://mobsp.github.io/assets/brand/ms-post.JPEG" class="row-img">
+                    <div class="row-info">
+                        <div class="row-cate">${post.cate}</div>
+                        <div class="row-title">${post.title}</div>
+                        <div class="row-meta">
+                            <span>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Archive</span>
+                            <span>${post.date}</span>
                         </div>
-                        <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
-                    </a>
-                `).join('');
-            };
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color:#111; font-size:12px;"></i>
+                </a>
+            `).join('');
+        };
 
-            // 3. 過濾功能
-            window.filterData = function(cate, btn) {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        window.filterData = function(cate, btn) {
+            // 切換按鈕樣式
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-                if (cate === '全部') {
-                    renderList(rawArticles);
-                } else {
-                    const filtered = rawArticles.filter(a => a.cate === cate);
-                    renderList(filtered);
-                }
-            };
+            // 執行過濾
+            if (cate === '全部') {
+                renderList(rawArticles);
+            } else {
+                const filtered = rawArticles.filter(a => a.cate === cate);
+                renderList(filtered);
+            }
+            // 捲動回頂部
+            document.getElementById('main-view').scrollTo({top: 0, behavior: 'smooth'});
+        };
 
-            window.addEventListener('load', () => {
-                loadGithubArticles();
-                setTimeout(hideSplash, 1200);
-            });
-        })();
+        window.addEventListener('load', () => {
+            loadGithubArticles();
+            // 延遲隱藏啟動畫面
+            setTimeout(() => {
+                document.getElementById('ms-splash').classList.add('hide');
+                document.body.classList.add('loaded');
+            }, 1500);
+        });
     </script>
 </body>
 </html>
