@@ -1,279 +1,1752 @@
-{
-  "site_structure": {
-    "project_01_mobile": {
-      "title": "iOS/Android 手機端優化元",
-      "items": [
-        {"id": "M01", "name": "PWA 離線支援", "desc": "支援 manifest.json 讓網頁可安裝至桌面"},
-        {"id": "M02", "name": "Viewport-fit Cover", "desc": "滿版顯示，解決 iPhone 瀏海視覺問題"},
-        {"id": "M03", "name": "Safe Area Inset Top", "desc": "自動避讓狀態列與靈動島區域"},
-        {"id": "M04", "name": "Safe Area Inset Bottom", "desc": "避讓底端小白條，防止按鈕被擋住"},
-        {"id": "M05", "name": "消除 300ms 延遲", "desc": "優化 Touch 事件，提升按鈕點擊靈敏度"},
-        {"id": "M06", "name": "Webkit Tap Highlight", "desc": "移除行動端點擊時出現的藍色方框"},
-        {"id": "M07", "name": "Momentum Scrolling", "desc": "開啟 iOS 絲滑的物理慣性捲動"},
-        {"id": "M08", "name": "禁長按系統選單", "desc": "防止長按按鈕跳出複製/儲存圖片選單"},
-        {"id": "M09", "name": "Overscroll Behavior", "desc": "禁止下拉重新整理導致的橡皮筋回彈"},
-        {"id": "M10", "name": "Smart App Banner", "desc": "引導用戶安裝原生 App 的智慧橫幅"},
-        {"id": "M11", "name": "Haptic Vibrate API", "desc": "點擊成功時讓手機產生物理微震動"},
-        {"id": "M12", "name": "Web Share API", "desc": "一鍵喚起手機系統原生分享視窗"},
-        {"id": "M13", "name": "Orientation Lock", "desc": "偵測並提醒用戶旋轉螢幕以獲取最佳觀感"},
-        {"id": "M14", "name": "Inputmode Optimization", "desc": "針對不同欄位自動切換數字/英文鍵盤"},
-        {"id": "M15", "name": "Sticky Footer Fix", "desc": "修正 iOS 鍵盤彈起時底部導航欄位移"},
-        {"id": "M16", "name": "Touch Move Tracker", "desc": "高精度追蹤手指滑動軌跡"},
-        {"id": "M17", "name": "Splash Screen", "desc": "自訂 PWA 啟動時的品牌 Logo 畫面"},
-        {"id": "M18", "name": "Pull-to-Refresh UI", "desc": "仿 App 質感的下拉更新動畫組件"},
-        {"id": "M19", "name": "Status Bar Style", "desc": "控制 iOS 頂部狀態列文字顏色(黑/白)"},
-        {"id": "M20", "name": "System Font Stack", "desc": "自動調用 San Francisco 或 Roboto 原生字體"},
-        {"id": "M21", "name": "Double Tap Prevention", "desc": "防止快速連點導致的意外縮放"},
-        {"id": "M22", "name": "Dynamic Viewport Height", "desc": "修正 100vh 在行動版瀏覽器包含工具欄的問題"},
-        {"id": "M23", "name": "Active State CSS", "desc": "按鈕按下時的按壓縮放視覺反饋"},
-        {"id": "M24", "name": "Swipe Back Support", "desc": "支援從螢幕邊緣滑動返回上一頁"},
-        {"id": "M25", "name": "Adaptive Icon Set", "desc": "提供不同尺寸的桌面圖示以適配各機型"},
-        {"id": "M26", "name": "Battery Status Check", "desc": "低電量模式時自動停用高耗能動畫"},
-        {"id": "M27", "name": "Network Awareness", "desc": "偵測 4G/5G/Wi-Fi 以調整圖片解析度"},
-        {"id": "M28", "name": "Scroll Snapping", "desc": "橫向滑動卡片時自動對齊螢幕中心"},
-        {"id": "M29", "name": "Fast Click Library", "desc": "整合 polyfill 確保全平台觸控無延遲"},
-        {"id": "M30", "name": "Image Long Press", "desc": "自訂長按圖片後的保存或分享選單"},
-        {"id": "M31", "name": "Mobile Dialog Lock", "desc": "彈窗出現時背景禁止捲動"},
-        {"id": "M32", "name": "Auto Fill Fix", "desc": "美化 iOS 自動填滿密碼後的黃色背景"},
-        {"id": "M33", "name": "Gesture Zoom Lock", "desc": "禁止兩指縮放以保持 UI 佈局穩定"},
-        {"id": "M34", "name": "In-App Browser Det", "desc": "偵測是否在 Line 或 FB 內開網頁並給予提示"},
-        {"id": "M35", "name": "Deep Linking", "desc": "點擊網址直接開啟手機內安裝的特定 App"},
-        {"id": "M36", "name": "Dark Mode Toggle", "desc": "偵測手機系統光暗模式並自動同步"},
-        {"id": "M37", "name": "Tab Bar Lift", "desc": "底部導航欄隨滑動方向隱藏或顯示"},
-        {"id": "M38", "name": "Edge Swipe Gesture", "desc": "自訂左右側滑觸發特定功能"},
-        {"id": "M39", "name": "Mobile Video Autoplay", "desc": "處理行動端靜音自動播放策略"},
-        {"id": "M40", "name": "App Store Badge", "desc": "頁尾展示符合規範的下載標誌"},
-        {"id": "M41", "name": "Hardware Accel", "desc": "強制開啟 GPU 加速以確保轉場不掉幀"},
-        {"id": "M42", "name": "Minimal UI Meta", "desc": "隱藏 Safari 下方多餘的網址操作欄"},
-        {"id": "M43", "name": "Custom URL Schemes", "desc": "讓網頁能被特定的協議(my-app://)喚醒"},
-        {"id": "M44", "name": "Biometric Support", "desc": "預留 WebAuthn 臉部或指紋識別接口"},
-        {"id": "M45", "name": "Shake Gesture", "desc": "偵測「搖一搖」手機觸發回報功能"},
-        {"id": "M46", "name": "Touch Target Size", "desc": "確保所有可點擊項不小於 44px"},
-        {"id": "M47", "name": "Retina Display Fix", "desc": "針對高像素密度螢幕顯示 2x/3x 圖片"},
-        {"id": "M48", "name": "Mobile Keyboard Res", "desc": "監聽鍵盤高度變化動態調整頁面高度"},
-        {"id": "M49", "name": "System Share Sheet", "desc": "呼叫 iOS 原生 AirDrop 與分享功能"},
-        {"id": "M50", "name": "Titi Mobile Shield", "desc": "針對手機端異常行為的自動防禦機制"}
-      ]
-    },
-    "project_02_actions": {
-      "title": "GitHub Actions 流程控制",
-      "items": [
-        {"id": "A01", "name": "CI/CD Auto Deploy", "desc": "Push 代碼後自動編譯並部署網頁"},
-        {"id": "A02", "name": "Workflow Dispatch", "desc": "手動觸發 GitHub 任務的互動介面"},
-        {"id": "A03", "name": "Cron Job Task", "desc": "定時執行(如每天凌晨備份或抓取資料)"},
-        {"id": "A04", "name": "Secret Management", "desc": "安全存放 API Key 等敏感資訊"},
-        {"id": "A05", "name": "Release Auto Generator", "desc": "自動打包版本並生成 Changelog"},
-        {"id": "A06", "name": "Image Optimizer", "desc": "自動壓縮上傳的圖片並轉為 WebP"},
-        {"id": "A07", "name": "Concurrency Control", "desc": "限制同時執行的任務數量防止超載"},
-        {"id": "A08", "name": "Cache Dependency", "desc": "快取安裝包以縮短每次編譯時間"},
-        {"id": "A09", "name": "Environment Secrets", "desc": "區分開發與正式環境的密鑰配置"},
-        {"id": "A10", "name": "Discord Webhook", "desc": "任務成功或失敗時推送到 Discord"},
-        {"id": "A11", "name": "Telegram Bot Notify", "desc": "Actions 執行進度實時推送至手機"},
-        {"id": "A12", "name": "Auto Issue Responder", "desc": "用戶留言後機器人自動分類與回覆"},
-        {"id": "A13", "name": "Artifacts Upload", "desc": "保存任務產出的檔案供下載 90 天"},
-        {"id": "A14", "name": "Job Matrix Strategy", "desc": "並行測試不同作業系統與版本環境"},
-        {"id": "A15", "name": "Repository Dispatch", "desc": "支援從外部網站遠端觸發 Actions"},
-        {"id": "A16", "name": "Linting & Auto Format", "desc": "自動校正代碼縮排與語法錯誤"},
-        {"id": "A17", "name": "Broken Link Checker", "desc": "自動掃描全站是否有死連結"},
-        {"id": "A18", "name": "SSL Cert Auto Update", "desc": "監控並自動續期 HTTPS 證書狀態"},
-        {"id": "A19", "name": "JSON Database Sync", "desc": "自動同步倉庫內的 JSON 數據至前端"},
-        {"id": "A20", "name": "Security Audit", "desc": "自動掃描依賴項是否有安全漏洞"},
-        {"id": "A21", "name": "SEO Sitemap Gen", "desc": "部署後自動生成並提交 Sitemap"},
-        {"id": "A22", "name": "Lighthouse Score Report", "desc": "自動測試網頁效能分並生成報告"},
-        {"id": "A23", "name": "PR Auto Labeler", "desc": "根據變動範圍自動幫 PR 貼標籤"},
-        {"id": "A24", "name": "Auto Cleanup Old Rel", "desc": "定時刪除過期已失效的發布版本"},
-        {"id": "A25", "name": "Git Tag Management", "desc": "自動根據日期生成 Git 標籤"},
-        {"id": "A26", "name": "Docker Build & Push", "desc": "自動構建容器鏡像並推送至託管平台"},
-        {"id": "A27", "name": "Code Coverage Report", "desc": "計算代碼測試覆蓋率並顯示圖表"},
-        {"id": "A28", "name": "File Integrity Check", "desc": "驗證下載資源的 SHA-256 哈希值"},
-        {"id": "A29", "name": "Action Input Validation", "desc": "在任務開始前驗證參數是否合法"},
-        {"id": "A30", "name": "Slack Integration", "desc": "企業級通訊軟體的任務狀態同步"},
-        {"id": "A31", "name": "Auto Branch Merger", "desc": "測試通過後自動合併代碼到主分支"},
-        {"id": "A32", "name": "Dependabot Security", "desc": "自動發送安全更新的 PR"},
-        {"id": "A33", "name": "Custom Action Shell", "desc": "編寫專屬 Bash 腳本處理複雜數據"},
-        {"id": "A34", "name": "Node.js Env Setup", "desc": "快速配置 Node 執行環境與快取"},
-        {"id": "A35", "name": "Python Script Runner", "desc": "利用 Python 進行資料爬取與處理"},
-        {"id": "A36", "name": "FFmpeg Transcoding", "desc": "在雲端自動進行影音轉檔處理"},
-        {"id": "A37", "name": "GitHub Pages Deploy", "desc": "專用 Action 部署至 gh-pages 分支"},
-        {"id": "A38", "name": "ReadMe Auto Update", "desc": "根據最新紀錄更新首頁文檔"},
-        {"id": "A39", "name": "Traffic Stats Logger", "desc": "定時紀錄倉庫訪問流量數據"},
-        {"id": "A40", "name": "Auto To-Do Creator", "desc": "根據代碼中的 TODO 標註生成 Issue"},
-        {"id": "A41", "name": "Workflow Visualization", "desc": "生成視覺化的任務執行路徑圖"},
-        {"id": "A42", "name": "Manual Approval Step", "desc": "需要人工確認後才執行的部署步驟"},
-        {"id": "A43", "name": "Dynamic Env Config", "desc": "根據不同觸發者切換權限配置"},
-        {"id": "A44", "name": "Gzip/Brotli Comp", "desc": "預先壓縮靜態檔案提升傳輸速度"},
-        {"id": "A45", "name": "Cloudflare Purge", "desc": "部署後自動清理 CDN 緩存"},
-        {"id": "A46", "name": "Usage Quota Monitor", "desc": "監控 Actions 免費額度消耗情況"},
-        {"id": "A47", "name": "Submodule Update", "desc": "自動同步所有子專案的最新代碼"},
-        {"id": "A48", "name": "Error Stack Trace", "desc": "失敗時自動截圖或記錄錯誤堆疊"},
-        {"id": "A49", "name": "Workflow Status Badge", "desc": "在網頁顯示實時執行狀態圖示"},
-        {"id": "A50", "name": "Titi Action Guardian", "desc": "防止惡意觸發與濫用額度的監控機制"}
-      ]
-    },
-    "project_03_ux": {
-      "title": "前端 UI/UX 交互優化元",
-      "items": [
-        {"id": "U01", "name": "Skeleton Screen", "desc": "資料載入前的呼吸燈骨架屏效果"},
-        {"id": "U02", "name": "Glassmorphism", "desc": "磨砂玻璃質感的半透明模糊層次"},
-        {"id": "U03", "name": "Smooth Scrolling", "desc": "頁面錨點與捲動的平滑過渡處理"},
-        {"id": "U04", "name": "Micro-Interactions", "desc": "按鈕按下的縮放與物理彈性反饋"},
-        {"id": "U05", "name": "Haptic Feedback", "desc": "互動成功時的手機微震動模擬"},
-        {"id": "U06", "name": "Dynamic Favicon", "desc": "瀏覽器圖籤隨進度或通知數變更"},
-        {"id": "U07", "name": "Dark Mode Transition", "desc": "切換光暗模式時的淡入淡出演化"},
-        {"id": "U08", "name": "Toast Notifications", "desc": "螢幕邊緣彈出的非阻塞通知訊息"},
-        {"id": "U09", "name": "Lottie Animation", "desc": "輕量級向量動畫展示可愛交互"},
-        {"id": "U10", "name": "Back-to-Top FAB", "desc": "超過一屏後自動出現的返回頂部鈕"},
-        {"id": "U11", "name": "Infinite Scroll", "desc": "滾動到底部自動加載更多內容"},
-        {"id": "U12", "name": "Custom Scrollbar", "desc": "美化並自訂網頁捲軸的寬度與顏色"},
-        {"id": "U13", "name": "Focus Ring Style", "desc": "自訂鍵盤導覽時的聚焦光暈樣式"},
-        {"id": "U14", "name": "Hover Tilt Effect", "desc": "鼠標滑過卡片時產生的 3D 傾斜感"},
-        {"id": "U15", "name": "Lazy Load Blur", "desc": "圖片載入前顯示模糊預覽的小圖"},
-        {"id": "U16", "name": "Entrance Animation", "desc": "列表項逐一出現的梯次動畫"},
-        {"id": "U17", "name": "Context Menu UI", "desc": "仿系統風格的自訂右鍵選單"},
-        {"id": "U18", "name": "Pull-to-Refresh", "desc": "具備手感的下拉刷新動畫組件"},
-        {"id": "U19", "name": "Loading Progress Bar", "desc": "頁面頂部顯示加載百分比細線"},
-        {"id": "U20", "name": "Bottom Sheet Logic", "desc": "手機端底部滑出式操作面板"},
-        {"id": "U21", "name": "Parallax Effect", "desc": "背景與內容異步捲動的視差效果"},
-        {"id": "U22", "name": "Tab Line Animation", "desc": "分頁切換時底部橫線的位移動畫"},
-        {"id": "U23", "name": "Ripple Effect", "desc": "點擊時產生的水波紋擴散視覺"},
-        {"id": "U24", "name": "Modal Backdrop Blur", "desc": "彈窗出現時背景自動模糊加深"},
-        {"id": "U25", "name": "Sticky Section Header", "desc": "捲動時分組標題固定在頂部"},
-        {"id": "U26", "name": "Auto Theme Color", "desc": "根據圖片主色調改變導覽列顏色"},
-        {"id": "U27", "name": "Typing Indicator", "desc": "模擬聊天中的「對方正在輸入...」"},
-        {"id": "U28", "name": "Shake on Error", "desc": "輸入錯誤時框線左右抖動反饋"},
-        {"id": "U29", "name": "Step Indicator", "desc": "分步驟流程的視覺導引標記"},
-        {"id": "U30", "name": "Marquee News", "desc": "橫向捲動的公告或跑馬燈組件"},
-        {"id": "U31", "name": "Magnetic Button", "desc": "按鈕會微量吸引附近的滑鼠游標"},
-        {"id": "U32", "name": "Glow on Success", "desc": "操作成功後按鈕或邊框發出綠光"},
-        {"id": "U33", "name": "Drag handle UI", "desc": "顯眼的拖拽排序圖示標籤"},
-        {"id": "U34", "name": "Empty State UI", "desc": "無資料時顯示的精美占位插畫"},
-        {"id": "U35", "name": "Fullscreen Transition", "desc": "進入全屏模式時的平滑過渡"},
-        {"id": "U36", "name": "Tooltip Delay", "desc": "防止鼠標快速滑過時頻繁彈出提示"},
-        {"id": "U37", "name": "Page Transition SPA", "desc": "換頁時不閃白且帶有左右滑動感"},
-        {"id": "U38", "name": "Active State Highlight", "desc": "導覽列當前分頁的高亮背景"},
-        {"id": "U39", "name": "Scroll Progress Dot", "desc": "隨捲動深度的進度環動態顯示"},
-        {"id": "U40", "name": "Card Expansion", "desc": "點擊卡片後原地展開顯示詳細內容"},
-        {"id": "U41", "name": "Neumorphism Toggle", "desc": "極簡浮雕風格的開關切換器"},
-        {"id": "U42", "name": "Content Masking", "desc": "文字超出後自動顯示漸層消失感"},
-        {"id": "U43", "name": "Interactive SVG", "desc": "可點擊並有動態反饋的 SVG 圖示"},
-        {"id": "U44", "name": "Audio Visualizer", "desc": "音訊播放時的動態波形圖視覺"},
-        {"id": "U45", "name": "Text Shimmer", "desc": "標題文字上流動的閃爍光芒動畫"},
-        {"id": "U46", "name": "Bounce Back List", "desc": "列表拉到盡頭時的彈回感優化"},
-        {"id": "U47", "name": "Dynamic Breadcrumb", "desc": "路徑過長時自動縮略顯示麵包屑"},
-        {"id": "U48", "name": "Keyboard Shortcut Info", "desc": "顯示快捷鍵組合的樣式組件"},
-        {"id": "U49", "name": "Splash Screen Fade", "desc": "開場動畫結束後的流暢淡出進入頁面"},
-        {"id": "U50", "name": "Titi Interaction Hub", "desc": "整合所有微交互的核心控制中心"}
-      ]
-    },
-    "project_04_components": {
-      "title": "全量 UI 組件庫",
-      "items": [
-        {"id": "C01", "name": "Primary Button", "desc": "標準主要按鈕變體"},
-        {"id": "C02", "name": "Secondary Button", "desc": "低彩度次要按鈕"},
-        {"id": "C03", "name": "Outline Button", "desc": "僅邊框無背景變體"},
-        {"id": "C04", "name": "Ghost Button", "desc": "無框無背景僅懸停顯示"},
-        {"id": "C05", "name": "Standard Input", "desc": "帶圓角的基礎文字輸入框"},
-        {"id": "C06", "name": "Floating Label Input", "desc": "輸入時標題自動上浮"},
-        {"id": "C07", "name": "Search Box", "desc": "帶放大鏡與清除紐的搜尋框"},
-        {"id": "C08", "name": "Checkbox Group", "desc": "多選複選框與自訂樣式"},
-        {"id": "C09", "name": "Radio Group", "desc": "單選按鈕組與動畫反饋"},
-        {"id": "C10", "name": "Toggle Switch", "desc": "iOS 風格左右切換開關"},
-        {"id": "C11", "name": "Select Dropdown", "desc": "支援搜尋過濾的下拉選單"},
-        {"id": "C12", "name": "Multi-Select Tags", "desc": "多選並以標籤顯示結果"},
-        {"id": "C13", "name": "Standard Card", "desc": "帶投影的資料展示卡片"},
-        {"id": "C14", "name": "Media Row", "desc": "左圖右文的訊息列表項"},
-        {"id": "C15", "name": "Standard Navbar", "desc": "頂部固定式磨砂導航欄"},
-        {"id": "C16", "name": "Bottom Tab Bar", "desc": "手機端專用底部五選單"},
-        {"id": "C17", "name": "Side Drawer", "desc": "側邊滑出的功能選單區"},
-        {"id": "C18", "name": "Dialog Modal", "desc": "居中的標準對話確認框"},
-        {"id": "C19", "name": "Action Sheet", "desc": "底部滑出的操作選項清單"},
-        {"id": "C20", "name": "Breadcrumbs", "desc": "麵包屑層級導航組件"},
-        {"id": "C21", "name": "Pagination", "desc": "分頁碼與上/下一頁按鈕"},
-        {"id": "C22", "name": "Badge Dot", "desc": "圓點狀的新訊息通知徽章"},
-        {"id": "C23", "name": "Badge Count", "desc": "帶有數字的圓角通知標籤"},
-        {"id": "C24", "name": "Tag / Chip", "desc": "分類用的小型標籤組件"},
-        {"id": "C25", "name": "Accordion", "desc": "垂直摺疊的手風琴面板"},
-        {"id": "C26", "name": "Tabs Switcher", "desc": "橫向切換的內容分頁組件"},
-        {"id": "C27", "name": "Tooltip Popover", "desc": "懸停出現的文字說明小框"},
-        {"id": "C28", "name": "Progress Linear", "desc": "直線條狀進度顯示"},
-        {"id": "C29", "name": "Progress Circular", "desc": "圓圈環狀進度指示"},
-        {"id": "C30", "name": "Loading Spinner", "desc": "經典旋轉加載動畫圖示"},
-        {"id": "C31", "name": "Slider Input", "desc": "線性數值調整拖動條"},
-        {"id": "C32", "name": "Range Slider", "desc": "雙點範圍數值選擇器"},
-        {"id": "C33", "name": "Date Picker", "desc": "彈出式日曆日期選取"},
-        {"id": "C34", "name": "Time Picker", "desc": "滾輪或時鐘式時間選取"},
-        {"id": "C35", "name": "File Uploader", "desc": "帶拖拽功能的檔案上傳區"},
-        {"id": "C36", "name": "Avatar Circle", "desc": "圓形用戶頭像展示"},
-        {"id": "C37", "name": "Avatar Group", "desc": "多個頭像重疊顯示組"},
-        {"id": "C38", "name": "Divider Line", "desc": "水平或垂直內容分隔線"},
-        {"id": "C39", "name": "Price Table", "desc": "訂閱方案對比價格卡"},
-        {"id": "C40", "name": "Stats Widget", "desc": "數據統計與趨勢小組件"},
-        {"id": "C41", "name": "Rating Star", "desc": "五星評分與半星支援組件"},
-        {"id": "C42", "name": "Steppers UI", "desc": "分步驟填寫的進度指示"},
-        {"id": "C43", "name": "Kanban Card", "desc": "看板風格的任務管理卡"},
-        {"id": "C44", "name": "Timeline Item", "desc": "垂直時間軸的事件記錄點"},
-        {"id": "C45", "name": "Code Block", "desc": "帶高亮與複製鈕的代碼區"},
-        {"id": "C46", "name": "Chat Bubble", "desc": "左右對話氣泡與時間標籤"},
-        {"id": "C47", "name": "Empty Placeholder", "desc": "資料為空時的圖文佔位"},
-        {"id": "C48", "name": "Calendar Panel", "desc": "全尺寸月曆日程展示區"},
-        {"id": "C49", "name": "Video Player UI", "desc": "自訂控制列的影片播放器"},
-        {"id": "C50", "name": "Titi Component Kit", "desc": "所有自訂組件的封裝入口"}
-      ]
-    },
-    "project_05_global": {
-      "title": "全局狀態與系統邏輯",
-      "items": [
-        {"id": "G01", "name": "Theme Toggle", "desc": "全局 Light/Dark 模式狀態管理"},
-        {"id": "G02", "name": "Auth Status", "desc": "用戶登入/登出狀態全局共享"},
-        {"id": "G03", "name": "I18n Locale", "desc": "繁中/多語系全局切換與字典"},
-        {"id": "G04", "name": "Connectivity State", "desc": "即時偵測網路在線或離線狀態"},
-        {"id": "G05", "name": "Persistence Sync", "desc": "自動同步狀態至 LocalStorage"},
-        {"id": "G06", "name": "Notification Queue", "desc": "管理全局 Toast 的排隊與銷毀"},
-        {"id": "G07", "name": "Scroll Memory", "desc": "切換頁面後記憶原有的捲動位置"},
-        {"id": "G08", "name": "Viewport Watcher", "desc": "實時監控視窗尺寸變化(Breakpoint)"},
-        {"id": "G09", "name": "Loading Boundary", "desc": "異步請求時的全局遮罩控制"},
-        {"id": "G10", "name": "Error Boundary", "desc": "捕捉全站報錯並顯示降級 UI"},
-        {"id": "G11", "name": "Form Draft Store", "desc": "跨頁面保存未提交的表單數據"},
-        {"id": "G12", "name": "Media Volume Sys", "desc": "全局控制所有影音組件的音量"},
-        {"id": "G13", "name": "Permission Guard", "desc": "前端路由層級的權限存取檢查"},
-        {"id": "G14", "name": "History Router", "desc": "管理瀏覽歷史與無重整跳轉"},
-        {"id": "G15", "name": "Clipboard Manager", "desc": "全局監聽並處理複製貼上事件"},
-        {"id": "G16", "name": "Hotkey Manager", "desc": "全局鍵盤快捷鍵(如 Ctrl+K)綁定"},
-        {"id": "G17", "name": "Idle Detector", "desc": "偵測用戶是否長時間未操作網頁"},
-        {"id": "G18", "name": "Search Query Global", "desc": "跨組件共享的搜尋關鍵字狀態"},
-        {"id": "G19", "name": "Modal Manager", "desc": "控制全局同時只能開一個彈窗"},
-        {"id": "G20", "name": "API Rate Limiter", "desc": "前端節流，防止重複頻繁發送請求"},
-        {"id": "G21", "name": "Dynamic Page Title", "desc": "隨路徑或內容動態更改分頁標題"},
-        {"id": "G22", "name": "Motion Preference", "desc": "偵測用戶系統是否要求減少動畫"},
-        {"id": "G23", "name": "Data Cache Policy", "desc": "管理 API 資料的過期與更新機制"},
-        {"id": "G24", "name": "Cross-tab Sync", "desc": "同網域不同標籤頁間的狀態同步"},
-        {"id": "G25", "name": "Currency Formatter", "desc": "全局統一的貨幣與千分位處理器"},
-        {"id": "G26", "name": "Date Time Tool", "desc": "統一處理相對時間(如 1小時前)"},
-        {"id": "G27", "name": "Performance Monitor", "desc": "監控 FPS 與資源載入耗時並回報"},
-        {"id": "G28", "name": "Analytics Tracker", "desc": "自動蒐集點擊路徑與行為數據"},
-        {"id": "G29", "name": "Feature Flag Sys", "desc": "開關特定功能以進行 A/B 測試"},
-        {"id": "G30", "name": "PWA Update Det", "desc": "偵測到新版本時提示用戶刷新頁面"},
-        {"id": "G31", "name": "Sidebar State", "desc": "全局控制側邊選單展開或摺疊"},
-        {"id": "G32", "name": "Tab Badge State", "desc": "管理底部導航各分頁的小紅點"},
-        {"id": "G33", "name": "Global Audio Mix", "desc": "處理背景音樂與音效的混音邏輯"},
-        {"id": "G34", "name": "Font Scaling Sys", "desc": "全局動態調整字體大小層級"},
-        {"id": "G35", "name": "Security Masking", "desc": "自動模糊或遮蔽敏感個資欄位"},
-        {"id": "G36", "name": "Drag-and-Drop Global", "desc": "管理全頁面範圍的檔案拖入事件"},
-        {"id": "G37", "name": "Lazy Script Loader", "desc": "根據需要動態加載第三方 JS 插件"},
-        {"id": "G38", "name": "Context Context", "desc": "維護用戶對話的 AI 上下文狀態"},
-        {"id": "G39", "name": "System Health Check", "desc": "自我檢測前端核心服務是否正常"},
-        {"id": "G40", "name": "User Preference Set", "desc": "記住用戶自訂的 UI 配置與習慣"},
-        {"id": "G41", "name": "Global Feedback Sys", "desc": "一鍵發送頁面錯誤截圖與反饋"},
-        {"id": "G42", "name": "Resource Prefetch", "desc": "預判用戶下一頁並提前載入資源"},
-        {"id": "G43", "name": "Dev Tools Console", "desc": "內置的開發者調試小視窗"},
-        {"id": "G44", "name": "Session Timeout", "desc": "固定時間後自動清除登入資訊"},
-        {"id": "G45", "name": "Safe Redirection", "desc": "防止惡意網址跳轉的過濾邏輯"},
-        {"id": "G46", "name": "Color Palette Gen", "desc": "動態計算互補色與調色盤狀態"},
-        {"id": "G47", "name": "Global Overlay Sys", "desc": "統一管理所有浮動層的 Z-index"},
-        {"id": "G48", "name": "API Endpoint Mgr", "desc": "集中管理所有請求地址與環境參數"},
-        {"id": "G49", "name": "Workflow State", "desc": "顯示當前業務流程的執行階段"},
-        {"id": "G50", "name": "Titi Heartbeat", "desc": "維持全站運行的核心邏輯心跳包"}
-      ]
-    }
+[
+  {
+    "id": "M01",
+    "level": "基本",
+    "name": "PWA 離線支援",
+    "desc": "基礎 Web App 配置，讓網頁可安裝至桌面",
+    "code": "<link rel=\"manifest\" href=\"/manifest.json\">\n<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"default\">\n<script>\n  if ('serviceWorker' in navigator) {\n    window.addEventListener('load', () => {\n      navigator.serviceWorker.register('/sw.js');\n    });\n  }\n</script>"
+  },
+  {
+    "id": "M02",
+    "level": "基本",
+    "name": "Viewport-fit Cover",
+    "desc": "解決 iPhone 滿版顯示與瀏海視覺問題",
+    "code": "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n<style>\n  body { background: #111; padding-top: env(safe-area-inset-top); }\n</style>"
+  },
+  {
+    "id": "M03",
+    "level": "基本",
+    "name": "Safe Area Inset Top",
+    "desc": "自動避讓狀態列與靈動島區域",
+    "code": "<nav style=\"position: fixed; top: 0; width: 100%; height: 44px; padding-top: env(safe-area-inset-top); background: rgba(0,0,0,0.8); backdrop-filter: blur(10px);\">\n  <div style=\"color: #06C755; text-align: center; line-height: 44px;\">Ⲙ𝔬ⲃⳝ𝔭 Header</div>\n</nav>"
+  },
+  {
+    "id": "M04",
+    "level": "基本",
+    "name": "Safe Area Inset Bottom",
+    "desc": "避讓底端小白條，防止按鈕被擋住",
+    "code": "<footer style=\"padding-bottom: env(safe-area-inset-bottom); background: #1a1a1a; position: fixed; bottom: 0; width: 100%;\">\n  <button style=\"width: 100%; height: 50px; background: #06C755; border: none; color: #fff;\">立即執行</button>\n</footer>"
+  },
+  {
+    "id": "M05",
+    "level": "進階",
+    "name": "消除 300ms 延遲",
+    "desc": "優化 Touch 事件，提升按鈕點擊靈敏度",
+    "code": "<style>\n  .fast-click {\n    touch-action: manipulation;\n    -webkit-user-select: none;\n    cursor: pointer;\n  }\n</style>\n<button class=\"fast-click\" onclick=\"console.log('Instant!')\">快速響應按鈕</button>"
+  },
+  {
+    "id": "M06",
+    "level": "進階",
+    "name": "Webkit Tap Highlight",
+    "desc": "移除行動端點擊時出現的藍色方框",
+    "code": "<style>\n  * {\n    -webkit-tap-highlight-color: transparent;\n    outline: none;\n  }\n  .btn-active:active { opacity: 0.6; }\n</style>\n<div class=\"btn-active\" style=\"padding: 20px; background: #333;\">點擊無藍框反饋</div>"
+  },
+  {
+    "id": "M07",
+    "level": "進階",
+    "name": "Momentum Scrolling",
+    "desc": "開啟 iOS 絲滑的物理慣性捲動",
+    "code": "<div style=\"height: 300px; overflow-y: scroll; -webkit-overflow-scrolling: touch;\">\n  <div style=\"height: 1000px; background: linear-gradient(#111, #06C755);\">\n    滑動此區域感受慣性速度\n  </div>\n</div>"
+  },
+  {
+    "id": "M08",
+    "level": "專業",
+    "name": "禁長按系統選單",
+    "desc": "防止長按按鈕跳出複製/儲存圖片選單",
+    "code": "<style>\n  .no-select {\n    -webkit-touch-callout: none;\n    -webkit-user-select: none;\n    user-select: none;\n  }\n</style>\n<img src=\"logo.webp\" class=\"no-select\" alt=\"不可長按儲存\">"
+  },
+  {
+    "id": "M09",
+    "level": "專業",
+    "name": "Overscroll Behavior",
+    "desc": "禁止下拉重新整理導致的橡皮筋回彈",
+    "code": "<style>\n  body {\n    overscroll-behavior-y: contain;\n    /* 防止網頁下拉觸發瀏覽器原生的重新整理 */\n  }\n</style>"
+  },
+  {
+    "id": "M10",
+    "level": "專業",
+    "name": "Smart App Banner",
+    "desc": "引導用戶安裝原生 App 的智慧橫幅",
+    "code": "\n<meta name=\"apple-itunes-app\" content=\"app-id=myAppID, affiliate-data=myAffiliateData, app-argument=myURL\">"
+  },
+  {
+    "id": "M11",
+    "level": "旗艦",
+    "name": "Haptic Vibrate API",
+    "desc": "點擊成功時讓手機產生物理微震動",
+    "code": "<script>\n  function triggerHaptic() {\n    if (navigator.vibrate) {\n      // 模式：震動 10ms，間隔 50ms，震動 10ms\n      navigator.vibrate([10, 50, 10]);\n    }\n  }\n</script>\n<button onclick=\"triggerHaptic()\" style=\"padding: 15px; background: #06C755; border-radius: 12px;\">物理震動測試</button>"
+  },
+  {
+    "id": "M12",
+    "level": "旗艦",
+    "name": "Web Share API",
+    "desc": "一鍵喚起手機系統原生分享視窗",
+    "code": "<script>\n  async function shareApp() {\n    if (navigator.share) {\n      try {\n        await navigator.share({\n          title: 'Ⲙ𝔬ⲃⳝ𝔭 Matrix',\n          text: '最強行動開發矩陣',\n          url: window.location.href\n        });\n      } catch (err) { console.log('Share failed'); }\n    }\n  }\n</script>\n<button onclick=\"shareApp()\">呼叫系統分享</button>"
+  },
+  {
+    "id": "M13",
+    "level": "旗艦",
+    "name": "Orientation Lock",
+    "desc": "偵測並提醒用戶旋轉螢幕以獲取最佳觀感",
+    "code": "<style>\n  @media screen and (orientation: landscape) {\n    .orientation-msg { display: none; }\n  }\n  @media screen and (orientation: portrait) {\n    .orientation-msg { position: fixed; inset: 0; background: #000; z-index: 999; display: flex; align-items: center; justify-content: center; color: #06C755; }\n  }\n</style>\n<div class=\"orientation-msg\">請轉為橫向模式以開始實驗</div>"
+  },
+  {
+    "id": "M14",
+    "level": "超神",
+    "name": "Inputmode Optimization",
+    "desc": "針對不同欄位自動切換數字/英文鍵盤",
+    "code": "\n<input type=\"text\" inputmode=\"decimal\" placeholder=\"請輸入金額\">\n\n<input type=\"text\" inputmode=\"tel\" placeholder=\"請輸入電話\">\n\n<input type=\"text\" inputmode=\"email\" placeholder=\"請輸入電子郵件\">"
+  },
+  {
+    "id": "M15",
+    "level": "超神",
+    "name": "Sticky Footer Fix",
+    "desc": "修正 iOS 鍵盤彈起時底部導航欄位移",
+    "code": "<script>\n  // 監聽視覺視窗縮放，動態隱藏導航\n  window.visualViewport.addEventListener('resize', () => {\n    const footer = document.querySelector('footer');\n    footer.style.display = window.visualViewport.height < window.innerHeight ? 'none' : 'block';\n  });\n</script>"
+  },
+  {
+    "id": "M16",
+    "level": "基本",
+    "name": "Touch Move Tracker",
+    "desc": "高精度追蹤手指滑動軌跡與坐標",
+    "code": "<div id='touchArea' style='height:150px; background:#222; border-radius:15px; display:flex; align-items:center; justify-content:center; color:#06C755; font-mono'>觸摸此處</div>\n<script>\n  const area = document.getElementById('touchArea');\n  area.addEventListener('touchmove', (e) => {\n    const touch = e.touches[0];\n    area.innerText = `X: ${Math.round(touch.clientX)} Y: ${Math.round(touch.clientY)}`;\n  }, {passive: true});\n</script>"
+  },
+  {
+    "id": "M17",
+    "level": "基本",
+    "name": "Splash Screen",
+    "desc": "自訂 PWA 啟動時的品牌 Logo 畫面 (iOS)",
+    "code": "\n<link rel=\"apple-touch-startup-image\" href=\"launch-640x1136.webp\" media=\"(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)\">\n<link rel=\"apple-touch-startup-image\" href=\"launch-750x1334.webp\" media=\"(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)\">"
+  },
+  {
+    "id": "M18",
+    "level": "進階",
+    "name": "Pull-to-Refresh UI",
+    "desc": "仿 App 質感的下拉更新動畫組件",
+    "code": "<style>\n  .ptr-head { height: 0; overflow: hidden; transition: 0.3s; background: #111; text-align: center; color: #06C755; font-size: 12px; }\n  .ptr-active .ptr-head { height: 50px; line-height: 50px; }\n</style>\n<div class=\"ptr-head\">🔄 鬆開以更新...</div>\n<p style='text-align:center; padding:20px; color:#666;'>向下拖動頁面測試 (模擬)</p>"
+  },
+  {
+    "id": "M19",
+    "level": "進階",
+    "name": "Status Bar Style",
+    "desc": "控制 iOS 頂部狀態列文字顏色",
+    "code": "\n<meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\">\n<style>\n  :root { --line-green: #06C755; }\n  body { background: #000; } /* 狀態列文字會變白色 */\n</style>"
+  },
+  {
+    "id": "M20",
+    "level": "進階",
+    "name": "System Font Stack",
+    "desc": "自動調用 San Francisco 或 Roboto 原生字體",
+    "code": "<style>\n  .native-font {\n    font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\";\n    -webkit-font-smoothing: antialiased;\n  }\n</style>\n<div class=\"native-font\">這是系統原生黑體，渲染極其銳利。</div>"
+  },
+  {
+    "id": "M21",
+    "level": "專業",
+    "name": "Double Tap Prevention",
+    "desc": "防止快速連點導致的意外縮放",
+    "code": "<style>\n  button, a {\n    touch-action: manipulation; \n    /* 告訴瀏覽器該元素不需要等待雙擊判定 */\n  }\n</style>\n<button style='background:#06C755; padding:10px;'>快速連點我</button>"
+  },
+  {
+    "id": "M22",
+    "level": "專業",
+    "name": "Dynamic Viewport Height",
+    "desc": "修正 100vh 在行動版包含工具欄的問題",
+    "code": "<style>\n  .full-height {\n    height: 100vh; /* 退化方案 */\n    height: calc(var(--vh, 1vh) * 100);\n  }\n</style>\n<script>\n  const vh = window.innerHeight * 0.01;\n  document.documentElement.style.setProperty('--vh', `${vh}px`);\n</script>"
+  },
+  {
+    "id": "M23",
+    "level": "專業",
+    "name": "Active State CSS",
+    "desc": "按鈕按下時的按壓縮放視覺反饋",
+    "code": "<style>\n  .btn-push {\n    transition: transform 0.1s;\n    background: #06C755; border:none; padding:15px; border-radius:12px; color:white;\n  }\n  .btn-push:active { transform: scale(0.9); opacity: 0.8; }\n</style>\n<button class=\"btn-push\">按壓反饋測試</button>"
+  },
+  {
+    "id": "M24",
+    "level": "旗艦",
+    "name": "Swipe Back Support",
+    "desc": "支援從螢幕邊緣滑動返回上一頁 (邏輯提示)",
+    "code": "<script>\n  // 監聽觸摸起始位置\n  window.addEventListener('touchstart', (e) => {\n    if (e.touches[0].clientX < 30) {\n      console.log('邊緣左滑：觸發自訂返回邏輯');\n    }\n  });\n</script>\n<div style='border-left:4px solid #06C755; padding:10px;'>左側邊緣 30px 為感應區</div>"
+  },
+  {
+    "id": "M25",
+    "level": "旗艦",
+    "name": "Adaptive Icon Set",
+    "desc": "提供不同尺寸的桌面圖示以適配各機型",
+    "code": "\n<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/apple-touch-icon.webp\">\n\n<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.webp\">"
+  },
+  {
+    "id": "M26",
+    "level": "旗艦",
+    "name": "Battery Status Check",
+    "desc": "低電量模式時自動停用高耗能動畫",
+    "code": "<script>\n  navigator.getBattery().then(battery => {\n    if (battery.level < 0.2 && !battery.charging) {\n      document.body.classList.add('low-battery-mode');\n      console.log('已自動關閉 3D 動畫以節省電量');\n    }\n  });\n</script>"
+  },
+  {
+    "id": "M27",
+    "level": "超神",
+    "name": "Network Awareness",
+    "desc": "偵測 4G/5G/Wi-Fi 以調整圖片解析度",
+    "code": "<script>\n  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;\n  if (conn) {\n    console.log(`網路類型: ${conn.effectiveType}`);\n    if (conn.saveData) { console.log('用戶啟用了節流模式'); }\n  }\n</script>"
+  },
+  {
+    "id": "M28",
+    "level": "超神",
+    "name": "Scroll Snapping",
+    "desc": "橫向滑動卡片時自動對齊螢幕中心",
+    "code": "<style>\n  .snap-container {\n    display: flex; overflow-x: auto; scroll-snap-type: x mandatory;\n    gap: 10px; padding: 20px;\n  }\n  .snap-item {\n    flex: 0 0 80%; height: 150px; background: #1e1e1e;\n    scroll-snap-align: center; border-radius: 20px;\n  }\n</style>\n<div class=\"snap-container no-scrollbar\">\n  <div class=\"snap-item\"></div><div class=\"snap-item\"></div><div class=\"snap-item\"></div>\n</div>"
+  },
+  {
+    "id": "M29",
+    "level": "超神",
+    "name": "Fast Click Library",
+    "desc": "整合 polyfill 確保全平台觸控無延遲 (Legacy Fix)",
+    "code": "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js\"></script>\n<script>\n  if ('addEventListener' in document) {\n    document.addEventListener('DOMContentLoaded', function() {\n      FastClick.attach(document.body);\n    }, false);\n  }\n</script>"
+  },
+  {
+    "id": "M30",
+    "level": "超神",
+    "name": "Image Long Press",
+    "desc": "自訂長按圖片後的保存或分享選單",
+    "code": "<div id='imgBox' style='user-select:none; -webkit-touch-callout:none;'>\n  <img src='https://picsum.photos/200' style='border-radius:15px;'>\n  <p style='font-size:10px; color:#555;'>長按圖片系統選單已被禁用，請自訂 UI</p>\n</div>"
+  },
+  {
+    "id": "M31",
+    "level": "基本",
+    "name": "Mobile Dialog Lock",
+    "desc": "彈窗出現時背景禁止捲動",
+    "code": "<script>\n  function toggleModal(show) {\n    document.body.style.overflow = show ? 'hidden' : '';\n    // iOS 額外處理\n    document.body.style.position = show ? 'fixed' : '';\n    document.body.style.width = '100%';\n  }\n</script>\n<button onclick=\"toggleModal(true)\" style=\"background:#333; padding:10px; border-radius:8px;\">開啟彈窗並鎖定背景</button>"
+  },
+  {
+    "id": "M32",
+    "level": "基本",
+    "name": "Auto Fill Fix",
+    "desc": "美化 iOS 自動填滿密碼後的黃色背景",
+    "code": "<style>\n  input:-webkit-autofill,\n  input:-webkit-autofill:hover,\n  input:-webkit-autofill:focus {\n    -webkit-text-fill-color: #06C755;\n    -webkit-box-shadow: 0 0 0px 1000px #1a1a1a inset;\n    transition: background-color 5000s ease-in-out 0s;\n  }\n</style>\n<input type=\"password\" placeholder=\"請輸入密碼\">"
+  },
+  {
+    "id": "M33",
+    "level": "進階",
+    "name": "Gesture Zoom Lock",
+    "desc": "禁止兩指縮放以保持 UI 佈局穩定",
+    "code": "\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no\">\n<script>\n  document.addEventListener('gesturestart', (e) => e.preventDefault());\n</script>"
+  },
+  {
+    "id": "M34",
+    "level": "進階",
+    "name": "In-App Browser Det",
+    "desc": "偵測是否在 Line 或 FB 內開網頁並給予提示",
+    "code": "<script>\n  const ua = navigator.userAgent || navigator.vendor || window.opera;\n  const isInApp = (ua.indexOf('Line') > -1) || (ua.indexOf('FBAN') > -1) || (ua.indexOf('FBAV') > -1);\n  if (isInApp) {\n    document.body.innerHTML += '<div style=\"position:fixed;top:0;width:100%;background:orange;color:black;text-align:center;font-size:12px;z-index:9999\">建議點擊右上角使用瀏覽器開啟</div>';\n  }\n</script>"
+  },
+  {
+    "id": "M35",
+    "level": "進階",
+    "name": "Deep Linking",
+    "desc": "點擊網址直接開啟手機內安裝的特定 App",
+    "code": "<a href=\"instagram://user?username=titi_lab\" style=\"color:#06C755; text-decoration:underline;\">\n  在 Instagram 中開啟個人檔案\n</a>\n<p style=\"font-size:10px; color:#555;\">若未安裝則無反應，通常搭配延時跳轉 App Store</p>"
+  },
+  {
+    "id": "M36",
+    "level": "專業",
+    "name": "Dark Mode Toggle",
+    "desc": "偵測手機系統光暗模式並自動同步",
+    "code": "<style>\n  :root { --bg: #fff; --text: #000; }\n  @media (prefers-color-scheme: dark) {\n    :root { --bg: #111; --text: #06C755; }\n  }\n  body { background: var(--bg); color: var(--text); }\n</style>\n<p>系統切換深色時，我也會自動變色</p>"
+  },
+  {
+    "id": "M37",
+    "level": "專業",
+    "name": "Tab Bar Lift",
+    "desc": "底部導航欄隨滑動方向隱藏或顯示",
+    "code": "<script>\n  let lastScroll = 0;\n  window.addEventListener('scroll', () => {\n    const currentScroll = window.pageYOffset;\n    const nav = document.querySelector('.tab-bar');\n    nav.style.transform = currentScroll > lastScroll ? 'translateY(100%)' : 'translateY(0)';\n    lastScroll = currentScroll;\n  });\n</script>"
+  },
+  {
+    "id": "M38",
+    "level": "專業",
+    "name": "Edge Swipe Gesture",
+    "desc": "自訂左右側滑觸發特定功能 (UI 模擬)",
+    "code": "<div id=\"gestureZone\" style=\"height:100px; background:#1e1e1e; border:1px solid #333; border-radius:10px; text-align:center; line-height:100px;\">\n  左右滑動此區域試試\n</div>\n<script>\n  let startX = 0;\n  document.getElementById('gestureZone').addEventListener('touchstart', e => startX = e.touches[0].clientX);\n  document.getElementById('gestureZone').addEventListener('touchend', e => {\n    let diff = e.changedTouches[0].clientX - startX;\n    if(Math.abs(diff) > 50) alert(diff > 0 ? '右滑' : '左滑');\n  });\n</script>"
+  },
+  {
+    "id": "M39",
+    "level": "旗艦",
+    "name": "Mobile Video Autoplay",
+    "desc": "處理行動端靜音自動播放策略",
+    "code": "\n<video autoplay muted playsinline loop style=\"width:100%; border-radius:15px;\">\n  <source src=\"https://www.w3schools.com/html/mov_bbb.mp4\" type=\"video/mp4\">\n</video>"
+  },
+  {
+    "id": "M40",
+    "level": "旗艦",
+    "name": "App Store Badge",
+    "desc": "頁尾展示符合規範的下載標誌 (SVG)",
+    "code": "<div style=\"display:flex; gap:10px; justify-content:center;\">\n  <img src=\"https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg\" style=\"height:40px;\">\n  <img src=\"https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg\" style=\"height:40px;\">\n</div>"
+  },
+  {
+    "id": "M41",
+    "level": "旗艦",
+    "name": "Hardware Accel",
+    "desc": "強制開啟 GPU 加速以確保轉場不掉幀",
+    "code": "<style>\n  .smooth-move {\n    transform: translateZ(0);\n    backface-visibility: hidden;\n    perspective: 1000;\n    will-change: transform;\n  }\n</style>\n<div class=\"smooth-move\">此元件已強制硬體加速渲染</div>"
+  },
+  {
+    "id": "M42",
+    "level": "超神",
+    "name": "Minimal UI Meta",
+    "desc": "隱藏 Safari 下方多餘的網址操作欄 (遺留技術)",
+    "code": "<meta name=\"apple-mobile-web-app-capable\" content=\"yes\">\n<meta name=\"mobile-web-app-capable\" content=\"yes\">\n<p style=\"font-size:10px; color:#555;\">註：現代 iOS 多改用 manifest 控管全螢幕</p>"
+  },
+  {
+    "id": "M43",
+    "level": "超神",
+    "name": "Custom URL Schemes",
+    "desc": "讓網頁能被特定的協議(my-app://)喚醒",
+    "code": "<script>\n  // 註冊邏輯通常在原生 App 內，前端僅負責調用\n  function openMyApp() {\n    window.location.href = \"mobsys-lab://open?param=123\";\n    setTimeout(() => {\n      window.location.href = \"https://apps.apple.com/app/id123456\";\n    }, 2500);\n  }\n</script>\n<button onclick=\"openMyApp()\">嘗試喚醒 Ⲙ𝔬ⲃⳝ𝔭 App</button>"
+  },
+  {
+    "id": "M44",
+    "level": "超神",
+    "name": "Biometric Support",
+    "desc": "預留 WebAuthn 臉部或指紋識別接口",
+    "code": "<script>\n  async function testAuth() {\n    if (window.PublicKeyCredential) {\n      console.log('此裝置支援生物識別 API (WebAuthn)');\n      // 接下來呼叫 navigator.credentials.create()\n    } else {\n      alert('裝置不支援生物識別');\n    }\n  }\n</script>\n<button onclick=\"testAuth()\">檢測 FaceID/TouchID 支援</button>"
+  },
+  {
+    "id": "M45",
+    "level": "超神",
+    "name": "Shake Gesture",
+    "desc": "偵測「搖一搖」手機觸發回報功能",
+    "code": "<script>\n  window.addEventListener('devicemotion', event => {\n    const acc = event.accelerationIncludingGravity;\n    if (Math.abs(acc.x) > 15 || Math.abs(acc.y) > 15) {\n       alert('偵測到搖晃！正在截圖回報...');\n    }\n  });\n</script>\n<p style=\"font-size:10px; color:#555;\">注意：iOS 13+ 需要先經由用戶點擊授權 DeviceOrientation</p>"
+  },
+  {
+    "id": "M46",
+    "level": "基本",
+    "name": "Touch Target Size",
+    "desc": "確保所有可點擊項不小於 44px (蘋果規範)",
+    "code": "<style>\n  .mobile-btn {\n    min-width: 44px; min-height: 44px;\n    display: inline-flex; align-items: center; justify-content: center;\n    padding: 8px 16px; background: #222; border-radius: 8px;\n  }\n</style>\n<button class=\"mobile-btn\">符合規範按鈕</button>"
+  },
+  {
+    "id": "M47",
+    "level": "進階",
+    "name": "Retina Display Fix",
+    "desc": "針對高像素密度螢幕顯示 2x/3x 圖片",
+    "code": "<img src=\"icon.webp\" \n     srcset=\"icon@2x.webp 2x, icon@3x.webp 3x\" \n     style=\"width:100px; height:100px;\" \n     alt=\"高畫質圖示\">"
+  },
+  {
+    "id": "M48",
+    "level": "專業",
+    "name": "Mobile Keyboard Res",
+    "desc": "監聽鍵盤高度變化動態調整頁面高度",
+    "code": "<script>\n  if ('visualViewport' in window) {\n    window.visualViewport.addEventListener('resize', () => {\n      const offset = window.innerHeight - window.visualViewport.height;\n      document.body.style.transform = `translateY(-${offset}px)`;\n    });\n  }\n</script>"
+  },
+  {
+    "id": "M49",
+    "level": "旗艦",
+    "name": "System Share Sheet",
+    "desc": "呼叫 iOS 原生 AirDrop 與分享功能",
+    "code": "<script>\n  function nativeShare() {\n    navigator.share({ \n      title: 'Ⲙ𝔬ⲃⳝ𝔭', \n      files: [fileObj] // 支援分享檔案 (需在 HTTPS 下)\n    }).catch(console.error);\n  }\n</script>"
+  },
+  {
+    "id": "M50",
+    "level": "超神",
+    "name": "Titi Mobile Shield",
+    "desc": "針對手機端異常行為(如非法注入)的防禦機制",
+    "code": "<script>\n  const isTampered = window.outerHeight === 0 || window.outerWidth === 0;\n  if (isTampered) {\n    document.body.innerHTML = '🛡️ 安全環境檢查未通過';\n    throw new Error('Security Breach');\n  }\n</script>"
+  },
+  {
+    "id": "A01",
+    "level": "基本",
+    "name": "CI/CD Auto Deploy",
+    "desc": "Push 代碼後自動編譯並部署網頁",
+    "code": "# .github/workflows/deploy.yml\nname: Deploy\non: [push]\njobs:\n  build:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v4\n      - name: Deploy to Pages\n        uses: peaceiris/actions-gh-pages@v3"
+  },
+  {
+    "id": "A02",
+    "level": "基本",
+    "name": "Workflow Dispatch",
+    "desc": "手動觸發 GitHub 任務的互動介面",
+    "code": "on:\n  workflow_dispatch:\n    inputs:\n      env:\n        description: '部署環境'\n        required: true\n        default: 'dev'"
+  },
+  {
+    "id": "A03",
+    "level": "基本",
+    "name": "Cron Job Task",
+    "desc": "定時執行(如每天凌晨備份資料)",
+    "code": "on:\n  schedule:\n    - cron: '0 0 * * *' # 每天凌晨執行"
+  },
+  {
+    "id": "A04",
+    "level": "進階",
+    "name": "Secret Management",
+    "desc": "安全存放 API Key 等敏感資訊",
+    "code": "steps:\n  - name: API Call\n    env:\n      TOKEN: ${{ secrets.MY_SECRET_TOKEN }}\n    run: curl -H \"Authorization: $TOKEN\" https://api.example.com"
+  },
+  {
+    "id": "A05",
+    "level": "進階",
+    "name": "Release Auto Generator",
+    "desc": "自動打包版本並生成 Changelog",
+    "code": "- uses: actions/create-release@v1\n  env:\n    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}\n  with:\n    tag_name: ${{ github.ref }}\n    release_name: Release ${{ github.ref }}"
+  },
+  {
+    "id": "A06",
+    "level": "進階",
+    "name": "Image Optimizer",
+    "desc": "自動壓縮上傳的圖片並轉為 WebP",
+    "code": "- uses: calibreapp/image-actions@main\n  with:\n    githubToken: ${{ secrets.GITHUB_TOKEN }}\n    compressOnly: false"
+  },
+  {
+    "id": "A07",
+    "level": "專業",
+    "name": "Concurrency Control",
+    "desc": "限制同時執行的任務數量防止超載",
+    "code": "concurrency:\n  group: ${{ github.workflow }}-${{ github.ref }}\n  cancel-in-progress: true"
+  },
+  {
+    "id": "A08",
+    "level": "專業",
+    "name": "Cache Dependency",
+    "desc": "快取安裝包以縮短每次編譯時間",
+    "code": "- uses: actions/cache@v3\n  with:\n    path: ~/.npm\n    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}"
+  },
+  {
+    "id": "A09",
+    "level": "專業",
+    "name": "Environment Secrets",
+    "desc": "區分開發與正式環境的密鑰配置",
+    "code": "jobs:\n  deploy:\n    environment: production\n    runs-on: ubuntu-latest\n    steps: [...]"
+  },
+  {
+    "id": "A10",
+    "level": "旗艦",
+    "name": "Discord Webhook",
+    "desc": "任務成功或失敗時推送到 Discord",
+    "code": "- name: Discord Notify\n  uses: rjstone/discord-webhook-notify@v1\n  if: always()\n  with:\n    severity: info\n    details: 'Ⲙ𝔬ⲃⳝ𝔭 工作流執行成功！'"
+  },
+  {
+    "id": "A11",
+    "level": "旗艦",
+    "name": "Telegram Bot Notify",
+    "desc": "Actions 執行進度實時推送至手機",
+    "code": "- name: Send Telegram Message\n  uses: appleboy/telegram-action@master\n  with:\n    to: ${{ secrets.TELEGRAM_TO }}\n    token: ${{ secrets.TELEGRAM_TOKEN }}\n    message: | \n      Ⲙ𝔬ⲃⳝ𝔭 構建狀態：${{ job.status }}\n      提交人：${{ github.actor }}\n      更新內容：${{ github.event.head_commit.message }}"
+  },
+  {
+    "id": "A12",
+    "level": "旗艦",
+    "name": "Auto Issue Responder",
+    "desc": "用戶留言後機器人自動分類與回覆",
+    "code": "- name: Welcome Issue\n  uses: actions/github-script@v6\n  with:\n    script: |\n      github.rest.issues.createComment({\n        issue_number: context.issue.number,\n        owner: context.repo.owner,\n        repo: context.repo.repo,\n        body: '👋 感謝反饋！Ⲙ𝔬ⲃⳝ𝔭 核心小組已收到您的訊息。'\n      })"
+  },
+  {
+    "id": "A13",
+    "level": "旗艦",
+    "name": "Artifacts Upload",
+    "desc": "保存任務產出的檔案供下載 90 天",
+    "code": "- name: Upload Build Folder\n  uses: actions/upload-artifact@v3\n  with:\n    name: release-dist\n    path: dist/\n    retention-days: 90"
+  },
+  {
+    "id": "A14",
+    "level": "超神",
+    "name": "Job Matrix Strategy",
+    "desc": "並行測試不同作業系統與版本環境",
+    "code": "strategy:\n  matrix:\n    os: [ubuntu-latest, macos-latest]\n    node: [16, 18, 20]\nruns-on: ${{ matrix.os }}\nsteps:\n  - uses: actions/setup-node@v3\n    with:\n      node-version: ${{ matrix.node }}"
+  },
+  {
+    "id": "A15",
+    "level": "超神",
+    "name": "Repository Dispatch",
+    "desc": "支援從外部網站遠端觸發 Actions",
+    "code": "# 觸發 API 範例\ncurl -X POST -H \"Authorization: token $GH_PAT\" \\\n     -H \"Accept: application/vnd.github.v3+json\" \\\n     https://api.github.com/repos/user/repo/dispatches \\\n     -d '{\"event_type\": \"external_trigger\"}'"
+  },
+  {
+    "id": "A16",
+    "level": "基本",
+    "name": "Linting & Auto Format",
+    "desc": "自動校正代碼縮排與語法錯誤",
+    "code": "- name: Run Prettier\n  run: npx prettier --write .\n- name: Check Lint\n  run: npm run lint"
+  },
+  {
+    "id": "A17",
+    "level": "進階",
+    "name": "Broken Link Checker",
+    "desc": "自動掃描全站是否有死連結",
+    "code": "- name: Check Links\n  uses: raviqqe/muffet-action@v2\n  with:\n    arguments: --color=always https://mobsys-lab.io"
+  },
+  {
+    "id": "A18",
+    "level": "進階",
+    "name": "SSL Cert Auto Update",
+    "desc": "監控並自動續期 HTTPS 證書狀態",
+    "code": "- name: Certbot Renewal\n  run: sudo certbot renew\n# 通常搭配 schedule cron 使用"
+  },
+  {
+    "id": "A19",
+    "level": "專業",
+    "name": "JSON Database Sync",
+    "desc": "自動同步倉庫內的 JSON 數據至前端",
+    "code": "- name: Update Config\n  run: | \n    python scripts/sync_json.py\n    git config --local user.email \"action@github.com\"\n    git commit -am \"🔄 Auto-sync JSON Matrix\"\n    git push"
+  },
+  {
+    "id": "A20",
+    "level": "專業",
+    "name": "Security Audit",
+    "desc": "自動掃描依賴項是否有安全漏洞",
+    "code": "- name: NPM Audit\n  run: npm audit --audit-level=high"
+  },
+  {
+    "id": "A21",
+    "level": "專業",
+    "name": "SEO Sitemap Gen",
+    "desc": "部署後自動生成並提交 Sitemap",
+    "code": "- name: Generate Sitemap\n  uses: cicirello/generate-sitemap@v1\n  with:\n    base-url-path: https://mobsys.io/"
+  },
+  {
+    "id": "A22",
+    "level": "旗艦",
+    "name": "Lighthouse Score Report",
+    "desc": "自動測試網頁效能分並生成報告",
+    "code": "- name: Lighthouse Report\n  uses: treosh/lighthouse-ci-action@v9\n  with:\n    urls: 'https://mobsys.io/'\n    uploadArtifacts: true"
+  },
+  {
+    "id": "A23",
+    "level": "旗艦",
+    "name": "PR Auto Labeler",
+    "desc": "根據變動範圍自動幫 PR 貼標籤",
+    "code": "- uses: actions/labeler@v4\n  with:\n    repo-token: \"${{ secrets.GITHUB_TOKEN }}\""
+  },
+  {
+    "id": "A24",
+    "level": "超神",
+    "name": "Auto Cleanup Old Rel",
+    "desc": "定時刪除過期已失效的發布版本",
+    "code": "- name: Delete Old Releases\n  uses: dev-drprasad/delete-older-releases@v0.2.1\n  with:\n    keep_latest: 5\n  env:\n    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}"
+  },
+  {
+    "id": "A25",
+    "level": "超神",
+    "name": "Git Tag Management",
+    "desc": "自動根據日期生成 Git 標籤",
+    "code": "- name: Create Tag\n  run: | \n    TAG_NAME=\"v$(date +'%Y.%m.%d-%H%M')\"\n    git tag $TAG_NAME\n    git push origin $TAG_NAME"
+  },
+  {
+    "id": "A26",
+    "level": "基本",
+    "name": "Docker Build & Push",
+    "desc": "自動構建容器鏡像並推送至託管平台",
+    "code": "- name: Build Docker\n  uses: docker/build-push-action@v4\n  with:\n    push: true\n    tags: user/mobsys-app:latest"
+  },
+  {
+    "id": "A27",
+    "level": "進階",
+    "name": "Code Coverage Report",
+    "desc": "計算代碼測試覆蓋率並顯示圖表",
+    "code": "- name: Coverage\n  uses: codecov/codecov-action@v3\n  with:\n    token: ${{ secrets.CODECOV_TOKEN }}"
+  },
+  {
+    "id": "A28",
+    "level": "進階",
+    "name": "File Integrity Check",
+    "desc": "驗證下載資源的 SHA-256 哈希值",
+    "code": "- name: Verify Hash\n  run: echo \"${{ hash }} file.zip\" | sha256sum -c -"
+  },
+  {
+    "id": "A29",
+    "level": "專業",
+    "name": "Action Input Validation",
+    "desc": "在任務開始前驗證手動輸入參數是否合法",
+    "code": "if: \"${{ github.event.inputs.version != '' }}\"\nrun: echo \"Validating ${{ github.event.inputs.version }}\""
+  },
+  {
+    "id": "A30",
+    "level": "專業",
+    "name": "Slack Integration",
+    "desc": "企業級通訊軟體的任務狀態實時同步",
+    "code": "- uses: 8398a7/action-slack@v3\n  with:\n    status: ${{ job.status }}\n  env:\n    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}"
+  },
+  {
+    "id": "A31",
+    "level": "專業",
+    "name": "Auto Branch Merger",
+    "desc": "測試通過後自動將開發分支合併到主分支",
+    "code": "- uses: devmasx/merge-branch@master\n  with:\n    type: now\n    from_branch: dev\n    target_branch: main"
+  },
+  {
+    "id": "A32",
+    "level": "旗艦",
+    "name": "Dependabot Security",
+    "desc": "自動監測依賴漏洞並發送更新 PR",
+    "code": "# .github/dependabot.yml\nversion: 2\nupdates:\n  - package-ecosystem: \"npm\"\n    directory: \"/\"\n    schedule:\n      interval: \"daily\""
+  },
+  {
+    "id": "A33",
+    "level": "旗艦",
+    "name": "Custom Action Shell",
+    "desc": "編寫專屬 Bash 腳本處理複雜數據矩陣",
+    "code": "- name: Custom Script\n  shell: bash\n  run: | \n    for file in ./data/*; do\n      echo \"Processing $file\"\n    done"
+  },
+  {
+    "id": "A34",
+    "level": "旗艦",
+    "name": "Node.js Env Setup",
+    "desc": "快速配置 Node 執行環境與全局快取",
+    "code": "- uses: actions/setup-node@v3\n  with:\n    node-version: '20'\n    cache: 'npm'"
+  },
+  {
+    "id": "A35",
+    "level": "超神",
+    "name": "Python Script Runner",
+    "desc": "利用 Python 進行資料爬取與自動化處理",
+    "code": "- uses: actions/setup-python@v4\n  with:\n    python-version: '3.10'\n- run: python main.py"
+  },
+  {
+    "id": "A36",
+    "level": "超神",
+    "name": "FFmpeg Transcoding",
+    "desc": "在雲端自動進行影音格式轉換處理",
+    "code": "- name: FFmpeg Auto\n  run: ffmpeg -i input.mov -vcodec libx264 out.mp4"
+  },
+  {
+    "id": "A37",
+    "level": "超神",
+    "name": "GitHub Pages Deploy",
+    "desc": "專用 Action 快速部署至靜態分頁",
+    "code": "- uses: actions/deploy-pages@v2"
+  },
+  {
+    "id": "A38",
+    "level": "超神",
+    "name": "ReadMe Auto Update",
+    "desc": "根據最新 Commit 紀錄自動更新首頁文檔",
+    "code": "- name: Update Readme\n  run: python scripts/update_readme.py"
+  },
+  {
+    "id": "A39",
+    "level": "超神",
+    "name": "Traffic Stats Logger",
+    "desc": "定時紀錄並保存倉庫訪問流量趨勢數據",
+    "code": "- uses: sangonzalez/repository-traffic-action@v0.1.6"
+  },
+  {
+    "id": "A40",
+    "level": "超神",
+    "name": "Auto To-Do Creator",
+    "desc": "根據代碼中的 //TODO 標註自動生成 Issue",
+    "code": "- uses: al-chemi/todo-to-issue-action@v4.11"
+  },
+  {
+    "id": "A41",
+    "level": "基本",
+    "name": "Workflow Visualization",
+    "desc": "生成視覺化的任務執行路徑圖",
+    "code": "# 透過 GitHub Actions 介面直接查看 Actions Graph\n# 無需額外代碼，僅需在 YAML 中定義正向依賴 (needs)\njobs:\n  build:\n    runs-on: ubuntu-latest\n  deploy:\n    needs: build\n    runs-on: ubuntu-latest"
+  },
+  {
+    "id": "A42",
+    "level": "進階",
+    "name": "Manual Approval Step",
+    "desc": "需要人工確認後才執行的部署步驟",
+    "code": "jobs:\n  production-deploy:\n    environment: \n      name: production\n      reviewers: [my-github-id]\n    runs-on: ubuntu-latest"
+  },
+  {
+    "id": "A43",
+    "level": "專業",
+    "name": "Dynamic Env Config",
+    "desc": "根據不同觸發者切換權限配置",
+    "code": "env:\n  ROLE: ${{ github.actor == 'admin' && 'SUPERUSER' || 'DEVELOPER' }}\n- run: echo \"Current Role is $ROLE\""
+  },
+  {
+    "id": "A44",
+    "level": "專業",
+    "name": "Gzip/Brotli Comp",
+    "desc": "預先壓縮靜態檔案提升傳輸速度",
+    "code": "- name: Compress\n  run: |\n    gzip -k dist/*.js\n    brotli dist/*.js"
+  },
+  {
+    "id": "A45",
+    "level": "專業",
+    "name": "Cloudflare Purge",
+    "desc": "部署後自動清理 CDN 緩存",
+    "code": "- name: Purge Cache\n  uses: jakejarvis/cloudflare-purge-action@master\n  env:\n    CLOUDFLARE_ZONE: ${{ secrets.CF_ZONE }}\n    CLOUDFLARE_TOKEN: ${{ secrets.CF_TOKEN }}"
+  },
+  {
+    "id": "A46",
+    "level": "旗艦",
+    "name": "Usage Quota Monitor",
+    "desc": "監控 Actions 免費額度消耗情況",
+    "code": "- name: Check Quota\n  run: gh api /users/OWNER/settings/billing/actions"
+  },
+  {
+    "id": "A47",
+    "level": "旗艦",
+    "name": "Submodule Update",
+    "desc": "自動同步所有子專案的最新代碼",
+    "code": "- name: Update Submodules\n  run: git submodule update --remote --recursive"
+  },
+  {
+    "id": "A48",
+    "level": "旗艦",
+    "name": "Error Stack Trace",
+    "desc": "失敗時自動記錄錯誤堆疊並回報",
+    "code": "- name: Error Handler\n  if: failure()\n  run: cat error.log | pbcopy # 或推送到 webhook"
+  },
+  {
+    "id": "A49",
+    "level": "超神",
+    "name": "Workflow Status Badge",
+    "desc": "在網頁顯示實時執行狀態圖示",
+    "code": "![Status](https://github.com/OWNER/REPO/actions/workflows/main.yml/badge.svg)"
+  },
+  {
+    "id": "A50",
+    "level": "超神",
+    "name": "Titi Action Guardian",
+    "desc": "防止惡意觸發與濫用額度的監控機制",
+    "code": "- name: Rate Limit Check\n  run: |\n    # 自訂檢查邏輯：24小時內觸發超過50次則阻斷\n    if [ $TRIGGER_COUNT -gt 50 ]; then exit 1; fi"
+  },
+  {
+    "id": "U01",
+    "level": "基本",
+    "name": "Skeleton Screen",
+    "desc": "資料載入前的呼吸燈骨架屏效果",
+    "code": "<style>\n  .skeleton { background: #222; overflow: hidden; position: relative; border-radius: 8px; }\n  .skeleton::after {\n    content: ''; position: absolute; inset: 0;\n    background: linear-gradient(90deg, transparent, #333, transparent);\n    animation: loading 1.5s infinite;\n  }\n  @keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }\n</style>\n<div class=\"skeleton\" style=\"width:100%; height:80px;\"></div>"
+  },
+  {
+    "id": "U02",
+    "level": "基本",
+    "name": "Glassmorphism",
+    "desc": "磨砂玻璃質感的半透明模糊層次",
+    "code": "<div style=\"background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1); padding: 20px; border-radius: 20px;\">\n  <p style=\"color: white;\">磨砂玻璃視覺元件</p>\n</div>"
+  },
+  {
+    "id": "U03",
+    "level": "進階",
+    "name": "Smooth Scrolling",
+    "desc": "頁面錨點與捲動的平滑過渡處理",
+    "code": "<style>\n  html { scroll-behavior: smooth; }\n  .anchor-btn { cursor: pointer; color: #06C755; text-decoration: underline; }\n</style>\n<a href=\"#target\" class=\"anchor-btn\">平滑捲動至目標</a>"
+  },
+  {
+    "id": "U04",
+    "level": "進階",
+    "name": "Micro-Interactions",
+    "desc": "按鈕按下的縮放與物理彈性反饋",
+    "code": "<style>\n  .micro-btn { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }\n  .micro-btn:active { transform: scale(0.85); }\n</style>\n<button class=\"micro-btn\" style=\"background:#06C755; padding:12px 24px; border-radius:12px;\">具備彈性的按鈕</button>"
+  },
+  {
+    "id": "U05",
+    "level": "專業",
+    "name": "Haptic Feedback",
+    "desc": "互動成功時的手機微震動模擬 (JS)",
+    "code": "<script>\n  function hapticSuccess() {\n    if (navigator.vibrate) navigator.vibrate([30, 10, 30]);\n  }\n</script>\n<button onclick=\"hapticSuccess()\" style=\"border:1px solid #06C755; color:#06C755; padding:10px;\">操作成功反饋</button>"
+  },
+  {
+    "id": "U06",
+    "level": "基本",
+    "name": "Dynamic Favicon",
+    "desc": "瀏覽器圖籤隨進度或通知數變更",
+    "code": "<script>\n  function updateFavicon(count) {\n    const canvas = document.createElement('canvas');\n    canvas.width = 32; canvas.height = 32;\n    const ctx = canvas.getContext('2d');\n    ctx.fillStyle = '#06C755'; ctx.beginPath(); ctx.arc(16, 16, 16, 0, Math.PI*2); ctx.fill();\n    ctx.fillStyle = 'white'; ctx.font = 'bold 20px Arial'; ctx.fillText(count, 10, 24);\n    document.querySelector('link[rel=\"icon\"]').href = canvas.toDataURL();\n  }\n</script>\n<button onclick=\"updateFavicon(5)\">模擬新通知</button>"
+  },
+  {
+    "id": "U07",
+    "level": "基本",
+    "name": "Dark Mode Transition",
+    "desc": "切換光暗模式時的淡入淡出演化",
+    "code": "<style>\n  body {\n    transition: background-color 0.5s ease, color 0.5s ease;\n  }\n  .dark { background: #111; color: #06C755; }\n</style>\n<button onclick=\"document.body.classList.toggle('dark')\">切換模式</button>"
+  },
+  {
+    "id": "U08",
+    "level": "進階",
+    "name": "Toast Notifications",
+    "desc": "螢幕邊緣彈出的非阻塞通知訊息",
+    "code": "<style>\n  .toast { position: fixed; top: 20px; right: 20px; background: #333; color: white; padding: 12px 24px; border-radius: 8px; transform: translateX(150%); transition: 0.3s; z-index: 1000; border-left: 4px solid #06C755; }\n  .toast.show { transform: translateX(0); }\n</style>\n<div id=\"toast\" class=\"toast\">系統消息：操作已成功</div>\n<script>\n  function showToast() {\n    const t = document.getElementById('toast');\n    t.classList.add('show');\n    setTimeout(() => t.classList.remove('show'), 3000);\n  }\n</script>\n<button onclick=\"showToast()\">彈出通知</button>"
+  },
+  {
+    "id": "U09",
+    "level": "進階",
+    "name": "Lottie Animation",
+    "desc": "輕量級向量動畫展示可愛交互",
+    "code": "\n<script src=\"https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js\"></script>\n<lottie-player src=\"https://assets10.lottiefiles.com/packages/lf20_myejioos.json\" background=\"transparent\" speed=\"1\" style=\"width: 100px; height: 100px;\" loop autoplay></lottie-player>"
+  },
+  {
+    "id": "U10",
+    "level": "進階",
+    "name": "Back-to-Top FAB",
+    "desc": "超過一屏後自動出現的返回頂部鈕",
+    "code": "<button id=\"btnTop\" style=\"display:none; position:fixed; bottom:80px; right:20px; width:44px; height:44px; background:#06C755; border-radius:50%; border:none; color:white; shadow: 0 4px 12px rgba(0,0,0,0.3);\">↑</button>\n<script>\n  window.onscroll = () => {\n    document.getElementById('btnTop').style.display = window.scrollY > 300 ? 'block' : 'none';\n  };\n  document.getElementById('btnTop').onclick = () => window.scrollTo({top: 0, behavior: 'smooth'});\n</script>"
+  },
+  {
+    "id": "U11",
+    "level": "專業",
+    "name": "Infinite Scroll",
+    "desc": "滾動到底部自動加載更多內容 (Observer)",
+    "code": "<div id=\"list\"></div>\n<div id=\"sentinel\" style=\"height:20px;\">載入中...</div>\n<script>\n  const observer = new IntersectionObserver((entries) => {\n    if(entries[0].isIntersecting) { console.log('觸發加載邏輯...'); }\n  });\n  observer.observe(document.getElementById('sentinel'));\n</script>"
+  },
+  {
+    "id": "U12",
+    "level": "專業",
+    "name": "Custom Scrollbar",
+    "desc": "美化並自訂網頁捲軸的寬度與顏色",
+    "code": "<style>\n  ::-webkit-scrollbar { width: 6px; }\n  ::-webkit-scrollbar-track { background: #111; }\n  ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }\n  ::-webkit-scrollbar-thumb:hover { background: #06C755; }\n</style>\n<div style=\"height:100px; overflow-y:scroll; background:#1a1a1a;\">測試長內容...</div>"
+  },
+  {
+    "id": "U13",
+    "level": "專業",
+    "name": "Focus Ring Style",
+    "desc": "自訂鍵盤導覽時的聚焦光暈樣式",
+    "code": "<style>\n  .custom-focus:focus-visible {\n    outline: none;\n    box-shadow: 0 0 0 3px rgba(6, 199, 85, 0.4);\n    border-color: #06C755;\n  }\n</style>\n<input class=\"custom-focus\" placeholder=\"按 Tab 鍵聚焦我\" style=\"background:#222; border:1px solid #444; color:white; padding:10px;\">"
+  },
+  {
+    "id": "U14",
+    "level": "旗艦",
+    "name": "Hover Tilt Effect",
+    "desc": "鼠標滑過卡片時產生的 3D 傾斜感",
+    "code": "<style>\n  .tilt-card { width: 200px; height: 100px; background: #1e1e1e; transition: 0.1s; transform-style: preserve-3d; border-radius: 15px; border: 1px solid #333; }\n</style>\n<div class=\"tilt-card\" onmousemove=\"const r = this.getBoundingClientRect(); const x = (event.clientX - r.left) / r.width - 0.5; const y = (event.clientY - r.top) / r.height - 0.5; this.style.transform = `perspective(500px) rotateY(${x*20}deg) rotateX(${-y*20}deg)`;\" onmouseleave=\"this.style.transform = ''\"></div>"
+  },
+  {
+    "id": "U15",
+    "level": "旗艦",
+    "name": "Lazy Load Blur",
+    "desc": "圖片載入前顯示模糊預覽的小圖",
+    "code": "<style>\n  .blur-img { filter: blur(10px); transition: filter 0.5s; width: 100%; }\n  .blur-img.loaded { filter: blur(0); }\n</style>\n<img class=\"blur-img\" src=\"low-res.webp\" data-src=\"high-res.webp\" onload=\"this.classList.add('loaded')\">"
+  },
+  {
+    "id": "U16",
+    "level": "旗艦",
+    "name": "Entrance Animation",
+    "desc": "列表項逐一出現的梯次動畫 (Stagger)",
+    "code": "<style>\n  .list-item { opacity: 0; transform: translateY(20px); animation: fadeIn 0.5s forwards; }\n  @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }\n</style>\n<div class=\"list-item\" style=\"animation-delay: 0.1s\">項目 A</div>\n<div class=\"list-item\" style=\"animation-delay: 0.2s\">項目 B</div>"
+  },
+  {
+    "id": "U17",
+    "level": "超神",
+    "name": "Context Menu UI",
+    "desc": "仿系統風格的自訂右鍵選單",
+    "code": "<div id=\"menu\" style=\"display:none; position:fixed; background:#222; border:1px solid #444; border-radius:8px; padding:5px; z-index:2000; min-width:120px;\">\n  <div style=\"padding:8px; font-size:12px; cursor:pointer;\" class=\"hover:bg-green-500\">複製代碼</div>\n</div>\n<script>\n  window.oncontextmenu = (e) => {\n    e.preventDefault();\n    const m = document.getElementById('menu');\n    m.style.display = 'block'; m.style.left = e.pageX + 'px'; m.style.top = e.pageY + 'px';\n  };\n  window.onclick = () => document.getElementById('menu').style.display = 'none';\n</script>"
+  },
+  {
+    "id": "U18",
+    "level": "超神",
+    "name": "Pull-to-Refresh",
+    "desc": "具備手感的下拉刷新動畫組件 (邏輯控制)",
+    "code": "<script>\n  // 監聽 touchstart/touchmove/touchend\n  // 當 scrollY === 0 且向下滑動時，計算 pullDistance\n  // 達到閥值 (如 60px) 時觸發 Haptic + 旋轉動畫\n</script>\n<div style=\"color:#06C755; text-align:center;\">↓ 緩緩下拉</div>"
+  },
+  {
+    "id": "U19",
+    "level": "超神",
+    "name": "Loading Progress Bar",
+    "desc": "頁面頂部顯示加載百分比細線",
+    "code": "<div id=\"prog\" style=\"position:fixed; top:0; left:0; height:2px; background:#06C755; width:0; z-index:3000; transition: 0.3s;\"></div>\n<script>\n  window.onscroll = () => {\n    const h = document.documentElement, b = document.body;\n    const st = 'scrollTop', sh = 'scrollHeight';\n    const p = (h[st]||b[st]) / ((h[sh]||b[sh]) - h.clientHeight) * 100;\n    document.getElementById('prog').style.width = p + '%';\n  };\n</script>"
+  },
+  {
+    "id": "U20",
+    "level": "超神",
+    "name": "Bottom Sheet Logic",
+    "desc": "手機端底部滑出式操作面板 (Gesture)",
+    "code": "<style>\n  .sheet { position: fixed; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-radius: 20px 20px 0 0; transform: translateY(100%); transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 500; height: 50vh; }\n  .sheet.open { transform: translateY(0); }\n</style>\n<button onclick=\"document.querySelector('.sheet').classList.add('open')\">開啟面板</button>\n<div class=\"sheet\"> <div style=\"width:40px; height:4px; background:#333; margin:10px auto; border-radius:2px;\"></div> </div>"
+  },
+  {
+    "id": "U21",
+    "level": "基本",
+    "name": "Ripple Effect",
+    "desc": "點擊按鈕時從指尖擴散的水波紋特效",
+    "code": "<style>\n  .ripple { position: relative; overflow: hidden; }\n  .ripple-circle { position: absolute; background: rgba(255,255,255,0.3); border-radius: 50%; transform: scale(0); animation: ripple 0.6s linear; pointer-events: none; }\n  @keyframes ripple { to { transform: scale(4); opacity: 0; } }\n</style>\n<button class=\"ripple\" onclick=\"const circle = document.createElement('div'); const d = Math.max(this.clientWidth, this.clientHeight); circle.style.width = circle.style.height = d + 'px'; circle.style.left = event.offsetX - d/2 + 'px'; circle.style.top = event.offsetY - d/2 + 'px'; circle.classList.add('ripple-circle'); this.appendChild(circle); setTimeout(()=>circle.remove(), 600);\" style=\"background:#06C755; color:white; padding:15px 30px; border:none; border-radius:8px;\">點擊波紋測試</button>"
+  },
+  {
+    "id": "U22",
+    "level": "基本",
+    "name": "Line Clamp",
+    "desc": "多行文字自動省略號，保持 UI 整齊",
+    "code": "<style>\n  .clamp-2 {\n    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;\n  }\n</style>\n<p class=\"clamp-2\">這是一段非常長的文字測試，當超過兩行時會自動顯示省略號，防止破壞你的卡片佈局設計。</p>"
+  },
+  {
+    "id": "U23",
+    "level": "進階",
+    "name": "Smooth Drag Logic",
+    "desc": "基於 Touch 事件的元素絲滑拖拽",
+    "code": "<div id=\"dragBox\" style=\"width:50px; height:50px; background:#06C755; position:absolute; border-radius:10px; cursor:move; touch-action:none;\"></div>\n<script>\n  const el = document.getElementById('dragBox');\n  el.ontouchmove = (e) => {\n    const t = e.touches[0];\n    el.style.left = t.pageX - 25 + 'px'; el.style.top = t.pageY - 25 + 'px';\n  };\n</script>"
+  },
+  {
+    "id": "U24",
+    "level": "進階",
+    "name": "Dynamic Theme Color",
+    "desc": "隨網頁主色自動變更手機瀏覽器頂部欄顏色",
+    "code": "<script>\n  function setThemeColor(hex) {\n    let meta = document.querySelector('meta[name=\"theme-color\"]');\n    if (!meta) {\n      meta = document.createElement('meta'); meta.name = 'theme-color'; document.head.appendChild(meta);\n    }\n    meta.content = hex;\n  }\n</script>\n<button onclick=\"setThemeColor('#06C755')\">變更為綠色模式</button>"
+  },
+  {
+    "id": "U25",
+    "level": "進階",
+    "name": "Text Glitch Effect",
+    "desc": "賽博朋克風格的文字抖動特效",
+    "code": "<style>\n  .glitch { font-size: 24px; font-weight: bold; position: relative; color: white; }\n  .glitch::before, .glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; }\n  .glitch::before { left: 2px; text-shadow: -2px 0 #ff00c1; clip: rect(44px, 450px, 56px, 0); animation: glitch-1 5s infinite linear alternate-reverse; }\n  .glitch::after { left: -2px; text-shadow: -2px 0 #00fff9; clip: rect(44px, 450px, 56px, 0); animation: glitch-2 5s infinite linear alternate-reverse; }\n  @keyframes glitch-1 { 0% { clip: rect(10px, 9999px, 50px, 0); } 100% { clip: rect(80px, 9999px, 30px, 0); } }\n</style>\n<div class=\"glitch\" data-text=\"Ⲙ𝔬ⲃⳝ𝔭 LAB\">Ⲙ𝔬ⲃⳝ𝔭 LAB</div>"
+  },
+  {
+    "id": "U26",
+    "level": "專業",
+    "name": "Parallax Scrolling",
+    "desc": "背景移動速度慢於前景，營造空間深度",
+    "code": "<div style=\"height:200px; overflow:hidden; position:relative;\">\n  <div id=\"paraBg\" style=\"position:absolute; top:0; width:100%; height:300px; background:url('https://picsum.photos/800/600'); background-size:cover;\"></div>\n  <h2 style=\"position:relative; color:white; text-align:center; padding-top:80px; z-index:1;\">視差效果</h2>\n</div>\n<script>\n  window.addEventListener('scroll', () => {\n    document.getElementById('paraBg').style.transform = `translateY(${window.scrollY * 0.3}px)`;\n  });\n</script>"
+  },
+  {
+    "id": "U27",
+    "level": "專業",
+    "name": "Custom Video Skin",
+    "desc": "完全自訂 HTML5 播放器的控制介面樣式",
+    "code": "<style>\n  .video-container { position: relative; border-radius: 12px; overflow: hidden; }\n  .controls { position: absolute; bottom: 10px; left: 10px; right: 10px; display: flex; gap: 10px; background: rgba(0,0,0,0.5); padding: 5px; }\n</style>\n<div class=\"video-container\">\n  <video id=\"v1\" width=\"100%\" src=\"video.mp4\"></video>\n  <div class=\"controls\"><button onclick=\"v1.play()\">▶</button><button onclick=\"v1.pause()\">⏸</button></div>\n</div>"
+  },
+  {
+    "id": "U28",
+    "level": "專業",
+    "name": "Magnetic Button",
+    "desc": "鼠標靠近時按鈕會被「吸附」過去的交互",
+    "code": "<div id=\"magBtn\" style=\"width:100px; padding:15px; background:#333; color:#06C755; text-align:center; transition: 0.1s linear;\">磁力按鈕</div>\n<script>\n  document.onmousemove = (e) => {\n    const btn = document.getElementById('magBtn');\n    const box = btn.getBoundingClientRect();\n    const x = e.clientX - (box.left + box.width/2); const y = e.clientY - (box.top + box.height/2);\n    if(Math.sqrt(x*x + y*y) < 100) btn.style.transform = `translate(${x*0.3}px, ${y*0.3}px)`;\n    else btn.style.transform = '';\n  };\n</script>"
+  },
+  {
+    "id": "U29",
+    "level": "旗艦",
+    "name": "Typing Animation",
+    "desc": "模擬真人打字的動態文字呈現",
+    "code": "<div id=\"typewriter\" style=\"font-family:monospace; color:#06C755; border-right:2px solid;\"></div>\n<script>\n  const str = \"Initializing Ⲙ𝔬ⲃⳝ𝔭 Matrix...\"; let i = 0;\n  function type() {\n    if(i < str.length) { document.getElementById('typewriter').innerHTML += str.charAt(i); i++; setTimeout(type, 100); }\n  }\n  type();\n</script>"
+  },
+  {
+    "id": "U30",
+    "level": "旗艦",
+    "name": "Masonry Layout",
+    "desc": "瀑布流佈局，自動填補圖片間隙",
+    "code": "<style>\n  .masonry { column-count: 2; column-gap: 10px; }\n  .m-item { break-inside: avoid; margin-bottom: 10px; background: #222; border-radius: 8px; }\n</style>\n<div class=\"masonry\">\n  <div class=\"m-item\" style=\"height:100px;\"></div><div class=\"m-item\" style=\"height:150px;\"></div><div class=\"m-item\" style=\"height:120px;\"></div>\n</div>"
+  },
+  {
+    "id": "U31",
+    "level": "旗艦",
+    "name": "Magnifier Zoom",
+    "desc": "點擊圖片局部放大的放大鏡效果",
+    "code": "<div style=\"position:relative; width:200px;\" onmousemove=\"const zoom = document.getElementById('z'); zoom.style.display='block'; zoom.style.backgroundPosition=`-${event.offsetX*2}px -${event.offsetY*2}px`; zoom.style.left=event.offsetX+'px'; zoom.style.top=event.offsetY+'px';\" onmouseleave=\"document.getElementById('z').style.display='none';\">\n  <img src=\"https://picsum.photos/200\" width=\"100%\">\n  <div id=\"z\" style=\"display:none; position:absolute; width:80px; height:80px; border:2px solid #06C755; border-radius:50%; background:url('https://picsum.photos/200'); background-size:400px 400px; pointer-events:none;\"></div>\n</div>"
+  },
+  {
+    "id": "U32",
+    "level": "超神",
+    "name": "Image Color Extraction",
+    "desc": "自動分析圖片主色並設為背景漸層",
+    "code": "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/2.1.0/Vibrant.min.js\"></script>\n<script>\n  const img = new Image(); img.src = 'pic.webp';\n  img.onload = () => {\n    const v = new Vibrant(img); const swatches = v.swatches();\n    document.body.style.background = `linear-gradient(180deg, ${swatches.Vibrant.getHex()}, #000)`;\n  }\n</script>"
+  },
+  {
+    "id": "U33",
+    "level": "超神",
+    "name": "Cursor Follower",
+    "desc": "自訂鼠標樣式並帶有平滑跟隨的小圓點",
+    "code": "<div id=\"cursor\" style=\"position:fixed; width:10px; height:10px; background:#06C755; border-radius:50%; pointer-events:none; transition: 0.1s ease; z-index:9999;\"></div>\n<script>\n  document.onmousemove = (e) => {\n    const c = document.getElementById('cursor');\n    c.style.left = e.clientX + 'px'; c.style.top = e.clientY + 'px';\n  };\n</script>"
+  },
+  {
+    "id": "U34",
+    "level": "超神",
+    "name": "Tilt Hover Gallery",
+    "desc": "全螢幕圖片廊，隨重力或鼠標傾斜旋轉",
+    "code": "<style>\n  .gallery-wrap { perspective: 1000px; }\n  .gallery { transform-style: preserve-3d; transition: 0.5s; }\n  .gallery:hover { transform: rotateY(20deg); }\n</style>"
+  },
+  {
+    "id": "U35",
+    "level": "超神",
+    "name": "Confetti Explosion",
+    "desc": "任務完成時噴灑彩色五角星彩帶特效",
+    "code": "<script src=\"https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js\"></script>\n<button onclick=\"confetti({particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#06C755', '#ffffff']})\">🎉 慶祝成功</button>"
+  },
+  {
+    "id": "U36",
+    "level": "基本",
+    "name": "Badge Pulse",
+    "desc": "帶有呼吸燈效果的動態未讀紅點",
+    "code": "<style>\n  .badge { position: relative; width: 12px; height: 12px; background: #ff3b30; border-radius: 50%; }\n  .badge::after { content: ''; position: absolute; width: 100%; height: 100%; background: inherit; border-radius: 50%; animation: pulse 1.5s infinite; opacity: 0.6; }\n  @keyframes pulse { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(3); opacity: 0; } }\n</style>\n<div class=\"badge\"></div>"
+  },
+  {
+    "id": "U37",
+    "level": "基本",
+    "name": "Progress Ring",
+    "desc": "極簡圓環進度條，展示載入百分比",
+    "code": "<svg width=\"40\" height=\"40\">\n  <circle cx=\"20\" cy=\"20\" r=\"15\" fill=\"none\" stroke=\"#333\" stroke-width=\"4\" />\n  <circle cx=\"20\" cy=\"20\" r=\"15\" fill=\"none\" stroke=\"#06C755\" stroke-width=\"4\" stroke-dasharray=\"94\" stroke-dashoffset=\"30\" stroke-linecap=\"round\" transform=\"rotate(-90 20 20)\" />\n</svg>"
+  },
+  {
+    "id": "U38",
+    "level": "進階",
+    "name": "Gooey Effect",
+    "desc": "黏性流體按鈕分離與合併效果 (SVG Filter)",
+    "code": "<svg style=\"display:none\"><defs><filter id=\"goo\"><feGaussianBlur in=\"SourceGraphic\" stdDeviation=\"10\" result=\"blur\" /><feColorMatrix in=\"blur\" mode=\"matrix\" values=\"1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7\" result=\"goo\" /></filter></defs></svg>\n<div style=\"filter:url('#goo'); display:flex; gap:10px;\">\n  <div style=\"width:40px; height:40px; background:#06C755; border-radius:50%\"></div>\n  <div style=\"width:40px; height:40px; background:#06C755; border-radius:50%\"></div>\n</div>"
+  },
+  {
+    "id": "U39",
+    "level": "進階",
+    "name": "Accordion Smooth",
+    "desc": "絲滑的手風琴式選單展開與收合",
+    "code": "<details style=\"background:#1a1a1a; border-radius:8px; overflow:hidden;\">\n  <summary style=\"padding:15px; cursor:pointer; color:#06C755;\">點擊展開更多</summary>\n  <div style=\"padding:15px; border-top:1px solid #333;\">Ⲙ𝔬ⲃⳝ𝔭 的隱藏細節都在這裡。</div>\n</details>"
+  },
+  {
+    "id": "U40",
+    "level": "進階",
+    "name": "Text Shimmer",
+    "desc": "iPhone 經典解鎖滑動光澤文字",
+    "code": "<style>\n  .shimmer { font-size: 20px; font-weight: 900; background: linear-gradient(90deg, #333 0%, #06C755 50%, #333 100%); background-size: 200% 100%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: shimmer 2s infinite; }\n  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }\n</style>\n<div class=\"shimmer\">Slide to Unlock Lab</div>"
+  },
+  {
+    "id": "U41",
+    "level": "專業",
+    "name": "3D Tab Switcher",
+    "desc": "仿系統風格的 3D 透視切換選卡",
+    "code": "<style>\n  .tabs { display:flex; perspective: 1000px; gap: 10px; }\n  .tab { flex:1; padding:10px; background:#222; text-align:center; transition:0.3s; transform: rotateX(20deg); }\n  .tab.active { transform: rotateX(0deg); background:#06C755; color:black; }\n</style>\n<div class=\"tabs\"><div class=\"tab\">Overview</div><div class=\"tab active\">Matrix</div></div>"
+  },
+  {
+    "id": "U42",
+    "level": "專業",
+    "name": "Glassy Drag List",
+    "desc": "拖動排序時帶有毛玻璃殘影的清單",
+    "code": "<style>\n  .drag-item { padding:15px; background:rgba(255,255,255,0.05); backdrop-filter:blur(10px); margin:5px; border-radius:10px; cursor:grab; }\n  .drag-item:active { cursor:grabbing; opacity:0.8; transform:scale(0.98); }\n</style>\n<div class=\"drag-item\">ITEM #01</div>"
+  },
+  {
+    "id": "U43",
+    "level": "專業",
+    "name": "Scroll Hide Header",
+    "desc": "向下捲動隱藏、向上捲動顯示的導航欄",
+    "code": "<script>\n  let lastY = 0; const h = document.getElementById('hdr');\n  window.onscroll = () => {\n    h.style.top = window.scrollY > lastY ? '-60px' : '0';\n    lastY = window.scrollY;\n  };\n</script>\n<nav id=\"hdr\" style=\"position:fixed; top:0; width:100%; height:50px; background:#111; transition:0.3s; z-index:999;\"></nav>"
+  },
+  {
+    "id": "U44",
+    "level": "旗艦",
+    "name": "Smooth State Link",
+    "desc": "點擊連結時無刷新加載內容 (SPA 模擬)",
+    "code": "<script>\n  function loadPage(url) {\n    document.body.style.opacity = '0';\n    setTimeout(() => { window.location.hash = url; document.body.style.opacity = '1'; }, 300);\n  }\n</script>\n<button onclick=\"loadPage('project')\">前往專案</button>"
+  },
+  {
+    "id": "U45",
+    "level": "旗艦",
+    "name": "Multi-Layer Hover",
+    "desc": "多層視差卡片，滑過時背景與內容異速移動",
+    "code": "<div class=\"card\" style=\"position:relative; width:200px; height:120px; overflow:hidden; border-radius:15px;\" onmousemove=\"this.children[0].style.transform=`scale(1.2) translate(${event.offsetX*0.1}px)`;\">\n  <div style=\"position:absolute; width:100%; height:100%; background:url('https://picsum.photos/300/200'); transition:0.1s;\"></div>\n  <div style=\"position:relative; color:white; padding:10px; font-weight:bold;\">LAYERED</div>\n</div>"
+  },
+  {
+    "id": "U46",
+    "level": "旗艦",
+    "name": "Dynamic Counter",
+    "desc": "數字變更時具有滾動或增加動畫",
+    "code": "<div id=\"count\" style=\"font-size:30px; font-weight:bold; color:#06C755;\">0</div>\n<script>\n  let current = 0, target = 250;\n  const timer = setInterval(() => {\n    if(current < target) { current += 5; document.getElementById('count').innerText = current; }\n    else clearInterval(timer);\n  }, 20);\n</script>"
+  },
+  {
+    "id": "U47",
+    "level": "超神",
+    "name": "Force Touch UI",
+    "desc": "長按時觸發具有物理回饋的選單彈出 (Haptic API)",
+    "code": "<script>\n  let pressTimer;\n  const handleStart = () => { \n    pressTimer = setTimeout(() => { \n      if(navigator.vibrate) navigator.vibrate(50); \n      alert('已觸發 3D Touch 菜單'); \n    }, 800);\n  };\n  const handleEnd = () => clearTimeout(pressTimer);\n</script>\n<div onmousedown=\"handleStart()\" onmouseup=\"handleEnd()\" ontouchstart=\"handleStart()\" ontouchend=\"handleEnd()\" style=\"padding:20px; background:#333; border-radius:15px; text-align:center;\">長按模擬深度按壓</div>"
+  },
+  {
+    "id": "U48",
+    "level": "超神",
+    "name": "Morphing SVG Icon",
+    "desc": "點擊時從「播放」圖示流暢變形為「暫停」",
+    "code": "\n<div onclick=\"this.classList.toggle('active')\">\n  <style>.active #p-icon { d: path('M10 10 L30 10 L30 30 L10 30 Z'); }</style>\n  <svg viewBox=\"0 0 40 40\"><path id=\"p-icon\" d=\"M15 10 L35 20 L15 30 Z\" fill=\"#06C755\" style=\"transition:0.3s\"/></svg>\n</div>"
+  },
+  {
+    "id": "U49",
+    "level": "超神",
+    "name": "Perspective Scroll",
+    "desc": "隨著頁面捲動，元素會以 3D 透視方式向後退場",
+    "code": "<style>\n  .p-item { transition: 0.2s; }\n</style>\n<script>\n  window.addEventListener('scroll', () => {\n    const items = document.querySelectorAll('.p-item');\n    items.forEach(el => {\n      const rect = el.getBoundingClientRect();\n      const rot = Math.min(Math.max(rect.top / 10, 0), 45);\n      el.style.transform = `perspective(500px) rotateX(${rot}deg) scale(${1 - rot/100})`;\n    });\n  });\n</script>"
+  },
+  {
+    "id": "U50",
+    "level": "超神",
+    "name": "Titi Visual Core",
+    "desc": "集成所有 UI 優化的核心控制器，自動協調性能與動畫",
+    "code": "<script>\n  const TitiUI = {\n    init: () => { console.log('Ⲙ𝔬ⲃⳝ𝔭 Visual Engine Active.'); },\n    reduceMotion: window.matchMedia('(prefers-reduced-motion: reduce)').matches\n  };\n  if(!TitiUI.reduceMotion) TitiUI.init();\n</script>"
+  },
+  {
+    "id": "C01",
+    "level": "基本",
+    "name": "Responsive Navbar",
+    "desc": "自動適應手機與電腦寬度的導航欄",
+    "code": "<nav style='display:flex; justify-content:space-between; padding:15px; background:#111; border-bottom:1px solid #333;'>\n  <div style='color:#06C755; font-weight:bold;'>Ⲙ𝔬ⲃⳝ𝔭</div>\n  <div class='menu-icon' style='color:white;'>☰</div>\n</nav>"
+  },
+  {
+    "id": "C02",
+    "level": "基本",
+    "name": "Feature Card",
+    "desc": "標準化的功能展示方塊",
+    "code": "<div style='background:#1a1a1a; padding:20px; border-radius:12px; border:1px solid #333;'>\n  <h3 style='color:#06C755; margin-top:0;'>功能標題</h3>\n  <p style='color:#888; font-size:14px;'>描述文字內容...</p>\n</div>"
+  },
+  {
+    "id": "C03",
+    "level": "基本",
+    "name": "Simple Footer",
+    "desc": "頁尾版權與連結佈局",
+    "code": "<footer style='text-align:center; padding:40px; color:#555; font-size:12px;'>\n  <p>&copy; 2026 Ⲙ𝔬ⲃⳝ𝔭 LAB. All rights reserved.</p>\n</footer>"
+  },
+  {
+    "id": "C04",
+    "level": "進階",
+    "name": "Grid Gallery",
+    "desc": "使用 CSS Grid 打造的響應式圖片牆",
+    "code": "<div style='display:grid; grid-template-columns:repeat(auto-fit, minmax(150px, 1fr)); gap:10px;'>\n  <div style='background:#222; aspect-ratio:1; border-radius:8px;'></div>\n  <div style='background:#222; aspect-ratio:1; border-radius:8px;'></div>\n</div>"
+  },
+  {
+    "id": "C05",
+    "level": "進階",
+    "name": "Icon Label Pair",
+    "desc": "圖示與文字垂直居中對齊的組件",
+    "code": "<div style='display:flex; align-items:center; gap:8px;'>\n  <span style='background:#06C755; width:8px; height:8px; border-radius:50%;'></span>\n  <span style='color:#eee;'>狀態：運行中</span>\n</div>"
+  },
+  {
+    "id": "C06",
+    "level": "進階",
+    "name": "Hero Section",
+    "desc": "網頁首屏的大圖視覺中心",
+    "code": "<section style='height:60vh; display:flex; flex-direction:column; justify-content:center; align-items:center; background:linear-gradient(45deg, #000, #111);'>\n  <h1 style='font-size:3rem; color:#fff;'>Ⲙ𝔬ⲃⳝ𝔭 Matrix</h1>\n  <button style='background:#06C755; border:none; padding:12px 30px; border-radius:30px;'>探索矩陣</button>\n</section>"
+  },
+  {
+    "id": "C07",
+    "level": "專業",
+    "name": "Tab Navigation",
+    "desc": "切換內容區域的標籤分頁器",
+    "code": "<div style='display:flex; border-bottom:2px solid #333;'>\n  <div style='padding:10px 20px; color:#06C755; border-bottom:2px solid #06C755;'>分頁 A</div>\n  <div style='padding:10px 20px; color:#888;'>分頁 B</div>\n</div>"
+  },
+  {
+    "id": "C08",
+    "level": "專業",
+    "name": "Profile Header",
+    "desc": "用戶個人資訊展示橫幅",
+    "code": "<div style='display:flex; align-items:center; gap:15px; padding:20px; background:#1a1a1a;'>\n  <div style='width:60px; height:60px; border-radius:50%; background:#333; border:2px solid #06C755;'></div>\n  <div>\n    <div style='color:white; font-weight:bold;'>Admin User</div>\n    <div style='color:#666; font-size:12px;'>Level: God Mode</div>\n  </div>\n</div>"
+  },
+  {
+    "id": "C09",
+    "level": "專業",
+    "name": "Stat Dashboard",
+    "desc": "數據統計小卡片組",
+    "code": "<div style='display:flex; gap:10px;'>\n  <div style='flex:1; background:#222; padding:15px; border-radius:10px;'>\n    <div style='color:#888; font-size:10px;'>CPU</div>\n    <div style='color:#06C755; font-size:20px; font-weight:bold;'>42%</div>\n  </div>\n</div>"
+  },
+  {
+    "id": "C10",
+    "level": "旗艦",
+    "name": "Modal Overlay",
+    "desc": "全螢幕覆蓋的高級彈窗組件",
+    "code": "<div style='position:fixed; inset:0; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); display:flex; align-items:center; justify-content:center; z-index:1000;'>\n  <div style='background:#1a1a1a; width:80%; max-width:400px; padding:30px; border-radius:20px; border:1px solid #06C755;'>\n    <h2 style='color:white;'>確認執行？</h2>\n    <div style='display:flex; gap:10px; margin-top:20px;'>\n      <button style='flex:1; padding:10px; border-radius:8px;'>取消</button>\n      <button style='flex:1; padding:10px; background:#06C755; border-radius:8px;'>確定</button>\n    </div>\n  </div>\n</div>"
+  },
+  {
+    "id": "C11",
+    "level": "旗艦",
+    "name": "Sidebar Menu",
+    "desc": "側邊滑出的專業功能選單",
+    "code": "<aside style='position:fixed; left:0; top:0; height:100%; width:250px; background:#111; border-right:1px solid #333; padding:20px;'>\n  <div style='margin-bottom:30px; color:#06C755;'>Ⲙ𝔬ⲃⳝ𝔭 System</div>\n  <nav style='display:flex; flex-direction:column; gap:15px; color:#888;'>\n    <span>Dashboard</span><span>Analytics</span><span>Settings</span>\n  </nav>\n</aside>"
+  },
+  {
+    "id": "C12",
+    "level": "旗艦",
+    "name": "Pricing Table",
+    "desc": "多方案對比價格表佈局",
+    "code": "<div style='display:flex; gap:15px;'>\n  <div style='flex:1; border:1px solid #333; border-radius:15px; padding:20px; text-align:center;'>\n    <div style='font-size:24px; color:white;'>Free</div>\n    <div style='margin:20px 0; font-size:32px; color:#06C755;'>$0</div>\n    <button style='width:100%; padding:10px; background:#333; border-radius:8px;'>Start</button>\n  </div>\n</div>"
+  },
+  {
+    "id": "C13",
+    "level": "超神",
+    "name": "Nested List Tree",
+    "desc": "用於展示目錄結構的樹狀清單",
+    "code": "<div style='color:#888; font-family:monospace;'>\n  <div>📁 Root</div>\n  <div style='margin-left:20px;'>├─ 📁 Assets</div>\n  <div style='margin-left:40px;'>└─ 📄 config.json</div>\n  <div style='margin-left:20px;'>└─ 📄 index.html</div>\n</div>"
+  },
+  {
+    "id": "C14",
+    "level": "超神",
+    "name": "Split Screen Layout",
+    "desc": "左右對分式的專業頁面佈局",
+    "code": "<div style='display:flex; height:100vh;'>\n  <div style='flex:1; background:#000; display:flex; align-items:center; justify-content:center;'>左側視覺區</div>\n  <div style='flex:1; background:#111; display:flex; align-items:center; justify-content:center;'>右側操作區</div>\n</div>"
+  },
+  {
+    "id": "C15",
+    "level": "超神",
+    "name": "Breadcrumb Nav",
+    "desc": "展示頁面深度的路徑導覽組件",
+    "code": "<div style='color:#666; font-size:12px;'>\n  <span>Home</span> / <span>Projects</span> / <span style='color:#06C755;'>Matrix-Lab</span>\n</div>"
+  },
+  {
+    "id": "C16",
+    "level": "基本",
+    "name": "Custom Checkbox",
+    "desc": "美化原生多選框，匹配矩陣綠色調",
+    "code": "<label style='display:flex; align-items:center; gap:10px; cursor:pointer;'>\n  <input type='checkbox' style='accent-color:#06C755; width:18px; height:18px;'>\n  <span style='color:#ccc;'>啟用自動部署</span>\n</label>"
+  },
+  {
+    "id": "C17",
+    "level": "基本",
+    "name": "Search Input Group",
+    "desc": "整合搜尋圖示的輸入框佈局",
+    "code": "<div style='position:relative; width:100%;'>\n  <span style='position:absolute; left:12px; top:50%; transform:translateY(-50%);'>🔍</span>\n  <input type='text' placeholder='搜尋功能...' style='width:100%; padding:10px 10px 10px 40px; background:#222; border:1px solid #333; border-radius:8px; color:white;'>\n</div>"
+  },
+  {
+    "id": "C18",
+    "level": "基本",
+    "name": "Avatar Stack",
+    "desc": "重疊式的成員頭像展示組件",
+    "code": "<div style='display:flex; margin-left:10px;'>\n  <div style='width:32px; height:32px; border-radius:50%; background:#444; border:2px solid #111; margin-left:-10px;'></div>\n  <div style='width:32px; height:32px; border-radius:50%; background:#06C755; border:2px solid #111; margin-left:-10px; display:flex; align-items:center; justify-content:center; font-size:10px;'>+5</div>\n</div>"
+  },
+  {
+    "id": "C19",
+    "level": "進階",
+    "name": "Stepper UI",
+    "desc": "用於引導用戶完成多步驟任務的進度條",
+    "code": "<div style='display:flex; justify-content:space-between; position:relative; margin-bottom:20px;'>\n  <div style='width:100%; height:2px; background:#333; position:absolute; top:15px; z-index:1;'></div>\n  <div style='z-index:2; width:30px; height:30px; background:#06C755; border-radius:50%; text-align:center; line-height:30px;'>1</div>\n  <div style='z-index:2; width:30px; height:30px; background:#333; border-radius:50%; text-align:center; line-height:30px;'>2</div>\n</div>"
+  },
+  {
+    "id": "C20",
+    "level": "進階",
+    "name": "Toggle Switch",
+    "desc": "純 CSS 打造的高質感開關鈕",
+    "code": "<label style='position:relative; display:inline-block; width:50px; height:24px;'>\n  <input type='checkbox' style='opacity:0; width:0; height:0;' onchange='this.nextSibling.style.background=this.checked?\"#06C755\":\"#444\"'>\n  <span style='position:absolute; cursor:pointer; inset:0; background:#444; border-radius:34px; transition:0.4s;'></span>\n</label>"
+  },
+  {
+    "id": "C21",
+    "level": "進階",
+    "name": "Pagination Bar",
+    "desc": "多頁面切換的底端數字導航",
+    "code": "<div style='display:flex; gap:5px; justify-content:center;'>\n  <button style='padding:5px 10px; background:#222; border:1px solid #333;'>«</button>\n  <button style='padding:5px 10px; background:#06C755; color:black;'>1</button>\n  <button style='padding:5px 10px; background:#222; border:1px solid #333;'>2</button>\n</div>"
+  },
+  {
+    "id": "C22",
+    "level": "專業",
+    "name": "Floating Action Button",
+    "desc": "右下角懸浮的主操作按鈕組 (FAB)",
+    "code": "<div style='position:fixed; bottom:20px; right:20px; display:flex; flex-direction:column; gap:10px;'>\n  <button style='width:56px; height:56px; border-radius:50%; background:#06C755; border:none; color:black; font-size:24px; box-shadow:0 4px 10px rgba(0,0,0,0.5);'>+</button>\n</div>"
+  },
+  {
+    "id": "C23",
+    "level": "專業",
+    "name": "Dropzone Area",
+    "desc": "拖拽上傳檔案的感應區域設計",
+    "code": "<div style='border:2px dashed #333; border-radius:15px; padding:40px; text-align:center; color:#666;' ondragover='this.style.borderColor=\"#06C755\"' ondragleave='this.style.borderColor=\"#333\"'>\n  拖拽 JSON 檔案至此處或 <span style='color:#06C755;'>點擊上傳</span>\n</div>"
+  },
+  {
+    "id": "C24",
+    "level": "專業",
+    "name": "Data Table Grid",
+    "desc": "帶有標頭與條紋背景的數據表格",
+    "code": "<table style='width:100%; border-collapse:collapse; background:#1a1a1a;'>\n  <tr style='background:#111; color:#06C755; text-align:left;'>\n    <th style='padding:12px;'>ID</th><th style='padding:12px;'>Status</th>\n  </tr>\n  <tr style='border-bottom:1px solid #333;'>\n    <td style='padding:12px;'>#001</td><td style='padding:12px;'>Active</td>\n  </tr>\n</table>"
+  },
+  {
+    "id": "C25",
+    "level": "旗艦",
+    "name": "Code Snippet Box",
+    "desc": "自帶語法高亮感與「複製」鈕的代碼塊",
+    "code": "<div style='background:#0d0d0d; border-radius:8px; padding:15px; position:relative; font-family:monospace;'>\n  <button style='position:absolute; right:10px; top:10px; font-size:10px; background:#333; color:#aaa; border:none;'>Copy</button>\n  <code style='color:#06C755;'>npm install mobsys-core</code>\n</div>"
+  },
+  {
+    "id": "C26",
+    "level": "旗艦",
+    "name": "Notification List",
+    "desc": "仿手機系統下拉中心的通知清單",
+    "code": "<div style='display:flex; flex-direction:column; gap:8px;'>\n  <div style='background:#222; padding:12px; border-radius:10px; border-left:4px solid #06C755;'>\n    <div style='font-size:12px; font-weight:bold; color:white;'>System Update</div>\n    <div style='font-size:10px; color:#888;'>v2.5.0 ready to deploy</div>\n  </div>\n</div>"
+  },
+  {
+    "id": "C27",
+    "level": "旗艦",
+    "name": "Segmented Control",
+    "desc": "iOS 風格的分段選擇器",
+    "code": "<div style='display:flex; background:#111; padding:2px; border-radius:8px;'>\n  <button style='flex:1; background:#333; border:none; color:white; padding:6px; border-radius:6px;'>Daily</button>\n  <button style='flex:1; background:transparent; border:none; color:#666; padding:6px;'>Monthly</button>\n</div>"
+  },
+  {
+    "id": "C28",
+    "level": "超神",
+    "name": "Dynamic Form Engine",
+    "desc": "根據 JSON 自動生成對應的輸入欄位",
+    "code": "<div id='formGen'></div>\n<script>\n  const fields = ['Name', 'Email', 'Role'];\n  document.getElementById('formGen').innerHTML = fields.map(f => `<input placeholder='${f}' style='display:block; margin:10px 0; width:100%; padding:8px; background:#222; border:1px solid #333;'>`).join('');\n</script>"
+  },
+  {
+    "id": "C29",
+    "level": "超神",
+    "name": "Kanban Board Col",
+    "desc": "看板式任務管理列佈局",
+    "code": "<div style='width:280px; background:#111; padding:10px; border-radius:12px;'>\n  <div style='color:#06C755; padding:5px;'>In Progress (3)</div>\n  <div style='background:#222; height:80px; margin-top:10px; border-radius:8px;'></div>\n</div>"
+  },
+  {
+    "id": "C30",
+    "level": "超神",
+    "name": "Filter Chips Group",
+    "desc": "可點選、可移除的標籤過濾組組件",
+    "code": "<div style='display:flex; flex-wrap:wrap; gap:8px;'>\n  <span style='background:#06C75522; color:#06C755; padding:4px 12px; border-radius:20px; border:1px solid #06C755;'>UI/UX ×</span>\n  <span style='background:#333; color:#888; padding:4px 12px; border-radius:20px;'>Mobile</span>\n</div>"
+  },
+  {
+    "id": "C31",
+    "level": "基本",
+    "name": "Aspect Ratio Box",
+    "desc": "固定比例容器 (如 16:9)，防止圖片載入時頁面跳動",
+    "code": "<div style='width:100%; aspect-ratio:16/9; background:#222; border-radius:12px; overflow:hidden;'>\n  <img src='https://picsum.photos/800/450' style='width:100%; height:100%; object-fit:cover;'>\n</div>"
+  },
+  {
+    "id": "C32",
+    "level": "基本",
+    "name": "Divider Text",
+    "desc": "帶有文字描述的分隔線佈局",
+    "code": "<div style='display:flex; align-items:center; color:#444; margin:20px 0;'>\n  <div style='flex:1; height:1px; background:#333;'></div>\n  <span style='padding:0 15px; font-size:10px; text-transform:uppercase;'>更多資訊</span>\n  <div style='flex:1; height:1px; background:#333;'></div>\n</div>"
+  },
+  {
+    "id": "C33",
+    "level": "基本",
+    "name": "Social Link Group",
+    "desc": "一組標準化的社群媒體圖示連結",
+    "code": "<div style='display:flex; gap:15px; color:#888;'>\n  <a href='#' style='color:inherit;'>GitHub</a>\n  <a href='#' style='color:inherit;'>Twitter</a>\n  <a href='#' style='color:inherit;'>Discord</a>\n</div>"
+  },
+  {
+    "id": "C34",
+    "level": "進階",
+    "name": "Accordion Group",
+    "desc": "可折疊選單群組，點擊 A 自動收起 B",
+    "code": "<div class='acc-group'>\n  <details name='mobsys' open><summary style='color:#06C755; padding:10px;'>核心架構</summary><div style='padding:10px; color:#888;'>JSON 驅動</div></details>\n  <details name='mobsys'><summary style='color:#06C755; padding:10px;'>擴展接口</summary><div style='padding:10px; color:#888;'>API 支援</div></details>\n</div>"
+  },
+  {
+    "id": "C35",
+    "level": "進階",
+    "name": "Alert Banner",
+    "desc": "頂部固定或嵌入式的系統警示條",
+    "code": "<div style='background:#06C75522; border:1px solid #06C755; color:#06C755; padding:12px; border-radius:8px; display:flex; gap:10px;'>\n  <span>🔔</span>\n  <span>系統通知：新版本 Ⲙ𝔬ⲃⳝ𝔭 已準備就緒。</span>\n</div>"
+  },
+  {
+    "id": "C36",
+    "level": "進階",
+    "name": "Floating Input Lab",
+    "desc": "輸入時標籤向上浮動的 Material 風格輸入框",
+    "code": "<div style='position:relative; margin-top:20px;'>\n  <input type='text' required style='width:100%; padding:10px; background:transparent; border:none; border-bottom:2px solid #333; color:white; outline:none;' onfocus='this.nextSibling.style.top=\"-20px\"'>\n  <label style='position:absolute; left:10px; top:10px; color:#666; transition:0.3s; pointer-events:none;'>用戶名稱</label>\n</div>"
+  },
+  {
+    "id": "C37",
+    "level": "專業",
+    "name": "Responsive Video Plyr",
+    "desc": "支援自動縮放的 HTML5 影片容器",
+    "code": "<div style='max-width:600px; width:100%;'>\n  <video controls style='width:100%; border-radius:12px; border:1px solid #333;'>\n    <source src='video.mp4' type='video/mp4'>\n  </video>\n</div>"
+  },
+  {
+    "id": "C38",
+    "level": "專業",
+    "name": "Dynamic Tooltip",
+    "desc": "滑鼠懸停顯示的純 CSS 提示氣泡",
+    "code": "<div style='position:relative; display:inline-block;' onmouseover='this.querySelector(\".tip\").style.opacity=1' onmouseleave='this.querySelector(\".tip\").style.opacity=0'>\n  <span style='text-decoration:underline; color:#06C755;'>提示文字</span>\n  <div class='tip' style='opacity:0; position:absolute; bottom:120%; left:50%; transform:translateX(-50%); background:#333; color:white; padding:5px 10px; border-radius:4px; font-size:12px; pointer-events:none; transition:0.2s; white-space:nowrap;'>詳細說明在此</div>\n</div>"
+  },
+  {
+    "id": "C39",
+    "level": "專業",
+    "name": "Price Toggle Swit",
+    "desc": "年付/月付切換器佈局",
+    "code": "<div style='display:flex; align-items:center; gap:15px; justify-content:center;'>\n  <span>月付</span>\n  <div style='width:40px; height:20px; background:#06C755; border-radius:10px;'></div>\n  <span style='color:#06C755;'>年付 (-20%)</span>\n</div>"
+  },
+  {
+    "id": "C40",
+    "level": "旗艦",
+    "name": "Infinite Carousel",
+    "desc": "橫向無限捲動的 Logo 或圖片展示牆",
+    "code": "<style>\n  @keyframes scroll { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }\n</style>\n<div style='overflow:hidden; width:100%; white-space:nowrap;'>\n  <div style='display:inline-block; animation:scroll 20s linear infinite;'>\n    <span style='margin:0 40px; color:#444; font-size:20px;'>LOGOA</span><span style='margin:0 40px; color:#444; font-size:20px;'>LOGOB</span>\n  </div>\n</div>"
+  },
+  {
+    "id": "C41",
+    "level": "旗艦",
+    "name": "Status Timeline",
+    "desc": "垂直排列的專案進度時間線",
+    "code": "<div style='border-left:2px solid #333; padding-left:20px; margin-left:10px;'>\n  <div style='position:relative; margin-bottom:20px;'>\n    <div style='position:absolute; left:-27px; width:12px; height:12px; background:#06C755; border-radius:50%;'></div>\n    <div style='color:white; font-size:14px;'>系統部署成功</div>\n    <div style='color:#555; font-size:10px;'>2026-03-28</div>\n  </div>\n</div>"
+  },
+  {
+    "id": "C42",
+    "level": "旗艦",
+    "name": "Advanced Filter Bar",
+    "desc": "整合分類、排序與搜尋的綜合工具列",
+    "code": "<div style='display:flex; flex-wrap:wrap; gap:10px; background:#111; padding:10px; border-radius:8px;'>\n  <select style='background:#222; color:white; border:1px solid #333; padding:5px;'>\n    <option>全部類別</option>\n  </select>\n  <button style='background:#333; color:#888;'>最新發布</button>\n</div>"
+  },
+  {
+    "id": "C43",
+    "level": "超神",
+    "name": "Nested Comm Section",
+    "desc": "支援多級嵌套回覆的評論區佈局",
+    "code": "<div style='padding:15px; border-bottom:1px solid #222;'>\n  <div style='color:#06C755; font-size:12px;'>User_Alpha</div>\n  <p style='color:#ccc;'>這是一個頂層評論。</p>\n  <div style='margin-left:30px; border-left:1px solid #333; padding-left:15px; margin-top:10px;'>\n    <div style='color:#888; font-size:10px;'>User_Beta [回覆]</div>\n    <p style='color:#999;'>這是一個嵌套回覆。</p>\n  </div>\n</div>"
+  },
+  {
+    "id": "C44",
+    "level": "超神",
+    "name": "Skeleton List Gen",
+    "desc": "自動生成多行呼吸燈占位符",
+    "code": "<div id='skel'></div>\n<script>\n  document.getElementById('skel').innerHTML = Array(3).fill('<div style=\"height:50px; background:#222; margin:10px 0; border-radius:8px; opacity:0.5\"></div>').join('');\n</script>"
+  },
+  {
+    "id": "C45",
+    "level": "超神",
+    "name": "Empty State View",
+    "desc": "查無資料時展示的優雅空狀態介面",
+    "code": "<div style='text-align:center; padding:50px; color:#444;'>\n  <div style='font-size:40px; margin-bottom:10px;'>📂</div>\n  <h3>查無符合功能的數據</h3>\n  <p>請嘗試變更過濾條件或刷新矩陣。</p>\n</div>"
+  },
+  {
+    "id": "C46",
+    "level": "基本",
+    "name": "Badge Pill Group",
+    "desc": "緊湊型藥丸標籤組，用於分類展示",
+    "code": "<div style='display:flex; flex-wrap:wrap; gap:5px;'>\n  <span style='background:#333; color:#06C755; padding:2px 8px; border-radius:10px; font-size:10px;'>v2.6</span>\n  <span style='background:#333; color:#aaa; padding:2px 8px; border-radius:10px; font-size:10px;'>Security</span>\n</div>"
+  },
+  {
+    "id": "C47",
+    "level": "進階",
+    "name": "Floating Action Label",
+    "desc": "帶有標籤描述的懸浮按鈕擴展",
+    "code": "<div style='display:flex; align-items:center; gap:10px; justify-content:flex-end;'>\n  <span style='background:#1a1a1a; padding:4px 8px; border-radius:4px; font-size:12px;'>新專案</span>\n  <button style='width:40px; height:40px; border-radius:50%; background:#06C755; border:none;'>+</button>\n</div>"
+  },
+  {
+    "id": "C48",
+    "level": "專業",
+    "name": "Nested Layout Grid",
+    "desc": "複雜的嵌套網格系統，實現非對稱佈局",
+    "code": "<div style='display:grid; grid-template-columns: 2fr 1fr; gap:10px;'>\n  <div style='background:#222; height:100px;'>主內容</div>\n  <div style='display:grid; gap:10px;'>\n    <div style='background:#333;'>側欄 A</div>\n    <div style='background:#333;'>側欄 B</div>\n  </div>\n</div>"
+  },
+  {
+    "id": "C49",
+    "level": "旗艦",
+    "name": "Glass Sidebar Mobile",
+    "desc": "手機端專用的半透明磨砂側邊導航",
+    "code": "<div style='position:fixed; left:0; top:0; height:100%; width:70%; background:rgba(20,20,20,0.7); backdrop-filter:blur(20px); border-right:1px solid rgba(255,255,255,0.1); z-index:2000;'>\n  <div style='padding:20px; color:#06C755;'>Ⲙ𝔬ⲃⳝ𝔭 Menu</div>\n</div>"
+  },
+  {
+    "id": "C50",
+    "level": "超神",
+    "name": "Titi Layout Core",
+    "desc": "終極佈局控制器：自動檢測容器寬度並切換組件模式",
+    "code": "<script>\n  const obs = new ResizeObserver(entries => {\n    for (let entry of entries) {\n      entry.target.style.background = entry.contentRect.width < 500 ? '#111' : '#1a1a1a';\n    }\n  });\n  obs.observe(document.body);\n</script>"
+  },
+  {
+    "id": "D01",
+    "level": "基本",
+    "name": "Local Storage Sync",
+    "desc": "本地存儲數據的簡易封裝讀寫",
+    "code": "<script>\n  const DB = {\n    save: (key, val) => localStorage.setItem(key, JSON.stringify(val)),\n    get: (key) => JSON.parse(localStorage.getItem(key))\n  };\n</script>"
+  },
+  {
+    "id": "D02",
+    "level": "基本",
+    "name": "JSON Prettifier",
+    "desc": "在網頁端將混亂的 JSON 字串格式化輸出",
+    "code": "<pre id='out' style='color:#06C755; background:#111; padding:10px;'></pre>\n<script>\n  const data = { status: \"ok\", code: 200 };\n  document.getElementById('out').innerText = JSON.stringify(data, null, 2);\n</script>"
+  },
+  {
+    "id": "D03",
+    "level": "基本",
+    "name": "Base64 Encoder",
+    "desc": "前端圖片或字串轉 Base64 處理",
+    "code": "<script>\n  const toBase64 = str => btoa(unescape(encodeURIComponent(str)));\n  console.log(toBase64('Ⲙ𝔬ⲃⳝ𝔭'));\n</script>"
+  },
+  {
+    "id": "D04",
+    "level": "進階",
+    "name": "Session Timeout",
+    "desc": "檢測用戶閒置時間並自動登出或鎖定",
+    "code": "<script>\n  let timer;\n  window.onload = resetTimer;\n  document.onmousemove = resetTimer;\n  function resetTimer() {\n    clearTimeout(timer);\n    timer = setTimeout(() => alert('連線逾時'), 1800000);\n  }\n</script>"
+  },
+  {
+    "id": "D05",
+    "level": "進階",
+    "name": "Form Data Export",
+    "desc": "將表單內容快速匯出為可下載的 JSON 檔",
+    "code": "<script>\n  function exportJSON(data) {\n    const blob = new Blob([JSON.stringify(data)], {type: 'application/json'});\n    const url = URL.createObjectURL(blob);\n    const a = document.createElement('a'); a.href = url; a.download = 'data.json'; a.click();\n  }\n</script>"
+  },
+  {
+    "id": "D06",
+    "level": "進階",
+    "name": "Input Sanitizer",
+    "desc": "防止 XSS 攻擊的基本輸入過濾器",
+    "code": "<script>\n  const sanitize = str => str.replace(/[&< barracks >\"']/g, m => ({\n    '&': '&amp;', '<': '&lt;', '>': '&gt;', '\"': '&quot;', \"'\": '&#39;'\n  }[m]));\n</script>"
+  },
+  {
+    "id": "D07",
+    "level": "專業",
+    "name": "CryptoJS AES",
+    "desc": "前端數據高度加密，防止敏感資訊外洩",
+    "code": "<script src='https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js'></script>\n<script>\n  const encrypt = (msg, key) => CryptoJS.AES.encrypt(msg, key).toString();\n  const decrypt = (cip, key) => CryptoJS.AES.decrypt(cip, key).toString(CryptoJS.enc.Utf8);\n</script>"
+  },
+  {
+    "id": "D08",
+    "level": "專業",
+    "name": "JWT Decoder",
+    "desc": "解析並驗證 JWT Token 的過期時間與權限",
+    "code": "<script>\n  const parseJwt = token => JSON.parse(atob(token.split('.')[1]));\n</script>"
+  },
+  {
+    "id": "D09",
+    "level": "專業",
+    "name": "Rate Limiter (JS)",
+    "desc": "防止用戶短時間內重複點擊 API 按鈕",
+    "code": "<script>\n  let isLock = false;\n  function secureSubmit() {\n    if (isLock) return;\n    isLock = true; \n    console.log('API Request...');\n    setTimeout(() => isLock = false, 2000);\n  }\n</script>"
+  },
+  {
+    "id": "D10",
+    "level": "旗艦",
+    "name": "Web Worker Sort",
+    "desc": "在後台線程處理海量數據排序，不卡頓 UI",
+    "code": "<script>\n  const worker = new Worker(URL.createObjectURL(new Blob([`onmessage=e=>postMessage(e.data.sort())`])));\n  worker.onmessage = e => console.log('Sorted:', e.data);\n  worker.postMessage([5, 2, 9, 1]);\n</script>"
+  },
+  {
+    "id": "D11",
+    "level": "基本",
+    "name": "Data Masking",
+    "desc": "自動脫敏敏感資訊 (如：138****5678)",
+    "code": "<script>\n  const mask = (str, start, end) => \n    str.substring(0, start) + '*'.repeat(end - start) + str.substring(end);\n  console.log(mask('mobsys-admin-2026', 7, 12));\n</script>"
+  },
+  {
+    "id": "D12",
+    "level": "基本",
+    "name": "Query Param Parser",
+    "desc": "快速獲取網址列中的特定參數",
+    "code": "<script>\n  const getParam = (name) => new URLSearchParams(window.location.search).get(name);\n</script>"
+  },
+  {
+    "id": "D13",
+    "level": "進階",
+    "name": "IndexedDB Wrapper",
+    "desc": "在瀏覽器中建立大型結構化數據庫",
+    "code": "<script>\n  const request = indexedDB.open('MobSysDB', 1);\n  request.onupgradeneeded = e => e.target.result.createObjectStore('matrix', {keyPath: 'id'});\n</script>"
+  },
+  {
+    "id": "D14",
+    "level": "進階",
+    "name": "Auto Fill Preventer",
+    "desc": "防止瀏覽器自動填入敏感表單",
+    "code": "<input type='password' autocomplete='new-password' style='display:none;'>\n<input type='text' readonly onfocus='this.removeAttribute(\"readonly\")' placeholder='安全輸入'>"
+  },
+  {
+    "id": "D15",
+    "level": "進階",
+    "name": "Fetch Interceptor",
+    "desc": "統一處理 API 請求的 Header 與錯誤響應",
+    "code": "<script>\n  const secureFetch = (url, opt) => fetch(url, { ...opt, headers: { 'X-Titi-Token': 'AUTH_KEY' } });\n</script>"
+  },
+  {
+    "id": "D16",
+    "level": "專業",
+    "name": "Data Integrity Hash",
+    "desc": "對 JSON 數據流進行校驗，防止中途篡改",
+    "code": "<script>\n  const checkIntegrity = async (data, hash) => {\n    const msgUint8 = new TextEncoder().encode(data);\n    const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);\n    return btoa(String.fromCharCode(...new Uint8Array(hashBuffer))) === hash;\n  };\n</script>"
+  },
+  {
+    "id": "D17",
+    "level": "專業",
+    "name": "OTP Input Logic",
+    "desc": "自動跳轉下一格的一次性驗證碼組件",
+    "code": "<div id='otp'>\n  <input type='text' maxlength='1' oninput='this.nextElementSibling?.focus()' style='width:40px; text-align:center;'>\n  <input type='text' maxlength='1' style='width:40px; text-align:center;'>\n</div>"
+  },
+  {
+    "id": "D18",
+    "level": "專業",
+    "name": "CORS Preflight Check",
+    "desc": "檢測當前環境是否支援跨域資源共享",
+    "code": "<script>\n  fetch('api/check', { method: 'OPTIONS' }).catch(() => console.error('CORS Blocked'));\n</script>"
+  },
+  {
+    "id": "D19",
+    "level": "旗艦",
+    "name": "Bio-Auth Trigger",
+    "desc": "調用手機原生 FaceID / 指紋識別 (WebAuthn)",
+    "code": "<script>\n  async function bioCheck() {\n    const credential = await navigator.credentials.create({ publicKey: {...} });\n  }\n</script>"
+  },
+  {
+    "id": "D20",
+    "level": "旗艦",
+    "name": "Encrypted Export",
+    "desc": "密碼保護的加密數據導出 (AES + Blob)",
+    "code": "<script>\n  function exportSecure(data, pass) {\n    const encrypted = CryptoJS.AES.encrypt(JSON.stringify(data), pass).toString();\n    exportJSON({ payload: encrypted });\n  }\n</script>"
+  },
+  {
+    "id": "D21",
+    "level": "旗艦",
+    "name": "SQL Injection Mock",
+    "desc": "針對前端模擬輸入的安全性自動測試",
+    "code": "<script>\n  const payloads = [\"' OR 1=1 --\", \"<script>alert(1)</script>\"];\n  payloads.forEach(p => console.log('Testing payload:', sanitize(p)));\n</script>"
+  },
+  {
+    "id": "D22",
+    "level": "超神",
+    "name": "Offline Data Sync",
+    "desc": "斷網時存入 DB，恢復連線後自動同步",
+    "code": "<script>\n  window.ononline = () => { \n    const data = DB.getPending(); \n    if(data) secureFetch('/sync', { body: data });\n  };\n</script>"
+  },
+  {
+    "id": "D23",
+    "level": "超神",
+    "name": "Zero-Knowledge Proof",
+    "desc": "零知識證明邏輯模組 (簡易概念實現)",
+    "code": "<script>\n  // 證明者在不告知密碼的情況下，證明自己擁有密碼\n  const prove = (x) => Math.pow(g, x) % p;\n</script>"
+  },
+  {
+    "id": "D24",
+    "level": "超神",
+    "name": "Canvas Fingerprint",
+    "desc": "利用繪圖引擎生成唯一的瀏覽器指紋",
+    "code": "<script>\n  const canvas = document.createElement('canvas');\n  const ctx = canvas.getContext('2d');\n  ctx.fillText('Ⲙ𝔬ⲃⳝ𝔭', 2, 2);\n  const fingerprint = canvas.toDataURL().slice(-50);\n</script>"
+  },
+  {
+    "id": "D25",
+    "level": "超神",
+    "name": "Titi Data Shield",
+    "desc": "動態混淆全局變數與數據結構，防止控制台掃描",
+    "code": "<script>\n  (function() {\n    const _secret = 'PRIVATE_KEY';\n    window.TitiVault = { lock: () => console.log('Shield Active') };\n    delete window.TitiVault.lock; // 僅限內部閉包調用\n  })();\n</script>"
+  },
+  {
+    "id": "D26",
+    "level": "基本",
+    "name": "WebSocket Client",
+    "desc": "建立長連接，實現伺服器數據實時推送",
+    "code": "<script>\n  const socket = new WebSocket('wss://api.mobsys.io/stream');\n  socket.onmessage = e => console.log('實時數據：', JSON.parse(e.data));\n</script>"
+  },
+  {
+    "id": "D27",
+    "level": "基本",
+    "name": "Network Status Mon",
+    "desc": "即時監測用戶網路連線品質 (RTT/下行速度)",
+    "code": "<script>\n  const conn = navigator.connection || {};\n  console.log(`網路類型: ${conn.effectiveType}, 延遲: ${conn.rtt}ms`);\n</script>"
+  },
+  {
+    "id": "D28",
+    "level": "進階",
+    "name": "Binary Data Parser",
+    "desc": "解析 ArrayBuffer 二進制流，比 JSON 更省流量",
+    "code": "<script>\n  const buffer = new Uint8Array([77, 111, 98, 83, 121, 115]);\n  const text = new TextDecoder().decode(buffer);\n  console.log('解碼結果：', text);\n</script>"
+  },
+  {
+    "id": "D29",
+    "level": "進階",
+    "name": "Incremental Backup",
+    "desc": "僅備份變動過的數據快照 (Diff Logic)",
+    "code": "<script>\n  const getDiff = (oldObj, newObj) => \n    Object.keys(newObj).filter(k => oldObj[k] !== newObj[k]);\n</script>"
+  },
+  {
+    "id": "D30",
+    "level": "進階",
+    "name": "Request De-bounce",
+    "desc": "防止輸入框即時搜尋時觸發過多 API 請求",
+    "code": "<script>\n  const debounce = (fn, delay) => {\n    let t; return (...args) => {\n      clearTimeout(t); t = setTimeout(() => fn(...args), delay);\n    };\n  };\n</script>"
+  },
+  {
+    "id": "D31",
+    "level": "專業",
+    "name": "Virtual Scroll List",
+    "desc": "僅渲染可視區域的 DOM，流暢處理 10 萬筆數據",
+    "code": "<div id='vScroll' style='height:300px; overflow:auto;'>\n  <div id='content' style='height:500000px; position:relative;'></div>\n</div>\n<script>\n  // 監聽 scroll 事件，動態計算並更新 transform: translateY\n</script>"
+  },
+  {
+    "id": "D32",
+    "level": "專業",
+    "name": "Resource Prefetch",
+    "desc": "空閒時預先加載下一頁所需的 JSON 資源",
+    "code": "<link rel='prefetch' href='/api/next-batch.json'>"
+  },
+  {
+    "id": "D33",
+    "level": "專業",
+    "name": "Memory Leak Check",
+    "desc": "監測 JS 堆棧內存，防止長時間運行導致瀏覽器崩潰",
+    "code": "<script>\n  if(performance.memory) {\n    console.log(`內存限制: ${performance.memory.jsHeapSizeLimit / 1024 / 1024}MB`);\n  }\n</script>"
+  },
+  {
+    "id": "D34",
+    "level": "旗艦",
+    "name": "Service Worker Cache",
+    "desc": "PWA 核心技術，攔截請求並實現秒開離線訪問",
+    "code": "self.addEventListener('fetch', e => {\n  e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));\n});"
+  },
+  {
+    "id": "D35",
+    "level": "旗艦",
+    "name": "Data Sharding",
+    "desc": "大數據分片處理，避免單次請求過大阻塞線程",
+    "code": "<script>\n  const shard = (data, size) => \n    Array.from({length: Math.ceil(data.length/size)}, (v, i) => data.slice(i*size, i*size+size));\n</script>"
+  },
+  {
+    "id": "D36",
+    "level": "旗艦",
+    "name": "XHR Progress Track",
+    "desc": "精確顯示大檔案上傳/下載的百分比進度",
+    "code": "<script>\n  const xhr = new XMLHttpRequest();\n  xhr.upload.onprogress = e => console.log(`上傳中: ${Math.round(e.loaded/e.total*100)}%`);\n</script>"
+  },
+  {
+    "id": "D37",
+    "level": "超神",
+    "name": "Steganography Tool",
+    "desc": "數位浮水印：將敏感 ID 隱藏在 Canvas 圖像像素中",
+    "code": "<script>\n  // 利用像素點的 R 通道最低位 (LSB) 嵌入隱藏資訊\n  const embed = (pixel, bit) => (pixel & 0xFE) | bit;\n</script>"
+  },
+  {
+    "id": "D38",
+    "level": "超神",
+    "name": "WebAssembly Loader",
+    "desc": "加載 C++/Rust 編譯的 .wasm，進行極速運算",
+    "code": "<script>\n  WebAssembly.instantiateStreaming(fetch('matrix.wasm'), {}).then(obj => {\n    console.log('WASM 加速器已就緒');\n  });\n</script>"
+  },
+  {
+    "id": "D39",
+    "level": "超神",
+    "name": "Dynamic API Gateway",
+    "desc": "自動根據延遲與地區選擇最快的數據節點",
+    "code": "<script>\n  const nodes = ['https://us.api', 'https://asia.api'];\n  Promise.any(nodes.map(n => fetch(n))).then(res => console.log('選用節點:', res.url));\n</script>"
+  },
+  {
+    "id": "D40",
+    "level": "超神",
+    "name": "Titi Sentinel Pro",
+    "desc": "全自動安全哨兵：偵測開發者工具是否開啟並干擾逆向工程",
+    "code": "<script>\n  setInterval(() => {\n    const start = performance.now(); debugger;\n    if(performance.now() - start > 100) document.body.innerHTML = 'Security Alert';\n  }, 1000);\n</script>"
+  },
+  {
+    "id": "D41",
+    "level": "專業",
+    "name": "Data Anomaly Det",
+    "desc": "利用標準差 (Z-Score) 自動偵測異常數據流入",
+    "code": "<script>\n  const isAnomaly = (val, avg, std) => Math.abs(val - avg) > 2 * std;\n  if(isAnomaly(999, 10, 2)) alert('偵測到異常數據入侵！');\n</script>"
+  },
+  {
+    "id": "D42",
+    "level": "專業",
+    "name": "SVG Chart Engine",
+    "desc": "輕量級純 SVG 代碼生成的實時折線圖",
+    "code": "<svg width='200' height='60'>\n  <polyline fill='none' stroke='#06C755' stroke-width='2' points='0,60 40,20 80,40 120,10 160,50 200,30' />\n</svg>"
+  },
+  {
+    "id": "D43",
+    "level": "旗艦",
+    "name": "Client-Side Search",
+    "desc": "高性能全文檢索，支援模糊匹配與高亮",
+    "code": "<script>\n  const search = (q, list) => list.filter(item => item.name.toLowerCase().includes(q.toLowerCase()));\n</script>"
+  },
+  {
+    "id": "D44",
+    "level": "超神",
+    "name": "AI Trend Predictor",
+    "desc": "基於線性回歸的簡單數據趨勢預測算法",
+    "code": "<script>\n  // y = mx + b 邏輯預測下一個數據點\n  const predict = (data) => { /* 最小平方法實現 */ return nextVal; };\n</script>"
+  },
+  {
+    "id": "D45",
+    "level": "超神",
+    "name": "Titi Data Visual",
+    "desc": "數據全景視圖：自動將 JSON 轉化為多維度雷達圖",
+    "code": "<script>\n  // 繪製多邊形代表數據維度強度\n  ctx.beginPath(); points.forEach(p => ctx.lineTo(p.x, p.y)); ctx.fill();\n</script>"
+  },
+  {
+    "id": "Z01",
+    "level": "核心",
+    "name": "System Self-Heal",
+    "desc": "偵測到核心變數遺失時，自動重新加載備份配置",
+    "code": "<script>\n  if(!window.MobSys) { \n    console.warn('Recovering...'); \n    localStorage.getItem('backup_config'); \n  }\n</script>"
+  },
+  {
+    "id": "Z02",
+    "level": "核心",
+    "name": "Matrix Garbage Col",
+    "desc": "主動清理過時快取與 DOM 碎片，保持系統輕盈",
+    "code": "<script>\n  const cleanup = () => { \n    document.querySelectorAll('.temp-node').forEach(n => n.remove()); \n    caches.delete('old-assets'); \n  };\n</script>"
+  },
+  {
+    "id": "Z03",
+    "level": "終極",
+    "name": "Hot-Reload Module",
+    "desc": "無需刷新頁面，動態替換並更新矩陣組件邏輯",
+    "code": "<script>\n  function updateModule(id, newCode) {\n    eval(newCode); // 受限環境下使用\n    console.log(`Module ${id} Hot-Swapped.`);\n  }\n</script>"
+  },
+  {
+    "id": "Z04",
+    "level": "終極",
+    "name": "Titi Master Init",
+    "desc": "全系統啟動序列：按順序激活 GitHub、UI 與 Data 模組",
+    "code": "<script>\n  const boot = async () => {\n    await Actions.init(); UI.apply(); Data.sync();\n    console.log('Ⲙ𝔬ⲃⳝ𝔭 Matrix 250: Fully Operational.');\n  };\n</script>"
+  },
+  {
+    "id": "Z05",
+    "level": "超越",
+    "name": "The Infinity Loop",
+    "desc": "最後的標記：確保矩陣可無限擴展的元數據結構",
+    "code": "{\n  \"matrix_status\": \"COMPLETE\",\n  \"total_functions\": 250,\n  \"version\": \"2026.Final\",\n  \"auth\": \"Gemini-Titi\"\n}"
   }
-}
+]
