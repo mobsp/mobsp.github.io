@@ -7,22 +7,26 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <style>
-    :root { --line-green: #06C755; --line-black: #111111; --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom); }
+    :root { 
+      --line-green: #06C755; 
+      --line-black: #111111; 
+      --safe-top: env(safe-area-inset-top); 
+      --safe-bottom: env(safe-area-inset-bottom); 
+    }
     body { background: var(--line-black); color: white; font-family: -apple-system, sans-serif; overflow: hidden; margin: 0; }
     
-    /* 佈局容器 */
     #app { display: flex; flex-direction: column; height: 100vh; }
-    .view-container { flex: 1; overflow-y: auto; padding-bottom: calc(var(--safe-bottom) + 80px); }
+    .view-container { flex: 1; overflow-y: auto; padding-bottom: calc(var(--safe-bottom) + 80px); -webkit-overflow-scrolling: touch; }
     
-    /* 搜尋列高仿 LINE */
-    .search-bar { background: #1a1a1a; border-radius: 12px; padding: 8px 15px; margin: 10px 20px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+    /* 搜尋列 */
+    .search-bar { background: #1a1a1a; border-radius: 12px; padding: 10px 15px; margin: 10px 20px; display: flex; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
     .search-input { background: transparent; border: none; color: white; outline: none; flex: 1; font-size: 14px; }
 
-    /* 卡片樣式優化 */
+    /* 矩陣卡片 */
     .matrix-card { 
       background: #1e1e1e; border-radius: 18px; padding: 16px; 
       border: 1px solid rgba(255,255,255,0.03); transition: 0.2s;
-      display: flex; flex-direction: column; gap: 8px;
+      display: flex; flex-direction: column; gap: 8px; cursor: pointer;
     }
     .matrix-card:active { transform: scale(0.95); background: #252525; }
     .id-tag { font-family: monospace; font-size: 10px; color: var(--line-green); font-weight: 900; background: rgba(6,199,85,0.1); padding: 2px 6px; border-radius: 4px; width: fit-content; }
@@ -32,16 +36,15 @@
     .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; color: #666; font-size: 10px; }
     .tab-item.active { color: var(--line-green); }
 
-    /* 隱藏捲動條 */
     .no-scrollbar::-webkit-scrollbar { display: none; }
   </style>
 </head>
 <body>
 
 <div id="app">
-  <header class="pt-[var(--safe-top)] px-5 py-4 flex justify-between items-center">
+  <header class="pt-[var(--safe-top)] px-5 py-4 flex justify-between items-center bg-black/80 sticky top-0 z-50">
     <h1 class="text-xl font-black tracking-tighter">Ⲙ𝔬ⲃⳝ𝔭 <span class="text-[#06C755]">MATRIX</span></h1>
-    <div class="text-[10px] text-gray-600 font-mono">v1.0.5-release</div>
+    <div class="text-[10px] text-gray-600 font-mono italic">LAB_ENV_V2.5</div>
   </header>
 
   <div v-if="activeTab === 'home' || activeTab === 'cats'" class="search-bar">
@@ -53,7 +56,7 @@
     <div v-if="activeTab === 'home'" class="p-5 grid grid-cols-2 gap-4 animate-in fade-in duration-300">
       <div v-for="item in filteredAllItems" :key="item.id" @click="openItem(item)" class="matrix-card">
         <span class="id-tag">{{ item.id }}</span>
-        <h3 class="text-sm font-bold leading-tight text-gray-200">{{ item.name }}</h3>
+        <h3 class="text-sm font-bold text-gray-200 line-clamp-1">{{ item.name }}</h3>
         <p class="text-[10px] text-gray-500 line-clamp-1">{{ item.desc }}</p>
       </div>
     </div>
@@ -61,7 +64,7 @@
     <div v-if="activeTab === 'cats'" class="animate-in slide-in-from-right duration-300">
       <div v-for="(group, key) in categories" :key="key">
         <div class="px-5 py-3 bg-white/5 text-[10px] font-black text-gray-500 tracking-widest uppercase">{{ group.title }}</div>
-        <div v-for="item in group.items" @click="openItem(item)" class="px-5 py-4 border-b border-white/5 active:bg-white/5 flex justify-between items-center">
+        <div v-for="item in filterItems(group.items)" @click="openItem(item)" class="px-5 py-4 border-b border-white/5 active:bg-white/5 flex justify-between items-center">
           <div>
             <span class="text-[10px] font-mono text-green-500 mr-2">{{ item.id }}</span>
             <span class="text-sm font-medium">{{ item.name }}</span>
@@ -71,24 +74,23 @@
       </div>
     </div>
 
-    <div v-if="activeTab === 'lab'" class="h-full flex flex-col">
-       <div class="flex-1 p-5"><textarea v-model="labCode" class="w-full h-full bg-transparent text-green-500 font-mono text-xs outline-none border-none resize-none"></textarea></div>
-       <div class="h-px bg-white/10"></div>
-       <div class="flex-1 p-5 overflow-auto" v-html="labCode"></div>
+    <div v-if="activeTab === 'lab'" class="h-full flex flex-col p-4">
+       <textarea v-model="labCode" class="flex-1 bg-zinc-900 rounded-t-2xl p-4 text-green-500 font-mono text-xs outline-none border-none resize-none" spellcheck="false"></textarea>
+       <div class="h-1/2 bg-white rounded-b-2xl p-4 overflow-auto text-black" v-html="labCode"></div>
     </div>
   </main>
 
   <transition enter-active-class="transform transition duration-300" enter-from-class="translate-y-full" leave-to-class="translate-y-full">
     <div v-if="selectedItem" class="fixed inset-0 z-[500] bg-black flex flex-col pt-[var(--safe-top)]">
       <div class="p-4 flex justify-between items-center border-b border-white/10">
-        <button @click="selectedItem = null" class="text-2xl px-2">✕</button>
-        <span class="text-xs font-bold">{{ selectedItem.id }} 詳情</span>
-        <button @click="copy(selectedItem.code)" class="text-green-500 font-bold text-xs">複製</button>
+        <button @click="selectedItem = null" class="text-2xl px-4">✕</button>
+        <span class="text-xs font-bold">{{ selectedItem.id }} MODULE</span>
+        <button @click="copy(selectedItem.code)" class="text-green-500 font-bold text-xs px-4">複製</button>
       </div>
       <div class="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar">
-        <div class="bg-zinc-900 rounded-3xl p-8 min-h-[180px] flex items-center justify-center border border-white/5" v-html="selectedItem.code || '<i>無預覽代碼</i>'"></div>
+        <div class="bg-zinc-900 rounded-3xl p-8 min-h-[180px] flex items-center justify-center border border-white/5" v-html="selectedItem.code || '<i>無預覽</i>'"></div>
         <div>
-            <h4 class="text-[10px] text-gray-500 font-bold mb-2 uppercase tracking-widest">Description</h4>
+            <h4 class="text-[10px] text-gray-500 font-bold mb-2 uppercase tracking-widest">組件描述</h4>
             <p class="text-gray-200 text-sm leading-relaxed">{{ selectedItem.desc }}</p>
         </div>
         <div v-if="selectedItem.code">
@@ -100,9 +102,9 @@
   </transition>
 
   <nav class="tab-bar">
-    <div v-for="t in ['home','cats','lab','settings']" @click="activeTab = t" :class="['tab-item', activeTab === t ? 'active' : '']">
-      <span class="text-xl">{{ {home:'🏠', cats:'🗂️', lab:'🧪', settings:'⚙️'}[t] }}</span>
-      <span class="capitalize">{{ {home:'矩陣', cats:'分類', lab:'實驗', settings:'設定'}[t] }}</span>
+    <div v-for="(icon, t) in {home:'🏠', cats:'🗂️', lab:'🧪'}" @click="activeTab = t" :class="['tab-item', activeTab === t ? 'active' : '']">
+      <span class="text-xl">{{ icon }}</span>
+      <span class="capitalize">{{ {home:'矩陣', cats:'分類', lab:'實驗'}[t] }}</span>
     </div>
   </nav>
 </div>
@@ -115,27 +117,37 @@ createApp({
     const categories = ref({});
     const selectedItem = ref(null);
     const searchQuery = ref('');
-    const labCode = ref('<h1>Ⲙ𝔬ⲃⳝ𝔭 Preview</h1>');
+    const labCode = ref('<h2 style="color:#06C755;">Ⲙ𝔬ⲃⳝ𝔭 Lab Running</h2>');
 
     onMounted(async () => {
       try {
-        const res = await fetch('../data/config.json');
+        // 重要修正：從 /tol/lab/ 跳出兩層回到根目錄，再進入 /data/config.json
+        const res = await fetch('../../data/config.json'); 
+        if (!res.ok) throw new Error("檔案載入失敗");
         const data = await res.json();
-        categories.value = data.site_structure;
-      } catch (e) { console.error("JSON Load Error"); }
+        categories.value = data.site_structure || data; 
+      } catch (e) { 
+        console.error("Path Error:", e);
+        labCode.value = `<div style="color:red; padding:20px;">找不到資料庫！<br>路徑應為: ../../data/config.json</div>`;
+      }
     });
 
     const allItems = computed(() => {
       let list = [];
-      Object.values(categories.value).forEach(cat => list = list.concat(cat.items));
-      return list;
+      Object.values(categories.value).forEach(cat => { if (cat.items) list = list.concat(cat.items); });
+      return list.sort((a, b) => a.id.localeCompare(b.id, undefined, {numeric: true}));
     });
 
     const filteredAllItems = computed(() => {
-      if (!searchQuery.value) return allItems.value;
       const q = searchQuery.value.toLowerCase();
       return allItems.value.filter(i => i.name.toLowerCase().includes(q) || i.id.toLowerCase().includes(q));
     });
+
+    const filterItems = (items) => {
+      if (!items) return [];
+      const q = searchQuery.value.toLowerCase();
+      return items.filter(i => i.name.toLowerCase().includes(q) || i.id.toLowerCase().includes(q));
+    };
 
     const openItem = (item) => { 
         selectedItem.value = item;
@@ -143,12 +155,11 @@ createApp({
     };
 
     const copy = (txt) => {
-        if(!txt) return alert('無代碼可複製');
         navigator.clipboard.writeText(txt);
-        alert('已複製到剪貼簿');
+        alert('已複製');
     };
 
-    return { activeTab, categories, selectedItem, searchQuery, allItems, filteredAllItems, labCode, openItem, copy };
+    return { activeTab, categories, selectedItem, searchQuery, allItems, filteredAllItems, filterItems, labCode, openItem, copy };
   }
 }).mount('#app');
 </script>
