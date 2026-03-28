@@ -1,5 +1,4 @@
 # CI/CD: AUTOMATED REPOSITORY INDEXING SERVICE
-# DESCRIPTION: 監控儲存庫異動並觸發全量掃描腳本。
 name: Mobispace-Asset-Sync-CI
 
 on:
@@ -11,14 +10,14 @@ jobs:
   inventory-sync:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 賦予 GitHub Action 推送代碼之權限
+      contents: write
 
     steps:
       - name: Checkout Source Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Initialize Python Environment
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
