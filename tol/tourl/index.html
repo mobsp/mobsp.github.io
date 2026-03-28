@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mobispace | 資源導航與路徑鏡像</title>
+    <title>Mobispace | 資源鏡像清單</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
@@ -22,7 +22,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
 
         body {
             background: var(--bg-gradient);
@@ -33,68 +33,67 @@
             padding: 20px;
         }
 
-        .container { max-width: 1200px; margin: 0 auto; }
-
-        .header { text-align: center; margin-bottom: 30px; }
+        .header { text-align: center; margin-bottom: 40px; padding-top: 20px; }
         .header h1 { 
-            font-size: 28px; 
+            font-size: 26px; 
+            letter-spacing: 3px;
             background: linear-gradient(to right, #fff, var(--accent-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
         }
 
-        .table-wrapper {
+        .table-container {
+            max-width: 1200px;
+            margin: 0 auto 100px;
             background: var(--card-bg);
-            backdrop-filter: blur(20px);
-            border-radius: 12px;
+            backdrop-filter: blur(15px);
+            border-radius: 16px;
             border: 1px solid var(--border-color);
             box-shadow: var(--glow-effect);
-            overflow-x: auto;
+            overflow: hidden;
         }
 
-        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        table { width: 100%; border-collapse: collapse; }
         th { 
             background: rgba(255,255,255,0.05); 
             color: var(--accent-color); 
             text-align: left; 
-            padding: 15px; 
-            font-size: 12px;
+            padding: 18px; 
+            font-size: 11px; 
             text-transform: uppercase;
+            border-bottom: 1px solid var(--border-color);
         }
-        td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; }
-        
-        .type-tag { font-weight: bold; color: var(--accent-color); }
-        .link-url a { color: var(--text-secondary); text-decoration: none; font-size: 12px; transition: 0.3s; }
-        .link-url a:hover { color: var(--accent-color); }
-        code { background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #00ff88; }
+        td { padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 13px; }
 
-        @media (max-width: 768px) {
-            th:nth-child(4), td:nth-child(4) { display: none; }
+        .type-tag { font-weight: 800; color: var(--accent-color); width: 80px; }
+        .link-url a { color: var(--text-secondary); text-decoration: none; transition: 0.2s; }
+        .link-url a:hover { color: var(--accent-color); text-shadow: var(--glow-effect); }
+        code { color: #00ff88; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+
+        @media (max-width: 850px) {
+            .repo-path { display: none; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>RESOURCE MIRROR SYSTEM</h1>
-            <p style="color: var(--text-secondary); font-size: 12px; margin-top: 10px;">Root: mobsp.github.io/tol/tourl/</p>
-        </div>
+    <div class="header">
+        <h1>RESOURCE MIRROR</h1>
+        <div style="font-size: 10px; color: var(--text-secondary); margin-top: 5px;">Automatic Cloud Indexing System</div>
+    </div>
 
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Format</th>
-                        <th>Identifier</th>
-                        <th>Public Endpoint</th>
-                        <th>Repo Path</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    </tbody>
-            </table>
-        </div>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Format</th>
+                    <th>Identifier</th>
+                    <th>Public Endpoint</th>
+                    <th class="repo-path">Internal Path</th>
+                </tr>
+            </thead>
+            <tbody>
+</tbody>
+        </table>
     </div>
 </body>
 </html>
