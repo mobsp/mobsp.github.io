@@ -53,7 +53,7 @@
     "level": "專業",
     "name": "禁長按系統選單",
     "desc": "防止長按按鈕跳出複製/儲存圖片選單",
-    "code": "<style>\n  .no-select {\n    -webkit-touch-callout: none;\n    -webkit-user-select: none;\n    user-select: none;\n  }\n</style>\n<img src=\"logo.webp\" class=\"no-select\" alt=\"不可長按儲存\">"
+    "code": "<style>\n  .no-select {\n    -webkit-touch-callout: none;\n    -webkit-user-select: none;\n    user-select: none;\n  }\n</style>\n<img src=\"logo.png\" class=\"no-select\" alt=\"不可長按儲存\">"
   },
   {
     "id": "M09",
@@ -116,7 +116,7 @@
     "level": "基本",
     "name": "Splash Screen",
     "desc": "自訂 PWA 啟動時的品牌 Logo 畫面 (iOS)",
-    "code": "\n<link rel=\"apple-touch-startup-image\" href=\"launch-640x1136.webp\" media=\"(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)\">\n<link rel=\"apple-touch-startup-image\" href=\"launch-750x1334.webp\" media=\"(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)\">"
+    "code": "\n<link rel=\"apple-touch-startup-image\" href=\"launch-640x1136.png\" media=\"(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)\">\n<link rel=\"apple-touch-startup-image\" href=\"launch-750x1334.png\" media=\"(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)\">"
   },
   {
     "id": "M18",
@@ -172,7 +172,7 @@
     "level": "旗艦",
     "name": "Adaptive Icon Set",
     "desc": "提供不同尺寸的桌面圖示以適配各機型",
-    "code": "\n<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/apple-touch-icon.webp\">\n\n<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.webp\">"
+    "code": "\n<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/apple-touch-icon.png\">\n\n<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon-32x32.png\">"
   },
   {
     "id": "M26",
@@ -326,7 +326,7 @@
     "level": "進階",
     "name": "Retina Display Fix",
     "desc": "針對高像素密度螢幕顯示 2x/3x 圖片",
-    "code": "<img src=\"icon.webp\" \n     srcset=\"icon@2x.webp 2x, icon@3x.webp 3x\" \n     style=\"width:100px; height:100px;\" \n     alt=\"高畫質圖示\">"
+    "code": "<img src=\"icon.png\" \n     srcset=\"icon@2x.png 2x, icon@3x.png 3x\" \n     style=\"width:100px; height:100px;\" \n     alt=\"高畫質圖示\">"
   },
   {
     "id": "M48",
@@ -802,7 +802,7 @@
     "level": "旗艦",
     "name": "Lazy Load Blur",
     "desc": "圖片載入前顯示模糊預覽的小圖",
-    "code": "<style>\n  .blur-img { filter: blur(10px); transition: filter 0.5s; width: 100%; }\n  .blur-img.loaded { filter: blur(0); }\n</style>\n<img class=\"blur-img\" src=\"low-res.webp\" data-src=\"high-res.webp\" onload=\"this.classList.add('loaded')\">"
+    "code": "<style>\n  .blur-img { filter: blur(10px); transition: filter 0.5s; width: 100%; }\n  .blur-img.loaded { filter: blur(0); }\n</style>\n<img class=\"blur-img\" src=\"low-res.jpg\" data-src=\"high-res.jpg\" onload=\"this.classList.add('loaded')\">"
   },
   {
     "id": "U16",
@@ -921,7 +921,7 @@
     "level": "超神",
     "name": "Image Color Extraction",
     "desc": "自動分析圖片主色並設為背景漸層",
-    "code": "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/2.1.0/Vibrant.min.js\"></script>\n<script>\n  const img = new Image(); img.src = 'pic.webp';\n  img.onload = () => {\n    const v = new Vibrant(img); const swatches = v.swatches();\n    document.body.style.background = `linear-gradient(180deg, ${swatches.Vibrant.getHex()}, #000)`;\n  }\n</script>"
+    "code": "<script src=\"https://cdnjs.cloudflare.com/ajax/libs/vibrant.js/2.1.0/Vibrant.min.js\"></script>\n<script>\n  const img = new Image(); img.src = 'pic.jpg';\n  img.onload = () => {\n    const v = new Vibrant(img); const swatches = v.swatches();\n    document.body.style.background = `linear-gradient(180deg, ${swatches.Vibrant.getHex()}, #000)`;\n  }\n</script>"
   },
   {
     "id": "U33",
