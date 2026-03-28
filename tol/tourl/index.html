@@ -3,97 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Mobispace | 資源鏡像清單</title>
+    <title>Mobispace | 終極旗艦版鏡像系統</title>
+    
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <style>
+        /* =========================================
+           【CSS 變數系統層】
+           ========================================= */
         :root {
+            /* --- 預設：五彩斑斕黑 (Multicolor Black) --- */
             --bg-gradient: linear-gradient(135deg, #000 20%, #1a0b2e 50%, #000 80%);
-            --accent-color: #00f2fe;
+            --bg-animation: rainbow-flow 8s ease infinite;
             --card-bg: rgba(20, 20, 20, 0.8);
-            --border-color: rgba(255, 255, 255, 0.1);
+            --header-bg: rgba(0, 0, 0, 0.9);
             --text-primary: #ffffff;
-            --text-secondary: #8e8e93;
-            --glow-effect: 0 0 15px rgba(0, 242, 254, 0.4);
+            --text-secondary: #aaaaaa;
+            --accent-color: #ff00ff;
+            --border-color: #333333;
+            --glow-effect: 0 0 15px rgba(255, 0, 255, 0.6);
         }
 
+        /* 舒適版光模式 */
+        [data-theme="light"] {
+            --bg-gradient: none; --bg-animation: none; --bg-color: #f2f2f2;
+            --card-bg: #ffffff; --header-bg: #ffffff; --text-primary: #000000;
+            --text-secondary: #888888; --accent-color: #06c755; --border-color: #eeeeee;
+            --glow-effect: none;
+        }
+
+        /* 沈浸式暗模式 */
+        [data-theme="immersive-dark"] {
+            --bg-gradient: none; --bg-animation: none; --bg-color: #000000;
+            --card-bg: #121212; --header-bg: #000000; --text-primary: #e0e0e0;
+            --text-secondary: #555555; --accent-color: #ffffff; --border-color: #222222;
+            --glow-effect: none;
+        }
+
+        /* 常態版 (LINE Classic) */
+        [data-theme="normal"] {
+            --bg-gradient: none; --bg-animation: none; --bg-color: #edeff2;
+            --card-bg: #ffffff; --header-bg: #ffffff; --text-primary: #111111;
+            --text-secondary: #a0a0a0; --accent-color: #06c755; --border-color: #dbdbdb;
+            --glow-effect: none;
+        }
+
+        /* 動畫定義 */
         @keyframes rainbow-flow {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body {
-            background: var(--bg-gradient);
+            background: var(--bg-color, #000);
+            background-image: var(--bg-gradient);
             background-size: 400% 400%;
-            animation: rainbow-flow 10s ease infinite;
+            animation: var(--bg-animation);
             color: var(--text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             min-height: 100vh;
-            padding: 20px;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
         }
 
-        .header { text-align: center; margin-bottom: 40px; padding-top: 20px; }
-        .header h1 { 
-            font-size: 26px; 
-            letter-spacing: 3px;
-            background: linear-gradient(to right, #fff, var(--accent-color));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        /* 頁首 */
+        header {
+            position: fixed; top: 0; width: 100%; height: 60px;
+            background: var(--header-bg); border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; z-index: 1000; backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
-        .table-container {
-            max-width: 1200px;
-            margin: 0 auto 100px;
-            background: var(--card-bg);
-            backdrop-filter: blur(15px);
-            border-radius: 16px;
+        .header-title { font-size: 20px; font-weight: 800; letter-spacing: 1px; }
+        .header-icons { display: flex; gap: 20px; align-items: center; }
+        .material-icons { cursor: pointer; color: var(--text-primary); font-size: 26px; transition: color 0.3s ease; }
+
+        /* 設定選單面板 */
+        #settings-panel {
+            position: fixed; top: 70px; right: 10px; width: 280px;
+            background: var(--card-bg); border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            display: none; flex-direction: column; padding: 15px; z-index: 2000;
             border: 1px solid var(--border-color);
-            box-shadow: var(--glow-effect);
-            overflow: hidden;
+            backdrop-filter: blur(15px);
         }
+        #settings-panel.show { display: flex; animation: slideIn 0.3s ease-out; }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-        table { width: 100%; border-collapse: collapse; }
-        th { 
-            background: rgba(255,255,255,0.05); 
-            color: var(--accent-color); 
-            text-align: left; 
-            padding: 18px; 
-            font-size: 11px; 
-            text-transform: uppercase;
-            border-bottom: 1px solid var(--border-color);
+        .setting-label { font-size: 12px; font-weight: bold; color: var(--text-secondary); margin-bottom: 8px; display: block; }
+        .mode-btn { 
+            width: 100%; padding: 10px; margin-bottom: 5px; border: none; border-radius: 8px;
+            text-align: left; cursor: pointer; background: rgba(255,255,255,0.1); 
+            color: var(--text-primary); font-weight: 500; transition: background 0.2s;
         }
-        td { padding: 14px 18px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 13px; }
+        .mode-btn:hover { background: rgba(255,255,255,0.2); }
+        .picker-container { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 8px; border: 1px solid var(--border-color); }
+        input[type="color"] { border: none; width: 30px; height: 30px; cursor: pointer; background: none; }
 
+        /* 主內容與表格 */
+        main { padding: 80px 16px 100px; max-width: 1000px; margin: 0 auto; }
+        .hero-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 20px; padding: 20px; display: flex; align-items: center; gap: 15px;
+            box-shadow: var(--glow-effect); margin-bottom: 25px; transition: all 0.3s ease;
+        }
+        .avatar { width: 60px; height: 60px; border-radius: 20px; background: linear-gradient(45deg, var(--accent-color), #888); }
+        .user-name { font-size: 18px; font-weight: bold; }
+        .user-desc { color: var(--text-secondary); font-size: 13px; margin-top: 4px; }
+
+        /* 資源表格設計 */
+        .table-wrapper {
+            background: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color);
+            overflow-x: auto; box-shadow: var(--glow-effect); transition: all 0.3s ease;
+        }
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { background: rgba(255,255,255,0.05); color: var(--accent-color); text-align: left; padding: 15px; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border-color); }
+        td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 13px; }
         .type-tag { font-weight: 800; color: var(--accent-color); width: 80px; }
         .link-url a { color: var(--text-secondary); text-decoration: none; transition: 0.2s; }
         .link-url a:hover { color: var(--accent-color); text-shadow: var(--glow-effect); }
         code { color: #00ff88; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px; font-size: 11px; }
 
-        @media (max-width: 850px) {
-            .repo-path { display: none; }
+        /* 頁尾 */
+        footer {
+            position: fixed; bottom: 0; width: 100%; height: 65px;
+            background: var(--header-bg); border-top: 1px solid var(--border-color);
+            display: flex; justify-content: space-around; align-items: center; z-index: 1000;
+            backdrop-filter: blur(15px); transition: all 0.3s ease;
+        }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-secondary); cursor: pointer; }
+        .nav-item.active { color: var(--accent-color); text-shadow: var(--glow-effect); }
+        .nav-label { font-size: 11px; margin-top: 5px; font-weight: 500; }
+        
+        @media (max-width: 768px) {
+            th:nth-child(4), td:nth-child(4) { display: none; }
         }
     </style>
 </head>
-<body>
-    <div class="header">
-        <h1>RESOURCE MIRROR</h1>
-        <div style="font-size: 10px; color: var(--text-secondary); margin-top: 5px;">Automatic Cloud Indexing System</div>
-    </div>
+<body data-theme="multicolor-black">
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Format</th>
-                    <th>Identifier</th>
-                    <th>Public Endpoint</th>
-                    <th class="repo-path">Internal Path</th>
-                </tr>
-            </thead>
-            <tbody>
+    <header>
+        <div class="header-title">RESOURCE MIRROR</div>
+        <div class="header-icons">
+            <span class="material-icons">search</span>
+            <span class="material-icons" id="settings-trigger">palette</span>
+        </div>
+
+        <div id="settings-panel">
+            <span class="setting-label">視覺模式切換</span>
+            <button class="mode-btn" onclick="applyTheme('multicolor-black')">🌌 五彩斑斕黑 (預設)</button>
+            <button class="mode-btn" onclick="applyTheme('light')">☀️ 舒適版光模式</button>
+            <button class="mode-btn" onclick="applyTheme('immersive-dark')">🌑 沈浸式暗模式</button>
+            <button class="mode-btn" onclick="applyTheme('normal')">🟢 常態版</button>
+            
+            <div style="margin-top: 15px;">
+                <span class="setting-label">全客製：自訂高亮顏色</span>
+                <div class="picker-container">
+                    <input type="color" id="accent-picker" value="#ff00ff">
+                    <span style="font-size: 13px; color: var(--text-primary);">點擊選色即時套用</span>
+                </div>
+            </div>
+            <button class="mode-btn" style="background: var(--accent-color); color: #000; margin-top: 15px; font-weight: bold; text-align: center;" onclick="closeMenu()">完成設定</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="hero-card">
+            <div class="avatar"></div>
+            <div class="user-info">
+                <div class="user-name">Mobispace 自動化索引</div>
+                <div class="user-desc">系統運作正常，資源列表已同步。</div>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Format</th>
+                        <th>Identifier</th>
+                        <th>Public Endpoint</th>
+                        <th>Repo Path</th>
+                    </tr>
+                </thead>
+                <tbody>
 </tbody>
-        </table>
-    </div>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <div class="nav-item active">
+            <span class="material-icons">dashboard</span>
+            <span class="nav-label">索引</span>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons">folder_open</span>
+            <span class="nav-label">資源</span>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons">settings_system_daydream</span>
+            <span class="nav-label">系統</span>
+        </div>
+    </footer>
+
+    <script>
+        const settingsTrigger = document.getElementById('settings-trigger');
+        const settingsPanel = document.getElementById('settings-panel');
+        const accentPicker = document.getElementById('accent-picker');
+
+        // 1. 切換面板顯示狀態
+        settingsTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsPanel.classList.toggle('show');
+        });
+
+        // 2. 點擊外部自動關閉選單
+        window.onclick = (e) => {
+            if (!settingsPanel.contains(e.target) && e.target !== settingsTrigger) {
+                settingsPanel.classList.remove('show');
+            }
+        };
+
+        function closeMenu() {
+            settingsPanel.classList.remove('show');
+        }
+
+        // 3. 套用預設模式
+        function applyTheme(themeName) {
+            document.documentElement.style.removeProperty('--accent-color');
+            document.documentElement.style.removeProperty('--glow-effect');
+            document.body.setAttribute('data-theme', themeName);
+        }
+
+        // 4. Color Picker 即時變動
+        accentPicker.addEventListener('input', (e) => {
+            const pickedColor = e.target.value;
+            document.documentElement.style.setProperty('--accent-color', pickedColor);
+            document.documentElement.style.setProperty('--glow-effect', `0 0 15px ${pickedColor}aa`);
+        });
+    </script>
 </body>
 </html>
