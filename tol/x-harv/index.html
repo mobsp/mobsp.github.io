@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭 | Content Harvester</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #000; color: #fff; font-family: 'Inter', system-ui, sans-serif; }
+        .brand-text { color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
+        .glass-card { background: rgba(20, 20, 20, 0.8); border: 1px solid #333; backdrop-filter: blur(12px); }
+        .bookmark-btn {
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .bookmark-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0, 242, 254, 0.4); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="max-w-xl w-full glass-card p-10 rounded-[2.5rem] text-center shadow-2xl">
+        <h1 class="text-5xl font-black mb-4 tracking-tighter italic brand-text">Ⲙ𝔬ⲃ¡ⳝ𝔭</h1>
+        <p class="text-zinc-400 text-sm mb-10 tracking-widest uppercase">Content Harvester Utility</p>
+        
+        <div class="space-y-6">
+            <p class="text-zinc-500 text-xs leading-relaxed">
+                這是您的專屬內容提取工具。<br>
+                請將下方的按鈕拖拽到您的<strong>瀏覽器書籤列</strong>。
+            </p>
+
+            <div class="py-4">
+                <a id="harvester-link" href="#" class="bookmark-btn px-8 py-4 rounded-full text-black font-bold text-lg inline-block">
+                    Ⲙ𝔬ⲃ¡ⳝ𝔭 提取器
+                </a>
+            </div>
+
+            <div class="pt-6 border-t border-zinc-800">
+                <p class="text-[10px] text-zinc-600">
+                    技術支持：緹緹 & 鵲特<br>
+                    核心版本：V0 (基礎執行版)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 部長提供的核心邏輯 (URL 編碼還原)
+        const rawScript = `(function(){const t=document.querySelector('h1')?.innerText||document.title;let c='';document.querySelectorAll('p').forEach(p=>{const txt=p.innerText.trim();if(txt.length>10)c+='<p>'+txt+'</p>\\n';});const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+t+'</title><style>body{background:#000;color:#fff;padding:20px;font-family:sans-serif;line-height:1.7;}.article-container{max-width:480px;margin:0 auto;}</style></head><body><div class="article-container"><h1>'+t+'</h1><div class="post-content">'+c+'</div></div></body></html>';const blob=new Blob([html],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=t.substring(0,6)+'.html';a.click();})();`;
+
+        // 封裝成 javascript: 協議格式
+        const bookmarkletCode = "javascript:" + encodeURIComponent(rawScript);
+        
+        // 注入到 DOM
+        document.getElementById('harvester-link').href = bookmarkletCode;
+    </script>
+
+</body>
+</html>
