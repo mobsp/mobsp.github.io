@@ -1,4 +1,6 @@
-name: Mobispace-Deep-Scan-Sync
+# CI/CD: AUTOMATED REPOSITORY INDEXING SERVICE
+# DESCRIPTION: 監控儲存庫異動並觸發全量掃描腳本。
+name: Mobispace-Asset-Sync-CI
 
 on:
   push:
@@ -6,30 +8,31 @@ on:
   workflow_dispatch:
 
 jobs:
-  sync-job:
+  inventory-sync:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write # 賦予 GitHub Action 推送代碼之權限
+
     steps:
-      - name: Checkout Repository
+      - name: Checkout Source Code
         uses: actions/checkout@v3
 
-      - name: Setup Python
+      - name: Initialize Python Environment
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Run Global Scanner
+      - name: Execute RAI Scanner
         run: python sync_scanner.py
 
-      - name: Commit State Changes
+      - name: Synchronize State to Remote
         run: |
-          git config --local user.email "bot@mobsp.github.io"
-          git config --local user.name "Auto-Mirror-Bot"
+          git config --local user.email "bot@mobsp.io"
+          git config --local user.name "System-Auto-Indexer"
           git add .
           if git diff --staged --quiet; then
-            echo "No changes found."
+            echo "State synchronized. No commit required."
           else
-            git commit -m "chore: sync deep assets to tol/tourl/index.html"
+            git commit -m "chore(sync): global re-indexing of repository assets"
             git push
           fi
