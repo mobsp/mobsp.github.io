@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mobispace | 資源導航與路徑鏡像</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #000 20%, #1a0b2e 50%, #000 80%);
+            --accent-color: #00f2fe;
+            --card-bg: rgba(20, 20, 20, 0.8);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --text-primary: #ffffff;
+            --text-secondary: #8e8e93;
+            --glow-effect: 0 0 15px rgba(0, 242, 254, 0.4);
+        }
+
+        @keyframes rainbow-flow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
+
+        body {
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            animation: rainbow-flow 10s ease infinite;
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h1 { 
+            font-size: 28px; 
+            background: linear-gradient(to right, #fff, var(--accent-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .table-wrapper {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--glow-effect);
+            overflow-x: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        th { 
+            background: rgba(255,255,255,0.05); 
+            color: var(--accent-color); 
+            text-align: left; 
+            padding: 15px; 
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        td { padding: 12px 15px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; }
+        
+        .type-tag { font-weight: bold; color: var(--accent-color); }
+        .link-url a { color: var(--text-secondary); text-decoration: none; font-size: 12px; transition: 0.3s; }
+        .link-url a:hover { color: var(--accent-color); }
+        code { background: rgba(0,0,0,0.5); padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #00ff88; }
+
+        @media (max-width: 768px) {
+            th:nth-child(4), td:nth-child(4) { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>RESOURCE MIRROR SYSTEM</h1>
+            <p style="color: var(--text-secondary); font-size: 12px; margin-top: 10px;">Root: mobsp.github.io/tol/tourl/</p>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Format</th>
+                        <th>Identifier</th>
+                        <th>Public Endpoint</th>
+                        <th>Repo Path</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
