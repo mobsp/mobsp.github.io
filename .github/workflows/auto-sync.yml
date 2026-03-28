@@ -1,0 +1,35 @@
+name: Mobispace-Deep-Scan-Sync
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  sync-job:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Run Global Scanner
+        run: python sync_scanner.py
+
+      - name: Commit State Changes
+        run: |
+          git config --local user.email "bot@mobsp.github.io"
+          git config --local user.name "Auto-Mirror-Bot"
+          git add .
+          if git diff --staged --quiet; then
+            echo "No changes found."
+          else
+            git commit -m "chore: sync deep assets to tol/tourl/index.html"
+            git push
+          fi
