@@ -1,0 +1,12 @@
+kind: App
+name: mobsp-harvester
+package: wasmer-php/static-server # 使用官方靜態伺服器
+public: true
+
+volumes:
+  - name: blog-content
+    path: /public
+    source:
+      directory: blog # 👈 關鍵：這裡指定 Wasmer 只看 blog 資料夾
+
+workdir: /public
