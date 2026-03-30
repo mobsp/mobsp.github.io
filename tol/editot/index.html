@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mobi IDE | 專業可視化編輯器</title>
+    <script src="data.js"></script>
+    <style>
+        :root {
+            /* [設定]：GitHub Dark 配色與 UI 變數 */
+            --bg-main: #0d1117; 
+            --bg-panel: #161b22;
+            --border: #30363d;
+            --active-red: #ff3333;
+            --syntax-blue: #58a6ff;
+            --syntax-white: #f0f6fc;
+            --text-gray: #8b949e;
+            --transition: 0.25s ease;
+        }
+
+        /* [模式]：網站光亮模式覆蓋樣式 */
+        body.light-mode {
+            --bg-main: #ffffff;
+            --bg-panel: #f6f8fa;
+            --border: #d0d7de;
+            --syntax-white: #24292f;
+            --text-gray: #57606a;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        
+        body { 
+            margin: 0; font-family: -apple-system, system-ui, sans-serif; 
+            background: var(--bg-main); color: var(--syntax-white); 
+            height: 100vh; display: flex; flex-direction: column; 
+            transition: background var(--transition);
+        }
+
+        /* [頂部欄]：純 SVG 圖示化控制 */
+        header { 
+            padding: 8px 16px; display: flex; justify-content: space-between; align-items: center; 
+            border-bottom: 1px solid var(--border); background: var(--bg-main);
+        }
+
+        .icon-btn {
+            width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border-radius: 8px; transition: var(--transition);
+        }
+        .icon-btn:active { background: var(--border); transform: scale(0.9); }
+        .icon-btn img { width: 22px; height: 22px; }
+
+        /* [核心佈局系統] */
+        .main-container { flex: 1; display: flex; overflow: hidden; position: relative; }
+        
+        /* [三欄模式]：HTML, CSS, JS 並排 */
+        .layout-three .pane { flex: 1; display: flex !important; flex-direction: column; border-right: 1px solid var(--border); }
+        .pane-label { padding: 4px 12px; font-size: 10px; color: var(--text-gray); background: var(--bg-panel); border-bottom: 1px solid var(--border); }
+
+        /* [單欄模式]：僅顯示 HTML */
+        .layout-single .pane { display: none; width: 100%; }
+        .layout-single #pane-html { display: flex; flex-direction: column; }
+        .layout-single #pane-css, .layout-single #pane-js { display: none !important; }
+
+        textarea { 
+            flex: 1; width: 100%; background: transparent; color: inherit; 
+            border: none; padding: 15px; font-family: 'Fira Code', monospace; 
+            font-size: 15px; resize: none; line-height: 1.5;
+        }
+
+        /* [全螢幕預覽層] */
+        #preview-layer {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; z-index: 1000; display: none;
+        }
+        #preview-layer.active { display: flex; flex-direction: column; }
+
+        /* [設定面板] */
+        #settings-modal {
+            position: fixed; bottom: -100%; left: 0; width: 100%; height: 60%;
+            background: var(--bg-panel); border-top: 1px solid var(--border);
+            z-index: 2000; transition: var(--transition); padding: 20px;
+            border-radius: 16px 16px 0 0; box-shadow: 0 -5px 20px rgba(0,0,0,0.5);
+        }
+        #settings-modal.active { bottom: 0; }
+
+        /* [底部控制列] */
+        .btn-group { 
+            display: flex; gap: 12px; padding: 12px 20px; 
+            background: var(--bg-panel); border-top: 1px solid var(--border); 
+        }
+        .action-btn { 
+            flex: 1; height: 44px; border-radius: 10px; border: 1px solid var(--border); 
+            background: var(--bg-main); color: white; display: flex; 
+            align-items: center; justify-content: center; cursor: pointer; 
+        }
+        .btn-play { background: var(--active-red); border-color: var(--active-red); }
+
+        #file-input { display: none; }
+    </style>
+</head>
+<body class="layout-three"> <header>
+    <div style="display: flex; align-items: center; gap: 8px;">
+        <div class="icon-btn" onclick="toggleSettings()">
+            <img src="https://x-easy.github.io/assets/icons/svg/settings.svg" alt="設定">
+        </div>
+        <span style="font-size: 14px; font-weight: 900; letter-spacing: 1px;">MOBI IDE</span>
+    </div>
+    
+    <div style="display: flex; gap: 5px;">
+        <div class="icon-btn" id="save-indicator">
+            <img src="https://x-easy.github.io/assets/icons/svg/floppy_disk.svg" alt="保存中">
+        </div>
+        <div class="icon-btn" onclick="document.getElementById('file-input').click()">
+            <img src="https://x-easy.github.io/assets/icons/svg/import.svg" alt="上傳">
+        </div>
+    </div>
+</header>
+
+<div class="main-container" id="editor-container">
+    <div id="pane-html" class="pane">
+        <div class="pane-label">HTML5</div>
+        <textarea id="code-html" oninput="autoSave()" placeholder="寫入 HTML..."></textarea>
+    </div>
+    <div id="pane-css" class="pane">
+        <div class="pane-label">CSS3</div>
+        <textarea id="code-css" oninput="autoSave()" placeholder="寫入 CSS..."></textarea>
+    </div>
+    <div id="pane-js" class="pane">
+        <div class="pane-label">JAVASCRIPT</div>
+        <textarea id="code-js" oninput="autoSave()" placeholder="寫入 JS..."></textarea>
+    </div>
+</div>
+
+<div class="btn-group">
+    <button class="action-btn btn-play" onclick="togglePreview(true)">
+        <img src="https://x-easy.github.io/assets/icons/svg/play_1.svg" style="filter: invert(1); width: 24px;">
+    </button>
+    <button class="action-btn" onclick="downloadLogic()">
+        <img src="https://x-easy.github.io/assets/icons/svg/save_down_1.svg">
+    </button>
+    <button class="action-btn" onclick="clearAll()">
+        <img src="https://x-easy.github.io/assets/icons/svg/trash.svg">
+    </button>
+</div>
+
+<div id="preview-layer">
+    <div style="padding: 10px; background: #222; display: flex; justify-content: flex-end;">
+        <div class="icon-btn" onclick="togglePreview(false)" style="background: #ff4444;">
+            <img src="https://x-easy.github.io/assets/icons/svg/square_remove.svg" style="filter: invert(1);">
+        </div>
+    </div>
+    <iframe id="output-frame" style="flex: 1; width: 100%; border: none;"></iframe>
+</div>
+
+<div id="settings-modal">
+    <h3 style="margin-top: 0;">IDE 自定義設定</h3>
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        <label>佈局模式：
+            <select onchange="changeLayout(this.value)" style="width: 100%; padding: 8px;">
+                <option value="layout-three">三欄模式 (HTML+CSS+JS)</option>
+                <option value="layout-single">單欄模式 (僅 HTML)</option>
+            </select>
+        </label>
+        <label>下載格式：
+            <select id="dl-format" style="width: 100%; padding: 8px;">
+                <option value="html">HTML (完整封裝)</option>
+                <option value="md">Markdown (.md)</option>
+                <option value="txt">純文本 (.txt)</option>
+            </select>
+        </label>
+        <button class="action-btn" onclick="document.body.classList.toggle('light-mode')">
+            🌓 切換光/暗模式
+        </button>
+        <div style="display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-gray);">
+            <input type="checkbox" id="check-fix"> 開啟語法自動修正建議
+        </div>
+        <button class="action-btn" onclick="loadW3C()">載入 W3C 標準範例</button>
+        <button class="action-btn" onclick="toggleSettings()" style="background: #333;">關閉設定</button>
+    </div>
+</div>
+
+<input type="file" id="file-input" onchange="handleFile(event)" accept=".html,.css,.js,.txt,.md">
+
+<script>
+    /**
+     * [註解] 核心渲染邏輯：將代碼注入 iframe
+     * 這裡整合了 HTML + CSS + JS 成為一個暫時性的網頁
+     */
+    function togglePreview(show) {
+        const layer = document.getElementById('preview-layer');
+        if(show) {
+            const html = document.getElementById('code-html').value;
+            const css = `<style>${document.getElementById('code-css').value}</style>`;
+            const js = `<script>${document.getElementById('code-js').value}<\/script>`;
+            const frame = document.getElementById('output-frame').contentWindow.document;
+            frame.open();
+            frame.write(html + css + js);
+            frame.close();
+            layer.classList.add('active');
+        } else {
+            layer.classList.remove('active');
+        }
+    }
+
+    /**
+     * [註解] 自動存檔機制：使用 LocalStorage
+     * 每次打字都會閃爍右上角的「存檔圖示」提供回饋
+     */
+    function autoSave() {
+        const data = {
+            h: document.getElementById('code-html').value,
+            c: document.getElementById('code-css').value,
+            j: document.getElementById('code-js').value
+        };
+        localStorage.setItem('mobi_flagship_data', JSON.stringify(data));
+        
+        const icon = document.getElementById('save-indicator');
+        icon.style.filter = 'drop-shadow(0 0 8px var(--syntax-blue))';
+        icon.style.transform = 'scale(1.1)';
+        setTimeout(() => { 
+            icon.style.filter = 'none'; 
+            icon.style.transform = 'scale(1)';
+        }, 300);
+    }
+
+    /**
+     * [註解] 下載邏輯：支援自訂檔名與格式
+     */
+    function downloadLogic() {
+        const fmt = document.getElementById('dl-format').value;
+        const name = prompt("請輸入檔案名稱：", "mobi_project") || "mobi_project";
+        let content = "";
+        let mime = "text/plain";
+
+        if(fmt === 'html') {
+            content = `<html><style>${document.getElementById('code-css').value}</style><body>${document.getElementById('code-html').value}<script>${document.getElementById('code-js').value}<\/script></body></html>`;
+            mime = "text/html";
+        } else {
+            content = document.getElementById('code-html').value;
+        }
+
+        const blob = new Blob([content], {type: mime});
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `${name}.${fmt}`;
+        a.click();
+    }
+
+    /**
+     * [註解] 檔案上傳處理
+     */
+    function handleFile(e) {
+        const file = e.target.files[0];
+        if(!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            document.getElementById('code-html').value = event.target.result;
+            autoSave();
+        };
+        reader.readAsText(file);
+    }
+
+    /**
+     * [註解] 介面控制函數
+     */
+    function toggleSettings() { document.getElementById('settings-modal').classList.toggle('active'); }
+    
+    function changeLayout(val) { document.body.className = val; }
+
+    function loadW3C() {
+        document.getElementById('code-html').value = '<div class="card">\n  <h1>W3C Example</h1>\n  <p>這是標準測試模板</p>\n</div>';
+        document.getElementById('code-css').value = '.card { padding: 20px; border: 1px solid #ccc; border-radius: 8px; }';
+        document.getElementById('code-js').value = 'console.log("Mobi IDE Ready");';
+        toggleSettings();
+        autoSave();
+    }
+
+    function clearAll() {
+        if(confirm("確定要重置所有內容嗎？存檔將被清空。")) {
+            localStorage.removeItem('mobi_flagship_data');
+            location.reload();
+        }
+    }
+
+    // [初始化]：啟動時讀取存檔
+    window.onload = () => {
+        const saved = localStorage.getItem('mobi_flagship_data');
+        if(saved) {
+            const d = JSON.parse(saved);
+            document.getElementById('code-html').value = d.h || "";
+            document.getElementById('code-css').value = d.c || "";
+            document.getElementById('code-js').value = d.j || "";
+        }
+    };
+</script>
+</body>
+</html>
