@@ -1,0 +1,84 @@
+:root {
+    --bg-deep: #050505;
+    --card-bg: #111113;
+    --accent: #00ffc8;
+    --text-main: #e0e0e2;
+    --safe-top: env(safe-area-inset-top);
+    --safe-bottom: env(safe-area-inset-bottom);
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body, html {
+    margin: 0; padding: 0;
+    height: 100%; width: 100%;
+    background: var(--bg-deep);
+    color: var(--text-main);
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow: hidden; /* 防止全域滑動 */
+}
+
+/* 骨架屏預載效果 */
+.mobi-skeleton::before {
+    content: ""; position: fixed; inset: 0;
+    background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    z-index: 9999; pointer-events: none; opacity: 1; transition: 0.5s;
+}
+.loaded.mobi-skeleton::before { opacity: 0; }
+
+@keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* 網格布局核心 */
+#app {
+    display: grid;
+    grid-template-rows: calc(60px + var(--safe-top)) 1fr calc(60px + var(--safe-bottom));
+    height: 100vh;
+}
+
+.mobi-header {
+    background: rgba(10, 10, 12, 0.9);
+    backdrop-filter: blur(10px);
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--safe-top) 15px 0 15px;
+    border-bottom: 1px solid #222;
+    z-index: 100;
+}
+
+.mobi-main {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mobi-bottom-nav {
+    display: flex; justify-content: space-around; align-items: center;
+    background: #0a0a0c;
+    border-top: 1px solid #222;
+    padding-bottom: var(--safe-bottom);
+}
+
+/* 編輯器與表格樣式 */
+.universal-editor, .asset-table-block {
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid #333;
+    margin-bottom: 25px;
+    padding: 15px;
+}
+
+textarea {
+    width: 100%; height: 300px;
+    background: #000; color: var(--accent);
+    border: 1px solid #444; border-radius: 8px;
+    font-family: 'Fira Code', monospace;
+    padding: 15px; resize: none;
+}
+
+/* RWD / AWD 處理 */
+@media (max-width: 768px) {
+    .control-row { flex-direction: column; }
+    .mobi-btn, .mobi-select { width: 100%; margin-bottom: 10px; }
+}
