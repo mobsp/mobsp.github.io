@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>MobiSpace | 莫比空間</title>
+    <meta name="theme-color" content="#0a0a0c">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="mobi-skeleton">
+        <header class="mobi-header">
+            <div class="header-left">
+                <div class="hamburger" id="nav-toggle"><span></span><span></span><span></span></div>
+                <img src="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/icon/svg/logo.svg" class="logo" alt="Logo" onclick="goHome()">
+                <nav class="breadcrumb">目前頁面名稱</nav>
+            </div>
+            <div class="header-right">
+                <button class="icon-btn">🔍</button>
+                <button class="icon-btn backup-btn" onclick="triggerBackup()">📦</button>
+                <img src="logo.svg" class="logo" alt="Logo">
+            </div>
+        </header>
+
+        <main class="mobi-main">
+            <section class="universal-editor">
+                <div class="editor-header">
+                    <h2 class="title">萬能編輯發佈器</h2>
+                    <div class="editor-ops">
+                        <button onclick="togglePreview()" id="preview-btn">預覽</button>
+                        <button onclick="openFeedback()">提供反饋</button>
+                    </div>
+                </div>
+
+                <div class="editor-container">
+                    <div id="editor-body" class="editor-active">
+                        <div class="editor-toolbar-top">
+                            <button title="留言">💬</button>
+                            <button onclick="showTemplates()">🔖</button>
+                            <button>➕</button>
+                        </div>
+                        <textarea id="main-textarea" placeholder="啟動莫比邏輯..."></textarea>
+                        <div id="preview-screen" class="hidden"></div>
+                    </div>
+                    
+                    <div class="editor-controls">
+                        <div class="control-row">
+                            <input type="file" id="file-upload" hidden onchange="handleUpload(this)">
+                            <button class="mobi-btn" onclick="document.getElementById('file-upload').click()">上傳檔案</button>
+                            <select class="mobi-select"><option>下載格式</option></select>
+                            <select class="mobi-select"><option>編輯模式</option></select>
+                        </div>
+                        <div class="control-row">
+                            <input type="text" placeholder="GitHub Pages 路徑..." id="gh-path">
+                            <select class="mobi-select" id="publish-mode">
+                                <option>發佈至：頁面清單</option>
+                                <option>發佈至：SVG 庫</option>
+                            </select>
+                            <button class="btn-send" onclick="performPublish()">🚀 發佈</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div id="asset-container">
+                </div>
+
+            <section class="recommend-links">
+                <h3>推薦網站連結清單</h3>
+                <div class="link-grid" id="recommend-grid"></div>
+            </section>
+
+            <footer class="content-footer">
+                <img src="logo.svg" alt="Footer Logo" onclick="goHome()">
+                <p>莫比空間 © 2026 • MobiSpace.</p>
+            </footer>
+        </main>
+
+        <nav class="mobi-bottom-nav">
+            <div class="nav-item dropdown">
+                <span class="nav-label">索引選單</span>
+                <div class="dropdown-content">
+                    <a href="#">索引頁</a><a href="#">部落格</a><a href="#">音樂</a><a href="#">Shorts</a>
+                </div>
+            </div>
+            <div class="nav-item">其它頁面</div>
+            <div class="nav-item">工具庫</div>
+            <div class="nav-item">支援中心</div>
+            <div class="nav-item">設定</div>
+        </nav>
+    </div>
+
+    <div id="modal-overlay" class="modal-hidden">
+        <div class="modal-content" id="modal-body"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
