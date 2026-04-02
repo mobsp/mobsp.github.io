@@ -1,0 +1,33 @@
+name: Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync Auto Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 📥 Checkout Code
+        uses: actions/checkout@v4
+
+      - name: 💉 Inject 5-Tokens Array
+        run: |
+          # 將 5 個 Secrets 封裝成 JS 陣列
+          TOKEN_LIST='["${{ secrets.NEXUS_TOKEN_1 }}", "${{ secrets.NEXUS_TOKEN_2 }}", "${{ secrets.NEXUS_TOKEN_3 }}", "${{ secrets.NEXUS_TOKEN_4 }}", "${{ secrets.NEXUS_TOKEN_5 }}"]'
+          
+          # 使用 sed 將陣列注入到指定位置
+          sed -i "s|TOKEN_ARRAY_PLACEHOLDER|$TOKEN_LIST|g" app/index.html
+          
+          echo "✅ 5 Tokens successfully injected into app/index.html"
+
+      - name: 🚀 Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: app
+          branch: gh-pages
+          clean: true
