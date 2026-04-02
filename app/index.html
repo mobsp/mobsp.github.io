@@ -3,95 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MobiSpace | 莫比空間</title>
-    <meta name="theme-color" content="#0a0a0c">
+    <title>Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div id="app" class="mobi-skeleton">
+        
         <header class="mobi-header">
             <div class="header-left">
                 <div class="hamburger" id="nav-toggle"><span></span><span></span><span></span></div>
-                <img src="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/icon/svg/logo.svg" class="logo" alt="Logo" onclick="goHome()">
-                <nav class="breadcrumb">目前頁面名稱</nav>
+                <div class="brand-group" onclick="location.reload()">
+                    <span class="symbol">Ⲙ𝔬ⲃⳝ𝔭</span>
+                    <span class="nexus-text">Nexus</span>
+                </div>
+                <nav class="breadcrumb">Control Center</nav>
             </div>
             <div class="header-right">
-                <button class="icon-btn">🔍</button>
-                <button class="icon-btn backup-btn" onclick="triggerBackup()">📦</button>
-                <img src="logo.svg" class="logo" alt="Logo">
+                <button class="icon-btn" title="全局搜索">🔍</button>
+                <button class="icon-btn backup-trigger" onclick="MobiSpace.triggerBackup()" title="手動備份庫">📦</button>
+                <div class="logo-circle">M</div>
             </div>
         </header>
 
         <main class="mobi-main">
             <section class="universal-editor">
-                <div class="editor-header">
-                    <h2 class="title">萬能編輯發佈器</h2>
-                    <div class="editor-ops">
-                        <button onclick="togglePreview()" id="preview-btn">預覽</button>
-                        <button onclick="openFeedback()">提供反饋</button>
+                <div class="module-header">
+                    <h2 class="module-title">Universal Nexus Editor</h2>
+                    <div class="header-actions">
+                        <button class="mobi-btn secondary" id="preview-toggle" onclick="MobiSpace.togglePreview()">切換預覽</button>
+                        <button class="mobi-btn secondary" onclick="MobiSpace.openFeedback()">反饋</button>
                     </div>
                 </div>
 
-                <div class="editor-container">
-                    <div id="editor-body" class="editor-active">
-                        <div class="editor-toolbar-top">
-                            <button title="留言">💬</button>
-                            <button onclick="showTemplates()">🔖</button>
-                            <button>➕</button>
-                        </div>
-                        <textarea id="main-textarea" placeholder="啟動莫比邏輯..."></textarea>
-                        <div id="preview-screen" class="hidden"></div>
+                <div class="editor-core">
+                    <div class="toolbar-top">
+                        <button onclick="MobiSpace.toast('備註功能開發中')">💬 留言</button>
+                        <button onclick="MobiSpace.showTemplates()">🔖 範本庫</button>
+                        <button>➕ 插入</button>
                     </div>
                     
-                    <div class="editor-controls">
-                        <div class="control-row">
-                            <input type="file" id="file-upload" hidden onchange="handleUpload(this)">
-                            <button class="mobi-btn" onclick="document.getElementById('file-upload').click()">上傳檔案</button>
-                            <select class="mobi-select"><option>下載格式</option></select>
-                            <select class="mobi-select"><option>編輯模式</option></select>
+                    <div class="input-wrapper">
+                        <textarea id="main-editor" placeholder="輸入高維度代碼或內容..."></textarea>
+                        <div id="preview-area" class="hidden"></div>
+                    </div>
+
+                    <div class="editor-footer-controls">
+                        <div class="control-group">
+                            <button class="mobi-btn" onclick="document.getElementById('file-input').click()">⬆️ 任意上傳</button>
+                            <input type="file" id="file-input" hidden>
+                            <select class="mobi-select"><option>下載格式 (Any)</option></select>
+                            <select class="mobi-select"><option>編輯格式 (Any)</option></select>
                         </div>
-                        <div class="control-row">
-                            <input type="text" placeholder="GitHub Pages 路徑..." id="gh-path">
-                            <select class="mobi-select" id="publish-mode">
-                                <option>發佈至：頁面清單</option>
-                                <option>發佈至：SVG 庫</option>
+                        <div class="control-group full-width">
+                            <input type="text" id="gh-path" class="mobi-input" placeholder="GitHub Pages 發佈路徑 (例如: pages/home)">
+                            <select class="mobi-select" id="publish-target">
+                                <option value="page">發佈至：頁面列表</option>
+                                <option value="svg">發佈至：SVG 庫</option>
+                                <option value="article">發佈至：文章清單</option>
                             </select>
-                            <button class="btn-send" onclick="performPublish()">🚀 發佈</button>
+                            <button class="mobi-btn primary" onclick="MobiSpace.performPublish()">🚀 發佈並同步 GitHub</button>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <div id="asset-container">
+            <div id="dynamic-asset-grid" class="asset-grid">
                 </div>
 
-            <section class="recommend-links">
-                <h3>推薦網站連結清單</h3>
-                <div class="link-grid" id="recommend-grid"></div>
+            <section class="recommend-section">
+                <h3>🔗 推薦網站連結清單</h3>
+                <div class="recommend-links" id="recommend-list">
+                    <a href="#" class="link-item">GitHub Repository</a>
+                    <a href="#" class="link-item">Vercel Edge</a>
+                </div>
             </section>
-
-            <footer class="content-footer">
-                <img src="logo.svg" alt="Footer Logo" onclick="goHome()">
-                <p>莫比空間 © 2026 • MobiSpace.</p>
-            </footer>
+            
+            <div class="copyright-area" onclick="location.href='/'">
+                <p>Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync © 2026</p>
+            </div>
         </main>
 
         <nav class="mobi-bottom-nav">
             <div class="nav-item dropdown">
-                <span class="nav-label">索引選單</span>
-                <div class="dropdown-content">
-                    <a href="#">索引頁</a><a href="#">部落格</a><a href="#">音樂</a><a href="#">Shorts</a>
+                <span class="dropdown-trigger">索引選單 ▾</span>
+                <div class="dropdown-menu">
+                    <a href="#">索引頁</a>
+                    <a href="#">部落格</a>
+                    <a href="#">音樂頻道</a>
+                    <a href="#">Shorts</a>
                 </div>
             </div>
-            <div class="nav-item">其它頁面</div>
+            <div class="nav-item">實驗室</div>
             <div class="nav-item">工具庫</div>
             <div class="nav-item">支援中心</div>
             <div class="nav-item">設定</div>
         </nav>
     </div>
 
-    <div id="modal-overlay" class="modal-hidden">
-        <div class="modal-content" id="modal-body"></div>
+    <div id="modal-overlay" class="modal-hidden" onclick="MobiSpace.closeModal()">
+        <div class="modal-window" onclick="event.stopPropagation()">
+            <div id="modal-content"></div>
+        </div>
     </div>
 
     <script src="app.js"></script>
