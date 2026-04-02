@@ -9,7 +9,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: write  # 必須要有寫入權限
 
     steps:
       - name: 📥 Checkout Code
@@ -17,12 +17,8 @@ jobs:
 
       - name: 💉 Inject 5-Tokens Array
         run: |
-          # 將 5 個 Secrets 封裝成 JS 陣列
           TOKEN_LIST='["${{ secrets.NEXUS_TOKEN_1 }}", "${{ secrets.NEXUS_TOKEN_2 }}", "${{ secrets.NEXUS_TOKEN_3 }}", "${{ secrets.NEXUS_TOKEN_4 }}", "${{ secrets.NEXUS_TOKEN_5 }}"]'
-          
-          # 使用 sed 將陣列注入到指定位置
           sed -i "s|TOKEN_ARRAY_PLACEHOLDER|$TOKEN_LIST|g" app/index.html
-          
           echo "✅ 5 Tokens successfully injected into app/index.html"
 
       - name: 🚀 Deploy to GitHub Pages
@@ -30,4 +26,5 @@ jobs:
         with:
           folder: app
           branch: gh-pages
+          token: ${{ secrets.GITHUB_TOKEN }} # 明確指定 Token 進行推送
           clean: true
