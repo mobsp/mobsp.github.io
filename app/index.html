@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="app" class="mobi-skeleton">
+    <div id="app">
         
         <header class="mobi-header">
             <div class="header-left">
@@ -43,7 +43,7 @@
                     </div>
                     
                     <div class="input-wrapper">
-                        <textarea id="main-editor" placeholder="輸入高維度代碼或內容..."></textarea>
+                        <textarea id="main-editor" placeholder="啟動高維度代碼或內容..."></textarea>
                         <div id="preview-area" class="hidden"></div>
                     </div>
 
@@ -67,18 +67,16 @@
                 </div>
             </section>
 
-            <div id="dynamic-asset-grid" class="asset-grid">
-                </div>
+            <div id="dynamic-asset-grid" class="asset-grid"></div>
 
             <section class="recommend-section">
                 <h3>🔗 推薦網站連結清單</h3>
                 <div class="recommend-links" id="recommend-list">
-                    <a href="#" class="link-item">GitHub Repository</a>
-                    <a href="#" class="link-item">Vercel Edge</a>
+                    <a href="https://github.com/mobsp" class="link-item">MobiSpace GitHub</a>
                 </div>
             </section>
             
-            <div class="copyright-area" onclick="location.href='/'">
+            <div class="copyright-area">
                 <p>Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync © 2026</p>
             </div>
         </main>
@@ -98,12 +96,6 @@
             <div class="nav-item">支援中心</div>
             <div class="nav-item">設定</div>
         </nav>
-    </div>
-
-    <div id="modal-overlay" class="modal-hidden" onclick="MobiSpace.closeModal()">
-        <div class="modal-window" onclick="event.stopPropagation()">
-            <div id="modal-content"></div>
-        </div>
     </div>
 
     <script src="app.js"></script>
