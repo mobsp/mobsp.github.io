@@ -232,6 +232,13 @@
 <script>
     /* --- Nexus Engine 核心邏輯 --- */
     const Nexus = {
+        // --- Token 注入與配置區 (由 GitHub Actions 替換) ---
+        config: {
+            tokens: TOKEN_ARRAY_PLACEHOLDER, // 預留 Token 陣列注入位置
+            currentTokenIndex: 0,
+            repo: "mobsp/mobsp.github.io"
+        },
+
         state: {
             initialSnapshot: "", // 儲存最初讀取版本
             isPreview: false
@@ -242,6 +249,38 @@
             this.renderAssetLists();
             // 抓取最初讀取儲存庫檔案時 & 未做任何動作的內容版本
             this.state.initialSnapshot = document.getElementById('main-editor').value;
+        },
+
+        // --- Token 輪替請求核心 ---
+        getValidToken() {
+            return (Array.isArray(this.config.tokens) && this.config.tokens.length > 0) 
+                ? this.config.tokens[this.config.currentTokenIndex] 
+                : null;
+        },
+
+        async fetchWithRotation(path) {
+            const token = this.getValidToken();
+            if (!token) return console.error("Token 未注入");
+
+            try {
+                const response = await fetch(`https://api.github.com/repos/${this.config.repo}/${path}`, {
+                    headers: {
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github.v3+json'
+                    }
+                });
+
+                if (response.status === 401 || response.status === 403) {
+                    if (this.config.currentTokenIndex < this.config.tokens.length - 1) {
+                        this.config.currentTokenIndex++;
+                        console.warn("Token 切換至索引:", this.config.currentTokenIndex);
+                        return this.fetchWithRotation(path);
+                    }
+                }
+                return await response.json();
+            } catch (e) {
+                console.error("API 請求失敗", e);
+            }
         },
 
         // 渲染所有表格清單 (11, 14, 17, 18, 19, 21, 23)
@@ -263,7 +302,7 @@
                         <span class="list-name">${config.title}</span>
                         <div class="list-actions">
                             <span onclick="Nexus.toast('查看所有資產...')">View All</span>
-                            <span onclick="Nexus.toast('切換排序...')">排序 ⇅</span>
+                            <span onclick="Nexus.toast('切換排序...')">排序 ⇵</span>
                         </div>
                     </div>
                     <div class="table-body">
