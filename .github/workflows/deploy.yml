@@ -9,7 +9,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # 必須要有寫入權限
+      contents: write
 
     steps:
       - name: 📥 Checkout Code
@@ -19,12 +19,12 @@ jobs:
         run: |
           TOKEN_LIST='["${{ secrets.NEXUS_TOKEN_1 }}", "${{ secrets.NEXUS_TOKEN_2 }}", "${{ secrets.NEXUS_TOKEN_3 }}", "${{ secrets.NEXUS_TOKEN_4 }}", "${{ secrets.NEXUS_TOKEN_5 }}"]'
           sed -i "s|TOKEN_ARRAY_PLACEHOLDER|$TOKEN_LIST|g" app/index.html
-          echo "✅ 5 Tokens successfully injected into app/index.html"
+          echo "✅ 5 Tokens successfully injected"
 
       - name: 🚀 Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: app
           branch: gh-pages
-          token: ${{ secrets.GITHUB_TOKEN }} # 明確指定 Token 進行推送
+          token: ${{ secrets.GITHUB_TOKEN }}
           clean: true
