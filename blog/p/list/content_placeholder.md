@@ -1,0 +1,1 @@
+# Placeholder content for file name adjustments in blog/p/list folder
