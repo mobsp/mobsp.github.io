@@ -110,11 +110,29 @@
         .modal-header { width: 40px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 20px; }
         .modal-body { flex: 1; overflow-y: auto; }
 
+        /* 編輯器全螢幕視窗 */
+        .editor-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--glass-bg); backdrop-filter: blur(30px);
+            z-index: 3000; display: none; flex-direction: column; padding: var(--safe-top) 20px 20px 20px;
+        }
+        .editor-input {
+            background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);
+            color: var(--text-main); padding: 12px; border-radius: 10px; margin-bottom: 10px;
+            font-size: 14px; outline: none; width: 100%;
+        }
+        .editor-textarea {
+            flex: 1; width: 100%; margin-bottom: 15px; border-radius: 12px;
+            border: 1px solid var(--glass-border); padding: 15px; font-family: monospace;
+            background: rgba(0,0,0,0.3); color: var(--text-main); font-size: 13px;
+            resize: none; outline: none;
+        }
+
         /* 設定視窗 */
         .settings-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(20px);
-            z-index: 3000; display: none; flex-direction: column; padding: 60px 30px;
+            z-index: 4000; display: none; flex-direction: column; padding: 60px 30px;
         }
 
         .copy-box {
@@ -127,7 +145,9 @@
         .btn-action {
             background: var(--ios-blue); color: white; border: none;
             padding: 12px; border-radius: 12px; font-weight: bold; width: 100%;
+            cursor: pointer;
         }
+        .tiny-btn { background: var(--ios-blue); border: none; color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; }
     </style>
 </head>
 <body class="dark-mode" id="appBody">
@@ -172,6 +192,24 @@
     <h3 id="infoName" style="margin: 0 0 20px 0;">檔案資訊</h3>
     <div class="modal-body" id="infoBody"></div>
     <button class="btn-action" style="background: rgba(255,255,255,0.1); margin-top: 20px;" onclick="closeModal()">關閉</button>
+</div>
+
+<div id="editorModal" class="editor-overlay">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3 style="margin:0;">編輯器</h3>
+        <button onclick="closeEditor()" class="tiny-btn" style="background:#ff3b30; padding:8px 15px;">取消</button>
+    </div>
+    
+    <label style="font-size:12px; opacity:0.6; margin-bottom:5px;">修改檔名與副檔名 (連同路徑)：</label>
+    <input type="text" id="editFileName" class="editor-input">
+    
+    <label style="font-size:12px; opacity:0.6; margin-bottom:5px;">修改程式碼/內容：</label>
+    <textarea id="editContent" class="editor-textarea"></textarea>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button onclick="copyEditedContent()" class="btn-action" style="background:rgba(255,255,255,0.2);">複製內容</button>
+        <button onclick="downloadEditedFile()" class="btn-action" style="background:#34C759;">📥 儲存匯出檔案</button>
+    </div>
 </div>
 
 <div id="settingsPopup" class="settings-overlay">
@@ -233,14 +271,12 @@
 
     // 2. 建立分支與資料夾 UI
     function buildUI() {
-        // 資料夾選單
         const select = document.getElementById('folderSelect');
         select.innerHTML = '<option value="ALL">📂 顯示所有資料夾</option><option value="ROOT">📂 根目錄 (Root)</option>';
         Array.from(folderSet).sort().forEach(f => {
             if(f !== 'ROOT') select.innerHTML += `<option value="${f}">${f}</option>`;
         });
 
-        // 分支滑塊
         const uniqueBranches = [...new Set(allFiles.map(f => f.branch))];
         currentBranch = uniqueBranches[0] || "";
         renderBranches(uniqueBranches);
@@ -279,7 +315,7 @@
                             <tr>
                                 <td><code style="font-size:10px; opacity:0.6">${f.branch}</code></td>
                                 <td class="file-link" onclick="openFileDetails('${f.path}')">${f.name}</td>
-                                <td><button class="btn-action" style="font-size:10px; padding:5px;" onclick="window.open('${f.link.replace('/blob/', '/edit/')}', '_blank')">編輯</button></td>
+                                <td><button class="btn-action" style="font-size:10px; padding:5px;" onclick="openEditor('${f.raw}', '${f.name}')">編輯</button></td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -307,8 +343,8 @@
                 <label>${d.label}</label>
                 <div>${d.val}</div>
                 <div style="display:flex; gap:10px; margin-top:5px;">
-                    <button onclick="copyIt('${d.val}')" style="background:#007AFF; color:white; border:none; border-radius:5px; padding:5px 10px; font-size:11px;">一鍵複製</button>
-                    ${d.label.includes('連結') || d.label.includes('Raw') ? `<button onclick="window.open('${d.val}')" style="background:#5856D6; color:white; border:none; border-radius:5px; padding:5px 10px; font-size:11px;">頁面瀏覽</button>` : ''}
+                    <button class="tiny-btn" onclick="copyIt('${d.val}')">一鍵複製</button>
+                    ${d.label.includes('連結') || d.label.includes('Raw') ? `<button class="tiny-btn" style="background:#5856D6;" onclick="window.open('${d.val}')">頁面瀏覽</button>` : ''}
                 </div>
             </div>
         `).join('');
@@ -316,7 +352,47 @@
         document.getElementById('infoModal').classList.add('active');
     }
 
-    // 5. 匯出 CSV 報告
+    // 5. 內建虛擬編輯器系統
+    async function openEditor(rawUrl, fileName) {
+        document.getElementById('editorModal').style.display = 'flex';
+        document.getElementById('editFileName').value = fileName;
+        const ta = document.getElementById('editContent');
+        ta.value = "讀取原始碼中...";
+        
+        try {
+            const res = await fetch(rawUrl);
+            const text = await res.text();
+            ta.value = text;
+        } catch(e) {
+            ta.value = "讀取失敗，可能是二進位檔案(如圖片)或 CORS 限制。";
+        }
+    }
+
+    function closeEditor() {
+        document.getElementById('editorModal').style.display = 'none';
+    }
+
+    function copyEditedContent() {
+        const content = document.getElementById('editContent').value;
+        navigator.clipboard.writeText(content);
+        alert("已複製修改後的內容");
+    }
+
+    function downloadEditedFile() {
+        const content = document.getElementById('editContent').value;
+        const fileName = document.getElementById('editFileName').value || "export.txt";
+        
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    // 6. 匯出 CSV 報告
     function exportFullReport() {
         if(allFiles.length === 0) return alert("請先掃描資料");
         let csvContent = "User,Repo,Branch,Folder,Path,Link,RawURL\n";
