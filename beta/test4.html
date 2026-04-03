@@ -2,348 +2,207 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub 全方位診斷與內容讀取器 (No-Token)</title>
     <style>
-        :root {
-            --bg: #050507; --card: #111114; --accent: #00ffc8; --text: #e2e8f0; --border: #22262e;
-            --header-h: 60px; --footer-h: 70px;
-            --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom);
-        }
-
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-        body, html { 
-            margin: 0; padding: 0; height: 100%; width: 100%; 
-            background: var(--bg); color: var(--text); 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow: hidden; /* 禁止全域滑動，僅中間滾動 */
-        }
-
-        #nexus-sync-app {
-            display: grid;
-            grid-template-rows: calc(var(--header-h) + var(--safe-top)) 1fr calc(var(--footer-h) + var(--safe-bottom));
-            height: 100vh;
-        }
-
-        /* --- 1-6 頁首導覽 --- */
-        .mobi-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: var(--safe-top) 15px 0; background: #0a0a0c;
-            border-bottom: 1px solid var(--border); z-index: 1000;
-        }
-        .header-group { display: flex; align-items: center; gap: 12px; }
-        .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); }
-        .brand-logo { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--accent); object-fit: cover; }
-        .page-name { font-size: 0.85rem; font-weight: 600; color: #888; letter-spacing: 1px; }
-
-        /* --- 10 核心主體 --- */
-        .mobi-main {
-            overflow-y: auto; overflow-x: hidden; padding: 15px;
-            -webkit-overflow-scrolling: touch; background: radial-gradient(circle at top, #111114 0%, #050507 100%);
-        }
-
-        /* 8-10 編輯器面板 */
-        .editor-box { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 15px; margin-bottom: 25px; }
-        .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .editor-toolbar { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 5px; }
-        .editor-toolbar::-webkit-scrollbar { display: none; }
+        :root { --primary: #0969da; --bg: #f6f8fa; --border: #d0d7de; --text: #24292f; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; margin: 0; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .card { background: white; border: 1px solid var(--border); border-radius: 6px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
         
-        .btn { 
-            background: #1a1a1d; border: 1px solid #333; color: #fff; padding: 8px 14px; 
-            border-radius: 10px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; white-space: nowrap;
-        }
-        .btn-accent { background: var(--accent); color: #000; border: none; font-weight: bold; }
-        .btn:active { transform: scale(0.95); }
+        /* 搜尋區塊 */
+        .search-box { display: flex; gap: 10px; }
+        input[type="text"] { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; }
+        button { background: #2da44e; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        button:hover { background: #2c974b; }
+        button:disabled { background: #94d3a2; cursor: not-allowed; }
 
-        #editor-input {
-            width: 100%; height: 220px; background: #000; color: var(--accent);
-            border: 1px solid #222; border-radius: 12px; padding: 12px;
-            font-family: 'Fira Code', monospace; font-size: 0.8rem; resize: none;
-        }
-        #preview-display {
-            width: 100%; min-height: 220px; background: #fff; color: #000;
-            border-radius: 12px; padding: 12px; display: none; overflow: auto;
-        }
-
-        /* 11-24 表格清單 */
-        .asset-section { margin-bottom: 30px; }
-        .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; padding: 0 5px; }
-        .section-title { font-size: 0.9rem; font-weight: bold; color: var(--text); border-left: 3px solid var(--accent); padding-left: 10px; }
-        .section-ops { font-size: 0.7rem; color: var(--accent); cursor: pointer; display: flex; gap: 10px; }
-
-        .data-table { background: var(--card); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; }
-        .data-row { 
-            display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; 
-            padding: 12px; border-bottom: 1px solid #1a1a1d; cursor: pointer;
-        }
-        .data-row:last-child { border-bottom: none; }
-        .data-row:active { background: #1a1a1d; }
-        .row-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--accent); }
-        .row-info { overflow: hidden; }
-        .row-name { font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .row-path { font-size: 0.6rem; color: #555; margin-top: 3px; font-family: monospace; }
-
-        /* 25 推薦網站 */
-        .recom-box { background: #0a0a0c; border: 1px dashed var(--border); border-radius: 15px; padding: 15px; margin-top: 20px; }
-
-        /* 26 版權 */
-        .copyright-area { text-align: center; padding: 30px 0; opacity: 0.5; font-size: 0.7rem; }
-
-        /* 27 底部導覽 */
-        .mobi-footer {
-            display: grid; grid-template-columns: repeat(5, 1fr);
-            background: rgba(10, 10, 12, 0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid var(--border); padding-bottom: var(--safe-bottom);
-        }
-        .nav-link { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #666; text-decoration: none; font-size: 0.65rem; gap: 5px; padding-top: 10px;
-        }
-        .nav-link.active { color: var(--accent); }
-        .nav-svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.5; }
-
-        /* 通用 SVG 容器 */
-        .svg-raw svg { width: 100%; height: 100%; }
+        /* 診斷儀表板 */
+        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; display: none; }
+        .stat-box { background: var(--bg); padding: 15px; border-radius: 6px; border: 1px solid var(--border); }
+        .stat-value { font-size: 24px; font-weight: bold; color: var(--primary); }
+        
+        /* 表格與預覽區 */
+        .layout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; display: none; }
+        @media (max-width: 800px) { .layout-grid { grid-template-columns: 1fr; } }
+        
+        .table-container { max-height: 600px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
+        th { background: #f3f4f6; position: sticky; top: 0; }
+        .action-btn { background: var(--primary); padding: 4px 8px; font-size: 12px; border-radius: 4px; }
+        
+        /* 程式碼預覽器 */
+        .preview-box { background: #0d1117; color: #c9d1d9; border-radius: 6px; display: flex; flex-direction: column; height: 600px; }
+        .preview-header { background: #161b22; padding: 10px; border-bottom: 1px solid #30363d; font-weight: bold; display: flex; justify-content: space-between; align-items: center;}
+        pre { margin: 0; padding: 15px; overflow: auto; flex: 1; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 13px; }
+        
+        .tag { display: inline-block; padding: 2px 8px; background: #ddf4ff; color: var(--primary); border-radius: 12px; font-size: 12px; margin-right: 5px; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-<div id="nexus-sync-app">
-    <header class="mobi-header">
-        <div class="header-group">
-            <div class="icon-btn" id="btn-1"><svg class="nav-svg" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
-            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" class="brand-logo" id="btn-2">
-            <span class="page-name" id="btn-3">NEXUS SYNC</span>
+<div class="container">
+    <div class="card">
+        <h2>🚀 GitHub 免 Token 深度分析與讀取器</h2>
+        <div class="search-box">
+            <input type="text" id="repoInput" placeholder="輸入 User/Repo (例如: facebook/react)">
+            <button id="scanBtn" onclick="runAnalysis()">開始分析與讀取</button>
         </div>
-        <div class="header-group">
-            <div class="icon-btn" id="btn-4"><svg class="nav-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
-            <div class="icon-btn" id="btn-5" onclick="Nexus.manualBackup()"><svg class="nav-svg" viewBox="0 0 24 24" stroke="var(--accent)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg></div>
-            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" class="brand-logo" id="btn-6">
+        <div id="statusMsg" style="margin-top: 10px; color: #57606a; font-size: 14px;"></div>
+    </div>
+
+    <div class="dashboard card" id="dashboard">
+        <div class="stat-box">
+            <div>⭐ Stars / 🍴 Forks</div>
+            <div class="stat-value" id="starFork">- / -</div>
         </div>
-    </header>
+        <div class="stat-box">
+            <div>🐞 Open Issues</div>
+            <div class="stat-value" id="issues">-</div>
+        </div>
+        <div class="stat-box">
+            <div>📜 授權與分支</div>
+            <div class="stat-value" id="licenseBranch" style="font-size: 18px; margin-top: 5px;">-</div>
+        </div>
+        <div class="stat-box">
+            <div>📥 原始碼下載</div>
+            <a id="downloadBtn" href="#" target="_blank" style="display:inline-block; margin-top:5px; padding: 5px 10px; background:#2da44e; color:white; text-decoration:none; border-radius:4px; font-weight:bold;">⬇️ 下載 ZIP</a>
+        </div>
+        <div class="stat-box" style="grid-column: 1 / -1;">
+            <div>💻 語言分佈</div>
+            <div id="langTags">-</div>
+        </div>
+    </div>
 
-    <main class="mobi-main">
-        <section class="editor-box">
-            <div class="editor-header">
-                <span class="section-title" id="btn-8">萬能編輯發佈器</span>
-                <div style="display:flex; gap:8px;">
-                    <button class="btn" id="btn-9" onclick="Nexus.togglePreview()">預覽</button>
-                    <button class="btn" id="btn-9-1">提供反饋</button>
-                </div>
-            </div>
-
-            <div class="editor-toolbar">
-                <button class="btn" id="btn-10-1">💬 備註</button>
-                <button class="btn" id="btn-10-2">📚 範本</button>
-                <button class="btn" id="btn-10-3">➕ 插入</button>
-                <select class="btn" id="btn-10-4"><option>發佈模式</option><option>編輯頁面</option></select>
-                <button class="btn btn-accent" id="btn-10-5">🚀 發佈</button>
-            </div>
-
-            <div id="editor-wrapper">
-                <textarea id="editor-input" placeholder="請輸入程式碼或內容..."></textarea>
-                <div id="preview-display"></div>
-            </div>
-
-            <div class="editor-toolbar" style="margin-top:15px; flex-wrap:nowrap;">
-                <button class="btn" id="btn-10-6">上傳</button>
-                <button class="btn" id="btn-10-7">下載</button>
-                <button class="btn" id="btn-10-8">格式</button>
-                <input type="text" class="btn" style="flex:1; text-align:left;" id="btn-10-9" placeholder="GitHub路徑...">
-                <button class="btn" id="btn-10-10">⚙️</button>
-            </div>
-        </section>
-
-        <div id="dynamic-list-root"></div>
-
-        <div class="recom-box">
-            <div class="section-head">
-                <span class="section-title">推薦網站連結清單</span>
-                <div class="section-ops" id="btn-25-1">新增 / 移除</div>
-            </div>
-            <div class="data-table" id="list-25">
-                <div class="data-row"><div class="row-icon">🔗</div><div class="row-info"><div class="row-name">GitHub Repository</div></div></div>
-            </div>
+    <div class="layout-grid card" id="mainContent">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>檔案路徑 (點擊預覽)</th>
+                        <th style="width: 80px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="fileList"></tbody>
+            </table>
         </div>
 
-        <div class="copyright-area" id="btn-26" onclick="location.href='https://mobsp.qzz.io'">
-            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" style="width:16px; border-radius:50%; vertical-align:middle; margin-right:5px;">
-            莫比空間 © 2026 • Moⲃjδpacϵ.
+        <div class="preview-box">
+            <div class="preview-header">
+                <span id="previewTitle">選擇檔案以預覽內容...</span>
+                <button onclick="copyCode()" class="action-btn" style="background:#238636;">複製內容</button>
+            </div>
+            <pre id="codePreview">// 這裡將直接從 raw.githubusercontent 讀取檔案內容
+// 完全不消耗 GitHub API 的限制額度！</pre>
         </div>
-    </main>
-
-    <nav class="mobi-footer">
-        <a href="#" class="nav-link active">
-            <svg class="nav-svg" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首頁
-        </a>
-        <a href="#" class="nav-link">
-            <svg class="nav-svg" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>檔案
-        </a>
-        <a href="#" class="nav-link">
-            <svg class="nav-svg" viewBox="0 0 24 24"><path d="M12 2v20m10-10H2"/></svg>工具庫
-        </a>
-        <a href="#" class="nav-link">
-            <svg class="nav-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>支援
-        </a>
-        <a href="#" class="nav-link">
-            <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33"/></svg>設定
-        </a>
-    </nav>
+    </div>
 </div>
 
 <script>
-const Nexus = {
-    config: {
-        user: "mobsp",
-        repo: "mobsp.github.io",
-        domain: "mobsp.qzz.io",
-        rawBase: "https://raw.githubusercontent.com/mobsp/mobsp.github.io/main"
-    },
+    let currentRawUrl = "";
 
-    sections: [
-        { id: '11', title: '頁面連結&路徑表格清單', path: '', filter: f => f.name.endsWith('.html') },
-        { id: '14', title: '檔案連結&路徑表格清單', path: '' },
-        { id: '17', title: 'SVG連結&路徑表格清單', path: 'assets/icon/svg' },
-        { id: '18', title: '圖片連結&路徑表格清單', path: 'assets/brand' },
-        { id: '19', title: '影片連結&路徑表格清單', json: 'data/shorts.json' },
-        { id: '21', title: '音樂連結&路徑表格清單', json: 'data/music.json' },
-        { id: '23', title: '文章列表表格清單', path: 'blog/p/list' },
-        { id: 'major', title: '主要頁面清單', path: '', filter: f => f.name === 'index.html' || f.name === 'README.md' }
-    ],
+    async function runAnalysis() {
+        const repo = document.getElementById('repoInput').value.trim();
+        if (!repo || !repo.includes('/')) return alert("請輸入正確的 User/Repo 格式");
 
-    async init() {
-        this.renderShell();
-        await this.loadAllData();
-        console.log("緹緹：初始化完成，老公辛苦了！☕");
-    },
+        const btn = document.getElementById('scanBtn');
+        const status = document.getElementById('statusMsg');
+        btn.disabled = true;
+        status.innerText = "⏳ 正在提取儲存庫診斷資料...";
 
-    renderShell() {
-        const root = document.getElementById('dynamic-list-root');
-        root.innerHTML = this.sections.map(s => `
-            <section class="asset-section" id="sec-${s.id}">
-                <div class="section-head">
-                    <span class="section-title">${s.title}</span>
-                    <div class="section-ops">
-                        <span id="view-${s.id}">View all</span>
-                        <span id="sort-${s.id}">⇅</span>
-                    </div>
-                </div>
-                <div class="data-table" id="body-${s.id}">
-                    <div style="padding:20px; font-size:0.7rem; color:#444;">讀取中...</div>
-                </div>
-            </section>
-        `).join('');
-    },
-
-    async loadAllData() {
-        for (const s of this.sections) {
-            if (s.json) {
-                this.fetchJson(s);
-            } else {
-                this.fetchGithub(s);
-            }
-        }
-    },
-
-    async fetchGithub(sec) {
         try {
-            const res = await fetch(`https://api.github.com/repos/${this.config.user}/${this.config.repo}/contents/${sec.path}`);
-            let data = await res.json();
-            if (sec.filter) data = data.filter(sec.filter);
-            
-            this.renderRows(sec.id, data.slice(0, 8));
-        } catch (e) { this.errorRow(sec.id); }
-    },
+            // 1. 獲取基本診斷資料 (消耗 1 次 API)
+            const repoRes = await fetch(`https://api.github.com/repos/${repo}`);
+            if (!repoRes.ok) throw new Error("找不到儲存庫或 API 限制已滿 (60次/小時)");
+            const repoData = await repoRes.json();
 
-    async fetchJson(sec) {
-        try {
-            const res = await fetch(`${this.config.rawBase}/${sec.json}`);
-            const data = await res.json();
-            const items = Array.isArray(data) ? data : (data.list || []);
-            this.renderRows(sec.id, items.slice(0, 8), true);
-        } catch (e) { this.errorRow(sec.id); }
-    },
+            // 2. 獲取語言資料 (消耗 1 次 API)
+            const langRes = await fetch(`https://api.github.com/repos/${repo}/languages`);
+            const langData = await langRes.ok ? await langRes.json() : {};
 
-    renderRows(id, items, isJson = false) {
-        const container = document.getElementById(`body-${id}`);
-        container.innerHTML = items.map(item => {
-            const name = item.name || item.title || "Unknown";
-            const path = item.path || item.url || "";
-            const paths = this.getTransformPaths(path);
-            const isSvg = name.endsWith('.svg');
+            // 3. 獲取完整檔案樹 (消耗 1 次 API)
+            const branch = repoData.default_branch;
+            const treeRes = await fetch(`https://api.github.com/repos/${repo}/git/trees/${branch}?recursive=1`);
+            const treeData = await treeRes.ok ? await treeRes.json() : { tree: [] };
 
-            return `
-                <div class="data-row" onclick="Nexus.handleRowClick('${path}')">
-                    <div class="row-icon" id="icon-${id}-${Math.random().toString(36).substr(2,5)}">
-                        ${isSvg ? '⏳' : this.getFileEmoji(name)}
-                    </div>
-                    <div class="row-info">
-                        <div class="row-name">${name}</div>
-                        <div class="row-path">${paths.abs}</div>
-                    </div>
-                    <div style="color:#222; font-size:0.6rem;">❯</div>
-                </div>
-            `;
-        }).join('');
+            updateDashboard(repoData, langData, repo, branch);
+            renderFiles(treeData.tree.filter(i => i.type === 'blob'), repo, branch);
 
-        // SVG 深度渲染
-        items.forEach(item => {
-            if (item.name && item.name.endsWith('.svg')) {
-                // 此處可擴充 Nexus.injectSVG 邏輯
-            }
-        });
-    },
+            document.getElementById('dashboard').style.display = "grid";
+            document.getElementById('mainContent').style.display = "grid";
+            status.innerText = "✅ 診斷與讀取完成！";
 
-    getTransformPaths(path) {
-        return {
-            abs: `https://${this.config.domain}/${path}`,
-            rel: `./${path}`,
-            root: `/${path}`,
-            github: `https://github.com/${this.config.user}/${this.config.repo}/blob/main/${path}`
-        };
-    },
-
-    getFileEmoji(n) {
-        if (n.endsWith('.html')) return '📄';
-        if (n.endsWith('.png') || n.endsWith('.jpg') || n.endsWith('.JPEG')) return '🖼️';
-        if (n.endsWith('.json')) return '📦';
-        if (n.endsWith('.mp3')) return '🎵';
-        if (n.endsWith('.mp4')) return '🎬';
-        return '📁';
-    },
-
-    togglePreview() {
-        const input = document.getElementById('editor-input');
-        const preview = document.getElementById('preview-display');
-        const btn = document.getElementById('btn-9');
-        if (input.style.display !== 'none') {
-            preview.innerHTML = input.value;
-            input.style.display = 'none';
-            preview.style.display = 'block';
-            btn.innerText = '編輯';
-        } else {
-            input.style.display = 'block';
-            preview.style.display = 'none';
-            btn.innerText = '預覽';
+        } catch (err) {
+            status.innerText = "❌ 錯誤: " + err.message;
+        } finally {
+            btn.disabled = false;
         }
-    },
-
-    manualBackup() {
-        const snapshot = document.body.innerHTML;
-        localStorage.setItem('nexus_backup_v1', snapshot);
-        alert('✅ 備份成功！最初版本已存入本地儲存庫。');
-    },
-
-    errorRow(id) {
-        document.getElementById(`body-${id}`).innerHTML = `<div style="padding:15px; color:#522;">連線失敗</div>`;
     }
-};
 
-window.onload = () => Nexus.init();
+    function updateDashboard(data, langs, repo, branch) {
+        document.getElementById('starFork').innerText = `${data.stargazers_count} / ${data.forks_count}`;
+        document.getElementById('issues').innerText = data.open_issues_count;
+        document.getElementById('licenseBranch').innerText = `${data.license ? data.license.spdx_id : '無授權'} | 分支: ${branch}`;
+        document.getElementById('downloadBtn').href = `https://github.com/${repo}/archive/refs/heads/${branch}.zip`;
+
+        const langContainer = document.getElementById('langTags');
+        langContainer.innerHTML = Object.keys(langs).map(lang => `<span class="tag">${lang}</span>`).join('') || '無數據';
+    }
+
+    function renderFiles(files, repo, branch) {
+        const tbody = document.getElementById('fileList');
+        tbody.innerHTML = "";
+
+        files.forEach(file => {
+            const rawUrl = `https://raw.githubusercontent.com/${repo}/${branch}/${file.path}`;
+            const tr = document.createElement('tr');
+            
+            tr.innerHTML = `
+                <td style="cursor:pointer; color:#0969da; text-decoration:underline;" onclick="previewFile('${file.path}', '${rawUrl}')">
+                    ./${file.path}
+                </td>
+                <td>
+                    <button class="action-btn" onclick="copyPath('./${file.path}')">路徑</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // 核心亮點：免 API 讀取檔案內容
+    async function previewFile(path, rawUrl) {
+        const previewTitle = document.getElementById('previewTitle');
+        const codePreview = document.getElementById('codePreview');
+        
+        previewTitle.innerText = `讀取中: ${path}...`;
+        codePreview.innerText = "Loading...";
+        currentRawUrl = rawUrl;
+
+        try {
+            // 直接抓取 Raw URL，這不會扣除 GitHub API Rate Limit!
+            const res = await fetch(rawUrl);
+            if (!res.ok) throw new Error("無法讀取檔案內容 (可能檔案過大或非文字檔)");
+            
+            const text = await res.text();
+            codePreview.innerText = text;
+            previewTitle.innerText = `📄 ${path}`;
+        } catch (err) {
+            codePreview.innerText = err.message;
+            previewTitle.innerText = `❌ 讀取失敗`;
+        }
+    }
+
+    function copyPath(text) {
+        navigator.clipboard.writeText(text);
+        alert("已複製路徑: " + text);
+    }
+
+    function copyCode() {
+        const code = document.getElementById('codePreview').innerText;
+        navigator.clipboard.writeText(code);
+        alert("檔案內容已複製！");
+    }
 </script>
 
 </body>
