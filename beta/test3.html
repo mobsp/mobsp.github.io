@@ -38,4 +38,135 @@
             cursor: pointer; width: 100%; max-width: 500px; font-size: 14px;
         }
 
-        /* 2. 「aA」自訂選單 (Popover
+        /* 2. 「aA」自訂選單 (Popover) */
+        .aa-menu {
+            position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
+            width: 320px; background: var(--secondary); border-radius: 18px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: none; z-index: 1000;
+            padding: 20px; border: 1px solid rgba(255,255,255,0.1);
+        }
+        .aa-menu.show { display: block; animation: popIn 0.2s ease-out; }
+        @keyframes popIn { from { opacity: 0; transform: translateX(-50%) scale(0.9); } to { opacity: 1; transform: translateX(-50%) scale(1); } }
+
+        .menu-row { display: flex; justify-content: space-between; margin-bottom: 15px; }
+        .size-btn { flex: 1; background: var(--bg); border: none; padding: 10px; margin: 0 5px; border-radius: 8px; cursor: pointer; color: var(--text); }
+        .theme-dot { width: 45px; height: 45px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
+        .theme-dot.active { border-color: var(--accent); }
+
+        /* 3. 閱讀器內容區 */
+        .reader-view {
+            max-width: var(--container-width); margin: 0 auto;
+            padding: 40px 20px 100px; line-height: var(--line-height);
+            font-size: var(--font-size); display: none;
+        }
+        .reader-view.active { display: block; animation: slideUp 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .reader-view h1 { font-size: 1.8em; font-weight: 800; margin-bottom: 10px; }
+        .reader-view img { max-width: 100%; border-radius: 12px; margin: 20px 0; }
+        
+        /* 原始網頁 (模擬) */
+        #original-web { padding: 20px; text-align: center; }
+        .ad-banner { background: #ffeded; padding: 50px; border: 2px dashed red; margin: 20px; }
+    </style>
+</head>
+<body data-theme="white">
+
+    <div class="address-bar">
+        <div class="reader-btn" onclick="toggleReaderMode()">
+            <i class="fa-solid fa-note-sticky"></i>
+            <span id="btn-text">顯示閱讀器</span>
+            <i class="fa-solid fa-ellipsis" style="margin-left: auto;" onclick="event.stopPropagation(); toggleAAMenu()"></i>
+        </div>
+    </div>
+
+    <div class="aa-menu" id="aaMenu">
+        <div class="menu-row">
+            <button class="size-btn" onclick="adjustFont(-2)">小 A</button>
+            <button class="size-btn" onclick="adjustFont(2)">大 A</button>
+        </div>
+        <div class="menu-row">
+            <div class="theme-dot" style="background:#fff;" onclick="setTheme('white', this)"></div>
+            <div class="theme-dot" style="background:#f4ecd8;" onclick="setTheme('sepia', this)"></div>
+            <div class="theme-dot" style="background:#323232;" onclick="setTheme('gray', this)"></div>
+            <div class="theme-dot" style="background:#000;" onclick="setTheme('black', this)"></div>
+        </div>
+        <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; font-size: 14px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                <span>字體</span><span style="color:var(--accent)">系統預設 ></span>
+            </div>
+        </div>
+    </div>
+
+    <div id="original-web">
+        <div class="ad-banner">廣告：立即點擊購買！</div>
+        <article id="main-article">
+            <h1>2026 年 Apple 生態系統大改版：Safari 閱讀器核心技術解析</h1>
+            <p>Safari 閱讀器一直是行動裝置瀏覽體驗的標竿。透過自動識別 DOM 結構中的正文區塊，它能有效地移除不必要的腳本與樣式。</p>
+            <img src="https://images.unsplash.com/photo-1510511459019-5dee997dd1db?auto=format&fit=crop&w=800" alt="科技概念圖">
+            <p>這項功能的成功在於其演算法。Apple 使用了啟發式分析來判斷哪些節點包含文章的核心內容，並將其重新渲染於一個隔離的環境中。</p>
+        </article>
+        <div class="ad-banner">廣告：這裡又是另一個側邊欄干擾</div>
+    </div>
+
+    <main class="reader-view" id="readerView">
+        </main>
+
+<script>
+    let isReaderMode = false;
+
+    // 1. 核心功能：開啟/關閉閱讀器
+    function toggleReaderMode() {
+        isReaderMode = !isReaderMode;
+        const web = document.getElementById('original-web');
+        const reader = document.getElementById('readerView');
+        const btnText = document.getElementById('btn-text');
+
+        if(isReaderMode) {
+            // 提取內容
+            const article = document.getElementById('main-article').cloneNode(true);
+            reader.innerHTML = article.innerHTML;
+            
+            web.style.display = 'none';
+            reader.classList.add('active');
+            btnText.innerText = '隱藏閱讀器';
+        } else {
+            web.style.display = 'block';
+            reader.classList.remove('active');
+            btnText.innerText = '顯示閱讀器';
+            document.getElementById('aaMenu').classList.remove('show');
+        }
+    }
+
+    // 2. 自訂介面：aA 選單切換
+    function toggleAAMenu() {
+        if(!isReaderMode) toggleReaderMode(); // 自動觸發進入閱讀器
+        document.getElementById('aaMenu').classList.toggle('show');
+    }
+
+    // 3. 自訂介面：字體調整
+    function adjustFont(delta) {
+        let currentSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--font-size'));
+        let newSize = currentSize + delta;
+        if(newSize >= 12 && newSize <= 40) {
+            document.documentElement.style.setProperty('--font-size', newSize + 'px');
+        }
+    }
+
+    // 4. 自訂介面：主題切換
+    function setTheme(theme, el) {
+        document.body.setAttribute('data-theme', theme);
+        document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
+        el.classList.add('active');
+    }
+
+    // 5. 隱藏干擾項目 (點擊背景關閉選單)
+    window.onclick = function(event) {
+        if (!event.target.closest('.aa-menu') && !event.target.closest('.reader-btn')) {
+            document.getElementById('aaMenu').classList.remove('show');
+        }
+    }
+</script>
+
+</body>
+</html>
