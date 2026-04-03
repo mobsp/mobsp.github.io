@@ -1,31 +1,34 @@
-name: Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync Auto Deploy
+# Deploy Workflow
+
+name: Deploy
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch: # 允許您在 Actions 頁面手動點擊執行
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: 📥 Checkout Code
-        uses: actions/checkout@v4
-
-      - name: 💉 Inject 5-Tokens Array
-        run: |
-          TOKEN_LIST='["${{ secrets.NEXUS_TOKEN_1 }}", "${{ secrets.NEXUS_TOKEN_2 }}", "${{ secrets.NEXUS_TOKEN_3 }}", "${{ secrets.NEXUS_TOKEN_4 }}", "${{ secrets.NEXUS_TOKEN_5 }}"]'
-          sed -i "s|TOKEN_ARRAY_PLACEHOLDER|$TOKEN_LIST|g" app/index.html
-          echo "✅ 5 Tokens successfully injected into app/index.html"
-
-      - name: 🚀 Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          folder: app
-          branch: gh-pages
-          token: ${{ secrets.GITHUB_TOKEN }}
-          clean: true
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Deploy to Production
+        run: | 
+          echo "Deploying..."
+          # Add your deployment commands here
