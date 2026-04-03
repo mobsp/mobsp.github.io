@@ -2,117 +2,105 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync</title>
     <style>
         :root {
             --bg: #050507; --card: #111114; --accent: #00ffc8; --text: #e2e8f0; --border: #22262e;
-            --header-h: 60px; --footer-h: 75px; /* 加高導覽列 */
-            --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom);
+            --header-h: 55px; --footer-h: 60px;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
         body, html { 
-            margin: 0; padding: 0; height: 100%; width: 100%; 
-            background: var(--bg); color: var(--text); 
+            height: 100%; width: 100%; background: var(--bg); color: var(--text); 
             font-family: -apple-system, sans-serif; overflow: hidden; 
         }
 
-        /* 核心佈局：確保導覽列在最頂層 */
+        /* 主容器 */
         #nexus-app {
-            display: grid;
-            grid-template-rows: calc(var(--header-h) + var(--safe-top)) 1fr calc(var(--footer-h) + var(--safe-bottom));
-            height: 100vh;
-            position: relative;
+            display: flex; flex-direction: column; height: 100vh; width: 100vw;
         }
 
-        /* 1-6 頁首 */
+        /* 1-6 頁首 (置頂) */
         .mobi-header {
+            height: var(--header-h); background: #0a0a0c;
             display: flex; justify-content: space-between; align-items: center;
-            padding: var(--safe-top) 15px 0; background: #0a0a0c;
-            border-bottom: 1px solid var(--border); z-index: 1001;
+            padding: 0 15px; border-bottom: 1px solid var(--border); flex-shrink: 0;
         }
-        .brand-logo { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--accent); object-fit: cover; }
+        .brand-logo { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--accent); }
 
-        /* 10 編輯器與內容區 */
+        /* 10 核心主體 (滾動區) */
         .mobi-main {
-            overflow-y: auto; overflow-x: hidden; padding: 20px 15px;
-            -webkit-overflow-scrolling: touch;
-            z-index: 1;
+            flex: 1; overflow-y: auto; overflow-x: hidden;
+            padding: 15px; -webkit-overflow-scrolling: touch;
         }
 
-        .editor-section { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 15px; margin-bottom: 25px; }
-        #editor-core {
-            width: 100%; height: 250px; background: #000; color: var(--accent);
-            border: 1px solid #333; border-radius: 12px; padding: 10px; font-family: monospace;
+        /* 編輯器 */
+        .editor-box { background: var(--card); border-radius: 15px; border: 1px solid var(--border); padding: 15px; margin-bottom: 20px; }
+        #editor-input {
+            width: 100%; height: 200px; background: #000; color: var(--accent);
+            border: 1px solid #333; border-radius: 10px; padding: 10px; font-size: 0.8rem;
         }
 
-        /* 11-24 清單樣式 */
-        .list-group { margin-bottom: 30px; }
-        .list-header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 12px; border-left: 4px solid var(--accent); padding-left: 10px;
-        }
-        .data-table { background: var(--card); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; }
+        /* 11-24 清單容器 */
+        .list-section { margin-bottom: 25px; }
+        .list-title { font-size: 0.85rem; font-weight: bold; margin-bottom: 10px; border-left: 3px solid var(--accent); padding-left: 8px; }
+        .data-table { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
         .data-row { 
-            display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; 
-            padding: 12px; border-bottom: 1px solid #1a1a1d; cursor: pointer;
+            display: grid; grid-template-columns: 40px 1fr 30px; align-items: center; 
+            padding: 12px; border-bottom: 1px solid #1a1a1d; font-size: 0.8rem;
         }
         .data-row:active { background: #1a1a1d; }
-        .row-name { font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .row-path { font-size: 0.65rem; color: #555; font-family: monospace; }
+        .row-meta { font-size: 0.6rem; color: #555; font-family: monospace; }
 
-        /* 27 底部導覽列 - 修復覆蓋問題 */
+        /* 27 底部導覽列 - 強制置底移除預留 */
         .mobi-footer {
+            height: var(--footer-h);
             display: grid; grid-template-columns: repeat(5, 1fr);
-            background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(15px);
-            border-top: 1px solid var(--border);
-            padding-bottom: var(--safe-bottom); /* 處理 iOS 底條 */
-            z-index: 2000; /* 確保在最前方 */
-            position: relative;
+            background: #000; border-top: 1px solid var(--border);
+            flex-shrink: 0; position: relative; bottom: 0;
         }
         .nav-item { 
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #666; font-size: 0.65rem; gap: 4px; padding-top: 10px; text-decoration: none;
+            color: #666; font-size: 0.6rem; gap: 4px; text-decoration: none;
         }
         .nav-item.active { color: var(--accent); }
-        .nav-svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+        .nav-svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.5; }
     </style>
 </head>
 <body>
 
 <div id="nexus-app">
     <header class="mobi-header">
-        <div style="display:flex; align-items:center; gap:10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
             <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.webp" class="brand-logo">
-            <span style="font-weight:bold; font-size:0.9rem;">Nexus Sync</span>
+            <span style="font-weight:bold; font-size:0.8rem;">Nexus Sync</span>
         </div>
-        <div id="btn-5" onclick="Nexus.manualBackup()" style="cursor:pointer;">
+        <div id="btn-5" onclick="Nexus.backup()" style="cursor:pointer;">
             <svg class="nav-svg" viewBox="0 0 24 24" stroke="var(--accent)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg>
         </div>
     </header>
 
-    <main class="mobi-main" id="main-scroll">
-        <section class="editor-section">
-            <div class="list-header"><span style="font-size:0.9rem; font-weight:bold;">10. 編輯核心</span></div>
-            <textarea id="editor-core" placeholder="在此編輯內容..."></textarea>
-            <div style="display:flex; gap:8px; margin-top:10px; overflow-x:auto;">
-                <button class="btn" onclick="Nexus.togglePreview()">9. 預覽/編輯</button>
-                <button class="btn" onclick="Nexus.publishToGithub()">10-5. 發佈/儲存</button>
+    <main class="mobi-main">
+        <section class="editor-box">
+            <div class="list-title">10. 編輯與發佈</div>
+            <textarea id="editor-input" placeholder="代碼編寫..."></textarea>
+            <div style="margin-top:10px; display:flex; gap:5px;">
+                <button onclick="Nexus.toggleView()" style="padding:5px 15px; background:var(--accent); color:#000; border:none; border-radius:5px; font-size:0.7rem; font-weight:bold;">9. 切換預覽</button>
             </div>
         </section>
 
-        <div id="dynamic-lists"></div>
+        <div id="render-lists"></div>
 
-        <div class="copyright" onclick="location.href='https://mobsp.qzz.io'" style="text-align:center; padding:20px; opacity:0.5; font-size:0.7rem;">
-            26. 莫比空間 © 2026
+        <div style="text-align:center; padding:20px; opacity:0.3; font-size:0.6rem;">
+            26. 莫比空間 © 2026 Nexus v2.1
         </div>
     </main>
 
     <nav class="mobi-footer">
         <a href="#" class="nav-item active"><svg class="nav-svg" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首頁</a>
         <a href="#" class="nav-item"><svg class="nav-svg" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>檔案</a>
-        <a href="#" class="nav-item"><svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06"/></svg>工具庫</a>
+        <a href="#" class="nav-item"><svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06"/></svg>工具</a>
         <a href="#" class="nav-item"><svg class="nav-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>支援</a>
         <a href="#" class="nav-item"><svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>設定</a>
     </nav>
@@ -120,109 +108,100 @@
 
 <script>
 const Nexus = {
-    config: {
+    env: {
         owner: "mobsp",
         repo: "mobsp.github.io",
         domain: "mobsp.qzz.io",
-        rawBase: "https://raw.githubusercontent.com/mobsp/mobsp.github.io/main"
+        raw: "https://raw.githubusercontent.com/mobsp/mobsp.github.io/main"
     },
 
-    // 定義所有讀取邏輯
+    // 定義 11-24 所有的讀取邏輯
     sections: [
-        { id: '11', title: '頁面連結清單', path: '', filter: f => f.name.endsWith('.html') },
-        { id: '14', title: '所有檔案清單', path: '' },
-        { id: '17', title: 'SVG 圖示庫', path: 'assets/icon/svg' },
-        { id: '18', title: '品牌圖片庫', path: 'assets/brand' },
-        { id: '19', title: '影片 (Shorts)', json: 'data/shorts.json' },
-        { id: '21', title: '音樂 (Music)', json: 'data/music.json' },
-        { id: '23', title: '文章列表 (Blog)', path: 'blog/p/list', filter: f => f.name.endsWith('.html') },
-        { id: 'extra', title: '主要頁面 (Index/README)', path: '', filter: f => f.name === 'index.html' || f.name === 'README.md' }
+        { id: '11', title: '根目錄 HTML 清單', path: '', filter: f => f.name.endsWith('.html') },
+        { id: '17', title: 'SVG 圖示資產', path: 'assets/icon/svg', filter: f => f.name.endsWith('.svg') },
+        { id: '18', title: '品牌圖片資產', path: 'assets/brand' },
+        { id: '23', title: 'Blog 文章列表', path: 'blog/p/list', filter: f => f.name.endsWith('.html') },
+        { id: 'data', title: '核心數據庫 (JSON)', path: 'data', filter: f => f.name.endsWith('.json') }
     ],
 
     async init() {
         this.renderShell();
-        await this.loadData();
-        // 5. 初始備份
-        if(!localStorage.getItem('nexus_initial_backup')) {
-            localStorage.setItem('nexus_initial_backup', document.getElementById('dynamic-lists').innerHTML);
-        }
+        await this.syncAll();
     },
 
     renderShell() {
-        document.getElementById('dynamic-lists').innerHTML = this.sections.map(s => `
-            <div class="list-group" id="sec-${s.id}">
-                <div class="list-header"><span class="list-title">${s.id}. ${s.title}</span></div>
-                <div class="data-table" id="body-${s.id}"><div style="padding:15px; font-size:0.7rem; opacity:0.5;">同步 GitHub 中...</div></div>
+        const root = document.getElementById('render-lists');
+        root.innerHTML = this.sections.map(s => `
+            <div class="list-section">
+                <div class="list-title">${s.id}. ${s.title}</div>
+                <div class="data-table" id="list-body-${s.id}"><div style="padding:15px; font-size:0.6rem;">🔄 同步中...</div></div>
             </div>
         `).join('');
     },
 
-    async loadData() {
-        for (const s of this.sections) {
+    async syncAll() {
+        for (const sec of this.sections) {
             try {
-                let items = [];
-                if (s.json) {
-                    const r = await fetch(`${this.config.rawBase}/${s.json}`);
-                    const d = await r.json();
-                    items = Array.isArray(d) ? d : (d.list || []);
-                } else {
-                    const r = await fetch(`https://api.github.com/repos/${this.config.owner}/${this.config.repo}/contents/${s.path}`);
-                    items = await r.json();
-                    if (s.filter) items = items.filter(s.filter);
-                }
-                this.renderRows(s.id, items);
+                const res = await fetch(`https://api.github.com/repos/${this.env.owner}/${this.env.repo}/contents/${sec.path}`);
+                let items = await res.json();
+                
+                // 強大讀取邏輯：過濾檔案並確保是 HTML 或指定類型
+                if (sec.filter) items = items.filter(sec.filter);
+                
+                this.renderItems(sec.id, items);
             } catch (e) {
-                document.getElementById(`body-${s.id}`).innerHTML = `<div style="padding:10px; color:#522;">連線超時</div>`;
+                document.getElementById(`list-body-${sec.id}`).innerHTML = `<div style="padding:10px; color:red;">讀取失敗</div>`;
             }
         }
     },
 
-    renderRows(id, items) {
-        const container = document.getElementById(`body-${id}`);
-        container.innerHTML = items.length ? items.map(item => {
-            const name = item.name || item.title || "未命名";
-            const path = item.path || item.url || "";
-            const absPath = path.startsWith('http') ? path : `https://${this.config.domain}/${path}`;
-            
+    renderItems(id, items) {
+        const container = document.getElementById(`list-body-${id}`);
+        if (!items.length) {
+            container.innerHTML = `<div style="padding:15px; font-size:0.6rem; color:#444;">無匹配內容</div>`;
+            return;
+        }
+        
+        container.innerHTML = items.map(item => {
+            const url = `https://${this.env.domain}/${item.path}`;
             return `
-                <div class="data-row" onclick="window.open('${absPath}', '_blank')">
-                    <div class="row-icon">${this.getIcon(name)}</div>
-                    <div class="row-info">
-                        <div class="row-name">${name}</div>
-                        <div class="row-path">${path}</div>
+                <div class="data-row" onclick="window.open('${url}', '_blank')">
+                    <div style="font-size:1rem;">${this.getIco(item.name)}</div>
+                    <div>
+                        <div style="font-weight:bold;">${item.name}</div>
+                        <div class="row-meta">${url}</div>
                     </div>
-                    <div style="font-size:0.6rem; color:#333;">❯</div>
+                    <div style="text-align:right; color:#222;">❯</div>
                 </div>
             `;
-        }).join('') : `<div style="padding:15px; font-size:0.7rem; color:#444;">目錄內無匹配檔案</div>`;
+        }).join('');
     },
 
-    getIcon(n) {
-        if (n.endsWith('.html')) return '📄';
-        if (n.endsWith('.svg')) return '🎨';
-        if (n.match(/\.(png|jpg|jpeg)$/i)) return '🖼️';
+    getIco(n) {
+        if(n.endsWith('.html')) return '📄';
+        if(n.endsWith('.svg')) return '🎨';
+        if(n.endsWith('.json')) return '📦';
         return '📁';
     },
 
-    manualBackup() {
-        const currentData = document.getElementById('dynamic-lists').innerHTML;
-        localStorage.setItem('nexus_manual_backup', currentData);
-        alert('✨ 5. 手動備份完成！已保存目前版本。');
+    backup() {
+        const snapshot = document.getElementById('render-lists').innerHTML;
+        localStorage.setItem('nexus_backup', JSON.stringify({
+            time: new Date().toLocaleString(),
+            html: snapshot
+        }));
+        alert('✅ 5. 已將讀取到的內容備份至 LocalStorage');
     },
 
-    togglePreview() {
-        const core = document.getElementById('editor-core');
-        if (core.style.background === 'rgb(255, 255, 255)') {
-            core.style.background = '#000';
-            core.style.color = 'var(--accent)';
-        } else {
-            core.style.background = '#fff';
-            core.style.color = '#000';
-        }
+    toggleView() {
+        const input = document.getElementById('editor-input');
+        input.style.background = (input.style.background === 'rgb(255, 255, 255)') ? '#000' : '#fff';
+        input.style.color = (input.style.color === 'rgb(0, 0, 0)') ? 'var(--accent)' : '#000';
     }
 };
 
 window.onload = () => Nexus.init();
 </script>
+
 </body>
 </html>
