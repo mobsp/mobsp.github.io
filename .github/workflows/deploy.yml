@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch: # 允許您在 Actions 頁面手動點擊執行
 
 jobs:
   build-and-deploy:
@@ -19,7 +20,7 @@ jobs:
         run: |
           TOKEN_LIST='["${{ secrets.NEXUS_TOKEN_1 }}", "${{ secrets.NEXUS_TOKEN_2 }}", "${{ secrets.NEXUS_TOKEN_3 }}", "${{ secrets.NEXUS_TOKEN_4 }}", "${{ secrets.NEXUS_TOKEN_5 }}"]'
           sed -i "s|TOKEN_ARRAY_PLACEHOLDER|$TOKEN_LIST|g" app/index.html
-          echo "✅ 5 Tokens successfully injected"
+          echo "✅ 5 Tokens successfully injected into app/index.html"
 
       - name: 🚀 Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
