@@ -5,386 +5,357 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>GitHub Ultra Indexer - visionOS Edition</title>
+    <title>GitHub Ultra Indexer - visionOS Dark</title>
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.4);
-            --glass-blur: 25px;
-            --glass-border: rgba(255, 255, 255, 0.5);
-            --ios-blue: #007AFF;
+            --ios-blue: #0A84FF;
+            --glass-bg: rgba(28, 28, 30, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* 動態流光背景 */
+        @keyframes flowingGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body.dark-mode {
+            background: linear-gradient(-45deg, #020617, #0f172a, #1e293b, #020617);
+            background-size: 400% 400%;
+            animation: flowingGradient 15s ease infinite;
+            --text-main: #ffffff;
+            --glass-bg: rgba(15, 23, 42, 0.8);
+        }
+
+        body.light-mode {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             --text-main: #1d1d1f;
+            --glass-bg: rgba(255, 255, 255, 0.6);
         }
 
-        /* 減少透明度模式 (設定切換用) */
-        .reduce-transparency {
-            --glass-bg: rgba(245, 245, 247, 0.95) !important;
-            --glass-blur: 0px !important;
-        }
-
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            -webkit-touch-callout: none;
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: -apple-system, sans-serif; }
 
         body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden; /* 禁止全域滾動 */
-            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-            color: var(--text-main);
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            overflow: hidden; color: var(--text-main);
         }
 
-        /* App 框架結構 */
         .app-container {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            padding-top: var(--safe-top);
-            padding-bottom: var(--safe-bottom);
+            display: flex; flex-direction: column; height: 100vh;
+            padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);
         }
 
-        /* 頂部固定 Header (Liquid Glass) */
-        header {
-            flex-shrink: 0;
-            height: 110px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-            -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-            border-bottom: 0.5px solid var(--glass-border);
-            z-index: 100;
-            padding: 10px 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        header, footer {
+            flex-shrink: 0; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            background: var(--glass-bg); border-bottom: 0.5px solid var(--glass-border);
+            z-index: 100; padding: 15px 20px;
         }
 
-        /* 中間滾動內容區 */
-        main {
-            flex-grow: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            padding: 15px;
+        footer { border-bottom: none; border-top: 0.5px solid var(--glass-border); display: flex; justify-content: space-around; }
+
+        main { flex-grow: 1; overflow-y: auto; padding: 15px; -webkit-overflow-scrolling: touch; }
+
+        /* 滑塊與選單 */
+        .controls-row { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .branch-slider {
+            display: flex; gap: 8px; overflow-x: auto; white-space: nowrap;
+            padding: 10px 0; -webkit-overflow-scrolling: touch;
+        }
+        .branch-item {
+            padding: 8px 16px; background: rgba(255,255,255,0.1);
+            border-radius: 20px; font-size: 13px; cursor: pointer;
+        }
+        .branch-item.active { background: var(--ios-blue); color: white; }
+
+        select {
+            background: var(--glass-bg); color: var(--text-main); border: 1px solid var(--glass-border);
+            padding: 10px; border-radius: 12px; width: 100%; margin-bottom: 15px; outline: none;
         }
 
-        /* 底部固定導航/狀態 */
-        footer {
-            flex-shrink: 0;
-            height: 60px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur));
-            -webkit-backdrop-filter: blur(var(--glass-blur));
-            border-top: 0.5px solid var(--glass-border);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding-bottom: 5px;
-        }
-
-        /* visionOS 懸浮卡片設計 */
+        /* 檔案清單表格 */
         .card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(var(--glass-blur));
+            background: var(--glass-bg); backdrop-filter: blur(20px);
+            border-radius: 20px; padding: 15px; margin-bottom: 15px;
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            margin-bottom: 20px;
-            padding: 20px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
-            transform: translateZ(0); /* 液態玻璃層次感 */
+        }
+        
+        .scroll-x { overflow-x: auto; width: 100%; }
+        table { width: 100%; border-collapse: collapse; min-width: 500px; }
+        th { text-align: left; font-size: 12px; opacity: 0.6; padding: 10px; border-bottom: 0.5px solid var(--glass-border); }
+        td { padding: 12px 10px; border-bottom: 0.5px solid rgba(255,255,255,0.05); font-size: 14px; }
+
+        .file-name-btn { color: var(--ios-blue); cursor: pointer; font-weight: 500; text-decoration: underline; }
+
+        /* 半屏視窗 (Info Modal) */
+        .half-modal {
+            position: fixed; bottom: -100%; left: 0; width: 100%; height: 60vh;
+            background: var(--glass-bg); backdrop-filter: blur(40px);
+            border-radius: 25px 25px 0 0; z-index: 2000;
+            transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            padding: 20px; display: flex; flex-direction: column;
+            border-top: 1px solid var(--glass-border);
+        }
+        .half-modal.active { bottom: 0; }
+        .modal-content { flex: 1; overflow-y: auto; padding-top: 10px; }
+
+        /* 設定彈窗 */
+        .settings-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--glass-bg); backdrop-filter: blur(50px);
+            z-index: 3000; display: none; flex-direction: column; padding: 50px 25px;
         }
 
-        .input-group {
-            display: flex;
-            background: rgba(0,0,0,0.05);
-            border-radius: 12px;
-            padding: 5px;
-            margin-bottom: 10px;
+        .btn-close {
+            background: rgba(255,255,255,0.1); border: none; color: var(--text-main);
+            padding: 15px; border-radius: 15px; width: 100%; margin-top: auto; font-weight: 600;
         }
 
-        input {
-            background: transparent;
-            border: none;
-            flex: 1;
-            padding: 10px;
-            outline: none;
-            font-size: 16px;
+        .copy-row {
+            background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px;
+            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
         }
-
-        button {
-            background: var(--ios-blue);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 8px 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        button:active { transform: scale(0.95); opacity: 0.8; }
-
-        /* 表格與左右滑動功能 */
-        .folder-group { margin-bottom: 30px; }
-        .folder-title { font-weight: 700; font-size: 18px; margin-bottom: 10px; color: var(--ios-blue); padding-left: 5px; }
-
-        .table-scroll-container {
-            width: 100%;
-            overflow-x: auto; /* 支援左右滑動檢視內容過長 */
-            background: rgba(255,255,255,0.3);
-            border-radius: 15px;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        table {
-            width: 100%;
-            min-width: 800px; /* 強制最小寬度確保可滑動 */
-            border-collapse: collapse;
-        }
-
-        th { text-align: left; padding: 12px; font-size: 12px; text-transform: uppercase; color: #666; border-bottom: 0.5px solid #ccc; }
-        td { padding: 12px; font-size: 13px; border-bottom: 0.5px solid rgba(0,0,0,0.05); white-space: nowrap; }
-
-        /* 分頁器 */
-        .pagination { display: flex; gap: 10px; align-items: center; justify-content: center; margin: 15px 0; }
-
-        /* 標籤設計 */
-        .tag {
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 10px;
-            font-weight: bold;
-            margin-right: 5px;
-            background: rgba(0,0,0,0.1);
-        }
-        .tag-html { background: #E34F26; color: white; }
-        .tag-pdf { background: #FF0000; color: white; }
-        .tag-js { background: #F7DF1E; color: black; }
-
-        /* 編輯器 Modal */
-        #editorModal {
-            position: fixed; top:0; left:0; width:100%; height:100%;
-            background: var(--glass-bg); backdrop-filter: blur(30px);
-            z-index: 1000; display: none; flex-direction: column;
-            padding: var(--safe-top) 20px;
-        }
-
-        textarea { flex: 1; width: 100%; margin: 20px 0; border-radius: 15px; border: 1px solid var(--glass-border); padding: 15px; font-family: monospace; }
-
-        .status-pill { background: rgba(0,0,0,0.1); padding: 5px 12px; border-radius: 20px; font-size: 12px; }
+        .copy-row code { font-size: 11px; color: #aaa; overflow: hidden; text-overflow: ellipsis; }
+        .tiny-btn { background: var(--ios-blue); border: none; color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; }
 
     </style>
 </head>
-<body id="appBody">
+<body class="dark-mode" id="appBody">
 
 <div class="app-container">
     <header>
-        <h2 style="margin:0; font-size: 20px;">🔍 GitHub Ultra Indexer</h2>
-        <div style="display: flex; gap: 10px; margin-top: 8px;">
-            <div class="status-pill" id="rateLimit">API: -- / 60</div>
-            <div class="status-pill" id="totalCount">📦 0 Files</div>
-            <div class="status-pill" onclick="toggleSettings()">⚙️ 設定</div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 style="margin:0; font-size: 18px;">Vision Indexer</h2>
+            <div id="rateLimit" style="font-size: 12px; opacity: 0.6;">API: -- / 60</div>
         </div>
     </header>
 
-    <main id="mainScroll">
+    <main>
         <section class="card">
-            <div class="input-group">
-                <input type="text" id="userInput" placeholder="使用者(逗號分隔), 如: mobsp, vuejs" value="mobsp">
-            </div>
+            <input type="text" id="userInput" placeholder="使用者(多位請用逗號隔開)" value="mobsp" 
+                style="width: 100%; background: rgba(0,0,0,0.2); border: none; padding: 12px; border-radius: 10px; color: white; margin-bottom: 10px;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button onclick="startBatchProcess()" id="mainBtn">⚡ 批量掃描全分支</button>
-                <button onclick="exportFullReport()" style="background:#34c759;">📥 匯出完整報告</button>
+                <button onclick="startBatchScan()" style="background: var(--ios-blue); border: none; color: white; padding: 12px; border-radius: 10px; font-weight: bold;">⚡ 批量掃描</button>
+                <button onclick="exportCSV()" style="background: #34C759; border: none; color: white; padding: 12px; border-radius: 10px; font-weight: bold;">📥 匯出報告</button>
             </div>
         </section>
 
-        <div id="displayArea"></div>
+        <select id="folderFilter" onchange="filterDisplay()">
+            <option value="ALL">📂 資料夾：全部顯示</option>
+            <option value="ROOT">📂 資料夾：根目錄</option>
+        </select>
+
+        <div class="branch-slider" id="branchSlider"></div>
+
+        <div id="tableArea"></div>
     </main>
 
     <footer>
-        <span onclick="window.scrollTo({top:0, behavior:'smooth'})">🏠 首頁</span>
-        <span onclick="toggleSettings()">🛠️ 設置</span>
-        <span id="scanStatus">Ready</span>
+        <div onclick="location.reload()">🏠 首頁</div>
+        <div onclick="openSettings()">⚙️ 設定</div>
+        <div id="statusLabel">Ready</div>
     </footer>
 </div>
 
-<div id="editorModal">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h3 id="editFileName">編輯檔案</h3>
-        <button onclick="closeEditor()" style="background:#ff3b30;">取消</button>
+<div id="infoModal" class="half-modal">
+    <div style="width: 40px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 15px;"></div>
+    <h3 id="modalFileName" style="margin: 0 0 15px 0;">檔案詳情</h3>
+    <div class="modal-content" id="modalContent"></div>
+    <button class="btn-close" onclick="closeModal()">關閉視窗</button>
+</div>
+
+<div id="settingsModal" class="settings-modal">
+    <h2>⚙️ 系統設定</h2>
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span>深色/流光模式</span>
+            <button onclick="toggleTheme()" id="themeBtn">已開啟</button>
+        </div>
     </div>
-    <input type="text" id="editFilePath" style="background: rgba(255,255,255,0.5); margin-top: 10px; border-radius: 8px;">
-    <textarea id="editContent"></textarea>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-        <button onclick="saveEdit()" style="background:var(--ios-blue);">💾 儲存並準備匯出</button>
-        <button onclick="downloadAs('txt')">📄 下載為 TXT</button>
+    <div class="card">
+        <p style="font-size: 13px; opacity: 0.6;">這款索引器採用 visionOS 設計語言。您可以調整 Liquid Glass 透明度與對比度。</p>
     </div>
+    <button class="btn-close" onclick="closeSettings()">儲存並返回</button>
 </div>
 
 <script>
-    let allFiles = []; // 格式: { user, repo, branch, path, type, url }
-    let currentPage = 1;
-    const itemsPerPage = 20;
+    let allFiles = []; 
+    let branches = [];
+    let folders = new Set();
+    let currentBranch = "";
 
-    // --- 核心功能：掃描引擎 ---
-
-    async function startBatchProcess() {
+    // --- 核心：批量掃描 ---
+    async function startBatchScan() {
         const users = document.getElementById('userInput').value.split(',').map(s => s.trim());
-        const display = document.getElementById('displayArea');
-        const btn = document.getElementById('mainBtn');
-        
+        const status = document.getElementById('statusLabel');
         allFiles = [];
-        display.innerHTML = "";
-        btn.disabled = true;
-        updateStatus("掃描中...");
-
+        folders = new Set();
+        
+        status.innerText = "掃描中...";
         try {
             for (let user of users) {
-                // 1. 抓取所有倉庫
-                const repoRes = await fetch(`https://api.github.com/users/${user}/repos?per_page=100`);
-                const repos = await repoRes.json();
-
+                const repos = await (await fetch(`https://api.github.com/users/${user}/repos`)).json();
                 for (let repo of repos) {
-                    // 2. 抓取該倉庫所有分支
-                    const branchRes = await fetch(`https://api.github.com/repos/${user}/${repo.name}/branches`);
-                    const branches = await branchRes.json();
-
-                    for (let branch of branches) {
-                        // 3. 遞迴抓取檔案樹
-                        const treeRes = await fetch(`https://api.github.com/repos/${user}/${repo.name}/git/trees/${branch.name}?recursive=1`);
-                        const treeData = await treeRes.json();
-
-                        if (treeData.tree) {
-                            treeData.tree.filter(i => i.type === 'blob').forEach(file => {
+                    const branchList = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/branches`)).json();
+                    for (let b of branchList) {
+                        const tree = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/git/trees/${b.name}?recursive=1`)).json();
+                        if (tree.tree) {
+                            tree.tree.filter(i => i.type === 'blob').forEach(f => {
+                                const folderPath = f.path.includes('/') ? f.path.substring(0, f.path.lastIndexOf('/')) : 'ROOT';
+                                folders.add(folderPath);
                                 allFiles.push({
-                                    user, repo: repo.name, branch: branch.name,
-                                    path: file.path, ext: file.path.split('.').pop().toUpperCase(),
-                                    raw: `https://raw.githubusercontent.com/${user}/${repo.name}/${branch.name}/${file.path}`
+                                    user, repo: repo.name, branch: b.name, path: f.path,
+                                    name: f.path.split('/').pop(),
+                                    fullUrl: `https://github.com/${user}/${repo.name}/blob/${b.name}/${f.path}`,
+                                    rawUrl: `https://raw.githubusercontent.com/${user}/${repo.name}/${b.name}/${f.path}`,
+                                    folder: folderPath
                                 });
                             });
                         }
-                        updateStatus(`已讀取: ${repo.name} (${branch.name})`);
-                        refreshStats();
                     }
                 }
             }
-            renderGroupedData();
+            updateFolderUI();
+            updateBranchUI();
+            filterDisplay();
+            status.innerText = "完成";
+            updateRateLimit();
         } catch (e) {
-            alert("API 限制或網路錯誤");
-        } finally {
-            btn.disabled = false;
+            alert("掃描失敗，請檢查 API 次數限制");
         }
     }
 
-    // --- 渲染引擎：依資料夾分組與分頁 ---
-
-    function renderGroupedData() {
-        const display = document.getElementById('displayArea');
-        display.innerHTML = "";
-
-        // 依資料夾分組
-        const groups = allFiles.reduce((acc, file) => {
-            const folder = file.path.includes('/') ? file.path.substring(0, file.path.lastIndexOf('/')) : '根目錄';
-            if (!acc[folder]) acc[folder] = [];
-            acc[folder].push(file);
-            return acc;
-        }, {});
-
-        Object.keys(groups).forEach(folder => {
-            const folderDiv = document.createElement('div');
-            folderDiv.className = 'folder-group';
-            folderDiv.innerHTML = `<div class="folder-title">📂 ${folder}</div>`;
-
-            const tableWrap = document.createElement('div');
-            tableWrap.className = 'table-scroll-container';
-            
-            const table = document.createElement('table');
-            table.innerHTML = `
-                <thead>
-                    <tr>
-                        <th>檔案 (全路徑)</th>
-                        <th>分支</th>
-                        <th>操作</th>
-                        <th>路徑複製</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${groups[folder].map(f => `
-                        <tr>
-                            <td><span class="tag tag-${f.ext.toLowerCase()}">${f.ext}</span> ${f.path.split('/').pop()}</td>
-                            <td><code style="font-size:10px;">${f.branch}</code></td>
-                            <td>
-                                <button onclick="openEditor('${f.raw}', '${f.path}')" style="font-size:10px; padding:4px;">編輯/下載</button>
-                            </td>
-                            <td style="color:#666; font-family:monospace;">./${f.path}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            `;
-            tableWrap.appendChild(table);
-            folderDiv.appendChild(tableWrap);
-            display.appendChild(folderDiv);
+    // --- UI 更新：資料夾與分支 ---
+    function updateFolderUI() {
+        const select = document.getElementById('folderFilter');
+        select.innerHTML = '<option value="ALL">📂 資料夾：全部顯示</option><option value="ROOT">📂 資料夾：根目錄</option>';
+        Array.from(folders).sort().forEach(f => {
+            if(f !== 'ROOT') select.innerHTML += `<option value="${f}">${f}</option>`;
         });
     }
 
-    // --- 編輯與匯出功能 ---
-
-    async function openEditor(rawUrl, path) {
-        document.getElementById('editFileName').innerText = path;
-        document.getElementById('editFilePath').value = path;
-        document.getElementById('editorModal').style.display = 'flex';
-        document.getElementById('editContent').value = "Loading content...";
-        
-        try {
-            const res = await fetch(rawUrl);
-            const text = await res.text();
-            document.getElementById('editContent').value = text;
-        } catch (e) {
-            document.getElementById('editContent').value = "無法讀取內容 (可能是二進位檔案或跨域限制)";
-        }
+    function updateBranchUI() {
+        const slider = document.getElementById('branchSlider');
+        const uniqueBranches = [...new Set(allFiles.map(f => f.branch))];
+        currentBranch = uniqueBranches[0] || "";
+        slider.innerHTML = uniqueBranches.map(b => `
+            <div class="branch-item ${b === currentBranch ? 'active' : ''}" onclick="switchBranch('${b}')">${b}</div>
+        `).join('');
     }
 
-    function closeEditor() { document.getElementById('editorModal').style.display = 'none'; }
+    function switchBranch(b) {
+        currentBranch = b;
+        updateBranchUI();
+        filterDisplay();
+    }
 
-    function downloadAs(format) {
-        const content = document.getElementById('editContent').value;
-        const fileName = document.getElementById('editFilePath').value.split('/').pop();
-        const blob = new Blob([content], { type: 'text/plain' });
+    // --- 顯示過濾後的表格 ---
+    function filterDisplay() {
+        const folderTarget = document.getElementById('folderFilter').value;
+        const targetArea = document.getElementById('tableArea');
+        
+        const filtered = allFiles.filter(f => 
+            f.branch === currentBranch && (folderTarget === 'ALL' || f.folder === folderTarget)
+        );
+
+        targetArea.innerHTML = `
+            <div class="card scroll-x">
+                <table>
+                    <thead>
+                        <tr><th>分支</th><th>檔案名稱</th><th>操作</th></tr>
+                    </thead>
+                    <tbody>
+                        ${filtered.map(f => `
+                            <tr>
+                                <td><code style="font-size:10px;">${f.branch}</code></td>
+                                <td class="file-name-btn" onclick="showFileInfo('${f.path}')">${f.name}</td>
+                                <td><button onclick="openEditor('${f.rawUrl}')" class="tiny-btn">編輯</button></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+    }
+
+    // --- 半屏詳情視窗內容 ---
+    function showFileInfo(path) {
+        const file = allFiles.find(f => f.path === path);
+        document.getElementById('modalFileName').innerText = file.name;
+        const content = document.getElementById('modalContent');
+        
+        const paths = [
+            { label: "絕對路徑", val: `/${file.path}` },
+            { label: "相對路徑", val: `./${file.path}` },
+            { label: "檔案路徑", val: file.path },
+            { label: "頁面連結", val: file.fullUrl },
+            { label: "Raw 連結", val: file.rawUrl }
+        ];
+
+        content.innerHTML = paths.map(p => `
+            <div class="copy-row">
+                <div>
+                    <div style="font-size:10px; opacity:0.5;">${p.label}</div>
+                    <code>${p.val}</code>
+                </div>
+                <div style="display:flex; gap:5px;">
+                    <button class="tiny-btn" onclick="copyText('${p.val}')">複製</button>
+                    ${p.label.includes('連結') ? `<button class="tiny-btn" style="background:#5856D6" onclick="window.open('${p.val}')">瀏覽</button>` : ''}
+                </div>
+            </div>
+        `).join('');
+
+        document.getElementById('infoModal').classList.add('active');
+    }
+
+    function closeModal() { document.getElementById('infoModal').classList.remove('active'); }
+
+    // --- 功能：複製、匯出、主題 ---
+    function copyText(text) {
+        navigator.clipboard.writeText(text);
+        alert("已複製到剪貼簿");
+    }
+
+    function exportCSV() {
+        if(allFiles.length === 0) return alert("請先進行掃描");
+        let csv = "User,Repo,Branch,Path,RawURL\n";
+        allFiles.forEach(f => {
+            csv += `${f.user},${f.repo},${f.branch},${f.path},${f.rawUrl}\n`;
+        });
+        const blob = new Blob([csv], { type: 'text/csv' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `${fileName}.${format}`;
+        a.download = `GitHub_Index_Report.csv`;
         a.click();
     }
 
-    // --- iOS & Liquid Glass 設定 ---
-
-    function toggleSettings() {
-        const isReduced = document.getElementById('appBody').classList.toggle('reduce-transparency');
-        alert(isReduced ? "已開啟：減少透明度" : "已開啟：液態玻璃效果");
+    function toggleTheme() {
+        const body = document.getElementById('appBody');
+        const btn = document.getElementById('themeBtn');
+        if(body.classList.contains('dark-mode')) {
+            body.classList.replace('dark-mode', 'light-mode');
+            btn.innerText = "切換為深色";
+        } else {
+            body.classList.replace('light-mode', 'dark-mode');
+            btn.innerText = "已開啟深色";
+        }
     }
 
-    function updateStatus(msg) { document.getElementById('scanStatus').innerText = msg; }
+    function openSettings() { document.getElementById('settingsModal').style.display = 'flex'; }
+    function closeSettings() { document.getElementById('settingsModal').style.display = 'none'; }
 
-    async function refreshStats() {
+    async function updateRateLimit() {
         const res = await fetch('https://api.github.com/rate_limit');
         const data = await res.json();
         document.getElementById('rateLimit').innerText = `API: ${data.rate.remaining} / 60`;
-        document.getElementById('totalCount').innerText = `📦 ${allFiles.length} Files`;
     }
 
-    // 禁止雙指縮放
-    document.addEventListener('touchstart', (e) => {
-        if (e.touches.length > 1) e.preventDefault();
-    }, { passive: false });
-
+    updateRateLimit();
 </script>
+
 </body>
 </html>
