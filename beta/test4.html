@@ -2,206 +2,207 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub 全方位診斷與內容讀取器 (No-Token)</title>
+    <title>GitHub儲存庫全域深度索引器</title>
     <style>
-        :root { --primary: #0969da; --bg: #f6f8fa; --border: #d0d7de; --text: #24292f; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; margin: 0; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .card { background: white; border: 1px solid var(--border); border-radius: 6px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        :root { --gh-blue: #0969da; --gh-bg: #f6f8fa; --border: #d0d7de; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: var(--gh-bg); margin: 0; padding: 20px; color: #24292f; }
+        .container { max-width: 1400px; margin: 0 auto; }
         
-        /* 搜尋區塊 */
-        .search-box { display: flex; gap: 10px; }
-        input[type="text"] { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; }
-        button { background: #2da44e; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        /* 控制面板 */
+        .panel { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-bottom: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .input-row { display: flex; gap: 10px; margin-bottom: 15px; }
+        input { flex: 1; padding: 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; }
+        button { background: #2da44e; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
         button:hover { background: #2c974b; }
-        button:disabled { background: #94d3a2; cursor: not-allowed; }
+        
+        /* 選擇器 */
+        .selector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        select { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: white; }
 
-        /* 診斷儀表板 */
-        .dashboard { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; display: none; }
-        .stat-box { background: var(--bg); padding: 15px; border-radius: 6px; border: 1px solid var(--border); }
-        .stat-value { font-size: 24px; font-weight: bold; color: var(--primary); }
-        
-        /* 表格與預覽區 */
-        .layout-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; display: none; }
-        @media (max-width: 800px) { .layout-grid { grid-template-columns: 1fr; } }
-        
-        .table-container { max-height: 600px; overflow-y: auto; border: 1px solid var(--border); border-radius: 6px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th, td { padding: 8px; border-bottom: 1px solid var(--border); text-align: left; }
-        th { background: #f3f4f6; position: sticky; top: 0; }
-        .action-btn { background: var(--primary); padding: 4px 8px; font-size: 12px; border-radius: 4px; }
-        
-        /* 程式碼預覽器 */
-        .preview-box { background: #0d1117; color: #c9d1d9; border-radius: 6px; display: flex; flex-direction: column; height: 600px; }
-        .preview-header { background: #161b22; padding: 10px; border-bottom: 1px solid #30363d; font-weight: bold; display: flex; justify-content: space-between; align-items: center;}
-        pre { margin: 0; padding: 15px; overflow: auto; flex: 1; font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 13px; }
-        
-        .tag { display: inline-block; padding: 2px 8px; background: #ddf4ff; color: var(--primary); border-radius: 12px; font-size: 12px; margin-right: 5px; margin-top: 5px; }
+        /* 狀態列 */
+        .stats { display: flex; gap: 20px; margin-bottom: 15px; font-size: 14px; color: #57606a; }
+        .limit-warn { color: #cf222e; font-weight: bold; }
+
+        /* 表格結構 */
+        .table-wrapper { background: white; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+        th { background: #f3f4f6; padding: 12px; text-align: left; border-bottom: 2px solid var(--border); }
+        td { padding: 10px; border-bottom: 1px solid var(--border); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        tr:hover { background: #fcfcfc; }
+
+        /* 標籤與按鈕 */
+        .copy-btn { padding: 2px 6px; font-size: 11px; cursor: pointer; background: #eee; border: 1px solid #ccc; border-radius: 3px; }
+        .copy-btn:active { background: #ddd; }
+        code { font-family: monospace; background: #eff1f3; padding: 2px 4px; border-radius: 4px; }
+        .link-tag { color: var(--gh-blue); text-decoration: none; font-weight: 500; }
+        .link-tag:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="card">
-        <h2>🚀 GitHub 免 Token 深度分析與讀取器</h2>
-        <div class="search-box">
-            <input type="text" id="repoInput" placeholder="輸入 User/Repo (例如: facebook/react)">
-            <button id="scanBtn" onclick="runAnalysis()">開始分析與讀取</button>
-        </div>
-        <div id="statusMsg" style="margin-top: 10px; color: #57606a; font-size: 14px;"></div>
-    </div>
-
-    <div class="dashboard card" id="dashboard">
-        <div class="stat-box">
-            <div>⭐ Stars / 🍴 Forks</div>
-            <div class="stat-value" id="starFork">- / -</div>
-        </div>
-        <div class="stat-box">
-            <div>🐞 Open Issues</div>
-            <div class="stat-value" id="issues">-</div>
-        </div>
-        <div class="stat-box">
-            <div>📜 授權與分支</div>
-            <div class="stat-value" id="licenseBranch" style="font-size: 18px; margin-top: 5px;">-</div>
-        </div>
-        <div class="stat-box">
-            <div>📥 原始碼下載</div>
-            <a id="downloadBtn" href="#" target="_blank" style="display:inline-block; margin-top:5px; padding: 5px 10px; background:#2da44e; color:white; text-decoration:none; border-radius:4px; font-weight:bold;">⬇️ 下載 ZIP</a>
-        </div>
-        <div class="stat-box" style="grid-column: 1 / -1;">
-            <div>💻 語言分佈</div>
-            <div id="langTags">-</div>
-        </div>
-    </div>
-
-    <div class="layout-grid card" id="mainContent">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>檔案路徑 (點擊預覽)</th>
-                        <th style="width: 80px;">操作</th>
-                    </tr>
-                </thead>
-                <tbody id="fileList"></tbody>
-            </table>
+    <div class="panel">
+        <h2>🔍 全域儲存庫深度索引掃描器</h2>
+        <div class="input-row">
+            <input type="text" id="username" placeholder="輸入 GitHub 使用者名稱 (例如: mobsp)" value="mobsp">
+            <button onclick="loadRepos()">1. 讀取所有儲存庫</button>
         </div>
 
-        <div class="preview-box">
-            <div class="preview-header">
-                <span id="previewTitle">選擇檔案以預覽內容...</span>
-                <button onclick="copyCode()" class="action-btn" style="background:#238636;">複製內容</button>
+        <div class="selector-grid">
+            <div>
+                <label>選擇儲存庫：</label>
+                <select id="repoSelect" onchange="loadBranches()">
+                    <option>-- 請先執行第一步 --</option>
+                </select>
             </div>
-            <pre id="codePreview">// 這裡將直接從 raw.githubusercontent 讀取檔案內容
-// 完全不消耗 GitHub API 的限制額度！</pre>
+            <div>
+                <label>選擇分支 (Branch)：</label>
+                <select id="branchSelect">
+                    <option>-- 請選擇儲存庫 --</option>
+                </select>
+            </div>
         </div>
+        
+        <button onclick="startDeepScan()" id="scanBtn" style="width: 100%; background: var(--gh-blue);">2. 開始全檔案深度索引</button>
+    </div>
+
+    <div class="stats">
+        <div id="fileCount">檔案總數: 0</div>
+        <div id="rateLimit">API 剩餘次數: 偵測中...</div>
+    </div>
+
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 20%;">檔案路徑 & 格式</th>
+                    <th style="width: 20%;">GitHub (HTTPS)</th>
+                    <th style="width: 20%;">原始內容 (Raw)</th>
+                    <th style="width: 20%;">相對路徑 (./)</th>
+                    <th style="width: 20%;">絕對路徑 (/)</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+                <tr><td colspan="5" style="text-align:center; padding: 40px; color: #888;">等待掃描指令...</td></tr>
+            </tbody>
+        </table>
     </div>
 </div>
 
 <script>
-    let currentRawUrl = "";
+    // 更新 API 剩餘次數 (Rate Limit)
+    async function checkRateLimit() {
+        try {
+            const res = await fetch('https://api.github.com/rate_limit');
+            const data = await res.json();
+            const remaining = data.rate.remaining;
+            const el = document.getElementById('rateLimit');
+            el.innerText = `API 剩餘次數: ${remaining} / 60`;
+            if (remaining < 10) el.className = 'limit-warn';
+        } catch (e) {}
+    }
+    checkRateLimit();
 
-    async function runAnalysis() {
-        const repo = document.getElementById('repoInput').value.trim();
-        if (!repo || !repo.includes('/')) return alert("請輸入正確的 User/Repo 格式");
+    // 1. 讀取使用者的所有公開儲存庫
+    async function loadRepos() {
+        const user = document.getElementById('username').value.trim();
+        const repoSelect = document.getElementById('repoSelect');
+        if (!user) return alert("請輸入名稱");
 
-        const btn = document.getElementById('scanBtn');
-        const status = document.getElementById('statusMsg');
-        btn.disabled = true;
-        status.innerText = "⏳ 正在提取儲存庫診斷資料...";
+        repoSelect.innerHTML = "<option>讀取中...</option>";
+        
+        try {
+            const res = await fetch(`https://api.github.com/users/${user}/repos?per_page=100&sort=updated`);
+            const repos = await res.json();
+            
+            repoSelect.innerHTML = repos.map(r => `<option value="${r.name}">${r.name} (⭐ ${r.stargazers_count})</option>`).join('');
+            loadBranches(); // 自動讀取第一個 repo 的分支
+            checkRateLimit();
+        } catch (e) {
+            alert("讀取失敗，可能是使用者不存在或 API 限制");
+        }
+    }
+
+    // 2. 讀取該儲存庫的所有分支
+    async function loadBranches() {
+        const user = document.getElementById('username').value.trim();
+        const repo = document.getElementById('repoSelect').value;
+        const branchSelect = document.getElementById('branchSelect');
+
+        branchSelect.innerHTML = "<option>讀取中...</option>";
 
         try {
-            // 1. 獲取基本診斷資料 (消耗 1 次 API)
-            const repoRes = await fetch(`https://api.github.com/repos/${repo}`);
-            if (!repoRes.ok) throw new Error("找不到儲存庫或 API 限制已滿 (60次/小時)");
-            const repoData = await repoRes.json();
+            const res = await fetch(`https://api.github.com/repos/${user}/${repo}/branches`);
+            const branches = await res.json();
+            branchSelect.innerHTML = branches.map(b => `<option value="${b.name}">${b.name}</option>`).join('');
+            checkRateLimit();
+        } catch (e) {
+            branchSelect.innerHTML = "<option>無法讀取分支</option>";
+        }
+    }
 
-            // 2. 獲取語言資料 (消耗 1 次 API)
-            const langRes = await fetch(`https://api.github.com/repos/${repo}/languages`);
-            const langData = await langRes.ok ? await langRes.json() : {};
+    // 3. 核心：深度掃描所有資料夾與檔案
+    async function startDeepScan() {
+        const user = document.getElementById('username').value.trim();
+        const repo = document.getElementById('repoSelect').value;
+        const branch = document.getElementById('branchSelect').value;
+        const tbody = document.getElementById('resultBody');
+        const btn = document.getElementById('scanBtn');
 
-            // 3. 獲取完整檔案樹 (消耗 1 次 API)
-            const branch = repoData.default_branch;
-            const treeRes = await fetch(`https://api.github.com/repos/${repo}/git/trees/${branch}?recursive=1`);
-            const treeData = await treeRes.ok ? await treeRes.json() : { tree: [] };
+        if (!repo || !branch) return alert("資訊不完整");
 
-            updateDashboard(repoData, langData, repo, branch);
-            renderFiles(treeData.tree.filter(i => i.type === 'blob'), repo, branch);
+        btn.disabled = true;
+        btn.innerText = "⏳ 深度檢索中... 請稍候...";
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;">正在遞迴所有層級檔案樹...</td></tr>`;
 
-            document.getElementById('dashboard').style.display = "grid";
-            document.getElementById('mainContent').style.display = "grid";
-            status.innerText = "✅ 診斷與讀取完成！";
+        try {
+            // 使用 git/trees 配合 recursive=1 強制抓取「所有資料夾」下的「所有格式」檔案
+            const res = await fetch(`https://api.github.com/repos/${user}/${repo}/git/trees/${branch}?recursive=1`);
+            const data = await res.json();
 
-        } catch (err) {
-            status.innerText = "❌ 錯誤: " + err.message;
+            if (!data.tree) throw new Error("GitHub 無法回傳樹狀結構，請確認專案是否為空");
+
+            const files = data.tree.filter(item => item.type === "blob");
+            document.getElementById('fileCount').innerText = `檔案總數: ${files.length}`;
+
+            tbody.innerHTML = "";
+            files.forEach(file => {
+                const path = file.path;
+                const ext = path.split('.').pop().toUpperCase(); // 取得副檔名
+                const httpsUrl = `https://github.com/${user}/${repo}/blob/${branch}/${path}`;
+                const rawUrl = `https://raw.githubusercontent.com/${user}/${repo}/${branch}/${path}`;
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td title="${path}">[${ext}] <strong>${path.split('/').pop()}</strong></td>
+                    <td><a href="${httpsUrl}" target="_blank" class="link-tag">🔗 檢視程式碼</a></td>
+                    <td><a href="${rawUrl}" target="_blank" class="link-tag" style="color:#6f42c1;">📄 Raw 內容</a></td>
+                    <td>
+                        <code>./${path}</code> 
+                        <button class="copy-btn" onclick="copyText('./${path}')">複製</button>
+                    </td>
+                    <td>
+                        <code>/${path}</code> 
+                        <button class="copy-btn" onclick="copyText('/${path}')">複製</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            checkRateLimit();
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">錯誤: ${e.message}</td></tr>`;
         } finally {
             btn.disabled = false;
+            btn.innerText = "2. 開始全檔案深度索引";
         }
     }
 
-    function updateDashboard(data, langs, repo, branch) {
-        document.getElementById('starFork').innerText = `${data.stargazers_count} / ${data.forks_count}`;
-        document.getElementById('issues').innerText = data.open_issues_count;
-        document.getElementById('licenseBranch').innerText = `${data.license ? data.license.spdx_id : '無授權'} | 分支: ${branch}`;
-        document.getElementById('downloadBtn').href = `https://github.com/${repo}/archive/refs/heads/${branch}.zip`;
-
-        const langContainer = document.getElementById('langTags');
-        langContainer.innerHTML = Object.keys(langs).map(lang => `<span class="tag">${lang}</span>`).join('') || '無數據';
-    }
-
-    function renderFiles(files, repo, branch) {
-        const tbody = document.getElementById('fileList');
-        tbody.innerHTML = "";
-
-        files.forEach(file => {
-            const rawUrl = `https://raw.githubusercontent.com/${repo}/${branch}/${file.path}`;
-            const tr = document.createElement('tr');
-            
-            tr.innerHTML = `
-                <td style="cursor:pointer; color:#0969da; text-decoration:underline;" onclick="previewFile('${file.path}', '${rawUrl}')">
-                    ./${file.path}
-                </td>
-                <td>
-                    <button class="action-btn" onclick="copyPath('./${file.path}')">路徑</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    // 核心亮點：免 API 讀取檔案內容
-    async function previewFile(path, rawUrl) {
-        const previewTitle = document.getElementById('previewTitle');
-        const codePreview = document.getElementById('codePreview');
-        
-        previewTitle.innerText = `讀取中: ${path}...`;
-        codePreview.innerText = "Loading...";
-        currentRawUrl = rawUrl;
-
-        try {
-            // 直接抓取 Raw URL，這不會扣除 GitHub API Rate Limit!
-            const res = await fetch(rawUrl);
-            if (!res.ok) throw new Error("無法讀取檔案內容 (可能檔案過大或非文字檔)");
-            
-            const text = await res.text();
-            codePreview.innerText = text;
-            previewTitle.innerText = `📄 ${path}`;
-        } catch (err) {
-            codePreview.innerText = err.message;
-            previewTitle.innerText = `❌ 讀取失敗`;
-        }
-    }
-
-    function copyPath(text) {
+    function copyText(text) {
         navigator.clipboard.writeText(text);
-        alert("已複製路徑: " + text);
-    }
-
-    function copyCode() {
-        const code = document.getElementById('codePreview').innerText;
-        navigator.clipboard.writeText(code);
-        alert("檔案內容已複製！");
+        // 簡單的視覺回饋
+        event.target.innerText = "已複製!";
+        setTimeout(() => event.target.innerText = "複製", 1000);
     }
 </script>
 
