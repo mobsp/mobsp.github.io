@@ -6,7 +6,7 @@
     <title>Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
+    <link rel="icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.webp">
     
     <style>
         :root {
@@ -116,13 +116,13 @@
     <header class="mobi-header">
         <div class="header-group">
             <div class="icon-btn" id="btn-1"><svg class="nav-svg" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
-            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" class="brand-logo" id="btn-2">
+            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.webp" class="brand-logo" id="btn-2">
             <span class="page-name" id="btn-3">NEXUS SYNC</span>
         </div>
         <div class="header-group">
             <div class="icon-btn" id="btn-4"><svg class="nav-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
             <div class="icon-btn" id="btn-5" onclick="Nexus.manualBackup()"><svg class="nav-svg" viewBox="0 0 24 24" stroke="var(--accent)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg></div>
-            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" class="brand-logo" id="btn-6">
+            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.webp" class="brand-logo" id="btn-6">
         </div>
     </header>
 
@@ -171,7 +171,7 @@
         </div>
 
         <div class="copyright-area" id="btn-26" onclick="location.href='https://mobsp.qzz.io'">
-            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" style="width:16px; border-radius:50%; vertical-align:middle; margin-right:5px;">
+            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.webp" style="width:16px; border-radius:50%; vertical-align:middle; margin-right:5px;">
             莫比空間 © 2026 • Moⲃjδpacϵ.
         </div>
     </main>
@@ -309,7 +309,7 @@ const Nexus = {
 
     getFileEmoji(n) {
         if (n.endsWith('.html')) return '📄';
-        if (n.endsWith('.png') || n.endsWith('.jpg') || n.endsWith('.JPEG')) return '🖼️';
+        if (n.endsWith('.webp') || n.endsWith('.webp') || n.endsWith('.webp')) return '🖼️';
         if (n.endsWith('.json')) return '📦';
         if (n.endsWith('.mp3')) return '🎵';
         if (n.endsWith('.mp4')) return '🎬';
