@@ -3,347 +3,424 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync | 莫比空間終極同步器</title>
+    <meta name="description" content="Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync - 專業的 GitHub 儲存庫同步與編輯管理工具。">
+    <meta name="theme-color" content="#050507">
     <link rel="icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
     
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
     <style>
+        /* [全局變數設定]
+          定義品牌黑金配色與 iOS 安全區域 (Safe Area) 適配
+        */
         :root {
-            --bg: #050507; --card: #111114; --accent: #00ffc8; --text: #e2e8f0; --border: #22262e;
-            --header-h: 60px; --footer-h: 70px;
-            --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom);
+            --bg: #050507; 
+            --card: #111114; 
+            --accent: #00ffc8; 
+            --text: #e2e8f0; 
+            --border: #22262e;
+            --header-h: 65px; 
+            --footer-h: 70px;
+            --safe-top: env(safe-area-inset-top); 
+            --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+        /* [基礎排版控制]
+          防止網頁縮放、隨意滑動，並實現中間區域獨立滾動
+        */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body, html { 
             margin: 0; padding: 0; height: 100%; width: 100%; 
             background: var(--bg); color: var(--text); 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow: hidden; /* 禁止全域滑動，僅中間滾動 */
+            overflow: hidden; /* 禁止全域滾動 */
         }
 
-        #nexus-sync-app {
-            display: grid;
-            grid-template-rows: calc(var(--header-h) + var(--safe-top)) 1fr calc(var(--footer-h) + var(--safe-bottom));
-            height: 100vh;
+        #nexus-app { 
+            display: grid; 
+            grid-template-rows: calc(var(--header-h) + var(--safe-top)) 1fr calc(var(--footer-h) + var(--safe-bottom)); 
+            height: 100vh; 
         }
 
-        /* --- 1-6 頁首導覽 --- */
-        .mobi-header {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: var(--safe-top) 15px 0; background: #0a0a0c;
-            border-bottom: 1px solid var(--border); z-index: 1000;
+        /* --- [圖1：1-6 頁首導覽] --- */
+        .mobi-header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: var(--safe-top) 15px 0; 
+            background: #0a0a0c; border-bottom: 1px solid var(--border); 
+            z-index: 1000;
         }
-        .header-group { display: flex; align-items: center; gap: 12px; }
-        .icon-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text); }
-        .brand-logo { width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--accent); object-fit: cover; }
-        .page-name { font-size: 0.85rem; font-weight: 600; color: #888; letter-spacing: 1px; }
+        .header-item { display: flex; align-items: center; gap: 10px; }
+        .brand-logo { width: 34px; height: 34px; border-radius: 50%; border: 1.5px solid var(--accent); object-fit: cover; cursor: pointer; }
+        .breadcrumb { font-size: 0.85rem; font-weight: 600; color: #fff; background: rgba(255,255,255,0.05); padding: 4px 10px; border-radius: 6px; }
 
-        /* --- 10 核心主體 --- */
-        .mobi-main {
-            overflow-y: auto; overflow-x: hidden; padding: 15px;
-            -webkit-overflow-scrolling: touch; background: radial-gradient(circle at top, #111114 0%, #050507 100%);
+        /* --- [中間內容滾動區塊] --- */
+        .mobi-main { 
+            overflow-y: auto; overflow-x: hidden; 
+            padding: 15px; 
+            -webkit-overflow-scrolling: touch; 
         }
 
-        /* 8-10 編輯器面板 */
-        .editor-box { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 15px; margin-bottom: 25px; }
-        .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .editor-toolbar { display: flex; gap: 8px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 5px; }
-        .editor-toolbar::-webkit-scrollbar { display: none; }
+        /* --- [圖1：8-10 萬能編輯器] --- */
+        .editor-section { 
+            background: var(--card); border-radius: 16px; border: 1px solid var(--border); 
+            padding: 15px; margin-bottom: 25px; 
+        }
+        .editor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .editor-ctrl-btns { display: flex; gap: 8px; }
         
-        .btn { 
-            background: #1a1a1d; border: 1px solid #333; color: #fff; padding: 8px 14px; 
-            border-radius: 10px; font-size: 0.75rem; cursor: pointer; transition: 0.2s; white-space: nowrap;
+        .editor-core { 
+            position: relative; width: 100%; border: 1px solid #2a2e35; border-radius: 12px; overflow: hidden;
+            background: #000;
         }
-        .btn-accent { background: var(--accent); color: #000; border: none; font-weight: bold; }
-        .btn:active { transform: scale(0.95); }
-
-        #editor-input {
-            width: 100%; height: 220px; background: #000; color: var(--accent);
-            border: 1px solid #222; border-radius: 12px; padding: 12px;
-            font-family: 'Fira Code', monospace; font-size: 0.8rem; resize: none;
+        #main-textarea { 
+            width: 100%; height: 220px; background: transparent; color: #fff; 
+            border: none; padding: 15px; font-family: 'Consolas', monospace; resize: none; outline: none;
         }
-        #preview-display {
-            width: 100%; min-height: 220px; background: #fff; color: #000;
-            border-radius: 12px; padding: 12px; display: none; overflow: auto;
+        #preview-box { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #fff; color: #000; display: none; overflow: auto; padding: 10px;
         }
 
-        /* 11-24 表格清單 */
-        .asset-section { margin-bottom: 30px; }
-        .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; padding: 0 5px; }
-        .section-title { font-size: 0.9rem; font-weight: bold; color: var(--text); border-left: 3px solid var(--accent); padding-left: 10px; }
-        .section-ops { font-size: 0.7rem; color: var(--accent); cursor: pointer; display: flex; gap: 10px; }
-
-        .data-table { background: var(--card); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; }
-        .data-row { 
-            display: grid; grid-template-columns: 40px 1fr 40px; align-items: center; 
-            padding: 12px; border-bottom: 1px solid #1a1a1d; cursor: pointer;
+        .editor-toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+        .btn-ui { 
+            background: #1a1a1d; color: var(--text); border: 1px solid #333; 
+            padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; cursor: pointer;
+            display: flex; align-items: center; gap: 5px; transition: 0.2s;
         }
-        .data-row:last-child { border-bottom: none; }
-        .data-row:active { background: #1a1a1d; }
-        .row-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: var(--accent); }
-        .row-info { overflow: hidden; }
-        .row-name { font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .row-path { font-size: 0.6rem; color: #555; margin-top: 3px; font-family: monospace; }
+        .btn-ui:active { transform: scale(0.95); background: #222; }
+        .btn-accent { background: var(--accent); color: #000; font-weight: bold; border: none; }
 
-        /* 25 推薦網站 */
-        .recom-box { background: #0a0a0c; border: 1px dashed var(--border); border-radius: 15px; padding: 15px; margin-top: 20px; }
+        .editor-footer-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .input-ui { background: #000; border: 1px solid #333; border-radius: 8px; color: #fff; padding: 10px; font-size: 0.75rem; width: 100%; }
 
-        /* 26 版權 */
-        .copyright-area { text-align: center; padding: 30px 0; opacity: 0.5; font-size: 0.7rem; }
+        /* --- [11-24 表格清單樣式] --- */
+        .asset-section { margin-bottom: 20px; }
+        .section-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 0 5px; }
+        .section-title { font-size: 0.85rem; font-weight: bold; color: #aaa; }
+        .view-all-btn { font-size: 0.7rem; color: var(--accent); cursor: pointer; }
 
-        /* 27 底部導覽 */
-        .mobi-footer {
-            display: grid; grid-template-columns: repeat(5, 1fr);
-            background: rgba(10, 10, 12, 0.95); backdrop-filter: blur(10px);
-            border-top: 1px solid var(--border); padding-bottom: var(--safe-bottom);
+        .table-body { 
+            background: var(--card); border: 1px solid var(--border); border-radius: 14px; 
+            overflow: hidden; transition: 0.3s;
         }
-        .nav-link { 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #666; text-decoration: none; font-size: 0.65rem; gap: 5px; padding-top: 10px;
+        .list-item { 
+            display: flex; align-items: center; padding: 14px; border-bottom: 1px solid #1a1a1d; 
+            cursor: pointer; position: relative;
         }
-        .nav-link.active { color: var(--accent); }
-        .nav-svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.5; }
+        .list-item:active { background: #1a1a1d; }
+        .item-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+        .item-detail { flex: 1; margin-left: 12px; overflow: hidden; }
+        .item-name { font-size: 0.8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .item-link { font-size: 0.65rem; color: #555; margin-top: 2px; display: block; }
 
-        /* 通用 SVG 容器 */
-        .svg-raw svg { width: 100%; height: 100%; }
+        /* --- [圖2：25-27 頁尾] --- */
+        .recommends { background: #0a0a0c; border: 1px dashed #333; border-radius: 12px; padding: 15px; margin-top: 20px; }
+        .copyright-area { text-align: center; padding: 30px 0; opacity: 0.6; cursor: pointer; }
+
+        .mobi-footer { 
+            display: grid; grid-template-columns: repeat(5, 1fr); 
+            background: #0a0a0c; border-top: 1px solid var(--border); 
+            padding-bottom: var(--safe-bottom);
+        }
+        .nav-item { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            font-size: 0.65rem; color: #666; gap: 4px; border: none; background: none; cursor: pointer;
+        }
+        .nav-item.active { color: var(--accent); }
+        .svg-icon { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+
+        /* --- 下拉選單樣式 --- */
+        .select-ui { background: #1a1a1d; color: #fff; border: 1px solid #333; border-radius: 8px; padding: 8px; font-size: 0.75rem; }
+
+        /* 隱藏滾動條 */
+        ::-webkit-scrollbar { width: 0; }
     </style>
 </head>
 <body>
 
-<div id="nexus-sync-app">
+<div id="nexus-app">
     <header class="mobi-header">
-        <div class="header-group">
-            <div class="icon-btn" id="btn-1"><svg class="nav-svg" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg></div>
-            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" class="brand-logo" id="btn-2">
-            <span class="page-name" id="btn-3">NEXUS SYNC</span>
+        <div class="header-item">
+            <div class="btn-ui" id="menu-btn">
+                <svg class="svg-icon" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+            </div>
+            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" class="brand-logo" onclick="location.href='/'">
+            <div class="breadcrumb">Nexus Explorer</div>
         </div>
-        <div class="header-group">
-            <div class="icon-btn" id="btn-4"><svg class="nav-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></div>
-            <div class="icon-btn" id="btn-5" onclick="Nexus.manualBackup()"><svg class="nav-svg" viewBox="0 0 24 24" stroke="var(--accent)"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg></div>
-            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" class="brand-logo" id="btn-6">
+        <div class="header-item">
+            <svg class="svg-icon" style="width:18px;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <div class="btn-ui" onclick="Core.saveBackup()" title="資料備份">
+                <svg class="svg-icon" style="width:18px;" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4m4-5 5 5 5-5m-5 5V3"/></svg>
+            </div>
+            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" class="brand-logo" onclick="location.reload()">
         </div>
     </header>
 
     <main class="mobi-main">
-        <section class="editor-box">
+        <section class="editor-section">
             <div class="editor-header">
-                <span class="section-title" id="btn-8">萬能編輯發佈器</span>
-                <div style="display:flex; gap:8px;">
-                    <button class="btn" id="btn-9" onclick="Nexus.togglePreview()">預覽</button>
-                    <button class="btn" id="btn-9-1">提供反饋</button>
+                <span class="section-title">萬能編輯發佈器</span>
+                <div class="editor-ctrl-btns">
+                    <button class="btn-ui" onclick="Core.togglePreview()">預覽</button>
+                    <button class="btn-ui" onclick="Core.openFeedback()">提供反饋</button>
                 </div>
             </div>
 
+            <div class="editor-core">
+                <textarea id="main-textarea" placeholder="在此輸入代碼或文章內容..."></textarea>
+                <div id="preview-box"></div>
+            </div>
+
             <div class="editor-toolbar">
-                <button class="btn" id="btn-10-1">💬 備註</button>
-                <button class="btn" id="btn-10-2">📚 範本</button>
-                <button class="btn" id="btn-10-3">➕ 插入</button>
-                <select class="btn" id="btn-10-4"><option>發佈模式</option><option>編輯頁面</option></select>
-                <button class="btn btn-accent" id="btn-10-5">🚀 發佈</button>
+                <button class="btn-ui">💬 留言</button>
+                <button class="btn-ui" onclick="Core.openModal('templates')">📚 範本</button>
+                <button class="btn-ui">➕ 插入</button>
+                <select class="select-ui"><option>發佈模式</option><option>編輯模式</option></select>
+                <button class="btn-ui btn-accent">🚀 發送/儲存</button>
             </div>
 
-            <div id="editor-wrapper">
-                <textarea id="editor-input" placeholder="請輸入程式碼或內容..."></textarea>
-                <div id="preview-display"></div>
+            <div class="editor-toolbar">
+                <button class="btn-ui">上傳檔案</button>
+                <select class="select-ui"><option>下載格式</option></select>
+                <select class="select-ui"><option>編輯格式</option></select>
             </div>
 
-            <div class="editor-toolbar" style="margin-top:15px; flex-wrap:nowrap;">
-                <button class="btn" id="btn-10-6">上傳</button>
-                <button class="btn" id="btn-10-7">下載</button>
-                <button class="btn" id="btn-10-8">格式</button>
-                <input type="text" class="btn" style="flex:1; text-align:left;" id="btn-10-9" placeholder="GitHub路徑...">
-                <button class="btn" id="btn-10-10">⚙️</button>
+            <div class="editor-footer-inputs">
+                <input type="text" class="input-ui" placeholder="填入 GitHub Pages 發佈路徑...">
+                <select class="select-ui"><option>自定義 & 進階設定</option></select>
             </div>
         </section>
 
-        <div id="dynamic-list-root"></div>
+        <div id="dynamic-lists"></div>
 
-        <div class="recom-box">
-            <div class="section-head">
+        <section class="recommends">
+            <div class="section-info">
                 <span class="section-title">推薦網站連結清單</span>
-                <div class="section-ops" id="btn-25-1">新增 / 移除</div>
+                <span class="view-all-btn">+ 新增連結</span>
             </div>
-            <div class="data-table" id="list-25">
-                <div class="data-row"><div class="row-icon">🔗</div><div class="row-info"><div class="row-name">GitHub Repository</div></div></div>
+            <div id="recommend-body" class="table-body">
+                <div class="list-item">
+                    <div class="item-icon">🔗</div>
+                    <div class="item-detail"><span class="item-name">GitHub Official</span></div>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <div class="copyright-area" id="btn-26" onclick="location.href='https://mobsp.qzz.io'">
-            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" style="width:16px; border-radius:50%; vertical-align:middle; margin-right:5px;">
-            莫比空間 © 2026 • Moⲃjδpacϵ.
+        <div class="copyright-area" onclick="location.href='https://mobsp.qzz.io'">
+            <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" style="width:24px; border-radius:50%; vertical-align:middle; margin-right:8px;">
+            <span style="font-size:0.75rem;">莫比空間 © 2026 • Moⲃjδpacϵ.</span>
         </div>
     </main>
 
     <nav class="mobi-footer">
-        <a href="#" class="nav-link active">
-            <svg class="nav-svg" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>首頁
-        </a>
-        <a href="#" class="nav-link">
-            <svg class="nav-svg" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>檔案
-        </a>
-        <a href="#" class="nav-link">
-            <svg class="nav-svg" viewBox="0 0 24 24"><path d="M12 2v20m10-10H2"/></svg>工具庫
-        </a>
-        <a href="#" class="nav-link">
-            <svg class="nav-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>支援
-        </a>
-        <a href="#" class="nav-link">
-            <svg class="nav-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33"/></svg>設定
-        </a>
+        <button class="nav-item active">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+            首頁
+        </button>
+        <button class="nav-item">
+            <svg class="nav-svg" style="width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2;" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            索引頁
+        </button>
+        <button class="nav-item">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            工具庫
+        </button>
+        <button class="nav-item">
+            <svg class="svg-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+            支援
+        </button>
+        <button class="nav-item">
+            <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+            設定
+        </button>
     </nav>
 </div>
 
+<div id="full-modal" style="position:fixed; top:0; left:0; width:100%; height:100%; background:var(--bg); z-index:9999; display:none; padding:40px 20px;">
+    <div class="editor-header">
+        <span id="modal-title" class="section-title">全屏視窗</span>
+        <button class="btn-ui" onclick="Core.closeModal()">關閉退出</button>
+    </div>
+    <div id="modal-content" style="margin-top:20px;"></div>
+</div>
+
 <script>
-const Nexus = {
-    config: {
-        user: "mobsp",
-        repo: "mobsp.github.io",
-        domain: "mobsp.qzz.io",
-        rawBase: "https://raw.githubusercontent.com/mobsp/mobsp.github.io/main"
-    },
+    /**
+     * [Core 系統核心邏輯]
+     * 處理 GitHub API 讀取、路徑轉換、備份以及 UI 交互
+     */
+    const Core = {
+        config: {
+            owner: "mobsp",
+            repo: "mobsp.github.io",
+            domain: "mobsp.qzz.io",
+            baseApi: "https://api.github.com/repos/mobsp/mobsp.github.io/contents/"
+        },
 
-    sections: [
-        { id: '11', title: '頁面連結&路徑表格清單', path: '', filter: f => f.name.endsWith('.html') },
-        { id: '14', title: '檔案連結&路徑表格清單', path: '' },
-        { id: '17', title: 'SVG連結&路徑表格清單', path: 'assets/icon/svg' },
-        { id: '18', title: '圖片連結&路徑表格清單', path: 'assets/brand' },
-        { id: '19', title: '影片連結&路徑表格清單', json: 'data/shorts.json' },
-        { id: '21', title: '音樂連結&路徑表格清單', json: 'data/music.json' },
-        { id: '23', title: '文章列表表格清單', path: 'blog/p/list' },
-        { id: 'major', title: '主要頁面清單', path: '', filter: f => f.name === 'index.html' || f.name === 'README.md' }
-    ],
+        // [清單定義] 按照草圖 11-24 以及追加項進行配置
+        sections: [
+            { id: "11", name: "頁面連結表格", path: "" },
+            { id: "14", name: "檔案連結表格", path: "" },
+            { id: "17", name: "SVG連結表格", path: "assets/icon/svg" },
+            { id: "18", name: "圖片連結表格", path: "assets/brand" },
+            { id: "19", name: "影片連結表格", path: "data/shorts.json", isJson: true },
+            { id: "21", name: "音樂連結表格", path: "data/music.json", isJson: true },
+            { id: "23", name: "文章列表表格", path: "blog/p/list" },
+            { id: "major", name: "主要頁面 (Index/README)", path: "root_major" }
+        ],
 
-    async init() {
-        this.renderShell();
-        await this.loadAllData();
-        console.log("緹緹：初始化完成，老公辛苦了！☕");
-    },
+        async init() {
+            console.log("Ⲙ𝔬ⲃⳝ𝔭 Nexus Sync 初始化中...");
+            this.renderContainers();
+            this.fetchAllData();
+        },
 
-    renderShell() {
-        const root = document.getElementById('dynamic-list-root');
-        root.innerHTML = this.sections.map(s => `
-            <section class="asset-section" id="sec-${s.id}">
-                <div class="section-head">
-                    <span class="section-title">${s.title}</span>
-                    <div class="section-ops">
-                        <span id="view-${s.id}">View all</span>
-                        <span id="sort-${s.id}">⇅</span>
+        // 渲染 HTML 容器結構
+        renderContainers() {
+            const container = document.getElementById('dynamic-lists');
+            container.innerHTML = this.sections.map(s => `
+                <section class="asset-section">
+                    <div class="section-info">
+                        <span class="section-title">${s.name}</span>
+                        <div style="display:flex; gap:10px;">
+                            <span class="view-all-btn" onclick="Core.viewAll('${s.id}')">View all</span>
+                            <span class="view-all-btn">⇅</span>
+                        </div>
                     </div>
-                </div>
-                <div class="data-table" id="body-${s.id}">
-                    <div style="padding:20px; font-size:0.7rem; color:#444;">讀取中...</div>
-                </div>
-            </section>
-        `).join('');
-    },
+                    <div id="list-body-${s.id}" class="table-body">
+                        <div style="padding:20px; font-size:0.7rem; color:#444;">正在讀取數據...</div>
+                    </div>
+                </section>
+            `).join('');
+        },
 
-    async loadAllData() {
-        for (const s of this.sections) {
-            if (s.json) {
-                this.fetchJson(s);
-            } else {
-                this.fetchGithub(s);
+        // [GitHub API 讀取邏輯加強]
+        async fetchAllData() {
+            for (const sec of this.sections) {
+                const bodyEl = document.getElementById(`list-body-${sec.id}`);
+                try {
+                    let items = [];
+                    if (sec.isJson) {
+                        // 處理 JSON 格式 (影片、音樂)
+                        const res = await fetch(`https://raw.githubusercontent.com/${this.config.owner}/${this.config.repo}/main/${sec.path}`);
+                        const json = await res.json();
+                        items = Array.isArray(json) ? json : (json.list || []);
+                    } else if (sec.path === "root_major") {
+                        // 追加項：主要頁面邏輯
+                        const res = await fetch(this.config.baseApi);
+                        const all = await res.json();
+                        items = all.filter(f => f.name === 'index.html' || f.name === 'README.md');
+                    } else {
+                        // 一般目錄讀取
+                        const res = await fetch(this.config.baseApi + sec.path);
+                        items = await res.json();
+                    }
+
+                    this.renderList(sec.id, items, sec.isJson);
+                } catch (err) {
+                    bodyEl.innerHTML = `<div style="padding:15px; color:red; font-size:0.7rem;">讀取失敗: ${err.message}</div>`;
+                }
             }
-        }
-    },
+        },
 
-    async fetchGithub(sec) {
-        try {
-            const res = await fetch(`https://api.github.com/repos/${this.config.user}/${this.config.repo}/contents/${sec.path}`);
-            let data = await res.json();
-            if (sec.filter) data = data.filter(sec.filter);
-            
-            this.renderRows(sec.id, data.slice(0, 8));
-        } catch (e) { this.errorRow(sec.id); }
-    },
+        // [路徑轉換邏輯] 符合使用者要求之多種格式顯示
+        renderList(id, data, isJson) {
+            const bodyEl = document.getElementById(`list-body-${id}`);
+            if (!data || data.length === 0) {
+                bodyEl.innerHTML = `<div style="padding:15px; color:#444;">目錄為空</div>`;
+                return;
+            }
 
-    async fetchJson(sec) {
-        try {
-            const res = await fetch(`${this.config.rawBase}/${sec.json}`);
-            const data = await res.json();
-            const items = Array.isArray(data) ? data : (data.list || []);
-            this.renderRows(sec.id, items.slice(0, 8), true);
-        } catch (e) { this.errorRow(sec.id); }
-    },
+            bodyEl.innerHTML = data.slice(0, 10).map(item => {
+                const name = isJson ? (item.title || item.name) : item.name;
+                const path = isJson ? item.url : item.path;
+                
+                // 生成不同格式的路徑
+                const absUrl = isJson ? path : `https://${this.config.domain}/${path}`;
+                const relUrl = `./${path}`;
 
-    renderRows(id, items, isJson = false) {
-        const container = document.getElementById(`body-${id}`);
-        container.innerHTML = items.map(item => {
-            const name = item.name || item.title || "Unknown";
-            const path = item.path || item.url || "";
-            const paths = this.getTransformPaths(path);
-            const isSvg = name.endsWith('.svg');
-
-            return `
-                <div class="data-row" onclick="Nexus.handleRowClick('${path}')">
-                    <div class="row-icon" id="icon-${id}-${Math.random().toString(36).substr(2,5)}">
-                        ${isSvg ? '⏳' : this.getFileEmoji(name)}
-                    </div>
-                    <div class="row-info">
-                        <div class="row-name">${name}</div>
-                        <div class="row-path">${paths.abs}</div>
+                return `
+                <div class="list-item" onclick="Core.selectItem('${absUrl}')">
+                    <div class="item-icon">${this.getIcon(name)}</div>
+                    <div class="item-detail">
+                        <span class="item-name">${name}</span>
+                        <span class="item-link">${absUrl}</span>
                     </div>
                     <div style="color:#222; font-size:0.6rem;">❯</div>
-                </div>
-            `;
-        }).join('');
+                </div>`;
+            }).join('');
+        },
 
-        // SVG 深度渲染
-        items.forEach(item => {
-            if (item.name && item.name.endsWith('.svg')) {
-                // 此處可擴充 Nexus.injectSVG 邏輯
+        getIcon(name) {
+            const ext = name.split('.').pop().toLowerCase();
+            if (ext === 'html') return '📄';
+            if (ext === 'svg') return '🎨';
+            if (['jpg','png','jpeg','gif'].includes(ext)) return '🖼️';
+            if (['mp4','mov'].includes(ext)) return '🎬';
+            if (['mp3','wav'].includes(ext)) return '🎵';
+            return '📁';
+        },
+
+        // [功能功能] 備份機制 (第5項)
+        saveBackup() {
+            const content = document.getElementById('main-textarea').value;
+            const timestamp = new Date().toLocaleString();
+            const backup = { content, time: timestamp };
+            localStorage.setItem('mobi_backup_v1', JSON.stringify(backup));
+            alert(`[系統提示] 版本已備份成功！\n時間：${timestamp}`);
+        },
+
+        // 預覽切換 (第9項)
+        togglePreview() {
+            const area = document.getElementById('main-textarea');
+            const box = document.getElementById('preview-box');
+            if (box.style.display === 'none') {
+                box.innerHTML = area.value; // 簡單渲染，若是代碼可進一步渲染
+                box.style.display = 'block';
+            } else {
+                box.style.display = 'none';
             }
-        });
-    },
+        },
 
-    getTransformPaths(path) {
-        return {
-            abs: `https://${this.config.domain}/${path}`,
-            rel: `./${path}`,
-            root: `/${path}`,
-            github: `https://github.com/${this.config.user}/${this.config.repo}/blob/main/${path}`
-        };
-    },
+        // 全屏彈窗控制
+        openModal(type) {
+            const modal = document.getElementById('full-modal');
+            const title = document.getElementById('modal-title');
+            const content = document.getElementById('modal-content');
+            
+            modal.style.display = 'block';
+            if (type === 'templates') {
+                title.innerText = "範本庫管理";
+                content.innerHTML = `<div class="btn-ui" style="width:100%; margin-bottom:10px;">預設 HTML5 範本</div><div class="btn-ui" style="width:100%;">文章 Markdown 範本</div>`;
+            }
+        },
 
-    getFileEmoji(n) {
-        if (n.endsWith('.html')) return '📄';
-        if (n.endsWith('.png') || n.endsWith('.jpg') || n.endsWith('.JPEG')) return '🖼️';
-        if (n.endsWith('.json')) return '📦';
-        if (n.endsWith('.mp3')) return '🎵';
-        if (n.endsWith('.mp4')) return '🎬';
-        return '📁';
-    },
+        closeModal() {
+            document.getElementById('full-modal').style.display = 'none';
+        },
 
-    togglePreview() {
-        const input = document.getElementById('editor-input');
-        const preview = document.getElementById('preview-display');
-        const btn = document.getElementById('btn-9');
-        if (input.style.display !== 'none') {
-            preview.innerHTML = input.value;
-            input.style.display = 'none';
-            preview.style.display = 'block';
-            btn.innerText = '編輯';
-        } else {
-            input.style.display = 'block';
-            preview.style.display = 'none';
-            btn.innerText = '預覽';
+        openFeedback() {
+            this.openModal('feedback');
+            document.getElementById('modal-title').innerText = "反饋給莫比空間";
+            document.getElementById('modal-content').innerHTML = `
+                <input type="text" class="input-ui" placeholder="您的郵件..." style="margin-bottom:15px;">
+                <textarea class="input-ui" style="height:150px;" placeholder="請輸入您的建議..."></textarea>
+                <button class="btn-ui btn-accent" style="width:100%; margin-top:20px;">送出反饋</button>
+            `;
         }
-    },
+    };
 
-    manualBackup() {
-        const snapshot = document.body.innerHTML;
-        localStorage.setItem('nexus_backup_v1', snapshot);
-        alert('✅ 備份成功！最初版本已存入本地儲存庫。');
-    },
+    // 初始化系統
+    window.onload = () => Core.init();
 
-    errorRow(id) {
-        document.getElementById(`body-${id}`).innerHTML = `<div style="padding:15px; color:#522;">連線失敗</div>`;
-    }
-};
-
-window.onload = () => Nexus.init();
+    // 防止 iOS 橡皮筋效應，但允許中間區域滾動
+    document.addEventListener('touchmove', (e) => {
+        if (!e.target.closest('.mobi-main') && !e.target.closest('#full-modal')) {
+            e.preventDefault();
+        }
+    }, { passive: false });
 </script>
 
 </body>
