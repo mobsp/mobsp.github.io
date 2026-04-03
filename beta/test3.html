@@ -2,171 +2,170 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Safari Reader Mode Engine</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ | Advanced Reader Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #ffffff;
-            --text: #1a1a1a;
-            --secondary: #f2f2f7;
-            --accent: #007aff;
-            --font-size: 19px;
-            --line-height: 1.6;
-            --container-width: 700px;
-            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --bg: #ffffff; --text: #1a1a1a; --accent: #007aff;
+            --font-size: 19px; --font-family: "PingFang TC", sans-serif;
+            --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        /* 主題定義 */
-        [data-theme="sepia"] { --bg: #f4ecd8; --text: #5b4636; --secondary: #e8dfc4; }
-        [data-theme="gray"] { --bg: #323232; --text: #e0e0e0; --secondary: #3f3f3f; }
-        [data-theme="black"] { --bg: #000000; --text: #d1d1d1; --secondary: #1c1c1e; }
-
-        * { box-sizing: border-box; transition: background 0.3s, color 0.3s; }
-        body, html { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: var(--font-family); }
-
-        /* 1. 仿 Safari 網址列 (Reader Trigger) */
-        .address-bar {
-            position: sticky; top: 0; z-index: 100;
-            height: 60px; background: var(--bg);
-            display: flex; align-items: center; justify-content: center;
-            border-bottom: 1px solid rgba(0,0,0,0.1); padding: 0 15px;
-        }
-        .reader-btn {
-            background: var(--secondary); border-radius: 10px;
-            padding: 8px 15px; display: flex; align-items: center; gap: 10px;
-            cursor: pointer; width: 100%; max-width: 500px; font-size: 14px;
+        /* 1. 強制鎖定視窗，禁止隨意滑動與縮放 */
+        html, body { 
+            height: 100%; width: 100%; margin: 0; padding: 0; 
+            overflow: hidden; position: fixed; /* 鎖死主視窗 */
+            background: var(--bg); color: var(--text);
+            font-family: var(--font-family);
+            -webkit-text-size-adjust: 100%; /* 禁止自動縮放文字 */
         }
 
-        /* 2. 「aA」自訂選單 (Popover) */
-        .aa-menu {
-            position: fixed; top: 70px; left: 50%; transform: translateX(-50%);
-            width: 320px; background: var(--secondary); border-radius: 18px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2); display: none; z-index: 1000;
-            padding: 20px; border: 1px solid rgba(255,255,255,0.1);
+        /* 2. 獨立滾動閱讀區 (具備阻尼感) */
+        .reader-scroller {
+            height: 100%; width: 100%;
+            overflow-y: scroll; -webkit-overflow-scrolling: touch;
+            padding: 40px 20px 200px; /* 底部預留操作區空間 */
+            overscroll-behavior-y: contain;
+            box-sizing: border-box;
         }
-        .aa-menu.show { display: block; animation: popIn 0.2s ease-out; }
-        @keyframes popIn { from { opacity: 0; transform: translateX(-50%) scale(0.9); } to { opacity: 1; transform: translateX(-50%) scale(1); } }
+        .reader-container { max-width: 700px; margin: 0 auto; line-height: 1.7; }
+        .reader-container h1 { font-size: 1.8em; margin-bottom: 20px; line-height: 1.3; }
 
-        .menu-row { display: flex; justify-content: space-between; margin-bottom: 15px; }
-        .size-btn { flex: 1; background: var(--bg); border: none; padding: 10px; margin: 0 5px; border-radius: 8px; cursor: pointer; color: var(--text); }
-        .theme-dot { width: 45px; height: 45px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; }
-        .theme-dot.active { border-color: var(--accent); }
-
-        /* 3. 閱讀器內容區 */
-        .reader-view {
-            max-width: var(--container-width); margin: 0 auto;
-            padding: 40px 20px 100px; line-height: var(--line-height);
-            font-size: var(--font-size); display: none;
+        /* 3. 底部固定操作區 */
+        .bottom-controls {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding: 15px 20px calc(15px + var(--safe-bottom));
+            z-index: 2000;
+            display: flex; flex-direction: column; gap: 15px;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
         }
-        .reader-view.active { display: block; animation: slideUp 0.4s cubic-bezier(0.1, 0.9, 0.2, 1); }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-        .reader-view h1 { font-size: 1.8em; font-weight: 800; margin-bottom: 10px; }
-        .reader-view img { max-width: 100%; border-radius: 12px; margin: 20px 0; }
+        .control-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
         
-        /* 原始網頁 (模擬) */
-        #original-web { padding: 20px; text-align: center; }
-        .ad-banner { background: #ffeded; padding: 50px; border: 2px dashed red; margin: 20px; }
+        /* 下拉選單樣式優化 */
+        select {
+            flex: 1; padding: 10px; border-radius: 12px; border: 1px solid rgba(0,0,0,0.1);
+            background: var(--bg); color: var(--text); font-size: 14px; outline: none;
+        }
+
+        .icon-btn { 
+            background: rgba(0,0,0,0.05); border: none; width: 44px; height: 44px; 
+            border-radius: 50%; cursor: pointer; color: var(--text);
+        }
+
+        /* 主題與特殊狀態 */
+        [data-theme="dark"] { --bg: #000; --text: #d1d1d1; }
+        [data-theme="dark"] .bottom-controls { background: rgba(20, 20, 20, 0.9); border-top-color: #333; }
     </style>
 </head>
-<body data-theme="white">
+<body>
 
-    <div class="address-bar">
-        <div class="reader-btn" onclick="toggleReaderMode()">
-            <i class="fa-solid fa-note-sticky"></i>
-            <span id="btn-text">顯示閱讀器</span>
-            <i class="fa-solid fa-ellipsis" style="margin-left: auto;" onclick="event.stopPropagation(); toggleAAMenu()"></i>
-        </div>
-    </div>
-
-    <div class="aa-menu" id="aaMenu">
-        <div class="menu-row">
-            <button class="size-btn" onclick="adjustFont(-2)">小 A</button>
-            <button class="size-btn" onclick="adjustFont(2)">大 A</button>
-        </div>
-        <div class="menu-row">
-            <div class="theme-dot" style="background:#fff;" onclick="setTheme('white', this)"></div>
-            <div class="theme-dot" style="background:#f4ecd8;" onclick="setTheme('sepia', this)"></div>
-            <div class="theme-dot" style="background:#323232;" onclick="setTheme('gray', this)"></div>
-            <div class="theme-dot" style="background:#000;" onclick="setTheme('black', this)"></div>
-        </div>
-        <div style="border-top: 1px solid rgba(0,0,0,0.1); padding-top: 15px; font-size: 14px;">
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <span>字體</span><span style="color:var(--accent)">系統預設 ></span>
-            </div>
-        </div>
-    </div>
-
-    <div id="original-web">
-        <div class="ad-banner">廣告：立即點擊購買！</div>
-        <article id="main-article">
-            <h1>2026 年 Apple 生態系統大改版：Safari 閱讀器核心技術解析</h1>
-            <p>Safari 閱讀器一直是行動裝置瀏覽體驗的標竿。透過自動識別 DOM 結構中的正文區塊，它能有效地移除不必要的腳本與樣式。</p>
-            <img src="https://images.unsplash.com/photo-1510511459019-5dee997dd1db?auto=format&fit=crop&w=800" alt="科技概念圖">
-            <p>這項功能的成功在於其演算法。Apple 使用了啟發式分析來判斷哪些節點包含文章的核心內容，並將其重新渲染於一個隔離的環境中。</p>
+    <div class="reader-scroller">
+        <article class="reader-container" id="content-root">
+            <h1>2026 數位閱讀器：字體與交互的極致演進</h1>
+            <p>這是一段測試文字。本系統已鎖定視窗縮放，確保在行動裝置上擁有穩定的原生 App 觸感。您可以透過下方的面板自定義 30 種不同的字體組合。</p>
+            <p>在工程實作上，我們使用了 CSS 變數來即時驅動 UI 變更，不需重新整理頁面。這讓字體切換如同在 iOS 系統設定中一樣流暢。</p>
+            <hr style="opacity: 0.1; margin: 40px 0;">
+            <p>以下是更多段落，用於測試滾動流暢度。我們使用了 overscroll-behavior 來防止滾動溢出，即使快速滑動也不會觸發瀏覽器的下拉刷新。</p>
+            <p>測試字體效果：ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz 1234567890</p>
         </article>
-        <div class="ad-banner">廣告：這裡又是另一個側邊欄干擾</div>
     </div>
 
-    <main class="reader-view" id="readerView">
-        </main>
+    <div class="bottom-controls">
+        <div class="control-row">
+            <button class="icon-btn" onclick="adjustFont(-2)"><i class="fa-solid fa-minus"></i></button>
+            <span id="fs-display" style="font-weight:bold; font-size:14px;">19px</span>
+            <button class="icon-btn" onclick="adjustFont(2)"><i class="fa-solid fa-plus"></i></button>
+            <div style="width: 20px;"></div>
+            <button class="icon-btn" onclick="toggleDarkMode()"><i class="fa-solid fa-moon"></i></button>
+        </div>
 
-<script>
-    let isReaderMode = false;
+        <div class="control-row">
+            <select id="font-selector" onchange="changeFont(this.value)">
+                <optgroup label="── 繁體中文 (10) ──">
+                    <option value="'PingFang TC', sans-serif">1. 萍方 (預設)</option>
+                    <option value="'Microsoft JhengHei', sans-serif">2. 微軟正黑體</option>
+                    <option value="'STKaiti', 'DFKai-SB', serif">3. 標準楷體</option>
+                    <option value="'LiHei Pro', sans-serif">4. 儷黑 Pro</option>
+                    <option value="'Apple LiGothic', sans-serif">5. 蘋果儷中黑</option>
+                    <option value="'Heiti TC', sans-serif">6. 黑體-繁</option>
+                    <option value="'GenYoGothic TW', sans-serif">7. 源樣黑體</option>
+                    <option value="'GenWanMin TW', serif">8. 源雲明體</option>
+                    <option value="'BiauKai', serif">9. 標楷體</option>
+                    <option value="'PMingLiU', serif">10. 新細明體</option>
+                </optgroup>
+                <optgroup label="── 英文設計 (10) ──">
+                    <option value="Helvetica, Arial, sans-serif">1. Helvetica</option>
+                    <option value="'Times New Roman', serif">2. Times New Roman</option>
+                    <option value="'Georgia', serif">3. Georgia</option>
+                    <option value="'Verdana', sans-serif">4. Verdana</option>
+                    <option value="'Courier New', monospace">5. Courier New</option>
+                    <option value="'Avenir Next', sans-serif">6. Avenir Next</option>
+                    <option value="'Baskerville', serif">7. Baskerville</option>
+                    <option value="'Futura', sans-serif">8. Futura</option>
+                    <option value="'Optima', sans-serif">9. Optima</option>
+                    <option value="'Palatino', serif">10. Palatino</option>
+                </optgroup>
+                <optgroup label="── 通用/系統 (10) ──">
+                    <option value="system-ui">1. 系統預設 UI</option>
+                    <option value="sans-serif">2. 標準無襯線</option>
+                    <option value="serif">3. 標準襯線體</option>
+                    <option value="monospace">4. 等寬字體</option>
+                    <option value="cursive">5. 手寫體</option>
+                    <option value="fantasy">6. 裝飾體</option>
+                    <option value="-apple-system">7. Apple System</option>
+                    <option value="'Segoe UI'">8. Segoe UI</option>
+                    <option value="'Roboto'">9. Roboto (Android)</option>
+                    <option value="'Noto Sans TC'">10. Noto Sans TC</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
 
-    // 1. 核心功能：開啟/關閉閱讀器
-    function toggleReaderMode() {
-        isReaderMode = !isReaderMode;
-        const web = document.getElementById('original-web');
-        const reader = document.getElementById('readerView');
-        const btnText = document.getElementById('btn-text');
-
-        if(isReaderMode) {
-            // 提取內容
-            const article = document.getElementById('main-article').cloneNode(true);
-            reader.innerHTML = article.innerHTML;
-            
-            web.style.display = 'none';
-            reader.classList.add('active');
-            btnText.innerText = '隱藏閱讀器';
-        } else {
-            web.style.display = 'block';
-            reader.classList.remove('active');
-            btnText.innerText = '顯示閱讀器';
-            document.getElementById('aaMenu').classList.remove('show');
+    <script>
+        // 調整字體大小
+        function adjustFont(delta) {
+            const root = document.documentElement;
+            let currentSize = parseInt(getComputedStyle(root).getPropertyValue('--font-size'));
+            let newSize = currentSize + delta;
+            if (newSize >= 12 && newSize <= 40) {
+                root.style.setProperty('--font-size', newSize + 'px');
+                document.getElementById('fs-display').innerText = newSize + 'px';
+            }
         }
-    }
 
-    // 2. 自訂介面：aA 選單切換
-    function toggleAAMenu() {
-        if(!isReaderMode) toggleReaderMode(); // 自動觸發進入閱讀器
-        document.getElementById('aaMenu').classList.toggle('show');
-    }
-
-    // 3. 自訂介面：字體調整
-    function adjustFont(delta) {
-        let currentSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--font-size'));
-        let newSize = currentSize + delta;
-        if(newSize >= 12 && newSize <= 40) {
-            document.documentElement.style.setProperty('--font-size', newSize + 'px');
+        // 切換字體
+        function changeFont(fontName) {
+            document.documentElement.style.setProperty('--font-family', fontName);
         }
-    }
 
-    // 4. 自訂介面：主題切換
-    function setTheme(theme, el) {
-        document.body.setAttribute('data-theme', theme);
-        document.querySelectorAll('.theme-dot').forEach(d => d.classList.remove('active'));
-        el.classList.add('active');
-    }
-
-    // 5. 隱藏干擾項目 (點擊背景關閉選單)
-    window.onclick = function(event) {
-        if (!event.target.closest('.aa-menu') && !event.target.closest('.reader-btn')) {
-            document.getElementById('aaMenu').classList.remove('show');
+        // 切換暗黑模式
+        function toggleDarkMode() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme');
+            body.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
         }
-    }
-</script>
 
+        // 禁止雙指縮放 (iOS Safari 額外補強)
+        document.addEventListener('touchstart', function (event) {
+            if (event.touches.length > 1) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // 禁止點擊延遲導致的縮放
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+            let now = (new Date()).getTime();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, false);
+    </script>
 </body>
 </html>
