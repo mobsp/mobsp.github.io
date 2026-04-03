@@ -44,7 +44,9 @@
         }
 
         .app-container {
-            display: flex; flex-direction: column; height: 100vh;
+            display: flex; flex-direction: column; 
+            /* 修復底部遮擋問題：使用 100% 搭配 100dvh 動態高度 */
+            height: 100%; height: 100dvh;
             padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);
         }
 
@@ -277,7 +279,7 @@
                             <tr>
                                 <td><code style="font-size:10px; opacity:0.6">${f.branch}</code></td>
                                 <td class="file-link" onclick="openFileDetails('${f.path}')">${f.name}</td>
-                                <td><button class="btn-action" style="font-size:10px; padding:5px;" onclick="window.open('${f.raw}')">編輯</button></td>
+                                <td><button class="btn-action" style="font-size:10px; padding:5px;" onclick="window.open('${f.link.replace('/blob/', '/edit/')}', '_blank')">編輯</button></td>
                             </tr>
                         `).join('')}
                     </tbody>
