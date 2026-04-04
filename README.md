@@ -113,24 +113,6 @@
 
 <h3 style="color: #ff7b72;">🔒 受限區域 <span style="font-size: 14px; color: #8b949e; margin-left: 10px;">(Classified Collections)</span></h3>
 
-<details style="background-color: #0d1117; border: 1px solid #ff7b72; border-radius: 8px; padding: 0; cursor: pointer; overflow: hidden;">
-  <summary style="color: #ff7b72; font-weight: bold; padding: 15px; outline: none; list-style: none;">
-    🗝️ [ 點擊啟動身分驗證解鎖受限區域 ]
-  </summary>
-  <div style="padding: 20px; border-top: 1px solid #1b2234; background-color: #111111;">
-    <p style="background-color: rgba(248, 81, 73, 0.1); border: 1px solid #ff7b72; padding: 12px; border-radius: 6px; color: #ff7b72; font-size: 0.9em;">
-      <b>⚠ ACCESS DENIED:</b> 此區域包含私密日誌及 18+ 限制級內容。繼續訪問即代表您已滿 18 歲，且承諾遵守隱私規範。
-    </p>
-    <ul style="line-height: 1.8;">
-      <li><b>[ 🔐 秘密清單 ]</b> <a href="https://qzz.io" style="color: #79c0ff; text-decoration: none; font-weight: bold;">Blog 核心入口</a></li>
-      <li><b>[ 🔞 風月文學 ]</b> <a href="https://qzz.io .html" style="color: #79c0ff; text-decoration: none; font-weight: bold;">全系列 Vol.1 - 25</a></li>
-      <li><b>[ ⛓️ 背德系列 ]</b> <a href="https://qzz.io3.html" style="color: #79c0ff; text-decoration: none; font-weight: bold;">母、姊、媳系列索引</a></li>
-    </ul>
-    <p style="font-size: 11px; color: #8b949e; font-style: italic; margin-top: 15px;">Status: Encrypted link gate active. Verified by System Protocol.</p>
-  </div>
-</details>
-
-<br>
 
 <div align="center" style="margin-top: 40px;">
   <img src="https://shields.io" alt="Theme">
