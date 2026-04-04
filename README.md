@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/brand/mobsp-logo.png" width="100%" height="150" alt="莫比空間 Header" style="object-fit: cover; object-position: center; display: block; margin: 0 auto;">
+  <img src="assets/brand/mobsp-logo.png" width="120%" height="150" alt="莫比空間 Header" style="object-fit: cover; object-position: center; display: block; margin: 0 auto;">
 </p>
 
 <h1 align="center">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠𝔢 | 莫比空間 Ⓒ 2023-2026</h1>
