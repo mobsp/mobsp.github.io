@@ -111,8 +111,6 @@
 
 <br>
 
-<h3 style="color: #ff7b72;">🔒 受限區域 <span style="font-size: 14px; color: #8b949e; margin-left: 10px;">(Classified Collections)</span></h3>
-
 
 <div align="center" style="margin-top: 40px;">
   <img src="https://shields.io" alt="Theme">
