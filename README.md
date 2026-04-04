@@ -1,5 +1,8 @@
+<div align="center">
+  <img src="assets/brand/mobsp-logo.png" width="100%" height="120" alt="莫比空間 Header" style="object-fit: cover; object-position: center; border-radius: 8px; border: 1px solid #1b2234; display: block;">
+</div>
 
-
+<br>
 
 <div align="center">
   <h1 style="color: #58a6ff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; border-bottom: none; margin-bottom: 5px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠𝔢 | 莫比空間</h1>
@@ -115,4 +118,3 @@
   <img src="https://img.shields.io/badge/System_Theme-Deep_Dark_Blue-0a192f?style=social&logo=github" alt="Theme">
   <p style="color: #8b949e; font-size: 12px;"><i>Design Optimized by <b>Titi</b> for <b>Chief</b> | 2026.04</i></p>
 </div>
-</p>
