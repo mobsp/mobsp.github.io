@@ -1,6 +1,4 @@
-<!-- =========================================================
-       1. HEADER SECTION - 黑金科技風格標頭
-       ========================================================= -->
+
   <div style="background: #000; padding: 50px 20px; border-radius: 16px; border: 1.5px solid #1b2234; box-shadow: 0 20px 50px rgba(0,0,0,0.9); font-family: 'Segoe UI', system-ui, sans-serif; max-width: 900px;">
     
     <!-- Logo 與 藝術標題 -->
