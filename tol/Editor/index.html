@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Mobispace Ultimate IDE</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  
+  <style>
+    /* 核心基礎設定 */
+    :root {
+      --bg-dark: #121212;
+      --card-bg: #1e1e1e;
+      --toolbar-bg: #252525;
+      --accent: #007aff;
+      --text-main: #ffffff;
+      --text-muted: #a0a0a0;
+      --blur-bg: rgba(60, 60, 60, 0.65);
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+    }
+
+    /* 終極編輯器外框 */
+    .editor-card {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      border: 1px solid #333;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    /* 頂部工具列 */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background-color: var(--toolbar-bg);
+      border-bottom: 1px solid #333;
+    }
+
+    /* 語言標籤與切換器 */
+    .lang-tabs {
+      display: flex;
+      gap: 8px;
+      background: #111;
+      padding: 4px;
+      border-radius: 8px;
+    }
+
+    .lang-tab {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: monospace;
+      font-size: 13px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .lang-tab.active {
+      background: #333;
+      color: var(--accent);
+      font-weight: bold;
+    }
+
+    /* 右上角操作按鈕群 */
+    .action-group {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .icon-btn {
+      background: transparent;
+      border: none;
+      color: #e0e0e0;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      padding: 6px;
+      border-radius: 8px;
+    }
+    
+    .icon-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .icon-btn.export { color: #34c759; }
+    .icon-btn.clear { color: #ff3b30; }
+
+    /* 特殊的 Play 執行按鈕 */
+    .icon-btn.play {
+      background-color: var(--accent);
+      color: white;
+      border-radius: 12px;
+      padding: 6px 16px;
+      font-weight: bold;
+    }
+    .icon-btn.play:hover { background-color: #005bb5; }
+
+    /* 浮動狀態切換 (iOS 毛玻璃) */
+    .floating-segment {
+      position: absolute;
+      top: 65px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      background: var(--blur-bg);
+      backdrop-filter: blur(15px);
+      -webkit-backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 4px;
+      z-index: 10;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .segment-btn {
+      background: transparent;
+      border: none;
+      color: #ccc;
+      padding: 6px 24px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .segment-btn.active {
+      background-color: #555;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    /* 內容區域 */
+    .content-area {
+      flex: 1;
+      display: flex;
+      position: relative;
+    }
+
+    textarea.code-input {
+      flex: 1;
+      width: 100%;
+      background-color: transparent;
+      color: #d4d4d4;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      padding: 60px 16px 16px 16px;
+      border: none;
+      resize: none;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    /* 確保切換時的過渡平滑 */
+    textarea.code-input.html-mode { color: #e34c26; }
+    textarea.code-input.css-mode { color: #264de4; }
+    textarea.code-input.js-mode { color: #f0db4f; }
+
+    iframe.preview-frame {
+      flex: 1;
+      width: 100%;
+      border: none;
+      background-color: #ffffff;
+    }
+
+    /* 狀態提示 */
+    .toast {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--blur-bg);
+      backdrop-filter: blur(10px);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
+
+  </style>
+</head>
+<body>
+
+  <div id="app">
+    <div class="editor-card">
+      
+      <div class="toolbar">
+        <div class="lang-tabs" v-show="viewMode === 'code'">
+          <button class="lang-tab" :class="{ active: currentLang === 'html' }" @click="currentLang = 'html'">HTML</button>
+          <button class="lang-tab" :class="{ active: currentLang === 'css' }" @click="currentLang = 'css'">CSS</button>
+          <button class="lang-tab" :class="{ active: currentLang === 'js' }" @click="currentLang = 'js'">JS</button>
+        </div>
+        <div class="lang-tabs" v-show="viewMode === 'preview'">
+          <button class="lang-tab active">⚡ Live Preview</button>
+        </div>
+
+        <div class="action-group">
+          <button class="icon-btn clear" @click="clearCode" title="清除 (Clear)">🗑️</button>
+          <button class="icon-btn export" @click="exportMonolithic" title="打包匯出 (Export)">📦</button>
+          <button class="icon-btn" @click="copyCode" title="複製目前代碼 (Copy)">📄</button>
+          <button class="icon-btn play" @click="executeCode" title="執行預覽 (Run)">▶ Run</button>
+        </div>
+      </div>
+
+      <div class="floating-segment">
+        <button class="segment-btn" :class="{ active: viewMode === 'code' }" @click="viewMode = 'code'">編碼模式</button>
+        <button class="segment-btn" :class="{ active: viewMode === 'preview' }" @click="executeCode">即時預覽</button>
+      </div>
+
+      <div class="content-area">
+        <textarea 
+          v-show="viewMode === 'code'" 
+          v-model="activeCode" 
+          class="code-input" 
+          :class="currentLang + '-mode'"
+          spellcheck="false"
+          @keydown="handleTab"
+          :placeholder="placeholderText">
+        </textarea>
+        
+        <iframe 
+          v-show="viewMode === 'preview'" 
+          ref="iframeRef" 
+          class="preview-frame">
+        </iframe>
+      </div>
+
+      <div class="toast" :class="{ show: toastMessage }">{{ toastMessage }}</div>
+    </div>
+  </div>
+
+  <script>
+    const { createApp, ref, computed, watch, onMounted, nextTick } = Vue;
+
+    createApp({
+      setup() {
+        const viewMode = ref('code'); // 'code' 或 'preview'
+        const currentLang = ref('html'); // 'html', 'css', 'js'
+        const iframeRef = ref(null);
+        const toastMessage = ref('');
+        let toastTimeout = null;
+
+        // 代碼存儲區
+        const codes = ref({
+          html: '<div class="mobispace-welcome">\n  <h2>哈囉，部長！✨</h2>\n  <p>這是緹緹為您準備的終極編輯器。</p>\n  <button id="testBtn">點擊測試 JS</button>\n</div>',
+          css: '.mobispace-welcome {\n  text-align: center;\n  font-family: -apple-system, sans-serif;\n  padding-top: 50px;\n}\nbutton {\n  padding: 12px 24px;\n  border-radius: 8px;\n  background: #007aff;\n  color: white;\n  border: none;\n  cursor: pointer;\n  transition: 0.2s;\n}\nbutton:hover {\n  background: #005bb5;\n  transform: scale(1.05);\n}',
+          js: 'document.getElementById("testBtn").addEventListener("click", () => {\n  alert("✅ 緹緹報告：JS 執行成功！");\n});'
+        });
+
+        // 讀取 LocalStorage (緹緹的防呆設計)
+        onMounted(() => {
+          const saved = localStorage.getItem('mobispace-ide-codes');
+          if (saved) {
+            codes.value = JSON.parse(saved);
+            showToast('已載入上次的進度 📝');
+          }
+        });
+
+        // 自動儲存監聽
+        watch(codes, (newVal) => {
+          localStorage.setItem('mobispace-ide-codes', JSON.stringify(newVal));
+        }, { deep: true });
+
+        // 計算屬性：當前編輯框綁定的內容
+        const activeCode = computed({
+          get: () => codes.value[currentLang.value],
+          set: (val) => { codes.value[currentLang.value] = val; }
+        });
+
+        const placeholderText = computed(() => `在這裡輸入您的 ${currentLang.value.toUpperCase()} 代碼...`);
+
+        // 顯示提示訊息
+        const showToast = (msg) => {
+          toastMessage.value = msg;
+          clearTimeout(toastTimeout);
+          toastTimeout = setTimeout(() => { toastMessage.value = ''; }, 2000);
+        };
+
+        // 處理 Tab 鍵縮排 (天才必備)
+        const handleTab = (e) => {
+          if (e.key === 'Tab') {
+            e.preventDefault();
+            const target = e.target;
+            const start = target.selectionStart;
+            const end = target.selectionEnd;
+            const val = target.value;
+            // 插入兩個空白作為縮排
+            target.value = val.substring(0, start) + '  ' + val.substring(end);
+            target.selectionStart = target.selectionEnd = start + 2;
+            activeCode.value = target.value; // 更新雙向綁定
+          }
+        };
+
+        const copyCode = async () => {
+          try {
+            await navigator.clipboard.writeText(activeCode.value);
+            showToast(`✅ 已複製 ${currentLang.value.toUpperCase()} 代碼！`);
+          } catch (err) {
+            alert("❌ 複製失敗了。");
+          }
+        };
+
+        const clearCode = () => {
+          if(confirm(`部長，確定要清空 ${currentLang.value.toUpperCase()} 代碼嗎？`)) {
+            codes.value[currentLang.value] = '';
+            showToast('🗑️ 已清空');
+          }
+        };
+
+        // 將 HTML/CSS/JS 縫合成單一字串
+        const generateMonolithicCode = () => {
+          return `<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobispace Export</title>
+  <style>
+${codes.value.css}
+  </style>
+</head>
+<body>
+${codes.value.html}
+  <script>
+${codes.value.js}
+  <\/script>
+</body>
+</html>`;
+        };
+
+        // 打包匯出為單一 HTML 檔案
+        const exportMonolithic = () => {
+          const fullCode = generateMonolithicCode();
+          const blob = new Blob([fullCode], { type: 'text/html' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'mobispace-export.html';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('📦 已打包下載為單一檔案！');
+        };
+
+        // 執行並渲染預覽畫面
+        const executeCode = async () => {
+          viewMode.value = 'preview';
+          await nextTick();
+          if (iframeRef.value) {
+            const doc = iframeRef.value.contentWindow.document;
+            doc.open();
+            doc.write(generateMonolithicCode());
+            doc.close();
+            showToast('▶ 預覽已更新');
+          }
+        };
+
+        return {
+          viewMode,
+          currentLang,
+          codes,
+          activeCode,
+          placeholderText,
+          iframeRef,
+          toastMessage,
+          handleTab,
+          copyCode,
+          clearCode,
+          executeCode,
+          exportMonolithic
+        };
+      }
+    }).mount('#app');
+  </script>
+
+</body>
+</html>
