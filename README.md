@@ -1,5 +1,5 @@
 
-  <img src="assets/brand/mobsp-logo.png" width="0%" height="120" alt="莫比空間 Header" style="object-fit: cover; object-position: center; display: block; margin: 0 auto;">
+  <img src="assets/brand/mobsp-logo.png" width="800%" height="120" alt="莫比空間 Header" style="object-fit: cover; object-position: center; display: block; margin: 0 auto;">
 
 <h1 align="center" style="color: #58a6ff;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠𝔢 | 莫比空間 Ⓒ 2026</h1>
 
