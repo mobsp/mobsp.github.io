@@ -1,65 +1,72 @@
-<p align="center">
+
   <img src="assets/brand/mobsp-logo.png" width="150%" height="120" alt="莫比空間 Header" style="object-fit: cover; object-position: center; display: block; margin: 0 auto;">
-</p>
 
-<h1 align="center">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠𝔢 | 莫比空間 Ⓒ 2023-2026</h1>
-
-<p align="center">
-  <strong>極簡．高效．流暢 — 您的全方位數位資源入口</strong>
-</p>
+<h1 align="center" style="color: #58a6ff;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠𝔢 | 莫比空間 Ⓒ 2026</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Status-UP-success?style=flat-square" alt="Status">
-  <img src="https://img.shields.io/badge/License-MIT-blue?style=flat-square" alt="License">
-  <img src="https://img.shields.io/badge/Framework-Vue.js-4FC08D?style=flat-square&logo=vue.js" alt="Vue">
+  <img src="https://img.shields.io/badge/VIBE-DEEP_DARK_BLUE-0a192f?style=for-the-badge" alt="Dark Blue">
+  <img src="https://img.shields.io/badge/SECURITY-ENCRYPTED-red?style=for-the-badge&logo=icloud" alt="Security">
 </p>
 
 ---
 
-## 🌐 核心服務入口 (Core Services)
+### 🌐 核心入口 (The Portal)
+> 莫比空間的核心視圖，對應 `.html` 核心架構。
 
-> 本項目收錄「莫比空間」所有核心功能模組與應用視圖。
-
-| 分類 | 快速導航捷徑 |
-| :--- | :--- |
-| **🏠 門戶主頁** | [官方首頁](https://mobsp.qzz.io/index.html) ‧ [部落格首頁](https://mobsp.qzz.io/blog/index.html) ‧ [Wiki 中心](https://mobsp.qzz.io/wiki/index.html) |
-| **🛠️ 生產力工具** | [工具箱主頁](https://mobsp.qzz.io/tol/index.html) ‧ [轉碼工具](https://mobsp.qzz.io/tol/convert/index.html) ‧ [編輯器](https://mobsp.qzz.io/tol/editot/index.html) ‧ [RSS 生成器](https://mobsp.qzz.io/tol/rss-generator.html) ‧ https://dict.cn/big5/%E8%BD%AC%E6%8D%A2(https://mobsp.qzz.io/tol/tourl/index.html) |
-| **💻 技術維護** | [GitHub 索引](https://mobsp.qzz.io/tol/gh-idx/index.html) ‧ [發布者工具](https://mobsp.qzz.io/tol/publisher/index.html) ‧ [資源抓取器](https://mobsp.qzz.io/tol/x-harv/index.html) ‧ [歷史記錄](https://mobsp.qzz.io/history.html) |
-| **📱 娛樂與社交** | [短影音專區](https://mobsp.qzz.io/shorts/index.html) ‧ [SVG 在線編輯](https://mobsp.qzz.io/svg-editor/index.html) ‧ [應用程序入口](https://mobsp.qzz.io/app/index.html) |
-| **⚙️ 系統設定** | [系統偏好設定](https://mobsp.qzz.io/setting/index.html) ‧ [K-Zero](https://mobsp.qzz.io/tol/k-zero/index.html) ‧ [Keep 模組](https://mobsp.qzz.io/tol/keep/index.html) |
-| **🧪 實驗基地** | [Beta 主頁](https://mobsp.qzz.io/beta/index.html) ‧ [VE 預覽](https://mobsp.qzz.io/tol/ve/index.html) ‧ [測試區 T1~T4](https://mobsp.qzz.io/beta/test.html) |
+* **[ 🏚️ 空間門戶 ]** &nbsp; [Official Home](https://mobsp.qzz.io/index.html) · [Global Index](https://mobsp.qzz.io/app/index.html) · [Setting](https://mobsp.qzz.io/setting/index.html)
+* **[ 🧠 知識庫鏈 ]** &nbsp; [Mobi-Wiki](https://mobsp.qzz.io/wiki/index.html) · [Beta Lab](https://mobsp.qzz.io/beta/index.html) · [History](https://mobsp.qzz.io/history.html)
+* **[ 🎬 動態串流 ]** &nbsp; [Shorts](https://mobsp.qzz.io/shorts/index.html) · [SVG Editor](https://mobsp.qzz.io/svg-editor/index.html)
 
 ---
 
-## 📁 系統資產矩陣 (Asset Matrix)
+### 📁 資產矩陣：工具庫路徑清單 (Toolbox Matrix)
+> 深度解析 `/tol/` 目錄下的生產力組件。
 
-> 專屬於品牌視覺與 UI 零件庫的導航，精準指向 assets 資產視圖。
-
-* **🎨 視覺元件牆**
-    * [SVG 展示牆](https://mobsp.qzz.io/assets/icon/viewer/index.html) — 存放所有 `assets/icon/svg/` 的向量靈魂。
-* **📊 核心數據架構**
-    * [全站資產數據 (JSON)](https://mobsp.qzz.io/tol/data.json) — 驅動全自動化流水線的原始動力。
-
----
-
-## 📖 文章與雜項 (Collections)
-
-> 記錄技術點滴與風月文學，存放於 `blog/p/list/` 目錄下。
-
-* **技術專欄**：[GitHub Pages 註冊指南](https://mobsp.qzz.io/blog/p/list/github-pages-註冊.html)、[主題樣式設定](https://mobsp.qzz.io/blog/p/list/theme.html)。
-* **風月文學系列**：包含 [風月文學網 (1~25)](https://mobsp.qzz.io/blog/p/list/風月文學網 .html) 及其他深度文章。
-* **佈局樣式**：[_layouts/mobi-space-article.html](https://mobsp.qzz.io/_layouts/mobi-space-article.html)。
+| PATH 路徑 | FUNCTION 功能描述 | STATUS 狀態 |
+| :--- | :--- | :--- |
+| `/tol/index.html` | **[ 工具箱總匯 ]** 核心分發頁面 | `ACTIVE` |
+| `/tol/x-harv/index.html` | **[ Monolithic Harvester ]** 資源抓取器 | `READY` |
+| `/tol/convert/index.html` | **[ 格式轉換 ]** 多維度數據處裡 | `STABLE` |
+| `/tol/gh-idx/index.html` | **[ GitHub Index ]** 儲存庫自動索引 | `SYNC` |
+| `/tol/publisher/index.html` | **[ 內容發布 ]** 靜態站點自動化部署 | `SECURE` |
+| `/tol/rss-generator.html` | **[ RSS 引擎 ]** 動態訂閱源生成 | `LIVE` |
+| `/tol/editot/index.html` | **[ 程式碼編輯 ]** 在線 Web Editor | `STABLE` |
+| `/tol/k-zero/index.html` | **[ K-Zero ]** 核心邏輯處理模組 | `CORE` |
+| `/tol/keep/index.html` | **[ Keep ]** 狀態持久化管理 | `RUNNING` |
+| `/tol/ve/index.html` | **[ Visual Engine ]** 視覺預覽引擎 | `BETA` |
+| `/tol/tourl/index.html` | **[ URL Converter ]** 路徑轉碼工具 | `PASS` |
 
 ---
 
-## 🏗️ 莫比架構細則 (Technical Spec)
+### 📁 資產矩陣：UI 視覺資源 (Visual Assets)
+* **[ 🎨 SVG 牆 ]** [Viewer](https://mobsp.qzz.io/assets/icon/viewer/index.html) — `assets/icon/svg/` 全量展示
+* **[ 🖼️ 品牌圖 ]** `assets/brand/` — 莫比空間視覺識別系統
 
-* **UI/UX**: 融入 iOS 磨砂玻璃（Backdrop Filter）美學與響應式安全區域適配。
-* **Automation**: 透過 GitHub Actions 協同 Python 腳本（`auto-index.py`）實現數據與視圖的雙向同步。
-* **Stack**: 基於 Vue.js 架構與精簡的 CSS 佈局，實現靜態站點的動態交互極限。
+---
+
+### 🔒 受限區域：文章與雜項 (Classified Collections)
+> **ACCESS DENIED:** 此區域包含隱私內容與 18+ 限制級文學。
+
+<p align="left">
+  <img src="https://img.shields.io/badge/CONTENT-RESTRICTED-red?style=flat-square&logo=keybase" alt="Restricted">
+  <img src="https://img.shields.io/badge/AGE-18%2B-black?style=flat-square" alt="18+">
+</p>
+
+> [!WARNING]
+> **警告：** 以下內容包含個人私密日誌及成人文學，已啟動前端 Age-Gate 鎖定邏輯。
+> 非授權人員請勿越界，存取紀錄將被 GitHub Actions 審核。
+
+* **[ 🔐 秘密清單 ]** [Blog Index](https://mobsp.qzz.io/blog/index.html)
+* **[ 🔞 風月文學 ]** [List View](https://mobsp.qzz.io/blog/p/list/風月文學網 .html)
+    * *包含風月文學系列 (Vol.1 - Vol.25)*
+    * *包含 [母、姊、媳] 等限制級背德文學系列*
+* **[ 📝 佈局模版 ]** [Article Layout](https://mobsp.qzz.io/_layouts/mobi-space-article.html)
 
 ---
 
 <p align="center">
-  <i>Made with ❤️ by Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠𝔢 | 緹緹誠製</i>
+  <img src="https://img.shields.io/badge/System_Theme-Deep_Dark_Blue-0a192f?style=social&logo=github" alt="Theme">
+  <br>
+  <i>Design Optimized by <b>Titi</b> for <b>Chief</b> | 2026.04</i>
+</p>
 </p>
