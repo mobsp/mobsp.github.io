@@ -1,7 +1,6 @@
 <p align="center">
-  <img src="assets/brand/mobsp-icon.png" width="200" alt="莫比空間 Logo">
-  <br>
-  <img src="https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/brand/ms-logo.webp" width="100%" alt="莫比空間 Header">
+  
+  <img src="assets/brand/ms-logo.webp" width="100%" alt="莫比空間 Header">
 </p>
 
 <h1 align="center">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠𝔢 | 莫比空間 Ⓒ 2023-2026</h1>
