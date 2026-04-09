@@ -1,13 +1,46 @@
 <div align="center">
 
-# 莫比空間 • Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ
+<img src="assets/brand/mobsp-logo.png" alt="Mobispace Logo" width="220"/>
+
+# Mobispace 莫比空間
+© 2023–2026
+
+**極簡・高效・流暢 — 您的全方位數位資源入口**
 
 ![](https://img.shields.io/badge/Platform-GitHub%20Pages-black?style=flat-square)
-![](https://img.shields.io/badge/Language-HTML%2FCSS%2FJS-00cec9?style=flat-square)
+![](https://img.shields.io/badge/Framework-Vue.js-41b883?style=flat-square)
 ![](https://img.shields.io/badge/Status-v2.1%20Live-success?style=flat-square)
-![](https://img.shields.io/badge/PWA-Offline--Ready-blue?style=flat-square)
+![](https://img.shields.io/badge/PWA-Offline--Ready-0078d4?style=flat-square)
+![](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)
 
 </div>
+
+---
+
+## 立即探索
+[點擊△圖片探索 Mobispace — 前往導覽與公告頁面](https://mobsp.qzz.io){:target="_blank" rel="noopener noreferrer"}
+
+---
+
+## 1 Brand — 標題與品牌識別
+**Mobispace 莫比空間**  
+Logo 路徑：`assets/brand/mobsp-logo.png`  
+版權：© 2023–2026
+
+---
+
+## 2 Explore — 點擊探索（示意）
+README 中提供外部導覽連結，使用者點擊後會前往 **mobsp.qzz.io**（導覽與公告頁面）。  
+若在網站內實作互動按鈕，請將下列程式碼放在網站的 HTML/JS 中（**不要**放在 README 中執行）：
+
+```html
+<button id="exploreBtn" aria-label="探索 Mobispace">點擊△圖片探索 Mobispace</button>
+<script>
+document.getElementById('exploreBtn').addEventListener('click', () => {
+  const target = document.querySelector('#core-services');
+  if (target) target.scrollIntoView({ behavior: 'smooth' });
+});
+</script>
 
 ---
 
