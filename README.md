@@ -1,7 +1,6 @@
 <div align="center">
 
-# 🌌 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ • 莫比空間
-### 資源整合與數位服務入口網 | Digital Gateway Platform
+# 莫比空間 • Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ
 
 ![](https://img.shields.io/badge/Platform-GitHub%20Pages-black?style=flat-square)
 ![](https://img.shields.io/badge/Language-HTML%2FCSS%2FJS-00cec9?style=flat-square)
