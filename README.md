@@ -1,9 +1,9 @@
 <div align="center">
 
-<img src="assets/brand/mobsp-logo.png" alt="Mobispace Logo" width="220"/>
+<img src="assets/brand/mobsp-logo.png" alt="Mobispace Logo" width="800"/>
 
-# Mobispace 莫比空間
-© 2023–2026
+## 立即探索
+[點擊△圖片探索 Mobispace — 前往導覽與公告頁面](https://mobsp.qzz.io)
 
 **極簡・高效・流暢 — 您的全方位數位資源入口**
 
@@ -20,27 +20,6 @@
 ## 立即探索
 [點擊△圖片探索 Mobispace — 前往導覽與公告頁面](https://mobsp.qzz.io){:target="_blank" rel="noopener noreferrer"}
 
----
-
-## 1 Brand — 標題與品牌識別
-**Mobispace 莫比空間**  
-Logo 路徑：`assets/brand/mobsp-logo.png`  
-版權：© 2023–2026
-
----
-
-## 2 Explore — 點擊探索（示意）
-README 中提供外部導覽連結，使用者點擊後會前往 **mobsp.qzz.io**（導覽與公告頁面）。  
-若在網站內實作互動按鈕，請將下列程式碼放在網站的 HTML/JS 中（**不要**放在 README 中執行）：
-
-```html
-<button id="exploreBtn" aria-label="探索 Mobispace">點擊△圖片探索 Mobispace</button>
-<script>
-document.getElementById('exploreBtn').addEventListener('click', () => {
-  const target = document.querySelector('#core-services');
-  if (target) target.scrollIntoView({ behavior: 'smooth' });
-});
-</script>
 
 ---
 
