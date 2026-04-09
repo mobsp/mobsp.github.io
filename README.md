@@ -2,8 +2,8 @@
 
 <img src="assets/brand/mobsp-logo.png" alt="Mobispace Logo" width="800"/>
 
-## 立即探索
-[點擊△圖片探索 Mobispace — 前往導覽與公告頁面](https://mobsp.qzz.io)
+
+[點擊△圖片探索 Mobispace — 前往導覽與公告頁面(https://mobsp.qzz.io)
 
 **極簡・高效・流暢 — 您的全方位數位資源入口**
 
