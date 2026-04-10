@@ -1,0 +1,25 @@
+name: Auto Update README Index
+
+on:
+  push:
+    paths:
+      - 'Ⲙ𝔬ⲃⳝ𝔭_Indexer_Report.csv'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Run Indexer
+        run: python scripts/auto_classify.py
+      - name: Commit and Push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add README.md
+          git commit -m "docs: 自動更新全站索引 [skip ci]" || echo "No changes to commit"
+          git push
