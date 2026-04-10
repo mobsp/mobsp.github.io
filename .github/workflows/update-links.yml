@@ -1,0 +1,36 @@
+name: Auto Update Links from CSV
+
+on:
+  push:
+    paths:
+      - 'Ⲙ𝔬ⲃⳝ𝔭_Indexer_Report.csv'
+      - 'template.md'
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+          
+      - name: Run CSV Parser
+        run: python scripts/parse_csv.py
+        
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "TiTi-Bot"
+          git config --global user.email "titi@mobsp.qzz.io"
+          git add README.md
+          # 檢查是否有變更才 commit
+          git diff --quiet && git diff --staged --quiet || git commit -m "chore: auto-update links from CSV"
+          git push
