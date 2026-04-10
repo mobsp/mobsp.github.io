@@ -1,10 +1,11 @@
 name: ⏪ 緊急全自動回溯 (Rollback to April 9th)
 
 on:
-  # 1. 提供手動按鈕，隨時想回溯就點一下
-  workflow_dispatch:
-  
-  # 2. (選用) 如果你想設定某種自動觸發條件也可以，但建議手動點擊最安全
+  workflow_dispatch: # 提供 GitHub 網頁手動按鈕
+
+# 解決 Node.js 20 棄用警告的環境變數
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 permissions:
   contents: write
@@ -16,13 +17,19 @@ jobs:
       - name: 📥 檢出所有歷史紀錄
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # 必須抓取完整歷史，否則找不到昨天的 Commit
+          fetch-depth: 0 # 抓取完整歷史
 
       - name: 🔍 定位目標提交點 (2026-04-09 23:59)
         id: find_commit
         run: |
           # 尋找 2026-04-10 00:00 之前的最後一個提交 ID
           TARGET_HASH=$(git rev-list -n 1 --before="2026-04-10 00:00" main)
+          
+          if [ -z "$TARGET_HASH" ]; then
+            echo "❌ 錯誤：找不到符合時間點的提交紀錄！"
+            exit 1
+          fi
+          
           echo "target_hash=$TARGET_HASH" >> $GITHUB_OUTPUT
           echo "找到目標 Commit: $TARGET_HASH"
 
@@ -31,18 +38,12 @@ jobs:
           git config --local user.email "titi-bot@mobsp.qzz.io"
           git config --local user.name "TiTi-Rollback-Bot"
           
-          # 取得上一步找到的 Hash
           HASH=${{ steps.find_commit.outputs.target_hash }}
-          
-          if [ -z "$HASH" ]; then
-            echo "錯誤：找不到符合時間點的提交紀錄！"
-            exit 1
-          fi
 
           # 強制回溯本地分支狀態
           git reset --hard $HASH
           
-          # 強制推送到 GitHub (這會抹除 4/10 00:00 以後的紀錄)
+          # 強制推送到 GitHub (抹除 4/10 00:00 以後的變動)
           git push origin main --force
           
           echo "✅ 成功！儲存庫已回溯至 2026-04-10 00:00 之前的狀態。"
