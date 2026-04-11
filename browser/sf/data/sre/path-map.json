@@ -1,0 +1,6 @@
+{
+  "mappings": [
+    { "from": "js/app.js", "to": "data/core/app.js" },
+    { "from": "style.css", "to": "data/theme/style.css" }
+  ]
+}
