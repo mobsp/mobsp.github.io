@@ -1,0 +1,6 @@
+/* UI kit base styles */
+#app-header, #app-footer { padding: 8px 12px; background: transparent; color: inherit; }
+button { background: transparent; border: none; cursor: pointer; font-size: 16px; }
+button:focus { outline: 2px solid rgba(0,122,255,0.2); border-radius: 6px; }
+ul { list-style: none; padding: 0; margin: 0; }
+.modal h2 { margin-top: 0; }
