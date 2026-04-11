@@ -1,0 +1,7 @@
+{
+  "welcome": "歡迎使用 Safari Clone",
+  "examples": [
+    { "title": "範例 1", "url": "https://example.com" },
+    { "title": "範例 2", "url": "https://example.org" }
+  ]
+}
