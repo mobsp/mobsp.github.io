@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Safari Clone — Web Browser Simulator</title>
+
+  <!-- Primary SEO -->
+  <meta name="description" content="Safari Clone：一個以前端模擬 Safari 功能的完整瀏覽器專案，支援分頁、書籤、隱私模式、開發者工具、插件系統與主題切換。">
+  <meta name="keywords" content="Safari Clone, browser simulator, tabs, bookmarks, devtools, plugins, theme, privacy">
+  <meta name="author" content="你">
+  <link rel="canonical" href="https://yourdomain.example/browser/sf/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Safari Clone — Web Browser Simulator">
+  <meta property="og:description" content="以純前端實作的 Safari 模擬器，模組化設計，支援擴充與主題切換。">
+  <meta property="og:url" content="https://yourdomain.example/browser/sf/">
+  <meta property="og:image" content="data/media/logo.webp">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Safari Clone — Web Browser Simulator">
+  <meta name="twitter:description" content="以純前端實作的 Safari 模擬器，模組化設計，支援擴充與主題切換。">
+  <meta name="twitter:image" content="data/media/logo.webp">
+
+  <!-- SEO extras -->
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#007aff">
+
+  <!-- Favicon -->
+  <link rel="icon" href="data/media/favicon.ico" type="image/x-icon">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="data/theme/variables.css">
+  <link rel="stylesheet" href="data/theme/style.css">
+  <link rel="stylesheet" href="data/ui-kit/ui.css">
+
+  <!-- Structured data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Safari Clone",
+    "url": "https://yourdomain.example/browser/sf/",
+    "description": "Safari Clone：以前端模擬 Safari 功能的瀏覽器專案。",
+    "applicationCategory": "DeveloperTool",
+    "operatingSystem": "Web"
+  }
+  </script>
+</head>
+<body>
+  <div class="safari-browser" id="safari-root">
+    <header id="app-header"></header>
+
+    <div class="toolbar" role="toolbar" aria-label="Browser toolbar">
+      <button id="back" aria-label="Back">◀︎</button>
+      <button id="forward" aria-label="Forward">▶︎</button>
+      <button id="reload" aria-label="Reload">⟳</button>
+      <input type="text" id="url-bar" placeholder="搜尋或輸入網站名稱" aria-label="URL bar">
+      <button id="bookmark" aria-label="Bookmark">★</button>
+      <button id="history-btn" aria-label="History">🕑</button>
+      <button id="downloads-btn" aria-label="Downloads">⬇︎</button>
+      <button id="devtools-btn" aria-label="DevTools">🛠</button>
+      <button id="settings-btn" aria-label="Settings">⚙︎</button>
+    </div>
+
+    <nav class="tabs" id="tabs" aria-label="Tabs">
+      <div class="tab active" data-url="about:blank">新分頁</div>
+      <button id="add-tab" aria-label="Add tab">+</button>
+    </nav>
+
+    <div class="progress-bar" id="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+
+    <main class="viewport-wrap">
+      <iframe id="viewport" src="about:blank" title="Web content viewport"></iframe>
+    </main>
+
+    <footer id="app-footer"></footer>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal bookmarks-modal hidden" id="bookmarks-modal" role="dialog" aria-modal="true"><h2>書籤</h2><ul id="bookmark-list"></ul><button id="close-bookmarks">關閉</button></div>
+  <div class="modal history-modal hidden" id="history-modal" role="dialog" aria-modal="true"><h2>瀏覽紀錄</h2><ul id="history-list"></ul><button id="close-history">關閉</button></div>
+  <div class="modal downloads-modal hidden" id="downloads-modal" role="dialog" aria-modal="true"><h2>下載管理</h2><ul id="download-list"></ul><button id="close-downloads">關閉</button></div>
+  <div class="modal settings-modal hidden" id="settings-modal" role="dialog" aria-modal="true"><h2>偏好設定</h2>
+    <label><input type="checkbox" id="dark-mode"> 深色模式</label><br>
+    <label><input type="checkbox" id="private-mode"> 隱私模式</label><br>
+    <label><input type="checkbox" id="ssl-lock"> 顯示 SSL 鎖頭</label><br>
+    <button id="close-settings">關閉</button>
+  </div>
+  <div class="modal devtools-modal hidden" id="devtools-modal" role="dialog" aria-modal="true"><h2>開發者工具</h2><pre id="console-output"></pre><button id="close-devtools">關閉</button></div>
+
+  <!-- Core scripts -->
+  <script src="data/main/init.js" defer></script>
+  <script src="data/core/api-client.js" defer></script>
+  <script src="data/core/utils.js" defer></script>
+  <script src="data/core/history.js" defer></script>
+  <script src="data/core/settings.js" defer></script>
+  <script src="data/core/security.js" defer></script>
+  <script src="data/core/sync.js" defer></script>
+  <script src="data/ui-kit/header.js" defer></script>
+  <script src="data/ui-kit/footer-sys.js" defer></script>
+  <script src="data/ui-kit/tabs.js" defer></script>
+  <script src="data/ui-kit/bookmarks.js" defer></script>
+  <script src="data/ui-kit/downloads.js" defer></script>
+  <script src="data/ui-kit/devtools-ui.js" defer></script>
+  <script src="data/ui-kit/plugins.js" defer></script>
+  <script src="data/theme/theme-engine.js" defer></script>
+  <script src="data/core/app.js" defer></script>
+</body>
+</html>
