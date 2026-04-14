@@ -1,0 +1,87 @@
+name: Full Codebase Collective Report
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Collective All Source Code
+        run: |
+          mkdir -p ./下載
+          OUTPUT="./下載/source_code_report.md"
+          
+          # 1. 寫入 HTML 容器頭部與樣式
+          cat <<EOF > $OUTPUT
+          <div style="background-color: #0d1117; color: #c9d1d9; padding: 20px; font-family: monospace;">
+              <h1 style="color: #58a6ff; border-bottom: 2px solid #30363d;">儲存庫完整程式碼全方位匯集報告</h1>
+              <p>生成日期: $(date)</p>
+          EOF
+
+          # 2. 深度遍歷掃描 (深度 10 層)
+          # 包含 .git, .github 等所有目錄
+          find . -maxdepth 10 -type f ! -path "./下載/*" | while read -r file; do
+              
+              # 【關鍵：動態排除所有圖檔】
+              # 使用 file 指令偵測檔案類型，如果包含 "image" 關鍵字則跳過
+              if file --mime-type "$file" | grep -q "image/"; then
+                  echo "排除圖檔: $file"
+                  continue
+              fi
+
+              # 提取全方位摘要項目
+              FILENAME=$(basename "$file")
+              FILEPATH=$(realpath --relative-to="." "$file")
+              FILESIZE=$(du -b "$file" | cut -f1)
+              LINE_COUNT=$(wc -l < "$file" 2>/dev/null || echo "0")
+              LAST_MOD=$(date -r "$file" "+%Y-%m-%d %H:%M:%S")
+              FILE_TYPE=$(file -b "$file")
+              PERMISSIONS=$(stat -c "%a" "$file")
+              OWNER=$(stat -c "%U" "$file")
+              DEPTH=$(echo "$FILEPATH" | tr -cd '/' | wc -c)
+
+              # 3. 寫入檔案卡片與「完整程式碼內容」
+              cat <<EOF >> $OUTPUT
+              <div style="margin: 40px 0; border: 1px solid #30363d; border-radius: 6px; overflow: hidden;">
+                  <div style="background: #161b22; padding: 15px; border-bottom: 1px solid #30363d;">
+                      <strong style="color: #79c0ff; font-size: 1.1em;">檔案名稱：$FILENAME</strong>
+                      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px; margin-top: 12px; font-size: 12px; color: #8b949e;">
+                          <div><b style="color: #569cd6;">[路徑位置]</b> $FILEPATH</div>
+                          <div><b style="color: #569cd6;">[邏輯大小]</b> $FILESIZE Bytes</div>
+                          <div><b style="color: #569cd6;">[程式規模]</b> $LINE_COUNT 行</div>
+                          <div><b style="color: #569cd6;">[修改時戳]</b> $LAST_MOD</div>
+                          <div><b style="color: #569cd6;">[架構類別]</b> $FILE_TYPE</div>
+                          <div><b style="color: #569cd6;">[權限體制]</b> $PERMISSIONS</div>
+                          <div><b style="color: #569cd6;">[存取角色]</b> $OWNER</div>
+                          <div><b style="color: #569cd6;">[深度層級]</b> $DEPTH</div>
+                      </div>
+                  </div>
+                  <div style="padding: 15px; background: #000;">
+                      <p style="color: #888; font-size: 11px; margin-bottom: 8px;">>>> 原始碼完整內容匯入：</p>
+                      <pre style="margin: 0; white-space: pre-wrap; word-break: break-all; font-size: 13px; color: #d1d5da; line-height: 1.5; font-family: 'Consolas', 'Monaco', monospace;">
+          EOF
+
+              # 轉義並注入完整原始碼
+              sed 's/&/\&amp;/g; s/</\&lt;/g; s/>/\&gt;/g' "$file" >> $OUTPUT
+
+              cat <<EOF >> $OUTPUT
+                      </pre>
+                  </div>
+              </div>
+          EOF
+          done
+
+          echo "</div>" >> $OUTPUT
+
+      - name: Export Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: Full-Code-Report
+          path: ./下載/
+          retention-days: 3
