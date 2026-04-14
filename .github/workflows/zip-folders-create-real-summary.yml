@@ -12,8 +12,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Python & tree
-        run: sudo apt-get update && sudo apt-get install -y tree python3
+      - name: Install tree command
+        run: sudo apt-get update && sudo apt-get install -y tree
 
       - name: Zip each folder
         run: |
@@ -23,17 +23,16 @@ jobs:
             zip -r "zipped/${fname}.zip" "$folder"
           done
 
-      - name: Generate summary.md (tree part)
+      - name: Generate summary.md Tree Part
         run: |
           echo "# 儲存庫檔案結構與壓縮檔摘要" > zipped/summary.md
           echo "## 檔案結構（tree, 最深層10）:" >> zipped/summary.md
           tree -a -L 10 >> zipped/summary.md
           echo "" >> zipped/summary.md
 
-      - name: Generate summary with smart file descriptions
+      - name: Create Python summary script
         run: |
-          python3 <<EOF >> zipped/summary.md
-
+          cat > scan_files.py <<'PYCODE'
 import os
 
 def get_first_code_comment(path):
@@ -78,18 +77,21 @@ for folder in [d for d in os.listdir(".") if os.path.isdir(d) and d not in [".gi
             fpath = os.path.join(root, file)
             print(f"  - {file} ({file_type(fpath)}, {os.path.getsize(fpath)} bytes):")
             desc = get_first_code_comment(fpath) if file_type(fpath) in ['.py','.js','.java','.ts','.c','.cpp','.rb','.go','.sh'] else ""
-            # 若是非程式檔案，也抓前幾行
+            # 若非程式檔案，也抓前幾行
             if not desc:
                 try:
                     with open(fpath, 'r', encoding='utf-8', errors='ignore') as f:
                         desc = "\n    ".join([l.strip() for l in f.readlines()[:3] if l.strip()])
                 except:
                     desc = "(無法讀取內容)"
-            # 摘要太長就縮短
             if len(desc) > 200:
                 desc = desc[:200] + '...'
             print(f"    {desc}\n")
-EOF
+PYCODE
+
+      - name: Append smart file descriptions to summary.md
+        run: |
+          python3 scan_files.py >> zipped/summary.md
 
       - name: Zip all zipped folder with summary
         run: |
