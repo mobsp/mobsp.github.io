@@ -1,0 +1,103 @@
+name: Zip Folders & Create Real Summary
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  zip-and-summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Python & tree
+        run: sudo apt-get update && sudo apt-get install -y tree python3
+
+      - name: Zip each folder
+        run: |
+          mkdir zipped
+          for folder in $(find . -maxdepth 1 -type d ! -name .git ! -name . ! -name zipped); do
+            fname=$(basename "$folder")
+            zip -r "zipped/${fname}.zip" "$folder"
+          done
+
+      - name: Generate summary.md (tree part)
+        run: |
+          echo "# 儲存庫檔案結構與壓縮檔摘要" > zipped/summary.md
+          echo "## 檔案結構（tree, 最深層10）:" >> zipped/summary.md
+          tree -a -L 10 >> zipped/summary.md
+          echo "" >> zipped/summary.md
+
+      - name: Generate summary with smart file descriptions
+        run: |
+          python3 <<EOF >> zipped/summary.md
+
+import os
+
+def get_first_code_comment(path):
+    try:
+        with open(path, 'r', encoding="utf-8", errors='ignore') as f:
+            lines = f.readlines()
+        # 尋找註釋、函式、類別或主要標題
+        for line in lines:
+            if line.strip().startswith('#'):
+                return line.strip()
+            if line.strip().startswith('//'):
+                return line.strip()
+            if line.strip().startswith('/*'):
+                return line.strip()
+            if "function " in line or "def " in line or "class " in line:
+                return line.strip()
+        # fallback: 前三行非空合併
+        return "".join([l.strip() for l in lines[:3] if l.strip()])
+    except Exception as e:
+        return "(無法判讀)"
+
+def count_files(folder):
+    return sum([len(files) for _, _, files in os.walk(folder)])
+
+def file_type(path):
+    ext = os.path.splitext(path)[1]
+    if ext:
+        return ext
+    try:
+        import mimetypes
+        tp, _ = mimetypes.guess_type(path)
+        return tp or "Unknown"
+    except:
+        return "Unknown"
+
+for folder in [d for d in os.listdir(".") if os.path.isdir(d) and d not in [".git", "zipped"]]:
+    print(f"## {folder} 資料夾詳細：\n")
+    fcnt = count_files(folder)
+    print(f"- 總檔案數：{fcnt}\n")
+    for root, dirs, files in os.walk(folder):
+        for file in files:
+            fpath = os.path.join(root, file)
+            print(f"  - {file} ({file_type(fpath)}, {os.path.getsize(fpath)} bytes):")
+            desc = get_first_code_comment(fpath) if file_type(fpath) in ['.py','.js','.java','.ts','.c','.cpp','.rb','.go','.sh'] else ""
+            # 若是非程式檔案，也抓前幾行
+            if not desc:
+                try:
+                    with open(fpath, 'r', encoding='utf-8', errors='ignore') as f:
+                        desc = "\n    ".join([l.strip() for l in f.readlines()[:3] if l.strip()])
+                except:
+                    desc = "(無法讀取內容)"
+            # 摘要太長就縮短
+            if len(desc) > 200:
+                desc = desc[:200] + '...'
+            print(f"    {desc}\n")
+EOF
+
+      - name: Zip all zipped folder with summary
+        run: |
+          cd zipped
+          zip -r ../zipped.zip ./*
+
+      - name: Upload total zipped as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: zipped-with-summary
+          path: zipped.zip
