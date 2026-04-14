@@ -1,0 +1,28 @@
+name: Zip Each Folder
+
+on:
+  push:
+    branches:
+      - main   # 可換成���要的分支
+
+jobs:
+  zip-folders:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Find all folders and zip them
+        run: |
+          # 建立一個資料夾來存放壓縮檔
+          mkdir zipped
+          for folder in $(find . -maxdepth 1 -type d ! -name .git ! -name . ! -name zipped); do
+            fname=$(basename "$folder")
+            zip -r "zipped/${fname}.zip" "$folder"
+          done
+
+      - name: Upload zipped folders as artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: zipped-folders
+          path: zipped/
