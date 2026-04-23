@@ -1,3 +1,13 @@
+
+/* [Zenith-Ultimate-Applied-v3] */
+/* 頂級渲染優化 */
+@layer zenith {
+  :root { --main-bg: #fff; --main-text: #000; }
+  @media (prefers-color-scheme: dark) { :root { --main-bg: #000; --main-text: #fff; } }
+  body { background: var(--main-bg); color: var(--main-text); contain: content; }
+  .safe-area { padding: env(safe-area-inset-top) env(safe-area-inset-right); } /* 瀏海屏適配 */
+  .no-scroll { overflow: hidden; overscroll-behavior: none; }
+}
 :root {
   --bg: #f5f5f7;
   --panel: #ffffff;
