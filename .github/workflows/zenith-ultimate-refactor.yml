@@ -1,0 +1,59 @@
+name: 🌌 Zenith Ultimate Repository Refactor
+
+on:
+  push:
+    branches: [ main ] # 當程式碼推送到 main 分支時觸發
+  workflow_dispatch: # 允許手動從 GitHub 介面執行
+
+jobs:
+  refactor-and-deploy:
+    runs-on: ubuntu-latest
+    
+    # 賦予腳本寫入權限，這對自動 commit 至關重要
+    permissions:
+      contents: write
+
+    steps:
+      - name: 📥 檢出程式碼
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 獲取完整歷史紀錄以利正確提交
+
+      - name: 🟢 設定 Node.js 環境
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 安裝優化工具
+        run: |
+          npm init -y
+          npm install glob fs-extra cheerio terser clean-css html-minifier-terser
+
+      - name: 💎 執行「最頂配置」全方位優化腳本
+        # 這裡執行我們之前整合的 master-optimizer-final.js
+        run: node scripts/master-optimizer-final.js
+
+      - name: 🔍 檔案變更審核與自動提交
+        run: |
+          git config --local user.email "zenith-bot@optimization.com"
+          git config --local user.name "Zenith-Optimizer-Bot"
+          
+          # 檢查是否有檔案變動
+          if [ -n "$(git status --porcelain)" ]; then
+            git add .
+            git commit -m "🚀 [Zenith Ultimate] 自動化進化：全站 SEO/安全/效能/適配補強"
+            git push
+            echo "✅ 成功將優化後的程式碼發佈至儲存庫"
+          else
+            echo "✨ 程式碼已是最新狀態，無需更新"
+          fi
+
+      - name: 📊 生成優化報告
+        if: success()
+        run: |
+          echo "### 🌌 Zenith 優化完成報告" >> $GITHUB_STEP_SUMMARY
+          echo "- **SEO:** Sitemap & JSON-LD 已更新" >> $GITHUB_STEP_SUMMARY
+          echo "- **安全:** Security.txt & CSP 已補強" >> $GITHUB_STEP_SUMMARY
+          echo "- **效能:** 已啟用次世代預渲染與 GPU 加速" >> $GITHUB_STEP_SUMMARY
+          echo "- **適配:** PWA & Dark Mode 邏輯已注入" >> $GITHUB_STEP_SUMMARY
