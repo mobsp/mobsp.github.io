@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
+<!DOCTYPE html><html lang="zh-Hant"><head><script>if(self!==top){top.location=self.location;}</script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Safari Clone — Web Browser Simulator</title>
@@ -48,7 +46,14 @@
     "operatingSystem": "Web"
   }
   </script>
-</head>
+<link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/browser/sf/index.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">
+  // 修正原本不完整的 import，改為有效的 web-vitals ESM 引用（僅修正此 import 行）
+  import {getLCP, getFID, getCLS} from 'https://unpkg.com/web-vitals@2.1.0/dist/web-vitals.esm.js';
+  // 開發時可觀察指標（不會改動其他區塊內容）
+  getLCP(metric => console.debug('LCP', metric));
+  getFID(metric => console.debug('FID', metric));
+  getCLS(metric => console.debug('CLS', metric));
+</script></head>
 <body>
   <div class="safari-browser" id="safari-root">
     <header id="app-header"></header>
@@ -92,21 +97,22 @@
   <div class="modal devtools-modal hidden" id="devtools-modal" role="dialog" aria-modal="true"><h2>開發者工具</h2><pre id="console-output"></pre><button id="close-devtools">關閉</button></div>
 
   <!-- Core scripts -->
-  <script src="data/main/init.js" defer></script>
-  <script src="data/core/api-client.js" defer></script>
-  <script src="data/core/utils.js" defer></script>
-  <script src="data/core/history.js" defer></script>
-  <script src="data/core/settings.js" defer></script>
-  <script src="data/core/security.js" defer></script>
-  <script src="data/core/sync.js" defer></script>
-  <script src="data/ui-kit/header.js" defer></script>
-  <script src="data/ui-kit/footer-sys.js" defer></script>
-  <script src="data/ui-kit/tabs.js" defer></script>
-  <script src="data/ui-kit/bookmarks.js" defer></script>
-  <script src="data/ui-kit/downloads.js" defer></script>
-  <script src="data/ui-kit/devtools-ui.js" defer></script>
-  <script src="data/ui-kit/plugins.js" defer></script>
-  <script src="data/theme/theme-engine.js" defer></script>
-  <script src="data/core/app.js" defer></script>
-</body>
-</html>
+  <script src="sf/data/main/init.js" defer=""></script>
+  <script src="sf/data/core/api-client.js" defer=""></script>
+  <script src="sf/data/core/utils.js" defer=""></script>
+  <script src="sf/data/core/history.js" defer=""></script>
+  <script src="sf/data/core/settings.js" defer=""></script>
+  <script src="sf/data/core/security.js" defer=""></script>
+  <script src="sf/data/core/sync.js" defer=""></script>
+  <script src="sf/data/ui-kit/header.js" defer=""></script>
+  <script src="sf/data/ui-kit/footer-sys.js" defer=""></script>
+  <script src="sf/data/ui-kit/tabs.js" defer=""></script>
+  <script src="sf/data/ui-kit/bookmarks.js" defer=""></script>
+  <script src="sf/data/ui-kit/downloads.js" defer=""></script>
+  <script src="sf/data/ui-kit/devtools-ui.js" defer=""></script>
+  <script src="sf/data/ui-kit/plugins.js" defer=""></script>
+  <script src="sf/data/theme/theme-engine.js" defer=""></script>
+  <script src="sf/data/core/app.js" defer=""></script>
+
+
+</body></html>

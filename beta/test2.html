@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
+<!DOCTYPE html><html lang="zh-TW"><head><script>if(self!==top){top.location=self.location;}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 120 篇獨立長文庫</title>
@@ -39,7 +37,7 @@
         .expand-btn { color: var(--accent-color); font-weight: 800; cursor: pointer; margin-top: 20px; display: block; text-align: right; }
         .float-btn { position: fixed; bottom: 40px; right: 20px; width: 60px; height: 60px; border-radius: 30px; background: var(--accent-color); display: flex; items: center; justify-content: center; font-size: 24px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); border: none; z-index: 1001; }
     </style>
-</head>
+<link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/beta/test2.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta property="og:type" content="website"><meta property="og:image" content="https://your-supreme-site.com/og-image.webp"></head>
 <body>
     <div id="app">
         <div class="glass-bg"></div>
@@ -84,7 +82,7 @@
                 <h2 class="post-title" :style="{ color: textColorComputed }">{{ post.title }}</h2>
                 <div class="post-content" :style="{ fontSize: fontSize + 'px', color: textColorComputed }">
                     <div v-if="!post.expanded">{{ post.summary }}...</div>
-                    <div v-else>{{ post.fullBody }}</div>
+                    <div v-else="">{{ post.fullBody }}</div>
                     <span class="expand-btn" @click="post.expanded = !post.expanded">
                         {{ post.expanded ? '收起全文' : '展開完整無刪減長文' }}
                     </span>
@@ -169,5 +167,6 @@
             }
         }).mount('#app');
     </script>
-</body>
-</html>
+
+
+</body></html>
