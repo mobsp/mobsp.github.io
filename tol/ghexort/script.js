@@ -1,43 +1,37 @@
-// SPA 切換邏輯
-document.querySelectorAll("#tabbar button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const target = btn.dataset.target;
+async function fetchDir(repo, path = "", parentUl) {
+  const apiUrl = `https://api.github.com/repos/${repo}/contents/${path}`;
+  const res = await fetch(apiUrl);
+  const data = await res.json();
 
-    // 切換頁面
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    document.getElementById(target).classList.add("active");
-
-    // 切換 tab 高亮
-    document.querySelectorAll("#tabbar button").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-  });
-});
-
-// 首頁互動按鈕
-document.getElementById("home-btn").addEventListener("click", () => {
-  alert("首頁互動成功！");
-});
-
-// 聊天功能
-document.getElementById("chat-send").addEventListener("click", () => {
-  const input = document.getElementById("chat-input");
-  const msg = input.value.trim();
-  if (msg) {
+  for (const item of data) {
     const li = document.createElement("li");
-    li.textContent = msg;
-    document.getElementById("chat-list").appendChild(li);
-    input.value = "";
+    li.textContent = item.name;
+
+    if (item.type === "file") {
+      li.onclick = async () => {
+        const fileRes = await fetch(item.download_url);
+        const text = await fileRes.text();
+        document.getElementById("file-content").textContent = text;
+      };
+    } else if (item.type === "dir") {
+      li.classList.add("folder");
+      const subUl = document.createElement("ul");
+      li.appendChild(subUl);
+      li.onclick = () => {
+        if (subUl.childElementCount === 0) {
+          fetchDir(repo, item.path, subUl);
+        }
+        subUl.style.display = subUl.style.display === "none" ? "block" : "none";
+      };
+    }
+    parentUl.appendChild(li);
   }
-});
+}
 
-// 好友功能
-document.querySelectorAll(".add-friend").forEach(btn => {
-  btn.addEventListener("click", () => {
-    alert("已加好友！");
-  });
-});
-
-// 設定功能：切換主題
-document.getElementById("toggle-theme").addEventListener("click", () => {
-  document.body.classList.toggle("dark");
-});
+document.getElementById("load-btn").onclick = () => {
+  const repo = document.getElementById("repo-input").value.trim();
+  if (!repo) return;
+  const tree = document.getElementById("file-tree");
+  tree.innerHTML = "";
+  fetchDir(repo, "", tree);
+};
