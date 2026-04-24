@@ -2,25 +2,51 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>GitHub Repo Explorer</title>
+  <title>Mobsp Explorer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Mobsp GitHub Explorer - 檔案瀏覽器">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>GitHub Repo Explorer</h1>
-    <input id="repo-input" type="text" placeholder="輸入 username/repo">
-    <button id="load-btn">載入</button>
+    <h1>Mobsp Explorer</h1>
   </header>
-  <main>
-    <aside id="sidebar">
-      <h2>檔案清單</h2>
-      <ul id="file-tree"></ul>
-    </aside>
-    <section id="viewer">
-      <h2>檔案內容</h2>
-      <pre id="file-content">選擇檔案以查看內容</pre>
+
+  <main id="app">
+    <!-- 子頁面：首頁 -->
+    <section id="home" class="page active">
+      <h2>首頁</h2>
+      <p>歡迎使用 Mobsp Explorer</p>
+    </section>
+
+    <!-- 子頁面：檔案 -->
+    <section id="files" class="page">
+      <h2>檔案瀏覽</h2>
+      <input id="repo-input" type="text" placeholder="輸入 username/repo">
+      <button id="load-btn">載入</button>
+      <div id="file-browser">
+        <aside id="sidebar">
+          <ul id="file-tree"></ul>
+        </aside>
+        <section id="viewer">
+          <pre id="file-content">選擇檔案以查看內容</pre>
+        </section>
+      </div>
+    </section>
+
+    <!-- 子頁面：設定 -->
+    <section id="settings" class="page">
+      <h2>設定</h2>
+      <p>這裡可以放你的偏好設定。</p>
     </section>
   </main>
+
+  <nav id="tabbar">
+    <button data-target="home">首頁</button>
+    <button data-target="files">檔案</button>
+    <button data-target="settings">設定</button>
+  </nav>
+
   <script src="script.js"></script>
 </body>
 </html>
