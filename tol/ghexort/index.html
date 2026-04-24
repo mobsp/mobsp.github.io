@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>GitHub Repo Explorer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>GitHub Repo Explorer</h1>
+    <input id="repo-input" type="text" placeholder="輸入 username/repo">
+    <button id="load-btn">載入</button>
+  </header>
+  <main>
+    <aside id="sidebar">
+      <h2>檔案清單</h2>
+      <ul id="file-tree"></ul>
+    </aside>
+    <section id="viewer">
+      <h2>檔案內容</h2>
+      <pre id="file-content">選擇檔案以查看內容</pre>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
