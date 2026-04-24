@@ -1,76 +1,59 @@
+/* 基礎佈局優化 */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; /* 系統級字體 */
   display: flex;
   flex-direction: column;
   height: 100vh;
+  [span_2](start_span)background-color: #ffffff;[span_2](end_span)
 }
 
-header {
-  background: #24292e;
-  color: #fff;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-}
-
-header h1 {
-  flex: 1;
-  margin: 0;
-  font-size: 18px;
-}
-
-header input {
-  padding: 5px;
-  margin-right: 10px;
-}
-
-header button {
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-main {
-  flex: 1;
-  display: flex;
-}
-
-aside {
-  width: 30%;
-  border-right: 1px solid #ddd;
-  overflow-y: auto;
-  padding: 10px;
-  background: #f6f8fa;
-}
-
-aside h2 {
-  margin-top: 0;
-}
-
+/* 檔案樹美化 */
 #file-tree {
   list-style: none;
-  padding: 0;
+  [span_3](start_span)padding-left: 15px;[span_3](end_span)
 }
 
 #file-tree li {
-  margin: 4px 0;
+  margin: 2px 0;
+  position: relative;
+}
+
+.item-label {
+  display: block;
+  padding: 4px 8px;
+  border-radius: 4px;
   cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-#file-tree li.folder {
-  font-weight: bold;
+.item-label:hover {
+  background-color: #e1e4e8;
 }
 
-section {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
+.item-label.active {
+  background-color: #0366d6;
+  color: white;
 }
 
+/* 讓子目錄有層級感 */
+#file-tree ul {
+  list-style: none;
+  padding-left: 20px;
+  border-left: 1px solid #e1e4e8;
+  margin: 2px 0 2px 10px;
+}
+
+/* 內容區優化 */
 #file-content {
-  background: #fff;
-  border: 1px solid #ddd;
-  padding: 10px;
-  white-space: pre-wrap;
-  word-wrap: break-word;
+  background: #fafbfc;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  [span_4](start_span)padding: 16px;[span_4](end_span)
+  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.5;
 }
