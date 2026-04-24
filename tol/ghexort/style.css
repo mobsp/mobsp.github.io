@@ -11,7 +11,7 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  background: #24292e;
+  background: #06c755; /* LINE 綠 */
   color: #fff;
   padding: 10px;
   text-align: center;
@@ -53,27 +53,7 @@ main {
   cursor: pointer;
 }
 
-#file-browser {
-  display: flex;
-  border: 1px solid #ddd;
-  margin-top: 10px;
-}
-
-#sidebar {
-  width: 30%;
-  border-right: 1px solid #ddd;
-  overflow-y: auto;
-  background: #fff;
-}
-
-#viewer {
-  flex: 1;
-  padding: 10px;
-  background: #fff;
-  overflow-y: auto;
-}
-
-#file-content {
-  white-space: pre-wrap;
-  word-wrap: break-word;
+#tabbar button.active {
+  color: #06c755;
+  font-weight: bold;
 }
