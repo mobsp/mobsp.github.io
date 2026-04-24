@@ -2,9 +2,8 @@
 <html lang="zh">
 <head>
   <meta charset="UTF-8">
-  <title>Mobsp Explorer</title>
+  <title>Mobsp LINE Style Explorer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <meta name="description" content="Mobsp GitHub Explorer - 檔案瀏覽器">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,37 +12,31 @@
   </header>
 
   <main id="app">
-    <!-- 子頁面：首頁 -->
     <section id="home" class="page active">
       <h2>首頁</h2>
-      <p>歡迎使用 Mobsp Explorer</p>
+      <p>這裡是首頁內容</p>
     </section>
 
-    <!-- 子頁面：檔案 -->
-    <section id="files" class="page">
-      <h2>檔案瀏覽</h2>
-      <input id="repo-input" type="text" placeholder="輸入 username/repo">
-      <button id="load-btn">載入</button>
-      <div id="file-browser">
-        <aside id="sidebar">
-          <ul id="file-tree"></ul>
-        </aside>
-        <section id="viewer">
-          <pre id="file-content">選擇檔案以查看內容</pre>
-        </section>
-      </div>
+    <section id="chat" class="page">
+      <h2>聊天</h2>
+      <p>這裡模擬聊天列表</p>
     </section>
 
-    <!-- 子頁面：設定 -->
+    <section id="friends" class="page">
+      <h2>好友</h2>
+      <p>這裡顯示好友清單</p>
+    </section>
+
     <section id="settings" class="page">
       <h2>設定</h2>
-      <p>這裡可以放你的偏好設定。</p>
+      <p>這裡是設定頁面</p>
     </section>
   </main>
 
   <nav id="tabbar">
     <button data-target="home">首頁</button>
-    <button data-target="files">檔案</button>
+    <button data-target="chat">聊天</button>
+    <button data-target="friends">好友</button>
     <button data-target="settings">設定</button>
   </nav>
 
