@@ -1,0 +1,76 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+header {
+  background: #24292e;
+  color: #fff;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+header h1 {
+  flex: 1;
+  margin: 0;
+  font-size: 18px;
+}
+
+header input {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+header button {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+main {
+  flex: 1;
+  display: flex;
+}
+
+aside {
+  width: 30%;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  padding: 10px;
+  background: #f6f8fa;
+}
+
+aside h2 {
+  margin-top: 0;
+}
+
+#file-tree {
+  list-style: none;
+  padding: 0;
+}
+
+#file-tree li {
+  margin: 4px 0;
+  cursor: pointer;
+}
+
+#file-tree li.folder {
+  font-weight: bold;
+}
+
+section {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+
+#file-content {
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
