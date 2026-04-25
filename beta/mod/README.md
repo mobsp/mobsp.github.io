@@ -1,5 +1,3 @@
-這是您 **beta/mod/README.md** 的最終內容建議。這份說明書已經根據您最新的檔案路徑、命名的 grid-slider.js，以及我為您補強的「App 質感」功能（如滾動鎖定、按壓反饋）進行了全面校對。
-您可以直接複製以下內容並貼入您的 Markdown 檔案中：
 # 📦 服務入口矩陣模組 (Grid Slider Module)
 > **專案：** Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間)
 > **位置：** beta/mod/grid-slider.js
