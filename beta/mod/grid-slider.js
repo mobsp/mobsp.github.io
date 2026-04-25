@@ -1,23 +1,30 @@
-/**
- * 服務入口矩陣封裝模組 (Service Grid Module)
- * 整合 HTML, CSS, JS 於一身，支援跨網頁調用
+/* * ============================================================
+ * Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) - 服務入口矩陣模組 (Grid Slider)
+ * 檔案位置：beta/mod/grid-slider.js
+ * ============================================================
+ * * 【 快速維護指南 】
+ * * 1. 欲修改「服務清單、名稱、圖標、紅點」，請至下方 constructor() 內的 this.services 陣列。
+ * 2. 欲調整「顏色、間距、iOS 風格樣式」，請至 getStyles() 方法。
+ * 3. 欲設定「點擊後的跳轉連結」，請至 bindEvents() 方法。
+ * * ⚠️ 詳細配置方法、參數說明及擴充教學，請務必參閱同路徑下的：
+ * 👉 beta/mod/README.md 👈
+ * * ============================================================
  */
+
 class MobSpaceServiceGrid extends HTMLElement {
   constructor() {
     super();
-    // 使用 Shadow DOM 封裝，確保 CSS 不會與外部網頁衝突
     this.attachShadow({ mode: 'open' });
 
-    // 模擬後端或設定檔傳來的服務資料 (可依需求擴充)
     this.services = [
       { id: '1', name: '貼圖小舖', icon: '🙂', isPinned: true, badge: false },
       { id: '2', name: '主題小舖', icon: '🎨', isPinned: true, badge: false },
-      { id: '3', name: '叫車服務', icon: '🚕', isPinned: true, badge: true },
+      { id: '3', name: 'LINE GO', icon: '🚕', isPinned: true, badge: true },
       { id: '4', name: 'Premium', icon: '💎', isPinned: true, badge: false },
       { id: '5', name: '來電鈴聲', icon: '🎵', isPinned: true, badge: false },
-      { id: '6', name: '遊戲中心', icon: '🎮', isPinned: false, badge: true },
-      { id: '7', name: '購物頻道', icon: '🛍️', isPinned: false, badge: false },
-      { id: '8', name: '旅遊導航', icon: '✈️', isPinned: false, badge: false }
+      { id: '6', name: 'LINE GAME', icon: '🎮', isPinned: false, badge: true },
+      { id: '7', name: '購物清單', icon: '🛍️', isPinned: false, badge: false },
+      { id: '8', name: '旅遊導覽', icon: '✈️', isPinned: false, badge: false }
     ];
   }
 
@@ -26,12 +33,10 @@ class MobSpaceServiceGrid extends HTMLElement {
     this.bindEvents();
   }
 
-  // 取得釘選在首頁的服務
   get pinnedServices() {
     return this.services.filter(s => s.isPinned);
   }
 
-  // 生成 CSS 樣式 (融合 iOS 圓潤、簡約風格)
   getStyles() {
     return `
       <style>
@@ -84,13 +89,20 @@ class MobSpaceServiceGrid extends HTMLElement {
           align-items: center;
           cursor: pointer;
           position: relative;
+          transition: transform 0.1s ease;
+          -webkit-tap-highlight-color: transparent; /* 手機點擊無藍框 */
+        }
+
+        /* 增加按壓反饋 */
+        .service-item:active {
+          transform: scale(0.9);
         }
 
         .icon-box {
           width: 48px;
           height: 48px;
           background-color: var(--icon-bg);
-          border-radius: 50%; /* iOS 風格圓形圖標 */
+          border-radius: 50%;
           display: flex;
           justify-content: center;
           align-items: center;
@@ -118,13 +130,12 @@ class MobSpaceServiceGrid extends HTMLElement {
           border-radius: 50%;
         }
 
-        /* 展開全部的 Modal 樣式 */
         .modal-overlay {
           display: none;
           position: fixed;
           top: 0; left: 0; right: 0; bottom: 0;
           background-color: rgba(0,0,0,0.6);
-          z-index: 1000;
+          z-index: 9999;
           opacity: 0;
           transition: opacity 0.3s ease;
         }
@@ -136,14 +147,12 @@ class MobSpaceServiceGrid extends HTMLElement {
 
         .modal-content {
           position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
+          bottom: 0; left: 0; right: 0;
           background-color: var(--bg-color);
           border-radius: 20px 20px 0 0;
           padding: 24px 16px;
           transform: translateY(100%);
-          transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.1);
           max-height: 80vh;
           overflow-y: auto;
         }
@@ -159,6 +168,10 @@ class MobSpaceServiceGrid extends HTMLElement {
           margin-bottom: 24px;
           padding-bottom: 12px;
           border-bottom: 1px solid #38383a;
+          position: sticky; /* 固定標題與關閉按鈕 */
+          top: 0;
+          background: var(--bg-color);
+          z-index: 10;
         }
         
         .close-btn {
@@ -172,7 +185,6 @@ class MobSpaceServiceGrid extends HTMLElement {
     `;
   }
 
-  // 渲染 HTML 結構
   render() {
     const pinnedHtml = this.pinnedServices.map(s => this.createServiceItemHtml(s)).join('');
     const allHtml = this.services.map(s => this.createServiceItemHtml(s)).join('');
@@ -203,53 +215,45 @@ class MobSpaceServiceGrid extends HTMLElement {
     `;
   }
 
-  // 生成單一 Icon 的 HTML
   createServiceItemHtml(service) {
     return `
       <div class="service-item" data-id="${service.id}">
-        <div class="icon-box">
-          ${service.icon}
-        </div>
+        <div class="icon-box">${service.icon}</div>
         ${service.badge ? '<div class="badge"></div>' : ''}
         <div class="service-name">${service.name}</div>
       </div>
     `;
   }
 
-  // 綁定互動事件
   bindEvents() {
     const showAllBtn = this.shadowRoot.getElementById('showAllBtn');
     const closeBtn = this.shadowRoot.getElementById('closeBtn');
     const modalOverlay = this.shadowRoot.getElementById('modalOverlay');
 
-    // 開啟全部服務 (底部彈窗展開)
-    showAllBtn.addEventListener('click', () => {
-      modalOverlay.classList.add('active');
-    });
-
-    // 關閉全部服務
-    closeBtn.addEventListener('click', () => {
-      modalOverlay.classList.remove('active');
-    });
-
-    // 點擊背景遮罩也可關閉
-    modalOverlay.addEventListener('click', (e) => {
-      if (e.target === modalOverlay) {
+    const setModal = (isOpen) => {
+      if (isOpen) {
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // 防止背景捲動
+      } else {
         modalOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // 恢復捲動
       }
+    };
+
+    showAllBtn.addEventListener('click', () => setModal(true));
+    closeBtn.addEventListener('click', () => setModal(false));
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) setModal(false);
     });
 
-    // 替每個 Icon 綁定點擊事件 (預留日後擴充跳轉邏輯)
     const items = this.shadowRoot.querySelectorAll('.service-item');
     items.forEach(item => {
       item.addEventListener('click', (e) => {
         const serviceId = e.currentTarget.dataset.id;
-        console.log(\`觸發服務跳轉，ID: \${serviceId}\`);
-        // 日後可在此處加入 window.location.href 或呼叫其他 Router
+        console.log(`Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 導航觸發 - ID: ${serviceId}`);
       });
     });
   }
 }
 
-// 註冊自定義元素
 customElements.define('mobspace-service-grid', MobSpaceServiceGrid);
