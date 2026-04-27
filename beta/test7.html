@@ -3,85 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>iOS 26 系統全功能檢視</title>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 旗艦測試中心</title>
     
     <script src="./mod/ios-type.js"></script>
 
     <style>
-        /* 這裡只需寫一些內容微調，系統樣式已由 JS 接管 */
-        .section-title {
-            padding: 20px 16px 8px;
-            color: #8E8E93;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .section-label { padding: 20px 16px 8px; color: #8E8E93; font-size: 13px; text-transform: uppercase; }
+        .group { margin-bottom: 20px; }
+        .ios-input-group { background: #1C1C1E; border-radius: 12px; margin: 0 16px; overflow: hidden; }
+        .ios-input-group input { 
+            width: 100%; background: transparent; border: none; color: #fff; 
+            padding: 14px 16px; font-size: 17px; border-bottom: 0.5px solid #333;
         }
-        .demo-box { padding: 0 16px; margin-bottom: 30px; }
+        .desc { padding: 10px 20px; font-size: 13px; opacity: 0.5; line-height: 1.4; }
     </style>
 </head>
 <body>
 
-    <div class="demo-box">
+    <div class="section-label">實體搜尋過濾</div>
+    <div style="padding: 0 16px;">
         <div class="ios-search-box">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input type="text" placeholder="搜尋組件或功能...">
+            <input type="text" placeholder="輸入關鍵字過濾下方列表..." oninput="window.ios.filter(this.value)">
         </div>
     </div>
 
-    <div class="section-title">系統核心組件 (Mapping Test)</div>
-    <ul>
-        <li>
-            動態島反饋 
-            <span>已開啟</span>
+    <div class="section-label">動態島與交互系統</div>
+    <ul class="ios-list">
+        <li onclick="window.ios.notify('⚡️ 系統核心已成功掛載！')">
+            觸發動態島通知 <span class="val">點擊測試</span>
         </li>
-        <li onclick="iosAlert('系統權限', '您正在嘗試存取底層核心模組。')">
-            安全性檢查 
-            <span style="color: #0A84FF;">檢查中 〉</span>
+        <li onclick="window.ios.alert('安全確認', '您確定要格式化目前所有的系統快取嗎？', () => { window.ios.notify('✅ 快取已清除'); }, '立即清除')">
+            實體雙鈕彈窗 <span class="val">Callback 測試</span>
         </li>
-        <li>
-            通知顯示
-            <input type="checkbox" checked> </li>
-        <li>
-            開發者模式
-            <input type="checkbox"> </li>
     </ul>
 
-    <div class="section-title">數據輸入測試</div>
-    <div class="demo-box">
-        <input type="text" placeholder="請輸入使用者名稱" class="ios-input">
-        <input type="password" placeholder="請輸入安全密碼" class="ios-input">
+    <div class="section-label">多層級導航 (Navigation Stack)</div>
+    <div style="padding: 0 16px;">
+        <button onclick="openSubPage()">進入進階設定子頁面</button>
     </div>
+    <div class="desc">測試 `window.ios.push` 是否能確實紀錄歷史紀錄並透過「返回」按鈕回跳。</div>
 
-    <div class="section-title">交互操作測試</div>
-    <div class="demo-box">
-        <button onclick="iosAlert('部署成功', 'iOS 26 Runtime 已經接管所有原生組件。')">
-            觸發系統彈窗 (Alert)
-        </button>
-        
-        <button style="background: #32D159;" onclick="showPage('系統詳細資訊')">
-            切換至深層導航 (Navigation)
-        </button>
+    <div class="section-label">自動映射測試 (Mapping)</div>
+    <ul class="ios-list">
+        <li>
+            Wi-Fi 無線網路 
+            <input type="checkbox" checked onchange="window.ios.notify(this.checked ? 'Wi-Fi 已開啟' : 'Wi-Fi 已關閉')">
+        </li>
+        <li>
+            飛航模式 
+            <input type="checkbox" onchange="window.ios.notify('模式切換成功')">
+        </li>
+        <li>
+            藍牙連接 <span>未連接 〉</span>
+        </li>
+    </ul>
 
-        <a href="javascript:void(0)" onclick="alert('這是一個原生 Web 回饋')">
-            超連結自動映射測試
-        </a>
+    <div class="section-label">表單與數據收集</div>
+    <div class="ios-input-group">
+        <input type="text" placeholder="使用者帳號">
+        <input type="password" placeholder="存取金鑰">
     </div>
-
-    <div class="demo-box" style="margin-top: 40px; text-align: center; opacity: 0.5; font-size: 12px;">
-        Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Digital Resource Portal<br>
-        Powered by iOS 26 Runtime Engine
-    </div>
+    <div class="desc">這部分的樣式與原生 iOS 設定頁面的輸入框完全一致。</div>
 
     <script>
-        // 額外測試：點擊動態島的行為
-        document.addEventListener('DOMContentLoaded', () => {
-            const island = document.getElementById('island');
-            if(island) {
-                island.addEventListener('click', () => {
-                    console.log("部長，動態島運作正常。");
-                });
-            }
-        });
+        // 模擬動態生成一個完整的子頁面內容
+        function openSubPage() {
+            const subHtml = `
+                <div class="section-label">子頁面功能</div>
+                <ul class="ios-list">
+                    <li>深層設定 A <input type="checkbox"></li>
+                    <li>深層設定 B <input type="checkbox" checked></li>
+                    <li onclick="window.ios.alert('子頁面指令', '已收到您的操作指令！')">觸發內部指令 〉</li>
+                </ul>
+                <div style="padding: 0 16px;">
+                    <button class="no-ios" style="background:#FF453A; color:#fff; border-radius:12px; padding:15px; width:100%; border:none; font-weight:600;" onclick="window.ios.pop()">
+                        手動執行返回 (Pop)
+                    </button>
+                </div>
+            `;
+            window.ios.push('進階設定', subHtml);
+        }
+
+        // 啟動時自動通知
+        setTimeout(() => {
+            window.ios.notify("Welcome, 部長");
+        }, 1000);
     </script>
 
 </body>
