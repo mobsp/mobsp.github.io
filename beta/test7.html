@@ -1,78 +1,86 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <script>if(self!==top){top.location=self.location;}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 系統 Demo</title>
+    <title>iOS 26 系統全功能檢視</title>
     
     <script src="./mod/ios-type.js"></script>
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
-        /* 移除原本重複的背景與捲動設定，交給 ios-type.js 接管 */
-        .app-content { 
-            position: relative; 
-            z-index: 10; 
-            padding: 20px 0; /* 縮減 padding，因為 iOS Header 會自動撐開空間 */
-            text-align: center;
+        /* 這裡只需寫一些內容微調，系統樣式已由 JS 接管 */
+        .section-title {
+            padding: 20px 16px 8px;
+            color: #8E8E93;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-        /* 讓原生組件與 iOS 系統色調融合 */
-        h2 { letter-spacing: -0.5px; }
+        .demo-box { padding: 0 16px; margin-bottom: 30px; }
     </style>
-
-    <link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/beta/index.html">
 </head>
 <body>
 
-    <div class="app-content">
-        <header id="ms-header"></header>
-        
-        <div id="brand-area"></div>
-        
-        <ul class="ios-list">
-            <li>系統狀態 <span>運作中</span></li>
-            <li>核心版本 <span>iOS 26.0 (Beta)</span></li>
-            <li onclick="iosAlert('系統訊息', '這是一個原生手感的彈窗測試！')">
-                彈窗測試 <i class="fa-solid fa-chevron-right" style="opacity: 0.3;"></i>
-            </li>
-        </ul>
-
-        <div style="margin-top: 30px; padding: 0 20px;">
-            <h2 style="color: #00cec9;">1-6 號系統組裝測試</h2>
-            <p style="opacity: 0.6; font-size: 14px;">這是一個架構化開發的 Demo 頁面</p>
-            
-            <button onclick="showPage('組件詳細清單')">查看所有 iOS 組件</button>
+    <div class="demo-box">
+        <div class="ios-search-box">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="text" placeholder="搜尋組件或功能...">
         </div>
     </div>
 
-    <script type="module">
-        // 1. 導入原本的系統模組
-        import { showSplash } from './mod/splash-screen.js';
-        import { initTheme } from './mod/theme-engine.js';
-        import { renderBrand } from './mod/brand-layout.js';
-        import { initBottomNav } from './mod/bottom-nav.js';
-        import { initFooter } from './mod/footer-sys.js';
+    <div class="section-title">系統核心組件 (Mapping Test)</div>
+    <ul>
+        <li>
+            動態島反饋 
+            <span>已開啟</span>
+        </li>
+        <li onclick="iosAlert('系統權限', '您正在嘗試存取底層核心模組。')">
+            安全性檢查 
+            <span style="color: #0A84FF;">檢查中 〉</span>
+        </li>
+        <li>
+            通知顯示
+            <input type="checkbox" checked> </li>
+        <li>
+            開發者模式
+            <input type="checkbox"> </li>
+    </ul>
 
-        // 2. 執行順序
-        // 啟動畫面
-        showSplash('https://mobsp.github.io/assets/brand/ms-blog.JPEG');
+    <div class="section-title">數據輸入測試</div>
+    <div class="demo-box">
+        <input type="text" placeholder="請輸入使用者名稱" class="ios-input">
+        <input type="password" placeholder="請輸入安全密碼" class="ios-input">
+    </div>
 
-        // 初始化背景與佈局
-        initTheme();
-        renderBrand('#brand-area');
-        initBottomNav();
-        initFooter();
+    <div class="section-title">交互操作測試</div>
+    <div class="demo-box">
+        <button onclick="iosAlert('部署成功', 'iOS 26 Runtime 已經接管所有原生組件。')">
+            觸發系統彈窗 (Alert)
+        </button>
+        
+        <button style="background: #32D159;" onclick="showPage('系統詳細資訊')">
+            切換至深層導航 (Navigation)
+        </button>
 
-        // 3. 2號系統 (跑馬燈)
-        document.addEventListener('DOMContentLoaded', async () => {
-            const { initNotice } = await import('./mod/notice-sync.js');
-            // 這裡保留您的 Supabase 初始化
-            initNotice(
-                'https://svwrvxomytbfaqpfnifg.supabase.co', 
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
-            );
+        <a href="javascript:void(0)" onclick="alert('這是一個原生 Web 回饋')">
+            超連結自動映射測試
+        </a>
+    </div>
+
+    <div class="demo-box" style="margin-top: 40px; text-align: center; opacity: 0.5; font-size: 12px;">
+        Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Digital Resource Portal<br>
+        Powered by iOS 26 Runtime Engine
+    </div>
+
+    <script>
+        // 額外測試：點擊動態島的行為
+        document.addEventListener('DOMContentLoaded', () => {
+            const island = document.getElementById('island');
+            if(island) {
+                island.addEventListener('click', () => {
+                    console.log("部長，動態島運作正常。");
+                });
+            }
         });
     </script>
 
