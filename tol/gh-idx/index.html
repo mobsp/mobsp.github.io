@@ -1,14 +1,19 @@
-<!DOCTYPE html><html lang="zh-TW"><head><script>if(self!==top){top.location=self.location;}</script><script>if(self!==top){top.location=self.location;}</script>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <script>if(self!==top){top.location=self.location;}</script>
+    <script>if(self!==top){top.location=self.location;}</script>
+    
     <link rel="manifest" href="./manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="GIX">
-<link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GIX">
+    <link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>莫比空間｜Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ - GIX</title>
+    
     <style>
         :root {
             --ios-blue: #0A84FF;
@@ -19,22 +24,21 @@
             --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        /* [動畫指南] 深色流光背景 (Flowing Gradient)
-           透過 400% 的背景縮放配合位移，營造出 visionOS 的空間感。
-        */
+        /* 深色流光背景：加入 prefers-reduced-motion 優化效能 */
         @keyframes flowingGradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
         body.dark-mode {
             background: linear-gradient(-45deg, #020617, #0f172a, #1e293b, #020617);
             background-size: 400% 400%;
             animation: flowingGradient 15s ease infinite;
             --text-main: #ffffff;
         }
-
+        @media (prefers-reduced-motion: reduce) {
+            body.dark-mode { animation: none; background-position: 0% 50%; }
+        }
         body.light-mode {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             --text-main: #1d1d1f;
@@ -42,155 +46,105 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-
-        body, html {
-            margin: 0; padding: 0; height: 100%; width: 100%;
-            overflow: hidden; color: var(--text-main); font-family: -apple-system, system-ui, sans-serif;
-        }
-
-        .app-container {
-            display: flex; flex-direction: column; 
-            height: 100%; height: 100dvh;
-            padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);
-        }
-
-        header, footer {
-            flex-shrink: 0; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            background: var(--glass-bg); border-bottom: 0.5px solid var(--glass-border);
-            padding: 15px 20px; z-index: 100;
-        }
-
-        /* [佈局建議] Footer 採用 Column 排版
-           為了容納導航按鈕與新增的版權聲明區塊。
-        */
-        footer { 
-            border-bottom: none; 
-            border-top: 0.5px solid var(--glass-border); 
-            display: flex; 
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .nav-links {
-            display: flex;
-            width: 100%;
-            justify-content: space-around;
-            font-size: 14px;
-        }
-
-        /* [品牌樣式] 版權聲明區塊
-           使用 Flexbox 確保 Logo 與文字對齊，並加入點擊縮放效果。
-        */
-        .copyright-bar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 5px 10px;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-            opacity: 0.8;
-        }
-        .copyright-bar:active { transform: scale(0.95); }
-        .brand-logo {
-            width: 18px;
-            height: 18px;
-            border-radius: 4px;
-            object-fit: cover;
-        }
-        .copyright-text {
-            font-size: 11px;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
+        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; color: var(--text-main); font-family: -apple-system, system-ui, sans-serif; }
+        
+        .app-container { display: flex; flex-direction: column; height: 100%; height: 100dvh; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+        
+        header { flex-shrink: 0; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); background: var(--glass-bg); border-bottom: 0.5px solid var(--glass-border); padding: 15px 20px; z-index: 100; }
+        
+        /* 1. 立體感卡片 (Glassmorphism 2.0) */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-radius: 20px; padding: 15px; margin-bottom: 15px;
+            border: 0.5px solid rgba(255, 255, 255, 0.2); 
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); 
         }
 
         main { flex-grow: 1; overflow-y: auto; padding: 15px; -webkit-overflow-scrolling: touch; }
+        main::-webkit-scrollbar { display: none; } 
 
-        .card {
-            background: var(--glass-bg); backdrop-filter: blur(20px);
-            border-radius: 20px; padding: 15px; margin-bottom: 15px;
-            border: 1px solid var(--glass-border);
-        }
-
+        /* 2. 分支滑塊視覺引導 (Gradient Mask) */
         .branch-slider {
             display: flex; gap: 10px; overflow-x: auto; padding: 10px 0;
             scrollbar-width: none; -webkit-overflow-scrolling: touch;
+            mask-image: linear-gradient(to right, black 85%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
         }
         .branch-slider::-webkit-scrollbar { display: none; }
-        .branch-item {
-            padding: 10px 20px; background: rgba(255,255,255,0.1);
-            border-radius: 25px; font-size: 14px; cursor: pointer;
-            white-space: nowrap; transition: 0.3s;
-            border: 1px solid transparent;
-        }
-        .branch-item.active {
-            background: var(--ios-blue); color: white;
-            box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4);
-        }
+        .branch-item { padding: 10px 20px; background: rgba(255,255,255,0.1); border-radius: 25px; font-size: 14px; cursor: pointer; white-space: nowrap; transition: 0.3s; border: 1px solid transparent; }
+        .branch-item.active { background: var(--ios-blue); color: white; box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4); }
 
-        select {
-            width: 100%; background: var(--glass-bg); color: var(--text-main);
-            border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px;
-            margin-bottom: 15px; outline: none; font-size: 16px;
-        }
+        /* 搜尋與選單樣式 */
+        .search-container { position: relative; width: 100%; margin-top: 12px; }
+        .search-bar { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); padding: 12px 12px 12px 35px; border-radius: 15px; color: white; font-size: 15px; outline: none; transition: 0.2s; }
+        .search-bar:focus { background: rgba(255,255,255,0.15); box-shadow: 0 0 0 2px var(--ios-blue); }
+        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.6; pointer-events: none; font-size: 14px; }
+        
+        select { width: 100%; background: var(--glass-bg); color: var(--text-main); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; margin-bottom: 15px; outline: none; font-size: 16px; }
 
+        /* 表格與列表互動 */
         .scroll-x { overflow-x: auto; width: 100%; }
         table { width: 100%; border-collapse: collapse; min-width: 450px; }
         th { text-align: left; opacity: 0.5; font-size: 12px; padding: 10px; border-bottom: 0.5px solid var(--glass-border); }
-        td { padding: 12px 10px; border-bottom: 0.5px solid rgba(255,255,255,0.05); font-size: 14px; }
+        td { padding: 16px 12px; border-bottom: 0.5px solid rgba(255,255,255,0.05); font-size: 15px; letter-spacing: -0.2px; }
+        .file-link { color: var(--ios-blue); font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; }
         
-        .file-link { color: var(--ios-blue); text-decoration: underline; cursor: pointer; }
+        /* 3. 列表點擊反饋 */
+        tr { transition: background 0.1s; }
+        tr:active { background: rgba(255, 255, 255, 0.1); transform: scale(0.98); }
 
-        .half-modal {
-            position: fixed; bottom: -100%; left: 0; width: 100%; height: 70vh;
-            background: var(--glass-bg); backdrop-filter: blur(40px);
-            border-radius: 30px 30px 0 0; z-index: 2000;
-            transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
-            padding: 25px; display: flex; flex-direction: column;
-            border-top: 1px solid var(--glass-border);
-        }
+        /* 檔案類型小圓點標籤 */
+        .type-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+        .dot-html { background-color: #E34F26; }
+        .dot-js { background-color: #F7DF1E; }
+        .dot-css { background-color: #1572B6; }
+        .dot-vue { background-color: #42b883; }
+        .dot-json { background-color: #ffffff; border: 1px solid var(--glass-border); }
+        .dot-md { background-color: #888888; border: 1px dashed white; }
+        .dot-img { background-color: #FF2A6D; }
+        .dot-other { background-color: #555555; }
+
+        /* Footer Tab Bar 樣式 */
+        footer { flex-shrink: 0; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); background: var(--glass-bg); border-top: 0.5px solid var(--glass-border); display: flex; flex-direction: column; gap: 10px; align-items: center; padding: 10px 20px 20px 20px; z-index: 100; }
+        .nav-links { display: flex; width: 100%; justify-content: space-around; font-size: 11px; font-weight: 500; opacity: 0.8; }
+        .tab-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; transition: 0.2s; }
+        .tab-item:active { transform: scale(0.9); opacity: 1; color: var(--ios-blue); }
+        .tab-icon { font-size: 20px; }
+
+        .copyright-bar { display: flex; align-items: center; gap: 8px; padding: 5px 10px; cursor: pointer; transition: transform 0.2s ease; opacity: 0.6; margin-top: 5px;}
+        .copyright-bar:active { transform: scale(0.95); }
+        .brand-logo { width: 16px; height: 16px; border-radius: 4px; object-fit: cover; }
+        .copyright-text { font-size: 10px; letter-spacing: 0.5px; white-space: nowrap; }
+
+        /* Modal & Buttons */
+        .half-modal { position: fixed; bottom: -100%; left: 0; width: 100%; height: 70vh; background: var(--glass-bg); backdrop-filter: blur(40px); -webkit-backdrop-filter: blur(40px); border-radius: 30px 30px 0 0; z-index: 2000; transition: bottom 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); padding: 25px; display: flex; flex-direction: column; border-top: 1px solid var(--glass-border); }
         .half-modal.active { bottom: 0; }
         .modal-header { width: 40px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 20px; }
         .modal-body { flex: 1; overflow-y: auto; }
-
-        .editor-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--glass-bg); backdrop-filter: blur(30px);
-            z-index: 3000; display: none; flex-direction: column; padding: var(--safe-top) 20px 20px 20px;
-        }
-        .editor-input {
-            background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);
-            color: var(--text-main); padding: 12px; border-radius: 10px; margin-bottom: 10px;
-            font-size: 14px; outline: none; width: 100%;
-        }
-        .editor-textarea {
-            flex: 1; width: 100%; margin-bottom: 15px; border-radius: 12px;
-            border: 1px solid var(--glass-border); padding: 15px; font-family: monospace;
-            background: rgba(0,0,0,0.3); color: var(--text-main); font-size: 13px;
-            resize: none; outline: none;
-        }
-
-        .settings-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8); backdrop-filter: blur(20px);
-            z-index: 4000; display: none; flex-direction: column; padding: 60px 30px;
-        }
-
-        .copy-box {
-            background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px;
-            margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px;
-        }
+        
+        .editor-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--glass-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); z-index: 3000; display: none; flex-direction: column; padding: var(--safe-top) 20px 20px 20px; }
+        .editor-input { background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); color: var(--text-main); padding: 12px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; outline: none; width: 100%; }
+        .editor-textarea { flex: 1; width: 100%; margin-bottom: 15px; border-radius: 12px; border: 1px solid var(--glass-border); padding: 15px; font-family: monospace; background: rgba(0,0,0,0.3); color: var(--text-main); font-size: 13px; resize: none; outline: none; }
+        
+        .settings-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); z-index: 4000; display: none; flex-direction: column; padding: 60px 30px; }
+        
+        .copy-box { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; }
         .copy-box label { font-size: 11px; opacity: 0.5; text-transform: uppercase; }
         .copy-box div { font-family: monospace; font-size: 12px; word-break: break-all; }
-
-        .btn-action {
-            background: var(--ios-blue); color: white; border: none;
-            padding: 12px; border-radius: 12px; font-weight: bold; width: 100%;
-            cursor: pointer;
-        }
-        .tiny-btn { background: var(--ios-blue); border: none; color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; }
+        
+        .btn-action { background: var(--ios-blue); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; transition: 0.2s; }
+        .btn-action:active { opacity: 0.8; transform: scale(0.95); }
+        .tiny-btn { background: var(--ios-blue); border: none; color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; transition: 0.2s; }
+        .tiny-btn:active { opacity: 0.8; }
     </style>
-<link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/tol/gh-idx/index.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta property="og:type" content="website"><meta property="og:image" content="https://your-supreme-site.com/og-image.jpg"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script></head>
+    <link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/tol/gh-idx/index.html">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin="">
+    <script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com';</script>
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://your-supreme-site.com/og-image.jpg">
+</head>
+
 <body class="dark-mode" id="appBody">
 
 <div class="app-container">
@@ -203,10 +157,15 @@
 
     <main>
         <section class="card">
-            <input type="text" id="userInput" placeholder="使用者名稱 (逗號分隔)" value="mobsp" style="width: 100%; background: rgba(0,0,0,0.2); border: none; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; font-size: 16px;">
+            <input type="text" id="userInput" placeholder="使用者名稱 (逗號分隔)" value="mobsp" style="width: 100%; background: rgba(0,0,0,0.2); border: none; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; font-size: 16px; outline: none;">
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <button onclick="startDeepScan()" class="btn-action">⚡ 掃描</button>
                 <button onclick="exportFullReport()" style="background: #34C759;" class="btn-action">📥 匯出</button>
+            </div>
+            
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" class="search-bar" oninput="updateView()" placeholder="搜尋檔案名稱...">
             </div>
         </section>
 
@@ -216,20 +175,25 @@
         </select>
 
         <div class="branch-slider" id="branchSlider"></div>
-
         <div id="displayTable"></div>
     </main>
 
     <footer>
         <div class="nav-links">
-            <div onclick="location.reload()" style="cursor:pointer">🏠 首頁</div>
-            <div onclick="toggleSettings(true)" style="cursor:pointer">⚙️ 設定</div>
-            <div id="scanStatus">Ready</div>
+            <div class="tab-item" onclick="location.reload()">
+                <span class="tab-icon">🏠</span><span>首頁</span>
+            </div>
+            <div class="tab-item" onclick="toggleSettings(true)">
+                <span class="tab-icon">⚙️</span><span>設定</span>
+            </div>
+            <div class="tab-item">
+                <span class="tab-icon">📊</span><span id="scanStatus">Ready</span>
+            </div>
         </div>
         
         <div class="copyright-bar" onclick="window.open('https://mobsp.qzz.io/', '_blank')">
             <img src="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" alt="Logo" class="brand-logo">
-            <span class="copyright-text"> GIX power By 莫比空間 Ⓒ Ⲙ𝔬ⲃⳝ𝔭 • 2026. </span>
+            <span class="copyright-text">GIX power By 莫比空間 Ⓒ Ⲙ𝔬ⲃⳝ𝔭 • 2026.</span>
         </div>
     </footer>
 </div>
@@ -273,22 +237,10 @@
 </div>
 
 <script>
-    /**
-     * [全局變數說明]
-     * allFiles: 儲存從 API 抓取的所有檔案物件。
-     * currentBranch: 當前用戶選中的 GitHub 分支。
-     * folderSet: 掃描過程中自動提取的資料夾目錄樹。
-     */
     let allFiles = [];
     let currentBranch = "";
     let folderSet = new Set();
 
-    /**
-     * [教程指南 - 核心掃描邏輯]
-     * 1. 透過 GitHub REST API 抓取 User 的 Repos。
-     * 2. 遍歷 Repos 抓取 Branches。
-     * 3. 利用 /git/trees/{sha}?recursive=1 獲取完整檔案樹，避免多次請求消耗 Rate Limit。
-     */
     async function startDeepScan() {
         const users = document.getElementById('userInput').value.split(',').map(s => s.trim());
         const status = document.getElementById('scanStatus');
@@ -308,10 +260,6 @@
                                 let folder = f.path.includes('/') ? f.path.substring(0, f.path.lastIndexOf('/')) : 'ROOT';
                                 folderSet.add(folder);
                                 
-                                /**
-                                 * [修改建議] 頁面連結修正
-                                 * 根據部長要求，將連結統一指向 https://mobsp.qzz.io/(檔案路徑)
-                                 */
                                 allFiles.push({
                                     user, 
                                     repo: repo.name, 
@@ -319,8 +267,8 @@
                                     path: f.path, 
                                     name: f.path.split('/').pop(),
                                     raw: `https://raw.githubusercontent.com/${user}/${repo.name}/${b.name}/${f.path}`,
-                                    link: `https://mobsp.qzz.io/${f.path}`, // 修正後的頁面連結
-                                    githubLink: `https://github.com/${user}/${repo.name}/blob/${b.name}/${f.path}`, // 保留原始 GitHub 供備用
+                                    link: `https://mobsp.qzz.io/${f.path}`,
+                                    githubLink: `https://github.com/${user}/${repo.name}/blob/${b.name}/${f.path}`,
                                     folder: folder
                                 });
                             });
@@ -337,10 +285,6 @@
         }
     }
 
-    /**
-     * [UI 構建指南]
-     * 根據掃描結果，動態生成資料夾下拉選單與分支切換滑塊。
-     */
     function buildUI() {
         const select = document.getElementById('folderSelect');
         select.innerHTML = '<option value="ALL">📂 顯示所有資料夾</option><option value="ROOT">📂 根目錄 (Root)</option>';
@@ -368,16 +312,29 @@
         updateView();
     }
 
-    /**
-     * [視圖刷新邏輯]
-     * 同時過濾「分支」與「資料夾」兩個維度，並渲染 HTML 表格。
-     */
+    /* 新增：判斷檔案類型並回傳對應的顏色圓點 Class */
+    function getFileIconDot(filename) {
+        const ext = filename.split('.').pop().toLowerCase();
+        if (['html', 'htm'].includes(ext)) return 'dot-html';
+        if (['js'].includes(ext)) return 'dot-js';
+        if (['css'].includes(ext)) return 'dot-css';
+        if (['vue'].includes(ext)) return 'dot-vue';
+        if (['json'].includes(ext)) return 'dot-json';
+        if (['md'].includes(ext)) return 'dot-md';
+        if (['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)) return 'dot-img';
+        return 'dot-other';
+    }
+
     function updateView() {
         const folderVal = document.getElementById('folderSelect').value;
+        const searchVal = document.getElementById('searchInput').value.toLowerCase(); // 取得搜尋關鍵字
         const area = document.getElementById('displayTable');
         
+        // 加入搜尋關鍵字過濾
         const filtered = allFiles.filter(f => 
-            f.branch === currentBranch && (folderVal === 'ALL' || f.folder === folderVal)
+            f.branch === currentBranch && 
+            (folderVal === 'ALL' || f.folder === folderVal) &&
+            f.name.toLowerCase().includes(searchVal)
         );
 
         area.innerHTML = `
@@ -388,8 +345,11 @@
                         ${filtered.map(f => `
                             <tr>
                                 <td><code style="font-size:10px; opacity:0.6">${f.branch}</code></td>
-                                <td class="file-link" onclick="openFileDetails('${f.path}')">${f.name}</td>
-                                <td><button class="btn-action" style="font-size:10px; padding:5px;" onclick="openEditor('${f.raw}', '${f.path}')">編輯</button></td>
+                                <td class="file-link" onclick="openFileDetails('${f.path}')">
+                                    <span class="type-dot ${getFileIconDot(f.name)}"></span>
+                                    ${f.name}
+                                </td>
+                                <td><button class="btn-action" style="font-size:10px; padding:6px 10px; border-radius: 8px;" onclick="openEditor('${f.raw}', '${f.path}')">編輯</button></td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -398,10 +358,6 @@
         `;
     }
 
-    /**
-     * [功能說明] 檔案詳細資訊彈窗
-     * 展示各種路徑格式，並包含修正後的 https://mobsp.qzz.io/ 連結。
-     */
     function openFileDetails(path) {
         const f = allFiles.find(item => item.path === path && item.branch === currentBranch);
         document.getElementById('infoName').innerText = f.name;
@@ -410,7 +366,7 @@
         const data = [
             { label: "絕對路徑", val: `/${f.path}` },
             { label: "相對路徑", val: `./${f.path}` },
-            { label: "預覽連結 (qzz.io)", val: f.link }, // 部長指定連結
+            { label: "預覽連結 (qzz.io)", val: f.link },
             { label: "原始碼 Raw", val: f.raw },
             { label: "GitHub 來源", val: f.githubLink }
         ];
@@ -430,10 +386,6 @@
         document.getElementById('infoModal').classList.add('active');
     }
 
-    /**
-     * [編輯器系統]
-     * 支援 Raw 內容抓取與前端虛擬編輯，並能匯出下載。
-     */
     async function openEditor(rawUrl, fullPath) {
         document.getElementById('editorModal').style.display = 'flex';
         document.getElementById('editFileName').value = fullPath;
@@ -449,9 +401,7 @@
         }
     }
 
-    function closeEditor() {
-        document.getElementById('editorModal').style.display = 'none';
-    }
+    function closeEditor() { document.getElementById('editorModal').style.display = 'none'; }
 
     function copyEditedContent() {
         const content = document.getElementById('editContent').value;
@@ -473,10 +423,6 @@
         document.body.removeChild(a);
     }
 
-    /**
-     * [匯出指南]
-     * 生成包含完整路徑與對應 qzz.io 連結的 CSV 報表。
-     */
     function exportFullReport() {
         if(allFiles.length === 0) return alert("目前沒有資料可以匯出，請先執行掃描。");
         let csvContent = "\uFEFFUser,Repo,Branch,Folder,Path,CustomLink,RawURL\n";
@@ -512,10 +458,6 @@
         alert("複製成功");
     }
 
-    /**
-     * [API 優化建議]
-     * 定時或手動檢查 GitHub API 配額剩餘次數，避免掃描到一半失敗。
-     */
     async function updateLimit() {
         try {
             const res = await (await fetch('https://api.github.com/rate_limit')).json();
@@ -525,9 +467,9 @@
         }
     }
 
-    // 初始化 API 配額顯示
     updateLimit();
 </script>
+
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
@@ -538,6 +480,5 @@
   }
 </script>
 
-
-
-</body></html>
+</body>
+</html>
