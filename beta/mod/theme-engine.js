@@ -1,20 +1,18 @@
-/* Zenith-Ultimate Production Engine */
-
-export const SystemData = {
-    // 指數退避重試請求
+/* Zenith-Ultimate Production Engine (Standard Version) */
+window.SystemData = {
     fetch: async (url, options = {}, retries = 3) => {
         try {
             const response = await fetch(url, options);
             if (!response.ok) throw new Error('Network Error');
             return response;
         } catch (err) {
-            if (retries > 0) return SystemData.fetch(url, options, retries - 1);
+            if (retries > 0) return window.SystemData.fetch(url, options, retries - 1);
             throw err;
         }
     }
 };
 
-export function initTheme() {
+window.initTheme = function() {
     const style = document.createElement('style');
     style.textContent = `
         :root { --accent: #00cec9; }
@@ -32,11 +30,11 @@ export function initTheme() {
     `;
     document.head.appendChild(style);
     document.body.classList.add('zenith-active');
-}
+};
 
-export function initSecurity() {
-    if (window.location.hostname !== 'localhost') {
-        window.oncontextmenu = () => false; // 禁用右鍵
-        setInterval(() => { debugger; }, 5000); // 基礎防偵錯
+window.initSecurity = function() {
+    if (window.location.hostname !== 'localhost' && window.location.protocol !== 'file:') {
+        window.oncontextmenu = () => false;
+        setInterval(() => { debugger; }, 5000);
     }
-}
+};
