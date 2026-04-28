@@ -5,90 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 旗艦測試中心</title>
     
-    <script src="./mod/ios-type.js"></script>
-
     <style>
-        .section-label { padding: 20px 16px 8px; color: #8E8E93; font-size: 13px; text-transform: uppercase; }
-        .group { margin-bottom: 20px; }
-        .ios-input-group { background: #1C1C1E; border-radius: 12px; margin: 0 16px; overflow: hidden; }
-        .ios-input-group input { 
-            width: 100%; background: transparent; border: none; color: #fff; 
-            padding: 14px 16px; font-size: 17px; border-bottom: 0.5px solid #333;
+        :root {
+            --ios-blue: #0A84FF; --ios-green: #30D158; --ios-red: #FF453A; --ios-gray: #8E8E93;
+            --glass: rgba(25, 25, 25, 0.75); --ios-card: rgba(28, 28, 30, 0.8);
         }
-        .desc { padding: 10px 20px; font-size: 13px; opacity: 0.5; line-height: 1.4; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: -apple-system, sans-serif; }
+        
+        #ios-root { display: flex; flex-direction: column; height: 100dvh; width: 100vw; position: relative; }
+        .ios-island { position: fixed; top: 11px; left: 50%; transform: translateX(-50%); width: 125px; height: 36px; background: #000; border-radius: 20px; z-index: 10000; transition: all 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.2); display: flex; align-items: center; justify-content: center; border: 0.5px solid rgba(255,255,255,0.1); }
+        .ios-island.active { width: 320px; height: 65px; }
+        #island-msg { opacity: 0; font-size: 14px; transition: 0.3s; color: #fff; }
+
+        .ios-header { padding: env(safe-area-inset-top, 20px) 20px 10px; background: var(--glass); backdrop-filter: blur(30px); border-bottom: 0.5px solid rgba(255,255,255,0.1); z-index: 1000; }
+        .nav-row { display: flex; align-items: center; height: 30px; }
+        .back-btn { color: var(--ios-blue); font-size: 17px; visibility: hidden; opacity: 0; transition: 0.3s; cursor: pointer; }
+        .back-btn.show { visibility: visible; opacity: 1; }
+        .ios-header h1 { font-size: 34px; margin: 5px 0 0; font-weight: 700; color: #fff; transition: 0.3s; }
+        .ios-header.mini h1 { font-size: 18px; transform: translate(-40px, -25px); text-align: center; width: 100%; }
+
+        .ios-scroller { flex: 1; overflow-y: auto; padding: 10px 16px 100px; transition: 0.3s; }
+        .section-label { padding: 20px 16px 8px; color: var(--ios-gray); font-size: 13px; text-transform: uppercase; }
+        .ios-list { background: var(--ios-card); border-radius: 12px; padding: 0; margin: 0 0 20px; list-style: none; overflow: hidden; backdrop-filter: blur(20px); }
+        .ios-list li { padding: 14px 16px; border-bottom: 0.5px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; font-size: 17px; color: #fff; }
+        .ios-list li:active { background: rgba(255,255,255,0.1); }
+
+        .ios-search-box { background: var(--ios-card); border-radius: 12px; padding: 10px 15px; display: flex; align-items: center; margin-bottom: 10px; }
+        .ios-search-box input { background: transparent; border: none; color: #fff; flex: 1; font-size: 17px; outline: none; }
+
+        .ios-switch { width: 51px; height: 31px; background: #39393D; border-radius: 20px; position: relative; transition: 0.3s; }
+        .ios-switch.on { background: var(--ios-green); }
+        .ios-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; background: #fff; border-radius: 50%; transition: 0.3s; }
+        .ios-switch.on::after { transform: translateX(20px); }
+
+        .home-bar { height: 5px; width: 134px; background: #fff; border-radius: 10px; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); opacity: 0.4; }
+
+        /* 彈窗樣式 */
+        .alert-ov { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 11000; backdrop-filter: blur(5px); }
+        .alert-box { width: 270px; background: rgba(35, 35, 35, 0.9); border-radius: 14px; overflow: hidden; text-align: center; }
+        .alert-body { padding: 20px; border-bottom: 0.5px solid #444; color: #fff; }
+        .alert-btns { display: flex; }
+        .alert-btn { flex: 1; padding: 12px; color: var(--ios-blue); font-weight: 600; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="section-label">實體搜尋過濾</div>
-    <div style="padding: 0 16px;">
-        <div class="ios-search-box">
-            <input type="text" placeholder="輸入關鍵字過濾下方列表..." oninput="window.ios.filter(this.value)">
+    <div id="ios-root">
+        <div class="ios-island" id="island"><div id="island-msg"></div></div>
+        <header class="ios-header" id="header">
+            <div class="nav-row"><span class="back-btn" id="back">〈 返回</span></div>
+            <h1 id="mainTitle">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+        </header>
+
+        <main class="ios-scroller" id="scroller">
+            <div class="ios-search-box">
+                <input type="text" placeholder="搜尋中心..." oninput="window.ios.filter(this.value)">
+            </div>
+
+            <div class="section-label">核心模組測試</div>
+            <ul class="ios-list">
+                <li onclick="window.ios.notify('⚡️ 系統正在 Zenith 軌道運行')">動態島通知 <span>觸發</span></li>
+                <li onclick="window.ios.alert('安全存取', '是否確認進入高級模式？', () => window.ios.notify('✅ 已進入模式'))">系統彈窗 <span>Callback</span></li>
+            </ul>
+
+            <div class="section-label">自動映射</div>
+            <ul class="ios-list">
+                <li>流光效果 <input type="checkbox" checked onchange="window.ios.notify('背景效果切換')"></li>
+                <li>防干擾模組 <input type="checkbox" checked></li>
+                <li onclick="openSubPage()">高級設置 <span>進入 〉</span></li>
+            </ul>
+        </main>
+        <div class="home-bar"></div>
+    </div>
+
+    <div class="alert-ov" id="alertOv">
+        <div class="alert-box">
+            <div class="alert-body"><div id="a-t"></div><div id="a-m"></div></div>
+            <div class="alert-btns"><div class="alert-btn" id="a-cancel">取消</div><div class="alert-btn" id="a-ok">確認</div></div>
         </div>
     </div>
 
-    <div class="section-label">動態島與交互系統</div>
-    <ul class="ios-list">
-        <li onclick="window.ios.notify('⚡️ 系統核心已成功掛載！')">
-            觸發動態島通知 <span class="val">點擊測試</span>
-        </li>
-        <li onclick="window.ios.alert('安全確認', '您確定要格式化目前所有的系統快取嗎？', () => { window.ios.notify('✅ 快取已清除'); }, '立即清除')">
-            實體雙鈕彈窗 <span class="val">Callback 測試</span>
-        </li>
-    </ul>
+    <script src="./ios-type.js"></script>
+    <script type="module">
+        import { initTheme, initSecurity } from './theme-engine.js';
+        
+        initTheme();
+        initSecurity();
 
-    <div class="section-label">多層級導航 (Navigation Stack)</div>
-    <div style="padding: 0 16px;">
-        <button onclick="openSubPage()">進入進階設定子頁面</button>
-    </div>
-    <div class="desc">測試 `window.ios.push` 是否能確實紀錄歷史紀錄並透過「返回」按鈕回跳。</div>
+        window.ios._render();
+        document.getElementById('back').onclick = () => window.ios.pop();
 
-    <div class="section-label">自動映射測試 (Mapping)</div>
-    <ul class="ios-list">
-        <li>
-            Wi-Fi 無線網路 
-            <input type="checkbox" checked onchange="window.ios.notify(this.checked ? 'Wi-Fi 已開啟' : 'Wi-Fi 已關閉')">
-        </li>
-        <li>
-            飛航模式 
-            <input type="checkbox" onchange="window.ios.notify('模式切換成功')">
-        </li>
-        <li>
-            藍牙連接 <span>未連接 〉</span>
-        </li>
-    </ul>
-
-    <div class="section-label">表單與數據收集</div>
-    <div class="ios-input-group">
-        <input type="text" placeholder="使用者帳號">
-        <input type="password" placeholder="存取金鑰">
-    </div>
-    <div class="desc">這部分的樣式與原生 iOS 設定頁面的輸入框完全一致。</div>
-
-    <script>
-        // 模擬動態生成一個完整的子頁面內容
-        function openSubPage() {
-            const subHtml = `
+        window.openSubPage = function() {
+            const html = `
                 <div class="section-label">子頁面功能</div>
                 <ul class="ios-list">
-                    <li>深層設定 A <input type="checkbox"></li>
-                    <li>深層設定 B <input type="checkbox" checked></li>
-                    <li onclick="window.ios.alert('子頁面指令', '已收到您的操作指令！')">觸發內部指令 〉</li>
+                    <li>重試機制 <input type="checkbox" checked></li>
+                    <li onclick="window.ios.pop()">回退主中心 〉</li>
                 </ul>
-                <div style="padding: 0 16px;">
-                    <button class="no-ios" style="background:#FF453A; color:#fff; border-radius:12px; padding:15px; width:100%; border:none; font-weight:600;" onclick="window.ios.pop()">
-                        手動執行返回 (Pop)
-                    </button>
-                </div>
             `;
-            window.ios.push('進階設定', subHtml);
+            window.ios.push('高級設置', html);
         }
-
-        // 啟動時自動通知
-        setTimeout(() => {
-            window.ios.notify("Welcome, 部長");
-        }, 1000);
     </script>
-
 </body>
 </html>
