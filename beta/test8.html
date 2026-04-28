@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 旗艦系統</title>
+    <style>
+        /* [視覺引擎] - iOS 原生質感 */
+        :root {
+            --ios-blue: #0A84FF; --ios-green: #30D158; --ios-red: #FF453A; --ios-gray: #8E8E93;
+            --glass: rgba(20, 20, 20, 0.7); --ios-card: rgba(28, 28, 30, 0.85);
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body, html { 
+            margin: 0; padding: 0; width: 100%; height: 100%; 
+            background: #000; overflow: hidden; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* 系統背景流光 (Zenith Effect) */
+        body.zenith-active {
+            background: linear-gradient(135deg, #000 20%, #120a1f 50%, #000 80%) !important;
+            background-size: 400% 400% !important;
+            animation: flow 12s ease infinite !important;
+            color: white;
+        }
+        @keyframes flow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        #ios-root { display: flex; flex-direction: column; height: 100dvh; width: 100vw; position: relative; }
+
+        /* 動態島 (Dynamic Island) */
+        .ios-island { position: fixed; top: 11px; left: 50%; transform: translateX(-50%); width: 125px; height: 36px; background: #000; border-radius: 20px; z-index: 10000; transition: all 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.2); display: flex; align-items: center; justify-content: center; border: 0.5px solid rgba(255,255,255,0.1); overflow: hidden;}
+        .ios-island.active { width: 300px; height: 60px; border-radius: 25px; }
+        #island-msg { opacity: 0; font-size: 14px; transition: 0.3s; color: #fff; font-weight: 500; white-space: nowrap; }
+
+        /* 導航欄 */
+        .ios-header { padding: env(safe-area-inset-top, 20px) 20px 10px; background: var(--glass); backdrop-filter: blur(40px); border-bottom: 0.5px solid rgba(255,255,255,0.1); z-index: 1000; }
+        .nav-row { display: flex; align-items: center; height: 30px; margin-bottom: 5px; }
+        .back-btn { color: var(--ios-blue); font-size: 17px; visibility: hidden; opacity: 0; transition: 0.3s; cursor: pointer; }
+        .back-btn.show { visibility: visible; opacity: 1; }
+        .ios-header h1 { font-size: 34px; margin: 0; font-weight: 700; color: #fff; transition: 0.3s; }
+        .ios-header.mini h1 { font-size: 18px; transform: translate(-40px, -28px); text-align: center; width: 100%; }
+
+        /* 滾動內容區 */
+        .ios-scroller { flex: 1; overflow-y: auto; padding: 10px 16px 100px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .section-label { padding: 20px 16px 8px; color: var(--ios-gray); font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ios-list { background: var(--ios-card); border-radius: 12px; padding: 0; margin: 0 0 20px; list-style: none; overflow: hidden; backdrop-filter: blur(20px); }
+        .ios-list li { padding: 14px 16px; border-bottom: 0.5px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between; font-size: 17px; color: #fff; cursor: pointer; }
+        .ios-list li:active { background: rgba(255,255,255,0.15); }
+        .ios-list li:last-child { border-bottom: none; }
+
+        /* 搜尋框 */
+        .ios-search-box { background: var(--ios-card); border-radius: 12px; padding: 10px 15px; display: flex; align-items: center; margin-bottom: 15px; }
+        .ios-search-box input { background: transparent; border: none; color: #fff; flex: 1; font-size: 17px; outline: none; }
+
+        /* [核心組件] - iOS Switch */
+        .ios-switch { width: 51px; height: 31px; background: #39393D; border-radius: 20px; position: relative; transition: 0.3s; cursor: pointer; }
+        .ios-switch.on { background: var(--ios-green); }
+        .ios-switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; background: #fff; border-radius: 50%; transition: 0.3s; box-shadow: 0 3px 8px rgba(0,0,0,0.2); }
+        .ios-switch.on::after { transform: translateX(20px); }
+
+        /* 底部 Home Bar */
+        .home-bar { height: 5px; width: 134px; background: #fff; border-radius: 10px; position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); opacity: 0.4; pointer-events: none; }
+
+        /* Action Sheet 樣式 */
+        .ios-as-ov { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 12000; opacity: 0; visibility: hidden; transition: 0.3s; display: flex; flex-direction: column; justify-content: flex-end; padding: 10px; backdrop-filter: blur(8px); }
+        .ios-as-ov.show { opacity: 1; visibility: visible; }
+        .ios-as-group { background: rgba(30,30,30,0.9); border-radius: 14px; margin-bottom: 8px; overflow: hidden; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.2, 1); }
+        .ios-as-ov.show .ios-as-group { transform: translateY(0); }
+        .as-btn { padding: 18px; text-align: center; font-size: 18px; color: #0A84FF; border-bottom: 0.5px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .as-btn.danger { color: #FF453A; }
+        .as-btn.cancel { font-weight: 600; }
+
+        /* Loading 樣式 */
+        .ios-ld-ov { position: fixed; inset: 0; z-index: 13000; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,0.3); }
+        .spinner { width: 35px; height: 35px; border: 3px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* Alert 樣式 */
+        .alert-ov { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 11000; backdrop-filter: blur(5px); }
+        .alert-box { width: 270px; background: rgba(45, 45, 45, 0.95); border-radius: 14px; overflow: hidden; text-align: center; border: 0.5px solid rgba(255,255,255,0.1); }
+        .alert-body { padding: 20px; border-bottom: 0.5px solid rgba(255,255,255,0.1); color: #fff; }
+        .alert-btn-row { display: flex; }
+        .a-btn { flex: 1; padding: 12px; color: var(--ios-blue); font-weight: 600; cursor: pointer; border-right: 0.5px solid rgba(255,255,255,0.1); }
+        .a-btn:last-child { border-right: none; }
+    </style>
+</head>
+<body>
+
+<div id="ios-root">
+    <div class="ios-island" id="island"><div id="island-msg"></div></div>
+    
+    <header class="ios-header" id="header">
+        <div class="nav-row"><span class="back-btn" id="back" onclick="ios.pop()">〈 返回</span></div>
+        <h1 id="mainTitle">控制中心</h1>
+    </header>
+
+    <main class="ios-scroller" id="scroller">
+        <div class="ios-search-box">
+            <input type="text" placeholder="搜尋功能..." oninput="ios.filter(this.value)">
+        </div>
+
+        <div class="section-label">系統維護</div>
+        <ul class="ios-list">
+            <li onclick="runSync()">同步 Zenith 雲端數據 <span>現在同步</span></li>
+            <li onclick="runReset()">重置全域設定 <span style="color:var(--ios-red)">重置</span></li>
+        </ul>
+
+        <div class="section-label">系統開關</div>
+        <ul class="ios-list">
+            <li>流光背景引擎 <input type="checkbox" checked onchange="ios.notify('主題引擎已就緒')"></li>
+            <li>防干擾模組 <input type="checkbox" checked></li>
+            <li onclick="openMore()">更多進階設定 <span>〉</span></li>
+        </ul>
+    </main>
+    
+    <div class="home-bar"></div>
+</div>
+
+<div class="ios-as-ov" id="asOv" onclick="this.classList.remove('show')"></div>
+<div class="ios-ld-ov" id="ldOv"><div class="spinner"></div></div>
+<div class="alert-ov" id="alertOv">
+    <div class="alert-box">
+        <div class="alert-body"><div id="at" style="font-weight:600;"></div><div id="am" style="font-size:13px;margin-top:5px;opacity:0.7;"></div></div>
+        <div class="alert-btn-row"><div class="a-btn" onclick="document.getElementById('alertOv').style.display='none'">取消</div><div class="a-btn" id="aOk">確認</div></div>
+    </div>
+</div>
+
+<script>
+    /* [iOS 26 Runtime Core] - 內置版 */
+    window.ios = {
+        _hist: [],
+        haptic: (t) => { if(navigator.vibrate) navigator.vibrate(t==='heavy'?[20,40,20]:20); },
+        
+        notify: (m) => {
+            const i=document.getElementById('island'), t=document.getElementById('island-msg');
+            t.innerText=m; i.classList.add('active'); ios.haptic();
+            setTimeout(()=>t.style.opacity=1, 200);
+            setTimeout(()=>{ t.style.opacity=0; setTimeout(()=>i.classList.remove('active'),200); }, 2500);
+        },
+
+        loading: (s) => document.getElementById('ldOv').style.display = s ? 'flex' : 'none',
+
+        actionSheet: (btns) => {
+            const ov = document.getElementById('asOv');
+            let h = '<div class="ios-as-group">';
+            btns.forEach(b => {
+                if(b.role==='cancel') h += `</div><div class="ios-as-group"><div class="as-btn cancel" onclick="${b.onClick}">${b.text}</div></div>`;
+                else h += `<div class="as-btn ${b.role==='destructive'?'danger':''}" onclick="${b.onClick}">${b.text}</div>`;
+            });
+            ov.innerHTML = h; ov.classList.add('show');
+        },
+
+        alert: (t, m, fn) => {
+            document.getElementById('at').innerText=t; document.getElementById('am').innerText=m;
+            document.getElementById('alertOv').style.display='flex';
+            document.getElementById('aOk').onclick = () => { document.getElementById('alertOv').style.display='none'; fn(); };
+        },
+
+        push: (t, h) => {
+            const s=document.getElementById('scroller'), head=document.getElementById('header');
+            ios._hist.push({t: document.getElementById('mainTitle').innerText, h: s.innerHTML});
+            s.style.opacity=0;
+            setTimeout(()=>{
+                s.innerHTML=h; document.getElementById('mainTitle').innerText=t;
+                document.getElementById('back').classList.add('show');
+                head.classList.add('mini'); ios._render(); s.style.opacity=1;
+            }, 250);
+        },
+
+        pop: () => {
+            if(!ios._hist.length) return;
+            const last=ios._hist.pop(), s=document.getElementById('scroller');
+            s.style.opacity=0;
+            setTimeout(()=>{
+                s.innerHTML=last.h; document.getElementById('mainTitle').innerText=last.t;
+                if(!ios._hist.length) { document.getElementById('back').classList.remove('show'); document.getElementById('header').classList.remove('mini'); }
+                ios._render(); s.style.opacity=1;
+            }, 250);
+        },
+
+        filter: (q) => {
+            document.querySelectorAll('.ios-list li').forEach(li => {
+                li.style.display = li.innerText.toLowerCase().includes(q.toLowerCase()) ? 'flex' : 'none';
+            });
+        },
+
+        _render: () => {
+            document.querySelectorAll('input[type="checkbox"]').forEach(c => {
+                if(c.dataset.done) return;
+                const sw = document.createElement('div');
+                sw.className = `ios-switch ${c.checked?'on':''}`;
+                c.style.display='none'; c.dataset.done="1";
+                sw.onclick = (e) => { e.stopPropagation(); c.checked=!c.checked; sw.classList.toggle('on'); ios.haptic(); c.dispatchEvent(new Event('change')); };
+                c.parentNode.insertBefore(sw, c);
+            });
+        }
+    };
+
+    /* [業務邏輯] */
+    window.onload = () => {
+        document.body.classList.add('zenith-active');
+        ios._render();
+    };
+
+    function runSync() {
+        ios.loading(true);
+        setTimeout(() => { ios.loading(false); ios.notify("同步成功"); }, 1500);
+    }
+
+    function runReset() {
+        ios.actionSheet([
+            { text: '清理快取', onClick: 'ios.notify("快取已清空")' },
+            { text: '完整格式化', role: 'destructive', onClick: 'ios.alert("警告","確定刪除數據？",()=>ios.notify("已重置"))' },
+            { text: '取消', role: 'cancel', onClick: '' }
+        ]);
+    }
+
+    function openMore() {
+        const html = `
+            <div class="section-label">隱私安全性</div>
+            <ul class="ios-list">
+                <li>位置存取 <input type="checkbox"></li>
+                <li>自動鎖定 <input type="checkbox" checked></li>
+                <li onclick="ios.pop()">〈 返回主中心</li>
+            </ul>
+        `;
+        ios.push('進階設定', html);
+    }
+</script>
+
+</body>
+</html>
