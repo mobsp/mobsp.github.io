@@ -3,209 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Brand History - 私人對話紀錄庫</title>
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間：數位資源入口</title>
     <style>
-        /* --- 品牌自定義區域 --- */
         :root {
-            --brand-primary: #007AFF; /* 您的品牌主色 */
-            --brand-bg: #f8f9fa;      /* 頁面背景色 */
-            --chat-user-bg: #e3f2fd;  /* 使用者對話框顏色 */
-            --chat-ai-bg: #ffffff;    /* AI 對話框顏色 */
-            --text-main: #2c3e50;     /* 主要文字顏色 */
-            --border-radius: 12px;    /* 圓角弧度 */
-            --font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            --brand-bg: #0d1117;
+            --brand-primary: #58a6ff;
+            --brand-text: #c9d1d9;
+            --user-bubble: #21262d;
+            --ai-bubble: #161b22;
         }
+        body, html { margin: 0; padding: 0; height: 100%; background: var(--brand-bg); color: var(--brand-text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+        
+        /* 對話主視窗 */
+        #chat-app { display: flex; flex-direction: column; height: 100vh; max-width: 1200px; margin: 0 auto; }
+        #display-area { flex: 1; overflow-y: auto; padding: 20px; scroll-behavior: smooth; }
+        
+        /* 訊息泡泡基礎樣式 */
+        .brand-msg-wrapper { margin-bottom: 24px; max-width: 85%; animation: fadeIn 0.3s ease; }
+        .role-user { margin-left: auto; text-align: right; }
+        .role-assistant { margin-right: auto; }
+        
+        .brand-msg-label { font-size: 0.75rem; font-weight: bold; margin-bottom: 4px; color: var(--brand-primary); }
+        .brand-msg-content { padding: 12px 16px; border-radius: 12px; line-height: 1.6; word-wrap: break-word; }
+        .role-user .brand-msg-content { background: var(--user-bubble); border-bottom-right-radius: 2px; }
+        .role-assistant .brand-msg-content { background: var(--ai-bubble); border: 1px solid #30363d; border-bottom-left-radius: 2px; }
 
-        body {
-            font-family: var(--font-family);
-            background-color: var(--brand-bg);
-            color: var(--text-main);
-            margin: 0;
-            padding: 40px 20px;
-            line-height: 1.6;
-        }
+        /* 多媒體預覽區域 */
+        .brand-media-area { margin-top: 10px; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+        .preview-img { width: 100%; border-radius: 8px; cursor: pointer; border: 1px solid #30363d; }
+        .preview-video, .preview-audio { width: 100%; border-radius: 8px; }
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-            border-bottom: 2px solid var(--brand-primary);
-            padding-bottom: 20px;
-        }
-
-        /* --- 對話主題外框 --- */
-        .conversation-card {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-            overflow: hidden;
-            border: 1px solid #eee;
-        }
-
-        .conv-header {
-            background: var(--brand-primary);
-            color: white;
-            padding: 15px 25px;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .conv-body {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        /* --- 對話泡泡樣式 --- */
-        .message {
-            max-width: 85%;
-            padding: 12px 18px;
-            border-radius: var(--border-radius);
-            position: relative;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .author-label {
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-            display: block;
-            color: #888;
-        }
-
-        /* 使用者訊息靠右 */
-        .message-user {
-            align-self: flex-end;
-            background-color: var(--chat-user-bg);
-            border-bottom-right-radius: 2px;
-            border: 1px solid #bbdefb;
-        }
-
-        /* Assistant 訊息靠左 */
-        .message-assistant {
-            align-self: flex-start;
-            background-color: var(--chat-ai-bg);
-            border-bottom-left-radius: 2px;
-            border: 1px solid #e0e0e0;
-        }
-
-        /* 檔案與附件樣式 */
-        .file-attachment {
-            margin-top: 10px;
-            padding: 8px;
-            background: rgba(0,0,0,0.05);
-            border-left: 4px solid var(--brand-primary);
-            font-size: 0.9rem;
-        }
-
-        .file-attachment a {
-            color: var(--brand-primary);
-            text-decoration: none;
-        }
+        /* 輸入控制列 */
+        #input-panel { padding: 20px; background: #161b22; border-top: 1px solid #30363d; display: flex; gap: 10px; }
+        #user-input { flex: 1; background: #0d1117; border: 1px solid #30363d; border-radius: 6px; padding: 12px; color: white; outline: none; }
+        #user-input:focus { border-color: var(--brand-primary); box-shadow: 0 0 0 3px rgba(88,166,255,0.3); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>品牌專屬對話儲存庫</h1>
-        <p>INTERNAL ARCHIVE / CONFIDENTIAL</p>
-    </header>
-
-    <div id="brand-root">
+<div id="chat-app">
+    <div id="display-area">
         </div>
+
+    <div id="input-panel">
+        <input type="text" id="user-input" placeholder="輸入關鍵字檢索資源或呼叫功能 (例如: 2026研發...)" autocomplete="off">
+        <button id="send-btn" style="background: var(--brand-primary); border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; color: white; font-weight: bold;">傳送</button>
+    </div>
 </div>
 
 <script>
-    /* 這裡貼上您 conversations.json 的內容 */
-    const chatData = [
-        // 系統會在此處載入資料
-    ];
+    // 這裡放入我們重構後的 MobSpaceEngine Class
+    // (為了簡潔，這裡直接引用邏輯，您可以將之前的 JS 存為 mobspace-engine.js 引入)
+    
+    // 模擬我們剛才討論的「1.json」索引數據 (實際運作時會從 GitHub 抓取)
+    const mockManifest = {
+        files: [
+            { id: "fileA", name: "2026研發紀錄", path: "data/A.json", tags: ["dev"] },
+            { id: "fileB", name: "品牌資源庫", path: "data/B.json", tags: ["assets"] }
+        ]
+    };
 
-    /* 如果有資源清單 (assets.json)，貼在此處 */
-    const assetsData = null; 
-
-    const rootElement = document.getElementById('brand-root');
-
-    function renderApp() {
-        if (!chatData || chatData.length === 0) {
-            rootElement.innerHTML = "<p>尚未偵測到對話紀錄...</p>";
-            return;
-        }
-
-        chatData.forEach(conv => {
-            // 1. 創建對話大卡片
-            const card = document.createElement('div');
-            card.className = 'conversation-card';
-
-            // 2. 標題區
-            const header = document.createElement('div');
-            header.className = 'conv-header';
-            header.textContent = conv.title || "未命名對話";
-            card.appendChild(header);
-
-            // 3. 訊息容器
-            const body = document.createElement('div');
-            body.className = 'conv-body';
-
-            // 4. 解析對話樹 (Mapping)
-            const mapping = conv.mapping;
-            for (let id in mapping) {
-                const node = mapping[id];
-                const msg = node.message;
-
-                if (msg && msg.content && msg.content.parts) {
-                    const role = msg.author.role;
-                    const textContent = msg.content.parts.join('\n');
-                    
-                    if (textContent.trim() !== "") {
-                        const msgDiv = createMessageBubble(role, textContent, id);
-                        body.appendChild(msgDiv);
-                    }
-                }
-            }
-
-            card.appendChild(body);
-            rootElement.appendChild(card);
-        });
-    }
-
-    function createMessageBubble(role, text, msgId) {
-        const wrapper = document.createElement('div');
-        wrapper.className = `message message-${role === 'user' ? 'user' : 'assistant'}`;
-
-        // 角色標籤
-        const label = document.createElement('span');
-        label.className = 'author-label';
-        label.textContent = role === 'user' ? 'YOU' : 'BRAND AI';
-        wrapper.appendChild(label);
-
-        // 文字內容
-        const textNode = document.createTextNode(text);
-        wrapper.appendChild(textNode);
-
-        // 檔案處理邏輯 (移植自原始碼)
-        if (assetsData && assetsData[msgId]) {
-            assetsData[msgId].forEach(fileName => {
-                const fileDiv = document.createElement('div');
-                fileDiv.className = 'file-attachment';
-                fileDiv.innerHTML = `📎 附件：<a href="${fileName}" target="_blank">${fileName}</a>`;
-                wrapper.appendChild(fileDiv);
+    class BrandApp {
+        constructor() {
+            // 初始化渲染引擎
+            this.engine = new MobSpaceEngine({
+                container: document.getElementById('display-area'),
+                brandName: "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ"
             });
+            this.input = document.getElementById('user-input');
+            this.btn = document.getElementById('send-btn');
+            this.setupEventListeners();
         }
 
-        return wrapper;
+        setupEventListeners() {
+            this.btn.onclick = () => this.handleAction();
+            this.input.onkeypress = (e) => { if(e.key === 'Enter') this.handleAction(); };
+        }
+
+        async handleAction() {
+            const query = this.input.value.trim();
+            if(!query) return;
+
+            // 1. 顯示使用者輸入 (模擬聊天介面)
+            this.appendMessage('user', query);
+            this.input.value = '';
+
+            // 2. 搜尋與調度邏輯
+            const matchedFile = mockManifest.files.find(f => query.includes(f.name) || f.tags.some(t => query.includes(t)));
+
+            if(matchedFile) {
+                this.appendMessage('assistant', `正在為您檢索「${matchedFile.name}」並加載數位資源...`);
+                // 模擬抓取 A.json 或 B.json 並渲染
+                // 這裡會執行 engine.render(data)
+                setTimeout(() => {
+                    this.engine.render([{ role: 'assistant', text: `這是從 ${matchedFile.name} 找到的內容，包含 HTML 語法與多媒體預覽：`, id: 'msg_001' }]);
+                    // 這裡可以觸發附件渲染
+                }, 800);
+            } else {
+                this.appendMessage('assistant', `抱歉，找不到與「${query}」相關的內容。建議試試：2026研發、品牌資源。`);
+            }
+        }
+
+        appendMessage(role, text) {
+            const wrap = document.createElement('div');
+            wrap.className = `brand-msg-wrapper role-${role}`;
+            wrap.innerHTML = `
+                <div class="brand-msg-label">${role === 'user' ? 'USER' : 'Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ'}</div>
+                <div class="brand-msg-content">${text}</div>
+            `;
+            document.getElementById('display-area').appendChild(wrap);
+            document.getElementById('display-area').scrollTop = document.getElementById('display-area').scrollHeight;
+        }
     }
 
-    // 啟動渲染
-    window.onload = renderApp;
+    // 啟動應用
+    const app = new BrandApp();
+
+    // 這裡預留給 MobSpaceEngine 的 Class 代碼部分...
 </script>
 
 </body>
