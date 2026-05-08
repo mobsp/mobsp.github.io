@@ -6,366 +6,271 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="GIX">
-    <link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.webp">
+    <link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
-    <title>莫比空間｜Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ - GIX</title>
+    <title>莫比空間｜GIX Indexer</title>
     
     <style>
         :root {
             --ios-blue: #0A84FF;
-            --glass-bg: rgba(28, 28, 30, 0.7);
+            --glass-bg: rgba(20, 20, 22, 0.85);
             --glass-border: rgba(255, 255, 255, 0.15);
             --text-main: #ffffff;
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        @keyframes flowingGradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
         body.dark-mode {
-            background: linear-gradient(-45deg, #020617, #0f172a, #1e293b, #020617);
-            background-size: 400% 400%;
-            animation: flowingGradient 15s ease infinite;
+            background: #000;
+            background-image: radial-gradient(circle at 50% -20%, #1e293b, #000);
             --text-main: #ffffff;
-        }
-        body.light-mode {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            --text-main: #1d1d1f;
-            --glass-bg: rgba(255, 255, 255, 0.6);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; color: var(--text-main); font-family: -apple-system, system-ui, sans-serif; }
         
-        .app-container { display: flex; flex-direction: column; height: 100%; height: 100dvh; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
+        .app-container { display: flex; flex-direction: column; height: 100dvh; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
         header { flex-shrink: 0; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); background: var(--glass-bg); border-bottom: 0.5px solid var(--glass-border); padding: 15px 20px; z-index: 100; }
         
+        main { flex-grow: 1; overflow-y: auto; padding: 15px; }
+
         .card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-radius: 20px; padding: 15px; margin-bottom: 15px;
-            border: 0.5px solid rgba(255, 255, 255, 0.2); 
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); 
+            background: var(--glass-bg); border-radius: 20px; padding: 15px; margin-bottom: 15px;
+            border: 0.5px solid var(--glass-border); box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
 
-        main { flex-grow: 1; overflow-y: auto; padding: 15px; -webkit-overflow-scrolling: touch; }
-        main::-webkit-scrollbar { display: none; } 
-
-        .branch-slider {
-            display: flex; gap: 10px; overflow-x: auto; padding: 10px 0;
-            scrollbar-width: none; mask-image: linear-gradient(to right, black 85%, transparent 100%);
+        /* 複選下拉選單 */
+        .multi-select {
+            width: 100%; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--glass-border);
+            border-radius: 12px; padding: 10px; font-size: 14px; margin-bottom: 10px;
         }
-        .branch-item { padding: 10px 20px; background: rgba(255,255,255,0.1); border-radius: 25px; font-size: 14px; cursor: pointer; white-space: nowrap; transition: 0.3s; border: 1px solid transparent; }
-        .branch-item.active { background: var(--ios-blue); color: white; box-shadow: 0 4px 15px rgba(10, 132, 255, 0.4); }
 
-        .search-container { position: relative; width: 100%; margin-top: 12px; }
-        .search-bar { width: 100%; background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border); padding: 12px 12px 12px 35px; border-radius: 15px; color: white; font-size: 15px; outline: none; transition: 0.2s; }
-        .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.6; pointer-events: none; }
-        
-        select { width: 100%; background: var(--glass-bg); color: var(--text-main); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; margin-bottom: 15px; outline: none; font-size: 16px; }
+        /* 列表樣式 */
+        .list-item {
+            display: flex; flex-direction: column; gap: 8px; padding: 15px;
+            background: rgba(255,255,255,0.03); border-radius: 18px; margin-bottom: 10px;
+            border: 0.5px solid rgba(255,255,255,0.1);
+        }
 
         /* iOS 26.5 Super Modal */
         #superModal {
             position: fixed; top: 100%; left: 0; width: 100%; height: 100dvh;
-            background: rgba(15, 15, 17, 0.92);
-            backdrop-filter: blur(45px) saturate(180%);
-            -webkit-backdrop-filter: blur(45px) saturate(180%);
-            z-index: 5000; border-radius: 35px 35px 0 0;
-            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            display: flex; flex-direction: column; overflow: hidden;
-            border-top: 0.5px solid rgba(255,255,255,0.15);
+            background: rgba(15, 15, 17, 0.95); backdrop-filter: blur(50px) saturate(200%);
+            z-index: 5000; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            display: flex; flex-direction: column; border-radius: 40px 40px 0 0;
         }
         #superModal.active { top: 0; border-radius: 0; }
         #superModal.minimized { top: 50dvh; height: 50dvh; border-radius: 30px 30px 0 0; }
 
         .sm-header {
             padding: calc(var(--safe-top) + 15px) 20px 15px;
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid rgba(255,255,255,0.1);
         }
-        .sm-nav-btn { color: var(--ios-blue); font-size: 17px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 4px; }
-        .sm-content { flex: 1; overflow-y: auto; padding: 0 20px 40px; display: none; }
-        .sm-content.active { display: block; }
+        .sm-nav-btn { color: var(--ios-blue); font-size: 18px; cursor: pointer; }
         
-        .code-container {
-            position: relative; background: rgba(0,0,0,0.4); border-radius: 15px;
-            padding: 15px; font-family: monospace; font-size: 13px; line-height: 1.5;
-            white-space: pre-wrap; word-break: break-all; margin-top: 15px; border: 0.5px solid rgba(255,255,255,0.1);
-        }
-        .copy-trigger { position: absolute; top: 10px; right: 10px; font-size: 20px; cursor: pointer; opacity: 0.7; }
+        .sm-body { flex: 1; overflow-y: auto; padding: 20px; }
+        .sm-view { display: none; }
+        .sm-view.active { display: block; }
 
-        footer { flex-shrink: 0; backdrop-filter: blur(30px); background: var(--glass-bg); border-top: 0.5px solid var(--glass-border); display: flex; flex-direction: column; align-items: center; padding: 10px 20px 20px; z-index: 100; }
-        .nav-links { display: flex; width: 100%; justify-content: space-around; font-size: 11px; }
-        .tab-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-        .btn-action { background: var(--ios-blue); color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; width: 100%; cursor: pointer; }
-        .tiny-btn { background: var(--ios-blue); border: none; color: white; padding: 6px 12px; border-radius: 10px; font-size: 12px; }
+        .code-box {
+            background: #000; border-radius: 15px; padding: 15px; position: relative;
+            font-family: 'SF Mono', monospace; font-size: 13px; color: #34C759;
+            border: 1px solid rgba(255,255,255,0.1); margin-top: 15px;
+        }
+        .copy-icon { position: absolute; top: 10px; right: 10px; font-size: 18px; opacity: 0.6; }
+
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .ios-btn { padding: 14px; border-radius: 14px; border: none; font-weight: 600; cursor: pointer; text-align: center; }
     </style>
 </head>
-
-<body class="dark-mode" id="appBody">
+<body class="dark-mode">
 
 <div class="app-container">
     <header>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h2 style="margin:0; font-size: 22px; letter-spacing: -0.5px;">GIX Indexer</h2>
-            <div id="rateLimit" style="font-size: 12px; padding: 4px 10px; background: rgba(255,255,255,0.1); border-radius: 20px;">API: -- / 60</div>
-        </div>
+        <h2 style="margin:0;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ - GIX</h2>
     </header>
 
     <main>
         <section class="card">
-            <input type="text" id="userInput" placeholder="使用者名稱" value="mobsp" style="width: 100%; background: rgba(0,0,0,0.2); border: none; padding: 14px; border-radius: 12px; color: white; margin-bottom: 12px; font-size: 16px; outline: none;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button onclick="startDeepScan()" class="btn-action">⚡ 掃描所有分支</button>
-                <button onclick="exportFullReport()" style="background: #34C759;" class="btn-action">📥 匯出當前</button>
-            </div>
-            <div class="search-container">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" class="search-bar" oninput="updateView()" placeholder="搜尋檔案...">
-            </div>
+            <input type="text" id="userInput" value="mobsp" style="width:100%; padding:12px; border-radius:10px; background:rgba(0,0,0,0.2); border:none; color:white; margin-bottom:10px;">
+            <button onclick="startScan()" class="ios-btn" style="background:var(--ios-blue); color:white; width:100%;">⚡ 掃描所有分支內容</button>
         </section>
 
-        <select id="folderSelect" multiple style="height: 80px; margin-bottom: 15px;" onchange="updateView()">
-            <option value="ALL" selected>📂 所有資料夾 (預設)</option>
-        </select>
+        <div id="filterSection" style="display:none;">
+            <p style="font-size:12px; opacity:0.6; margin: 10px 5px;">選擇要顯示/匯出的分支：</p>
+            <select id="branchSelect" onchange="updateView()" class="multi-select"></select>
+            
+            <p style="font-size:12px; opacity:0.6; margin: 10px 5px;">資料夾過濾 (可複選)：</p>
+            <select id="folderSelect" multiple onchange="updateView()" class="multi-select" style="height:100px;"></select>
+        </div>
 
-        <div class="branch-slider" id="branchSlider"></div>
-        <div id="displayTable"></div>
+        <div id="fileList"></div>
     </main>
-
-    <footer>
-        <div class="nav-links">
-            <div class="tab-item" onclick="location.reload()"><span>🏠</span><span>首頁</span></div>
-            <div class="tab-item" onclick="toggleSettings(true)"><span>⚙️</span><span>設定</span></div>
-            <div class="tab-item"><span>📊</span><span id="scanStatus">Ready</span></div>
-        </div>
-        <div class="copyright-bar" onclick="window.open('https://mobsp.qzz.io/', '_blank')">
-            <span class="copyright-text">GIX power By 莫比空間 Ⓒ 2026.</span>
-        </div>
-    </footer>
 </div>
 
-<!-- iOS 26.5 Super Modal -->
 <div id="superModal">
     <div class="sm-header">
-        <div class="sm-nav-btn" id="smBackBtn" onclick="switchSMTab('links')" style="visibility: hidden;">〈 返回</div>
-        <div class="sm-nav-btn" onclick="toggleSMMinimize()">⌤</div>
-        <div class="sm-nav-btn" onclick="closeSuperModal()" style="color: #ff3b30;">✕</div>
+        <div class="sm-nav-btn" onclick="smBack()">〈 返回</div>
+        <div class="sm-nav-btn" onclick="toggleMinimize()">⌤</div>
+        <div class="sm-nav-btn" onclick="closeSM()" style="color:#ff3b30;">✕</div>
     </div>
     
-    <!-- 頁面 1: 連結項目 -->
-    <div id="smLinksTab" class="sm-content active">
-        <h2 id="smFileName" style="margin-bottom: 5px;">File Name</h2>
-        <p id="smFileDesc" style="opacity:0.6; font-size:14px; margin-bottom:20px;">Description</p>
-        <div id="smLinksBody"></div>
-        <button class="btn-action" style="margin-top:25px;" onclick="switchSMTab('content')">查看檔案完整內容</button>
-    </div>
-
-    <!-- 頁面 2: 檔案內容 -->
-    <div id="smContentTab" class="sm-content">
-        <h3 style="margin-bottom:15px;">原始碼內容</h3>
-        <div class="code-container">
-            <span class="copy-trigger" onclick="copyEditedContent()">📋</span>
-            <div id="smCodeArea">Loading...</div>
+    <div class="sm-body">
+        <div id="smViewInfo" class="sm-view active">
+            <h2 id="smTitle">檔案名稱</h2>
+            <p id="smDesc" style="opacity:0.6; margin-bottom:25px;">作用說明</p>
+            <div id="smLinks"></div>
+            <button class="ios-btn" style="background:var(--ios-blue); color:white; width:100%; margin-top:20px;" onclick="smToContent()">查看檔案內容</button>
         </div>
-        <textarea id="smEditor" class="editor-textarea" style="display:none; width:100%; height:200px; margin-top:15px;"></textarea>
-        
-        <div id="smActionGroup" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px;">
-            <button onclick="enterEditMode()" class="btn-action" style="background:rgba(255,255,255,0.1);">編輯檔案</button>
-            <button onclick="saveFlow()" id="saveBtn" class="btn-action" style="background:#34C759; display:none;">儲存並發送</button>
+
+        <div id="smViewContent" class="sm-view">
+            <h3>內容詳情</h3>
+            <div class="code-box">
+                <span class="copy-icon" onclick="copyContent()">📋</span>
+                <pre id="smCodeDisplay" style="margin:0; white-space:pre-wrap;"></pre>
+            </div>
+            <textarea id="smEditor" style="display:none; width:100%; height:300px; background:#000; color:white; border-radius:10px; padding:10px; margin-top:15px;"></textarea>
+            
+            <div class="btn-group">
+                <button id="editBtn" class="ios-btn" style="background:rgba(255,255,255,0.1); color:white;" onclick="startEdit()">編輯檔案</button>
+                <button id="saveBtn" class="ios-btn" style="background:#34C759; color:white; display:none;" onclick="saveLogic()">儲存檔案</button>
+            </div>
         </div>
     </div>
-</div>
-
-<div id="settingsPopup" class="settings-overlay">
-    <button class="btn-action" onclick="toggleSettings(false)">完成</button>
 </div>
 
 <script>
     let allFiles = [];
-    let currentBranch = "";
     let activeFile = null;
 
-    async function startDeepScan() {
-        const users = document.getElementById('userInput').value.split(',').map(s => s.trim());
-        const status = document.getElementById('scanStatus');
+    async function startScan() {
+        const user = document.getElementById('userInput').value;
         allFiles = [];
-        status.innerText = "掃描中...";
-
-        try {
-            for (let user of users) {
-                const repos = await (await fetch(`https://api.github.com/users/${user}/repos?per_page=100`)).json();
-                for (let repo of repos) {
-                    const branches = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/branches`)).json();
-                    for (let b of branches) {
-                        const treeData = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/git/trees/${b.name}?recursive=1`)).json();
-                        if (treeData.tree) {
-                            treeData.tree.filter(i => i.type === 'blob').forEach(f => {
-                                allFiles.push({
-                                    user, repo: repo.name, branch: b.name,
-                                    path: f.path, name: f.path.split('/').pop(),
-                                    raw: `https://raw.githubusercontent.com/${user}/${repo.name}/${b.name}/${f.path}`,
-                                    link: `https://mobsp.qzz.io/${f.path}`,
-                                    github: `https://github.com/${user}/${repo.name}/blob/${b.name}/${f.path}`,
-                                    folder: f.path.includes('/') ? f.path.substring(0, f.path.lastIndexOf('/')) : 'ROOT'
-                                });
-                            });
-                        }
-                    }
+        const repos = await (await fetch(`https://api.github.com/users/${user}/repos?per_page=100`)).json();
+        
+        for (let repo of repos) {
+            const branches = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/branches`)).json();
+            for (let b of branches) {
+                const tree = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/git/trees/${b.name}?recursive=1`)).json();
+                if (tree.tree) {
+                    tree.tree.filter(i => i.type === 'blob').forEach(f => {
+                        allFiles.push({
+                            branch: b.name, repo: repo.name, path: f.path,
+                            name: f.path.split('/').pop(),
+                            raw: `https://raw.githubusercontent.com/${user}/${repo.name}/${b.name}/${f.path}`,
+                            link: `https://mobsp.qzz.io/${f.path}`,
+                            folder: f.path.includes('/') ? f.path.substring(0, f.path.lastIndexOf('/')) : 'ROOT'
+                        });
+                    });
                 }
             }
-            buildUI();
-            status.innerText = "完成";
-            updateLimit();
-        } catch (e) { alert("API 限制或錯誤"); }
+        }
+        initFilters();
     }
 
-    function buildUI() {
-        const select = document.getElementById('folderSelect');
+    function initFilters() {
+        document.getElementById('filterSection').style.display = 'block';
+        const bSelect = document.getElementById('branchSelect');
+        const fSelect = document.getElementById('folderSelect');
+        
+        const branches = [...new Set(allFiles.map(f => f.branch))];
+        bSelect.innerHTML = branches.map(b => `<option value="${b}">${b}</option>`).join('');
+        
         const folders = [...new Set(allFiles.map(f => f.folder))].sort();
-        select.innerHTML = '<option value="ALL" selected>📂 所有資料夾</option>';
-        folders.forEach(f => select.innerHTML += `<option value="${f}">${f}</option>`);
-
-        const uniqueBranches = [...new Set(allFiles.map(f => f.branch))];
-        currentBranch = uniqueBranches[0] || "";
-        renderBranches(uniqueBranches);
+        fSelect.innerHTML = `<option value="ALL" selected>所有資料夾</option>` + 
+                            folders.map(f => `<option value="${f}">${f}</option>`).join('');
         updateView();
     }
 
-    function renderBranches(list) {
-        const slider = document.getElementById('branchSlider');
-        slider.innerHTML = list.map(b => `
-            <div class="branch-item ${b === currentBranch ? 'active' : ''}" onclick="selectBranch('${b}')">${b}</div>
-        `).join('');
-    }
-
-    function selectBranch(b) {
-        currentBranch = b;
-        renderBranches([...new Set(allFiles.map(f => f.branch))]);
-        updateView();
-    }
-
-    function getAutoDesc(name) {
-        const ext = name.split('.').pop().toLowerCase();
-        const map = {
-            html: "結構標記檔案，定義網頁骨架", js: "邏輯處理腳本，控制互動功能",
-            css: "樣式表檔案，美化介面設計", json: "數據配置檔案，儲存結構化資料",
-            md: "文件說明檔，專案介紹與指南", png: "圖像資源檔案", jpg: "圖像資源檔案"
-        };
-        return map[ext] || "專案內部資源檔案";
+    function getPreciseDesc(f) {
+        const name = f.name.toLowerCase();
+        if(name === 'package.json') return "專案依賴與腳本定義中心";
+        if(name.endsWith('.js')) return "核心邏輯控制與交互行為實作";
+        if(name.endsWith('.html')) return "頁面結構佈局與 DOM 靜態定義";
+        if(name.endsWith('.css')) return "視覺樣式渲染與介面美化配置";
+        if(name.endsWith('.md')) return "專案技術文檔與使用指南說明";
+        return "專案內部資源與數據存放檔案";
     }
 
     function updateView() {
+        const targetBranch = document.getElementById('branchSelect').value;
         const selectedFolders = Array.from(document.getElementById('folderSelect').selectedOptions).map(o => o.value);
-        const search = document.getElementById('searchInput').value.toLowerCase();
-        const area = document.getElementById('displayTable');
-        
+        const list = document.getElementById('fileList');
+
         const filtered = allFiles.filter(f => 
-            f.branch === currentBranch && 
-            (selectedFolders.includes('ALL') || selectedFolders.includes(f.folder)) &&
-            f.name.toLowerCase().includes(search)
+            f.branch === targetBranch && 
+            (selectedFolders.includes('ALL') || selectedFolders.includes(f.folder))
         );
 
-        area.innerHTML = filtered.map(f => `
-            <div class="card" style="display:flex; flex-direction:column; gap:8px;">
-                <div style="font-size:12px; opacity:0.5;">[${f.branch}]</div>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <div style="font-weight:bold;">${f.repo} - ${f.name}</div>
-                        <div style="font-size:11px; opacity:0.7; margin-top:2px;">${getAutoDesc(f.name)}</div>
-                    </div>
-                    <button class="tiny-btn" onclick="openSuperModal('${f.path}')">展開按鈕 ⚡</button>
-                </div>
+        list.innerHTML = filtered.map(f => `
+            <div class="list-item">
+                <div style="font-size:11px; color:var(--ios-blue);">[${f.branch}]</div>
+                <div style="font-weight:600;">${f.repo} - ${f.name}</div>
+                <div style="font-size:13px; opacity:0.6;">${getPreciseDesc(f)}</div>
+                <button class="ios-btn" style="background:var(--ios-blue); color:white; font-size:12px; padding:8px; margin-top:5px;" onclick="openSM('${f.path}', '${f.branch}')">展開按鈕 ⚡</button>
             </div>
         `).join('');
     }
 
-    // --- Super Modal Logic ---
-    function openSuperModal(path) {
-        activeFile = allFiles.find(f => f.path === path && f.branch === currentBranch);
-        document.getElementById('smFileName').innerText = activeFile.name;
-        document.getElementById('smFileDesc').innerText = getAutoDesc(activeFile.name);
+    // --- Modal Logic ---
+    function openSM(path, branch) {
+        activeFile = allFiles.find(f => f.path === path && f.branch === branch);
+        document.getElementById('smTitle').innerText = activeFile.name;
+        document.getElementById('smDesc').innerText = getPreciseDesc(activeFile);
         
-        const linksBody = document.getElementById('smLinksBody');
-        const links = [
-            { l: "預覽連結", v: activeFile.link },
-            { l: "Raw 原始碼", v: activeFile.raw },
-            { l: "GitHub 來源", v: activeFile.github }
-        ];
-        linksBody.innerHTML = links.map(d => `
-            <div class="copy-box" style="margin-top:10px;">
-                <label>${d.l}</label>
-                <div style="font-size:12px;">${d.v}</div>
-                <button class="tiny-btn" style="margin-top:5px;" onclick="copyIt('${d.v}')">複製</button>
+        document.getElementById('smLinks').innerHTML = `
+            <div class="card" style="background:rgba(255,255,255,0.05);">
+                <p style="font-size:12px; margin:5px 0;">預覽連結: ${activeFile.link}</p>
+                <p style="font-size:12px; margin:5px 0;">Raw 連結: ${activeFile.raw}</p>
             </div>
-        `).join('');
+        `;
 
         fetch(activeFile.raw).then(r => r.text()).then(t => {
-            document.getElementById('smCodeArea').innerText = t;
+            document.getElementById('smCodeDisplay').innerText = t;
             document.getElementById('smEditor').value = t;
         });
 
         document.getElementById('superModal').classList.add('active');
-        switchSMTab('links');
     }
 
-    function switchSMTab(tab) {
-        const isLinks = tab === 'links';
-        document.getElementById('smLinksTab').classList.toggle('active', isLinks);
-        document.getElementById('smContentTab').classList.toggle('active', !isLinks);
-        document.getElementById('smBackBtn').style.visibility = isLinks ? 'hidden' : 'visible';
+    function smToContent() {
+        document.getElementById('smViewInfo').classList.remove('active');
+        document.getElementById('smViewContent').classList.add('active');
     }
 
-    function toggleSMMinimize() {
-        document.getElementById('superModal').classList.toggle('minimized');
-    }
-
-    function closeSuperModal() {
-        const sm = document.getElementById('superModal');
-        sm.classList.remove('active', 'minimized');
-        document.getElementById('smEditor').style.display = 'none';
-        document.getElementById('smCodeArea').style.display = 'block';
-        document.getElementById('saveBtn').style.display = 'none';
-    }
-
-    function enterEditMode() {
-        document.getElementById('smCodeArea').style.display = 'none';
-        document.getElementById('smEditor').style.display = 'block';
-        document.getElementById('saveBtn').style.display = 'block';
-    }
-
-    function saveFlow() {
-        const choice = prompt("請輸入操作：\n1. 下載修改後檔案\n2. 下載原始檔案\n3. 推送更新 (需認證)", "1");
-        if(choice === "1") {
-            const blob = new Blob([document.getElementById('smEditor').value], {type:'text/plain'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = "edited_" + activeFile.name; a.click();
-        } else if(choice === "2") {
-            window.open(activeFile.raw);
-        } else if(choice === "3") {
-            alert("正在調用 Git Push API... (需填入 Token)");
+    function smBack() {
+        if(document.getElementById('smViewContent').classList.contains('active')) {
+            document.getElementById('smViewContent').classList.remove('active');
+            document.getElementById('smViewInfo').classList.add('active');
+        } else {
+            closeSM();
         }
     }
 
-    function copyEditedContent() {
-        const val = document.getElementById('smEditor').style.display === 'block' ? 
-                    document.getElementById('smEditor').value : document.getElementById('smCodeArea').innerText;
-        navigator.clipboard.writeText(val);
-        alert("已複製內容");
+    function startEdit() {
+        document.getElementById('smCodeDisplay').parentElement.style.display = 'none';
+        document.getElementById('smEditor').style.display = 'block';
+        document.getElementById('editBtn').style.display = 'none';
+        document.getElementById('saveBtn').style.display = 'block';
     }
 
-    function toggleSettings(s) { document.getElementById('settingsPopup').style.display = s ? 'flex' : 'none'; }
-    function copyIt(t) { navigator.clipboard.writeText(t); alert("已複製"); }
-    async function updateLimit() {
-        const res = await (await fetch('https://api.github.com/rate_limit')).json();
-        document.getElementById('rateLimit').innerText = `API: ${res.rate.remaining} / ${res.rate.limit}`;
+    function saveLogic() {
+        const res = prompt("請選擇：\n1. 下載修改後的檔案\n2. 下載原始檔案\n3. 推送到儲存庫更新 (需填入 Token)", "1");
+        if(res === "1") {
+            const blob = new Blob([document.getElementById('smEditor').value], {type:'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url; a.download = activeFile.name; a.click();
+        } else if (res === "3") {
+            alert("正在調用 API 推送至 " + activeFile.branch + " 分支...");
+        }
     }
-    updateLimit();
+
+    function closeSM() { document.getElementById('superModal').classList.remove('active', 'minimized'); }
+    function toggleMinimize() { document.getElementById('superModal').classList.toggle('minimized'); }
+    function copyContent() { navigator.clipboard.writeText(document.getElementById('smEditor').value); alert("複製成功"); }
 </script>
+
 </body>
 </html>
