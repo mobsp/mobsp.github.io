@@ -1,179 +1,255 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <script>if(self!==top){top.location=self.location;}</script>
-    <link rel="manifest" href="./manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="GIX">
-    <link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
-    <title>莫比空間｜GIX Indexer</title>
+    <title>GIX Indexer Pro</title>
+    <link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
     <style>
         :root {
-            --ios-blue: #0A84FF;
-            --glass-bg: rgba(20, 20, 22, 0.85);
-            --glass-border: rgba(255, 255, 255, 0.15);
-            --text-main: #ffffff;
+            --ios-blue: #007AFF;
+            --ios-bg: #f2f2f7;
+            --ios-card: #ffffff;
+            --ios-text: #000000;
+            --glass: rgba(255, 255, 255, 0.7);
             --safe-top: env(safe-area-inset-top);
             --safe-bottom: env(safe-area-inset-bottom);
         }
 
-        body.dark-mode {
-            background: #000;
-            background-image: radial-gradient(circle at 50% -20%, #1e293b, #000);
-            --text-main: #ffffff;
+        [data-theme="dark"] {
+            --ios-bg: #000000;
+            --ios-card: #1c1c1e;
+            --ios-text: #ffffff;
+            --glass: rgba(28, 28, 30, 0.8);
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body, html { margin: 0; padding: 0; height: 100%; width: 100%; overflow: hidden; color: var(--text-main); font-family: -apple-system, system-ui, sans-serif; }
-        
-        .app-container { display: flex; flex-direction: column; height: 100dvh; padding-top: var(--safe-top); padding-bottom: var(--safe-bottom); }
-        header { flex-shrink: 0; backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); background: var(--glass-bg); border-bottom: 0.5px solid var(--glass-border); padding: 15px 20px; z-index: 100; }
-        
-        main { flex-grow: 1; overflow-y: auto; padding: 15px; }
-
-        .card {
-            background: var(--glass-bg); border-radius: 20px; padding: 15px; margin-bottom: 15px;
-            border: 0.5px solid var(--glass-border); box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        body { 
+            margin: 0; background: var(--ios-bg); color: var(--ios-text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: background 0.3s; overflow-x: hidden;
         }
 
-        /* 複選下拉選單 */
-        .multi-select {
-            width: 100%; background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--glass-border);
-            border-radius: 12px; padding: 10px; font-size: 14px; margin-bottom: 10px;
+        /* Blogger 樣式導航欄 */
+        header {
+            position: sticky; top: 0; z-index: 1000;
+            padding-top: var(--safe-top);
+            background: var(--glass); backdrop-filter: blur(20px);
+            border-bottom: 0.5px solid rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: space-between;
+            padding-left: 20px; padding-right: 20px; height: calc(60px + var(--safe-top));
         }
 
-        /* 列表樣式 */
-        .list-item {
-            display: flex; flex-direction: column; gap: 8px; padding: 15px;
-            background: rgba(255,255,255,0.03); border-radius: 18px; margin-bottom: 10px;
-            border: 0.5px solid rgba(255,255,255,0.1);
+        .view-section { display: none; padding: 20px; min-height: calc(100dvh - 120px); }
+        .view-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 部落格文章式卡片 */
+        .post-card {
+            background: var(--ios-card); border-radius: 12px;
+            padding: 16px; margin-bottom: 16px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 0.5px solid rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .post-tag { font-size: 11px; color: var(--ios-blue); font-weight: 600; text-transform: uppercase; }
+        .post-title { font-size: 18px; font-weight: 700; margin: 8px 0; }
+        .post-desc { font-size: 14px; opacity: 0.6; line-height: 1.4; }
+        .post-meta { font-size: 12px; opacity: 0.4; margin-top: 12px; display: flex; justify-content: space-between; }
+
+        /* 設定與進階界面元件 */
+        .setting-row {
+            background: var(--ios-card); display: flex; align-items: center;
+            justify-content: space-between; padding: 12px 16px;
+            border-bottom: 0.5px solid rgba(0,0,0,0.05);
+        }
+        .setting-row:first-child { border-radius: 12px 12px 0 0; }
+        .setting-row:last-child { border-radius: 0 0 12px 12px; border-bottom: none; }
+
+        .btn-main {
+            background: var(--ios-blue); color: white; border: none;
+            padding: 14px; border-radius: 12px; font-weight: 600; width: 100%;
+            margin: 10px 0; font-size: 16px;
         }
 
-        /* iOS 26.5 Super Modal */
+        /* iOS 26.5 懸浮窗 (Super Modal) */
         #superModal {
             position: fixed; top: 100%; left: 0; width: 100%; height: 100dvh;
-            background: rgba(15, 15, 17, 0.95); backdrop-filter: blur(50px) saturate(200%);
+            background: var(--ios-card); backdrop-filter: blur(50px);
             z-index: 5000; transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            display: flex; flex-direction: column; border-radius: 40px 40px 0 0;
+            display: flex; flex-direction: column;
+            border-radius: 30px 30px 0 0;
         }
         #superModal.active { top: 0; border-radius: 0; }
-        #superModal.minimized { top: 50dvh; height: 50dvh; border-radius: 30px 30px 0 0; }
+        #superModal.minimized { top: 50dvh; border-radius: 30px; }
 
-        .sm-header {
-            padding: calc(var(--safe-top) + 15px) 20px 15px;
-            display: flex; justify-content: space-between; align-items: center; border-bottom: 0.5px solid rgba(255,255,255,0.1);
+        .modal-nav {
+            padding: calc(var(--safe-top) + 10px) 20px 10px;
+            display: flex; justify-content: space-between; align-items: center;
         }
-        .sm-nav-btn { color: var(--ios-blue); font-size: 18px; cursor: pointer; }
-        
-        .sm-body { flex: 1; overflow-y: auto; padding: 20px; }
-        .sm-view { display: none; }
-        .sm-view.active { display: block; }
 
-        .code-box {
-            background: #000; border-radius: 15px; padding: 15px; position: relative;
-            font-family: 'SF Mono', monospace; font-size: 13px; color: #34C759;
-            border: 1px solid rgba(255,255,255,0.1); margin-top: 15px;
+        /* 底部 Tab Bar */
+        footer {
+            position: fixed; bottom: 0; width: 100%;
+            background: var(--glass); backdrop-filter: blur(20px);
+            border-top: 0.5px solid rgba(0,0,0,0.1);
+            display: flex; justify-content: space-around;
+            padding-bottom: var(--safe-bottom); height: calc(60px + var(--safe-bottom));
         }
-        .copy-icon { position: absolute; top: 10px; right: 10px; font-size: 18px; opacity: 0.6; }
+        .tab-item {
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; font-size: 10px; opacity: 0.5; transition: 0.2s;
+        }
+        .tab-item.active { opacity: 1; color: var(--ios-blue); }
+        .tab-icon { font-size: 24px; margin-bottom: 2px; }
 
-        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .ios-btn { padding: 14px; border-radius: 14px; border: none; font-weight: 600; cursor: pointer; text-align: center; }
+        /* 搜尋框 */
+        .search-box {
+            background: rgba(120, 120, 128, 0.12); border-radius: 10px;
+            padding: 8px 12px; display: flex; align-items: center; margin-bottom: 20px;
+        }
+        .search-box input {
+            background: none; border: none; color: inherit; width: 100%;
+            margin-left: 8px; outline: none;
+        }
     </style>
 </head>
-<body class="dark-mode">
+<body data-theme="dark">
 
-<div class="app-container">
-    <header>
-        <h2 style="margin:0;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ - GIX</h2>
-    </header>
+<header>
+    <div style="font-weight: 800; font-size: 20px;">GIX</div>
+    <div id="apiBadge" style="font-size: 11px; background: var(--ios-blue); color:white; padding: 2px 8px; border-radius: 10px;">API: OK</div>
+</header>
 
-    <main>
-        <section class="card">
-            <input type="text" id="userInput" value="mobsp" style="width:100%; padding:12px; border-radius:10px; background:rgba(0,0,0,0.2); border:none; color:white; margin-bottom:10px;">
-            <button onclick="startScan()" class="ios-btn" style="background:var(--ios-blue); color:white; width:100%;">⚡ 掃描所有分支內容</button>
-        </section>
+<section id="view-home" class="view-section active">
+    <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="mainSearch" placeholder="搜尋專案檔案..." oninput="renderPosts()">
+    </div>
+    <div id="postContainer">
+        <p style="text-align: center; opacity: 0.5;">請至進階功能執行掃描</p>
+    </div>
+</section>
 
-        <div id="filterSection" style="display:none;">
-            <p style="font-size:12px; opacity:0.6; margin: 10px 5px;">選擇要顯示/匯出的分支：</p>
-            <select id="branchSelect" onchange="updateView()" class="multi-select"></select>
-            
-            <p style="font-size:12px; opacity:0.6; margin: 10px 5px;">資料夾過濾 (可複選)：</p>
-            <select id="folderSelect" multiple onchange="updateView()" class="multi-select" style="height:100px;"></select>
+<section id="view-advanced" class="view-section">
+    <h3>進階工具</h3>
+    <div class="post-card">
+        <label style="font-size: 12px; opacity: 0.5;">GITHUB USERNAME</label>
+        <input type="text" id="ghUser" value="mobsp" style="width:100%; padding:10px; margin-top:5px; border-radius:8px; border:1px solid rgba(0,0,0,0.1);">
+        <button class="btn-main" onclick="deepScan()">⚡ 開始全庫深度掃描</button>
+    </div>
+
+    <div id="filterControl" style="display:none;">
+        <div class="post-card">
+            <p>分支篩選</p>
+            <select id="branchFilter" class="btn-main" style="background: rgba(120,120,128,0.1); color: inherit;" onchange="renderPosts()"></select>
+            <p>資料夾篩選 (可複選)</p>
+            <select id="folderFilter" multiple style="width: 100%; height: 120px; border-radius: 12px; padding: 10px;" onchange="renderPosts()"></select>
         </div>
+        <button class="btn-main" style="background: #34C759;" onclick="exportCSV()">📥 匯出當前篩選報表</button>
+    </div>
+</section>
 
-        <div id="fileList"></div>
-    </main>
-</div>
+<section id="view-settings" class="view-section">
+    <h3>系統設定</h3>
+    <div style="margin-bottom: 20px;">
+        <div class="setting-row">
+            <span>深色模式</span>
+            <input type="checkbox" checked onchange="toggleTheme()">
+        </div>
+        <div class="setting-row">
+            <span>自動更新配額</span>
+            <input type="checkbox" checked>
+        </div>
+        <div class="setting-row" onclick="alert('Cache Cleared')">
+            <span>清除快取數據</span>
+            <span style="opacity: 0.3;">〉</span>
+        </div>
+    </div>
+
+    <div class="post-card">
+        <p style="font-size: 12px; opacity: 0.5;">關於 GIX</p>
+        <p>版本：v2.0.1 (Pro)</p>
+        <p>由 莫比空間 提供技術支援</p>
+    </div>
+</section>
+
+<footer>
+    <div class="tab-item active" onclick="switchView('home', this)">
+        <span class="tab-icon">📄</span><span>主介面</span>
+    </div>
+    <div class="tab-item" onclick="switchView('advanced', this)">
+        <span class="tab-icon">🛠️</span><span>進階</span>
+    </div>
+    <div class="tab-item" onclick="switchView('settings', this)">
+        <span class="tab-icon">⚙️</span><span>設定</span>
+    </div>
+</footer>
 
 <div id="superModal">
-    <div class="sm-header">
-        <div class="sm-nav-btn" onclick="smBack()">〈 返回</div>
-        <div class="sm-nav-btn" onclick="toggleMinimize()">⌤</div>
-        <div class="sm-nav-btn" onclick="closeSM()" style="color:#ff3b30;">✕</div>
+    <div class="modal-nav">
+        <div style="color: var(--ios-blue); font-weight: 600;" onclick="smPrev()">〈 返回</div>
+        <div onclick="toggleSM()"><span id="smMinIcon">⌤</span></div>
+        <div style="color: #ff3b30;" onclick="closeSM()">✕</div>
     </div>
-    
-    <div class="sm-body">
-        <div id="smViewInfo" class="sm-view active">
-            <h2 id="smTitle">檔案名稱</h2>
-            <p id="smDesc" style="opacity:0.6; margin-bottom:25px;">作用說明</p>
-            <div id="smLinks"></div>
-            <button class="ios-btn" style="background:var(--ios-blue); color:white; width:100%; margin-top:20px;" onclick="smToContent()">查看檔案內容</button>
+    <div id="smContent" style="padding: 20px; flex: 1; overflow-y: auto;">
         </div>
-
-        <div id="smViewContent" class="sm-view">
-            <h3>內容詳情</h3>
-            <div class="code-box">
-                <span class="copy-icon" onclick="copyContent()">📋</span>
-                <pre id="smCodeDisplay" style="margin:0; white-space:pre-wrap;"></pre>
-            </div>
-            <textarea id="smEditor" style="display:none; width:100%; height:300px; background:#000; color:white; border-radius:10px; padding:10px; margin-top:15px;"></textarea>
-            
-            <div class="btn-group">
-                <button id="editBtn" class="ios-btn" style="background:rgba(255,255,255,0.1); color:white;" onclick="startEdit()">編輯檔案</button>
-                <button id="saveBtn" class="ios-btn" style="background:#34C759; color:white; display:none;" onclick="saveLogic()">儲存檔案</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <script>
     let allFiles = [];
-    let activeFile = null;
+    let currentView = 'home';
 
-    async function startScan() {
-        const user = document.getElementById('userInput').value;
+    function switchView(viewId, el) {
+        document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        document.getElementById('view-' + viewId).classList.add('active');
+        el.classList.add('active');
+        currentView = viewId;
+    }
+
+    async function deepScan() {
+        const user = document.getElementById('ghUser').value;
+        const badge = document.getElementById('apiBadge');
+        badge.innerText = "掃描中...";
         allFiles = [];
-        const repos = await (await fetch(`https://api.github.com/users/${user}/repos?per_page=100`)).json();
-        
-        for (let repo of repos) {
-            const branches = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/branches`)).json();
-            for (let b of branches) {
-                const tree = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/git/trees/${b.name}?recursive=1`)).json();
-                if (tree.tree) {
-                    tree.tree.filter(i => i.type === 'blob').forEach(f => {
-                        allFiles.push({
-                            branch: b.name, repo: repo.name, path: f.path,
-                            name: f.path.split('/').pop(),
-                            raw: `https://raw.githubusercontent.com/${user}/${repo.name}/${b.name}/${f.path}`,
-                            link: `https://mobsp.qzz.io/${f.path}`,
-                            folder: f.path.includes('/') ? f.path.substring(0, f.path.lastIndexOf('/')) : 'ROOT'
+
+        try {
+            const repos = await (await fetch(`https://api.github.com/users/${user}/repos?per_page=100`)).json();
+            for (let repo of repos) {
+                const branches = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/branches`)).json();
+                for (let b of branches) {
+                    const tree = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/git/trees/${b.name}?recursive=1`)).json();
+                    if (tree.tree) {
+                        tree.tree.filter(i => i.type === 'blob').forEach(f => {
+                            allFiles.push({
+                                user, repo: repo.name, branch: b.name,
+                                path: f.path, name: f.path.split('/').pop(),
+                                raw: `https://raw.githubusercontent.com/${user}/${repo.name}/${b.name}/${f.path}`,
+                                link: `https://mobsp.qzz.io/${f.path}`,
+                                folder: f.path.includes('/') ? f.path.substring(0, f.path.lastIndexOf('/')) : 'ROOT'
+                            });
                         });
-                    });
+                    }
                 }
             }
+            initFilters();
+            renderPosts();
+            badge.innerText = "API: OK";
+            switchView('home', document.querySelectorAll('.tab-item')[0]);
+        } catch (e) {
+            badge.innerText = "API Error";
         }
-        initFilters();
     }
 
     function initFilters() {
-        document.getElementById('filterSection').style.display = 'block';
-        const bSelect = document.getElementById('branchSelect');
-        const fSelect = document.getElementById('folderSelect');
+        document.getElementById('filterControl').style.display = 'block';
+        const bSelect = document.getElementById('branchFilter');
+        const fSelect = document.getElementById('folderFilter');
         
         const branches = [...new Set(allFiles.map(f => f.branch))];
         bSelect.innerHTML = branches.map(b => `<option value="${b}">${b}</option>`).join('');
@@ -181,95 +257,128 @@
         const folders = [...new Set(allFiles.map(f => f.folder))].sort();
         fSelect.innerHTML = `<option value="ALL" selected>所有資料夾</option>` + 
                             folders.map(f => `<option value="${f}">${f}</option>`).join('');
-        updateView();
     }
 
-    function getPreciseDesc(f) {
-        const name = f.name.toLowerCase();
-        if(name === 'package.json') return "專案依賴與腳本定義中心";
-        if(name.endsWith('.js')) return "核心邏輯控制與交互行為實作";
-        if(name.endsWith('.html')) return "頁面結構佈局與 DOM 靜態定義";
-        if(name.endsWith('.css')) return "視覺樣式渲染與介面美化配置";
-        if(name.endsWith('.md')) return "專案技術文檔與使用指南說明";
-        return "專案內部資源與數據存放檔案";
-    }
-
-    function updateView() {
-        const targetBranch = document.getElementById('branchSelect').value;
-        const selectedFolders = Array.from(document.getElementById('folderSelect').selectedOptions).map(o => o.value);
-        const list = document.getElementById('fileList');
+    function renderPosts() {
+        const search = document.getElementById('mainSearch').value.toLowerCase();
+        const branch = document.getElementById('branchFilter').value;
+        const folders = Array.from(document.getElementById('folderFilter').selectedOptions).map(o => o.value);
+        const container = document.getElementById('postContainer');
 
         const filtered = allFiles.filter(f => 
-            f.branch === targetBranch && 
-            (selectedFolders.includes('ALL') || selectedFolders.includes(f.folder))
+            f.name.toLowerCase().includes(search) &&
+            f.branch === branch &&
+            (folders.includes('ALL') || folders.includes(f.folder))
         );
 
-        list.innerHTML = filtered.map(f => `
-            <div class="list-item">
-                <div style="font-size:11px; color:var(--ios-blue);">[${f.branch}]</div>
-                <div style="font-weight:600;">${f.repo} - ${f.name}</div>
-                <div style="font-size:13px; opacity:0.6;">${getPreciseDesc(f)}</div>
-                <button class="ios-btn" style="background:var(--ios-blue); color:white; font-size:12px; padding:8px; margin-top:5px;" onclick="openSM('${f.path}', '${f.branch}')">展開按鈕 ⚡</button>
+        container.innerHTML = filtered.map(f => `
+            <div class="post-card" onclick="openFile('${f.path}')">
+                <div class="post-tag">${f.repo} / ${f.branch}</div>
+                <div class="post-title">${f.name}</div>
+                <div class="post-desc">${getFileLogic(f.name)}</div>
+                <div class="post-meta">
+                    <span>📂 ${f.folder}</span>
+                    <span>查看詳情 〉</span>
+                </div>
             </div>
         `).join('');
     }
 
-    // --- Modal Logic ---
-    function openSM(path, branch) {
-        activeFile = allFiles.find(f => f.path === path && f.branch === branch);
-        document.getElementById('smTitle').innerText = activeFile.name;
-        document.getElementById('smDesc').innerText = getPreciseDesc(activeFile);
+    function getFileLogic(name) {
+        const ext = name.split('.').pop().toLowerCase();
+        const logics = {
+            html: "定義網頁骨架結構與靜態內容",
+            js: "驅動頁面邏輯、API 請求與交互行為",
+            css: "管理視覺風格、佈局排版與動畫效果",
+            json: "儲存配置參數、語言包或結構化數據",
+            md: "專案開發文件、版本說明與引導手冊"
+        };
+        return logics[ext] || "通用專案資源文件";
+    }
+
+    // --- Modal 控制 ---
+    let smState = 'links'; // links or code
+    let currentActivePath = '';
+
+    function openFile(path) {
+        currentActivePath = path;
+        smState = 'links';
+        const f = allFiles.find(item => item.path === path);
         
-        document.getElementById('smLinks').innerHTML = `
-            <div class="card" style="background:rgba(255,255,255,0.05);">
-                <p style="font-size:12px; margin:5px 0;">預覽連結: ${activeFile.link}</p>
-                <p style="font-size:12px; margin:5px 0;">Raw 連結: ${activeFile.raw}</p>
+        document.getElementById('smContent').innerHTML = `
+            <h2>${f.name}</h2>
+            <div class="post-card">
+                <p><strong>相對路徑：</strong> ./${f.path}</p>
+                <p><strong>預覽網址：</strong> <a href="${f.link}" target="_blank">${f.link}</a></p>
+                <p><strong>原始碼：</strong> <a href="${f.raw}" target="_blank">Raw URL</a></p>
             </div>
+            <button class="btn-main" onclick="loadCode()">📜 讀取完整程式碼內容</button>
         `;
-
-        fetch(activeFile.raw).then(r => r.text()).then(t => {
-            document.getElementById('smCodeDisplay').innerText = t;
-            document.getElementById('smEditor').value = t;
-        });
-
         document.getElementById('superModal').classList.add('active');
     }
 
-    function smToContent() {
-        document.getElementById('smViewInfo').classList.remove('active');
-        document.getElementById('smViewContent').classList.add('active');
+    async function loadCode() {
+        smState = 'code';
+        const f = allFiles.find(item => item.path === currentActivePath);
+        document.getElementById('smContent').innerHTML = `<h3>Code View</h3><p>載入中...</p>`;
+        
+        const code = await (await fetch(f.raw)).text();
+        document.getElementById('smContent').innerHTML = `
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3>${f.name}</h3>
+                <button onclick="copyCode()" style="background:none; border:none; font-size:20px;">📋</button>
+            </div>
+            <pre id="codeArea" style="background:#000; color:#34C759; padding:15px; border-radius:10px; font-size:12px; overflow-x:auto;">${code}</pre>
+            <textarea id="editArea" style="display:none; width:100%; height:300px; background:#1c1c1e; color:white; border-radius:10px; padding:10px;">${code}</textarea>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:15px;">
+                <button class="btn-main" style="background:rgba(120,120,128,0.2);" onclick="toggleEdit()">編輯內容</button>
+                <button class="btn-main" onclick="saveFile()">儲存 / 匯出</button>
+            </div>
+        `;
     }
 
-    function smBack() {
-        if(document.getElementById('smViewContent').classList.contains('active')) {
-            document.getElementById('smViewContent').classList.remove('active');
-            document.getElementById('smViewInfo').classList.add('active');
-        } else {
-            closeSM();
-        }
+    function smPrev() {
+        if(smState === 'code') openFile(currentActivePath);
+        else closeSM();
     }
 
-    function startEdit() {
-        document.getElementById('smCodeDisplay').parentElement.style.display = 'none';
-        document.getElementById('smEditor').style.display = 'block';
-        document.getElementById('editBtn').style.display = 'none';
-        document.getElementById('saveBtn').style.display = 'block';
-    }
-
-    function saveLogic() {
-        const res = prompt("請選擇：\n1. 下載修改後的檔案\n2. 下載原始檔案\n3. 推送到儲存庫更新 (需填入 Token)", "1");
-        if(res === "1") {
-            const blob = new Blob([document.getElementById('smEditor').value], {type:'text/plain'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href = url; a.download = activeFile.name; a.click();
-        } else if (res === "3") {
-            alert("正在調用 API 推送至 " + activeFile.branch + " 分支...");
-        }
+    function toggleSM() {
+        const sm = document.getElementById('superModal');
+        sm.classList.toggle('minimized');
+        document.getElementById('smMinIcon').innerText = sm.classList.contains('minimized') ? '⤢' : '⌤';
     }
 
     function closeSM() { document.getElementById('superModal').classList.remove('active', 'minimized'); }
-    function toggleMinimize() { document.getElementById('superModal').classList.toggle('minimized'); }
-    function copyContent() { navigator.clipboard.writeText(document.getElementById('smEditor').value); alert("複製成功"); }
+    function toggleTheme() {
+        const theme = document.body.getAttribute('data-theme');
+        document.body.setAttribute('data-theme', theme === 'dark' ? 'light' : 'dark');
+    }
+
+    function copyCode() {
+        const code = document.getElementById('codeArea').innerText;
+        navigator.clipboard.writeText(code);
+        alert("已複製到剪貼簿");
+    }
+
+    function toggleEdit() {
+        const pre = document.getElementById('codeArea');
+        const tex = document.getElementById('editArea');
+        const isEdit = tex.style.display === 'block';
+        pre.style.display = isEdit ? 'block' : 'none';
+        tex.style.display = isEdit ? 'none' : 'block';
+    }
+
+    function saveFile() {
+        const content = document.getElementById('editArea').value;
+        const opt = prompt("1: 下載檔案\n2: 推送至 GitHub (需手動實作 API)", "1");
+        if(opt === "1") {
+            const blob = new Blob([content], {type: 'text/plain'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = currentActivePath.split('/').pop();
+            a.click();
+        }
+    }
 </script>
 
 </body>
