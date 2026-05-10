@@ -7,24 +7,24 @@
   <meta name="description" content="Safari Clone：一個以前端模擬 Safari 功能的完整瀏覽器專案，支援分頁、書籤、隱私模式、開發者工具、插件系統與主題切換。">
   <meta name="keywords" content="Safari Clone, browser simulator, tabs, bookmarks, devtools, plugins, theme, privacy">
   <meta name="author" content="你">
-  <link rel="canonical" href="https://yourdomain.example/browser/sf/">
+  <link rel="canonical" href="https://mobsp.qzz.io/browser/sf/index.html">
 
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:title" content="Safari Clone — Web Browser Simulator">
-  <meta property="og:description" content="以純前端實作的 Safari 模擬器，模組化設計，支援擴充與主題切換。">
-  <meta property="og:url" content="https://yourdomain.example/browser/sf/">
-  <meta property="og:image" content="data/media/logo.webp">
+  <meta property="og:description" content="Safari Clone：一個以前端模擬 Safari 功能的完整瀏覽器專案，支援分頁、書籤、隱私模式、開發者工具、插件系統與主題切換。">
+  <meta property="og:url" content="https://mobsp.qzz.io/browser/sf/index.html">
+  <meta property="og:image" content="data/media/logo.png">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Safari Clone — Web Browser Simulator">
-  <meta name="twitter:description" content="以純前端實作的 Safari 模擬器，模組化設計，支援擴充與主題切換。">
-  <meta name="twitter:image" content="data/media/logo.webp">
+  <meta name="twitter:description" content="Safari Clone：一個以前端模擬 Safari 功能的完整瀏覽器專案，支援分頁、書籤、隱私模式、開發者工具、插件系統與主題切換。">
+  <meta name="twitter:image" content="data/media/logo.png">
 
   <!-- SEO extras -->
   <meta name="robots" content="index, follow">
-  <meta name="theme-color" content="#007aff">
+  <meta name="theme-color" content="#0b1020">
 
   <!-- Favicon -->
   <link rel="icon" href="data/media/favicon.ico" type="image/x-icon">
@@ -53,7 +53,7 @@
   getLCP(metric => console.debug('LCP', metric));
   getFID(metric => console.debug('FID', metric));
   getCLS(metric => console.debug('CLS', metric));
-</script></head>
+</script><meta property="og:site_name" content="MOBSP"><link rel="manifest" href="/manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><link rel="apple-touch-icon" href="/icons/icon-192.png"></head>
 <body>
   <div class="safari-browser" id="safari-root">
     <header id="app-header"></header>
@@ -115,5 +115,5 @@
   <script src="sf/data/core/app.js" defer=""></script>
 
 
-</body>
-</html>
+
+<script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); }</script></body></html>

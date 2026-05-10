@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
+<!DOCTYPE html><html lang="zh-TW"><head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
     <title>GIX Indexer Pro</title>
-    <link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.webp">
+    <link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
@@ -117,7 +115,7 @@
             margin-left: 8px; outline: none;
         }
     </style>
-</head>
+<meta name="description" content="GIX Indexer Pro | MOBSP"><link rel="canonical" href="https://mobsp.qzz.io/beta/gix-test.html"><meta property="og:type" content="website"><meta property="og:title" content="GIX Indexer Pro"><meta property="og:description" content="GIX Indexer Pro | MOBSP"><meta property="og:url" content="https://mobsp.qzz.io/beta/gix-test.html"><meta property="og:site_name" content="MOBSP"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="GIX Indexer Pro"><meta name="twitter:description" content="GIX Indexer Pro | MOBSP"><meta name="theme-color" content="#0b1020"><link rel="manifest" href="/manifest.json"><meta name="mobile-web-app-capable" content="yes"></head>
 <body data-theme="dark">
 
 <header>
@@ -148,7 +146,7 @@
             <p>分支篩選</p>
             <select id="branchFilter" class="btn-main" style="background: rgba(120,120,128,0.1); color: inherit;" onchange="renderPosts()"></select>
             <p>資料夾篩選 (可複選)</p>
-            <select id="folderFilter" multiple style="width: 100%; height: 120px; border-radius: 12px; padding: 10px;" onchange="renderPosts()"></select>
+            <select id="folderFilter" multiple="" style="width: 100%; height: 120px; border-radius: 12px; padding: 10px;" onchange="renderPosts()"></select>
         </div>
         <button class="btn-main" style="background: #34C759;" onclick="exportCSV()">📥 匯出當前篩選報表</button>
     </div>
@@ -159,11 +157,11 @@
     <div style="margin-bottom: 20px;">
         <div class="setting-row">
             <span>深色模式</span>
-            <input type="checkbox" checked onchange="toggleTheme()">
+            <input type="checkbox" checked="" onchange="toggleTheme()">
         </div>
         <div class="setting-row">
             <span>自動更新配額</span>
-            <input type="checkbox" checked>
+            <input type="checkbox" checked="">
         </div>
         <div class="setting-row" onclick="alert('Cache Cleared')">
             <span>清除快取數據</span>
@@ -381,5 +379,6 @@
     }
 </script>
 
-</body>
-</html>
+
+
+<script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); }</script></body></html>
