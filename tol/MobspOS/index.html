@@ -28,8 +28,8 @@
 [data-density="compact"]{--radius:18px;--radius-sm:12px}
 [data-density="dense"]{--radius:14px;--radius-sm:9px}
 [data-density="touch"]{--radius:28px;--radius-sm:20px}
-[data-motion="off"] *{animation:none!important;transition:none!important;scroll-行為:auto!important}
-*{box-sizing:border-box}html{scroll-行為:smooth}
+[data-motion="off"] *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
 body{
   margin:0;min-height:100vh;font-family:var(--font);color:var(--text);
   background:radial-gradient(circle at 12% 8%,rgba(124,92,255,.28),transparent 27%),
@@ -82,16 +82,21 @@ svg{width:1.05em;height:1.05em;display:inline-block;vertical-align:-.18em;flex:0
 @media(max-width:980px){.app-shell{padding-inline:14px}.toolbar{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.card{grid-column:span 12}}
 @media(max-width:620px){.app-shell{padding:12px 12px calc(var(--bottom-nav-height) + 18px)}.topbar{align-items:flex-start}.brand h1{font-size:17px}.brand p{font-size:11px}.top-actions{gap:6px}.icon-btn{width:38px;height:38px}.hero{padding:18px}.stats{grid-template-columns:1fr 1fr}.action-row{grid-template-columns:1fr}.panel{padding:14px}}
 
-/* ===== MobspOS App Behavior Patch ===== */
+
+/* ===== MobspOS Final App Shell Patch ===== */
 html,
 body{
   width:100%;
   height:100%;
   overflow:hidden;
-  overscroll-行為:none;
+  overscroll-behavior:none;
   touch-action:manipulation;
   -webkit-text-size-adjust:100%;
   -webkit-tap-highlight-color:transparent;
+}
+
+html{
+  scroll-behavior:smooth;
 }
 
 body{
@@ -127,7 +132,7 @@ select{
 .app-content{
   min-height:0;
   overflow:auto;
-  overscroll-行為:contain;
+  overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
   padding-bottom:calc(var(--bottom-nav-height) + 22px + env(safe-area-inset-bottom));
 }
@@ -154,6 +159,27 @@ select{
 
 .card{
   grid-column:span 12;
+}
+
+.card.preview-only .variants{
+  display:none!important;
+}
+
+.card.preview-only{
+  cursor:pointer;
+}
+
+.variant-meta{
+  display:grid;
+  gap:4px;
+  padding:0 18px 16px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.variant-meta b{
+  color:var(--text);
+  font-size:14px;
 }
 
 .bottom-nav{
@@ -229,10 +255,10 @@ select{
 
 <main id="homeView">
   <section class="hero home-remove"><span class="eyebrow">MobspOS · App Template · Component Dock</span><h2>UI System Full Library</h2><p>UI 類別已移到「服務」圖示滑塊；右上角鈴鐺是匯出歷史、書籤是臨時記事本、齒輪是全域 Theme / Density / Tools。底部導覽保留首頁、程式碼、空位、空位、工作區設定。</p></section>
-  <div class="section-head"><div><h3>服務</h3><p>點選 UI 類別，切換下方呈現區域。</p></div><button class="btn ghost" id="showAllBtn">全部</button></div>
+  <div class="section-head"><div><h3>服務</h3><p>首頁隨機展示 3 個元件；點選類別後顯示基本版與全部變體預覽。</p></div><button class="btn ghost" id="showAllBtn">全部</button></div>
   <section class="service-slider" id="serviceSlider"></section>
   <section class="stats home-remove"><div class="stat"><b id="statComponents">0</b><span>元件數量</span></div><div class="stat"><b id="statVariants">0</b><span>變體數量</span></div><div class="stat"><b>5</b><span>按鈕層級</span></div><div class="stat"><b>14</b><span>主要分類</span></div></section>
-  <div class="toolbar home-remove"><select class="select" id="layerFilter"><option value="all">全部層級</option><option value="appearance">外觀</option><option value="size">尺寸</option><option value="state">狀態</option><option value="行為">行為</option><option value="icon">圖示</option><option value="theme">主題</option><option value="platform">平台</option><option value="accessibility">無障礙</option></select><select class="select" id="platformSelect"><option value="desktop">桌面</option><option value="mobile">手機</option><option value="tablet">平板</option><option value="tv">電視</option><option value="foldable">摺疊裝置</option></select><button class="btn primary" id="exportBtn">匯出 JSON</button></div>
+  <div class="toolbar home-remove"><select class="select" id="layerFilter"><option value="all">全部層級</option><option value="appearance">外觀</option><option value="size">尺寸</option><option value="state">狀態</option><option value="behavior">行為</option><option value="icon">圖示</option><option value="theme">主題</option><option value="platform">平台</option><option value="accessibility">無障礙</option></select><select class="select" id="platformSelect"><option value="desktop">桌面</option><option value="mobile">手機</option><option value="tablet">平板</option><option value="tv">電視</option><option value="foldable">摺疊裝置</option></select><button class="btn primary" id="exportBtn">匯出 JSON</button></div>
   <section class="gallery" id="gallery"></section>
 </main>
 
@@ -251,7 +277,7 @@ select{
 <aside class="sheet-modal" id="historyModal"><div class="panel"><div class="panel-head"><div><h2>匯出歷史紀錄</h2><p>鈴鐺圖示記錄你的匯出動作。</p></div><button class="close-btn" data-close="historyModal">✕</button></div><div class="history-list" id="historyList"></div></div></aside>
 <aside class="sheet-modal" id="notebookModal"><div class="panel"><div class="panel-head"><div><h2>臨時記事本</h2><p>書籤圖示改為暫存筆記。</p></div><button class="close-btn" data-close="notebookModal">✕</button></div><textarea class="note-area" id="noteArea" placeholder="例如：Button 的 Glass 版本要再亮一點..."></textarea><div class="action-row" style="margin-top:12px"><button class="btn primary" id="saveNoteBtn">儲存記事</button><button class="btn outline" id="clearNoteBtn">清空</button></div></div></aside>
 <aside class="sheet-modal" id="globalSettingsModal"><div class="panel"><div class="panel-head"><div><h2>全域設定</h2><p>設定整個網站的 Theme Engine、Density 與 Tools。</p></div><button class="close-btn" data-close="globalSettingsModal">✕</button></div><div class="section-head"><div><h3>Theme Engine</h3><p>網站整體主題。</p></div></div><div class="chips"><button class="chip" data-theme-btn="dark">Dark 暗色</button><button class="chip" data-theme-btn="light">Light 亮色</button><button class="chip" data-theme-btn="amoled">AMOLED 純黑</button><button class="chip" data-theme-btn="glass">Glass 玻璃</button><button class="chip" id="contrastBtn">High Contrast 高對比</button></div><div class="section-head"><div><h3>Density</h3><p>控制整體間距與圓角密度。</p></div></div><div class="chips"><button class="chip" data-density-btn="comfortable">Comfortable 舒適</button><button class="chip" data-density-btn="compact">Compact 緊湊</button><button class="chip" data-density-btn="dense">Dense 高密度</button><button class="chip" data-density-btn="touch">Touch Friendly 觸控</button></div><div class="section-head"><div><h3>Tools</h3><p>工具與動畫控制。</p></div></div><div class="chips"><button class="chip" id="openInspectorSettingBtn">Inspector 開關</button><button class="chip" id="motionBtn">Reduced Motion 動畫</button></div></div></aside>
-<aside class="sheet-modal" id="workspaceSettingsModal"><div class="panel"><div class="panel-head"><div><h2>工作區設定</h2><p>底部導覽設定只控制目前元件、程式碼與匯出工作區。</p></div><button class="close-btn" data-close="workspaceSettingsModal">✕</button></div><div class="field"><label>目前平台</label><select class="select" id="workspacePlatformSelect"><option value="desktop">桌面</option><option value="mobile">手機</option><option value="tablet">平板</option><option value="tv">電視</option><option value="foldable">摺疊裝置</option></select></div><div class="field"><label>目前層級篩選</label><select class="select" id="workspaceLayerSelect"><option value="all">全部層級</option><option value="appearance">外觀</option><option value="size">尺寸</option><option value="state">狀態</option><option value="行為">行為</option><option value="icon">圖示</option><option value="theme">主題</option><option value="platform">平台</option><option value="accessibility">無障礙</option></select></div><button class="btn primary" id="openInspectorWorkspaceBtn">編輯目前元件</button></div></aside>
+<aside class="sheet-modal" id="workspaceSettingsModal"><div class="panel"><div class="panel-head"><div><h2>工作區設定</h2><p>底部導覽設定只控制目前元件、程式碼與匯出工作區。</p></div><button class="close-btn" data-close="workspaceSettingsModal">✕</button></div><div class="field"><label>目前平台</label><select class="select" id="workspacePlatformSelect"><option value="desktop">桌面</option><option value="mobile">手機</option><option value="tablet">平板</option><option value="tv">電視</option><option value="foldable">摺疊裝置</option></select></div><div class="field"><label>目前層級篩選</label><select class="select" id="workspaceLayerSelect"><option value="all">全部層級</option><option value="appearance">外觀</option><option value="size">尺寸</option><option value="state">狀態</option><option value="behavior">行為</option><option value="icon">圖示</option><option value="theme">主題</option><option value="platform">平台</option><option value="accessibility">無障礙</option></select></div><button class="btn primary" id="openInspectorWorkspaceBtn">編輯目前元件</button></div></aside>
 <div class="toast" id="toast">Copied</div>
 
 <script>
@@ -279,11 +305,11 @@ const registry = [
       appearance:['Primary','Secondary','Outline','Ghost','Text','Link','Soft','Glass','Gradient','Neon','Destructive','Success','Warning'],
       size:['XS','SM','MD','LG','XL','Icon-only','Full-width'],
       state:['Default','Hover','Active','Pressed','Loading','Disabled','Success State','Error State'],
-      行為:['Default','Toggle Button','Split Button','Dropdown Button','FAB','Long Press Button','Async Button'],
+      behavior:['Default','Toggle Button','Split Button','Dropdown Button','FAB','Long Press Button','Async Button'],
       icon:['None','Leading SVG Icon','Trailing SVG Icon','Icon-only Button','Icon + Text Button','Dual Icon Button','Loading Spinner Icon','Success Check Icon','Error X Icon','Dropdown Chevron Icon']
     },
     render(sel){
-      const a = sel.appearance || 'Primary', size = sel.size || 'MD', st = sel.state || 'Default', beh = sel.行為 || 'Default', ic = sel.icon || 'None';
+      const a = sel.appearance || 'Primary', size = sel.size || 'MD', st = sel.state || 'Default', beh = sel.behavior || 'Default', ic = sel.icon || 'None';
       let cls = 'btn ' + a.toLowerCase().replaceAll(' ','-').replace('destructive','danger');
       if(size==='XS') cls+=' xs'; if(size==='SM') cls+=' sm'; if(size==='LG') cls+=' lg'; if(size==='XL') cls+=' xl';
       if(size==='Icon-only' || ic==='Icon-only Button') cls+=' icon-only';
@@ -331,7 +357,7 @@ const registry = [
     category:'3. Modal 模態對話框', zh:'模態對話框', en:'Modal', level:'Overlay',
     layers:{
       type:['Alert Dialog','Confirm Dialog','Form Dialog','Wizard Dialog','Fullscreen Dialog','Sheet Modal','Floating Modal'],
-      行為:['Blocking','Non-blocking','Nested Modal','Draggable Modal','Resizable Modal'],
+      behavior:['Blocking','Non-blocking','Nested Modal','Draggable Modal','Resizable Modal'],
       animation:['Fade','Scale','Slide','Spring','Blur Reveal'],
       icon:['None','Info Icon','Success Icon','Warning Icon','Error Icon']
     },
@@ -339,7 +365,7 @@ const registry = [
       const t=sel.type||'Alert Dialog', ic=sel.icon||'Info Icon';
       const icon=ic.includes('Success')?icons.check:ic.includes('Warning')?icons.warning:ic.includes('Error')?icons.close:ic==='None'?'':icons.info;
       const cls='modal-demo '+(t==='Fullscreen Dialog'?'full':'')+(t==='Sheet Modal'?' sheet':'');
-      return `<section class="${cls}"><h4>${icon} ${t}</h4><p>${sel.行為||'Blocking'} · ${sel.animation||'Fade'} 動畫。</p><div class="action-row"><button class="btn ghost">取消</button><button class="btn primary">確認</button></div></section>`;
+      return `<section class="${cls}"><h4>${icon} ${t}</h4><p>${sel.behavior||'Blocking'} · ${sel.animation||'Fade'} 動畫。</p><div class="action-row"><button class="btn ghost">取消</button><button class="btn primary">確認</button></div></section>`;
     }
   },
   {
@@ -394,14 +420,14 @@ const registry = [
     category:'7. List 列表', zh:'列表', en:'List', level:'Data Display',
     layers:{
       type:['Simple List','Rich List','Media List','Chat List','Activity Feed','Timeline List'],
-      行為:['Default','Infinite List','Virtualized List','Sortable List','Draggable List','Expandable List'],
+      behavior:['Default','Infinite List','Virtualized List','Sortable List','Draggable List','Expandable List'],
       icon:['None','Leading Icon','Status Icon','Action Icon']
     },
     render(sel){
       const t=sel.type||'Simple List', ic=sel.icon||'Leading Icon';
       const left=ic==='Leading Icon'?'<span class="avatar" style="width:32px;height:32px">M</span>':ic==='Status Icon'?icons.check:'';
       const action=ic==='Action Icon'?`<span>${icons.chevron}</span>`:'';
-      return `<div class="demo-list"><div class="demo-row">${left}<div class="grow"><b>${t}</b><small>${sel.行為||'Default'} 行為</small></div>${action}</div><div class="demo-row">${left}<div class="grow"><b>第二項</b><small>豐富資訊</small></div>${action}</div><div class="demo-row">${left}<div class="grow"><b>第三項</b><small>可展開內容</small></div>${action}</div></div>`;
+      return `<div class="demo-list"><div class="demo-row">${left}<div class="grow"><b>${t}</b><small>${sel.behavior||'Default'} 行為</small></div>${action}</div><div class="demo-row">${left}<div class="grow"><b>第二項</b><small>豐富資訊</small></div>${action}</div><div class="demo-row">${left}<div class="grow"><b>第三項</b><small>可展開內容</small></div>${action}</div></div>`;
     }
   },
   {
@@ -438,7 +464,7 @@ const registry = [
     category:'10. Layout 版面', zh:'版面', en:'Layout', level:'Layout',
     layers:{
       structure:['Single Column','Two Panel','Three Panel','Split Layout','Workspace Layout'],
-      行為:['Responsive Layout','Adaptive Layout','Dockable Layout','Drag Layout'],
+      behavior:['Responsive Layout','Adaptive Layout','Dockable Layout','Drag Layout'],
       platform:['Desktop','Mobile','Tablet','TV','Foldable']
     },
     render(sel){
@@ -464,11 +490,11 @@ const registry = [
     category:'12. Progress 進度', zh:'進度', en:'Progress', level:'Feedback',
     layers:{
       type:['Linear','Circular','Stepper','Skeleton','Buffer Progress'],
-      行為:['Determinate','Indeterminate','Animated','Streaming Progress'],
+      behavior:['Determinate','Indeterminate','Animated','Streaming Progress'],
       state:['Default','Loading','Success','Error']
     },
     render(sel){
-      const t=sel.type||'Linear', b=sel.行為||'Determinate';
+      const t=sel.type||'Linear', b=sel.behavior||'Determinate';
       if(t==='Circular') return `<div class="circle"></div>`;
       if(t==='Skeleton') return `<div class="progress-wrap skeleton"><div class="sk" style="width:90%"></div><div class="sk" style="width:70%"></div><div class="sk" style="width:82%"></div></div>`;
       if(t==='Stepper') return `<div class="nav-demo"><span>${icons.check} 步驟 1</span><span>${icons.spinner} 步驟 2</span><span>步驟 3</span></div>`;
@@ -479,13 +505,13 @@ const registry = [
     category:'13. Dropdown 下拉選單', zh:'下拉選單', en:'Dropdown', level:'Overlay',
     layers:{
       type:['Basic Menu','Context Menu','Mega Menu','Command Menu','Searchable Dropdown'],
-      行為:['Multi Select','Async Search','Nested Menu','Hover Trigger','Right Click Trigger'],
+      behavior:['Multi Select','Async Search','Nested Menu','Hover Trigger','Right Click Trigger'],
       icon:['Item Icon','Check Icon','Chevron Icon']
     },
     render(sel){
       const t=sel.type||'Basic Menu', ic=sel.icon||'Item Icon';
       const left=ic==='Item Icon'?icons.spark:ic==='Check Icon'?icons.check:''; const right=ic==='Chevron Icon'?icons.chevron:'';
-      return `<div class="dropdown-demo"><div class="drop-item">${icons.search}<b>${t}</b></div><div class="drop-item">${left}<span>選項 A</span><span class="right">${right}</span></div><div class="drop-item">${left}<span>選項 B</span><span class="right">${right}</span></div><div class="drop-item">${left}<span>${sel.行為||'Nested Menu'}</span><span class="right">${icons.chevron}</span></div></div>`;
+      return `<div class="dropdown-demo"><div class="drop-item">${icons.search}<b>${t}</b></div><div class="drop-item">${left}<span>選項 A</span><span class="right">${right}</span></div><div class="drop-item">${left}<span>選項 B</span><span class="right">${right}</span></div><div class="drop-item">${left}<span>${sel.behavior||'Nested Menu'}</span><span class="right">${icons.chevron}</span></div></div>`;
     }
   },
   {
@@ -525,7 +551,7 @@ document.getElementById('notebookBtn').innerHTML = icons.bookmark || '';
 document.getElementById('globalSettingsBtn').innerHTML = icons.gear || '';
 document.getElementById('searchIcon').innerHTML = icons.search || '';
 
-const layerLabels = {appearance:'外觀',size:'尺寸',state:'狀態',行為:'行為',icon:'圖示',structure:'結構',interactive:'互動',visual:'視覺',type:'類型',animation:'動畫',functional:'功能',navbar:'導覽列',sidebar:'側邊欄',tabs:'標籤',shape:'形狀',enhanced:'增強',density:'密度',theme:'主題',platform:'平台',accessibility:'無障礙'};
+const layerLabels = {appearance:'外觀',size:'尺寸',state:'狀態',behavior:'行為',icon:'圖示',structure:'結構',interactive:'互動',visual:'視覺',type:'類型',animation:'動畫',functional:'功能',navbar:'導覽列',sidebar:'側邊欄',tabs:'標籤',shape:'形狀',enhanced:'增強',density:'密度',theme:'主題',platform:'平台',accessibility:'無障礙'};
 const zh = {
 Primary:'主要',Secondary:'次要',Outline:'外框',Ghost:'幽靈',Text:'文字',Link:'連結',Soft:'柔和',Glass:'玻璃',Gradient:'漸層',Neon:'霓虹',Destructive:'危險',Success:'成功',Warning:'警告',
 XS:'超小',SM:'小',MD:'中',LG:'大',XL:'超大','Icon-only':'純圖示','Full-width':'滿版',
@@ -603,17 +629,137 @@ function filtered(){
     return catOk&&layerOk&&text.includes(q);
   });
 }
-function renderGallery(){
-  els.gallery.innerHTML=''; const items=filtered();
-  if(!items.length){els.gallery.innerHTML='<div class="card" style="grid-column:1/-1;padding:30px;color:var(--muted)">找不到符合的元件或變體。</div>';return;}
-  items.forEach(component=>{
-    const sel=state.selections[component.en]; const html=component.render(sel); const card=document.createElement('article'); card.className='card';
-    card.innerHTML=`<div class="card-head"><div><h3>${component.zh}<span class="en">${component.en}</span></h3></div><button class="badge" data-inspect="${component.en}">${component.level}</button></div><div class="preview"><div class="device ${state.platform}">${html}</div></div><div class="variants">${Object.entries(component.layers).map(([layer,values])=>`<div class="layer"><div class="layer-title">${layerLabels[layer]||layer}</div><div class="chips">${values.map(v=>`<button class="chip ${sel[layer]===v?'active':''}" data-component="${component.en}" data-layer="${layer}" data-value="${escapeHtml(v)}">${label(v)}</button>`).join('')}</div></div>`).join('')}</div>`;
-    els.gallery.appendChild(card);
-  });
-  document.querySelectorAll('.chip').forEach(btn=>btn.onclick=()=>{state.activeComponent=btn.dataset.component;state.activeLayer=btn.dataset.layer;state.selections[btn.dataset.component][btn.dataset.layer]=btn.dataset.value;renderAll();});
-  document.querySelectorAll('[data-inspect]').forEach(btn=>btn.onclick=()=>{state.activeComponent=btn.dataset.inspect;renderInspector();openModal('inspector');});
+
+function cloneSelections(component){
+  return JSON.parse(JSON.stringify(state.selections[component.en] || defaultSelections(component)));
 }
+
+function getHomeItems(){
+  if(!state.homeFeatured){
+    state.homeFeatured = [...registry].sort(()=>Math.random()-.5).slice(0,3).map(c=>c.en);
+  }
+  return state.homeFeatured.map(en=>registry.find(c=>c.en===en)).filter(Boolean);
+}
+
+function makePreviewCard(component, selections, meta = {}){
+  const html = component.render(selections);
+  const card = document.createElement('article');
+  card.className = 'card preview-only';
+  card.dataset.component = component.en;
+  if(meta.layer) card.dataset.layer = meta.layer;
+  if(meta.value) card.dataset.value = meta.value;
+
+  const title = meta.title || component.zh;
+  const sub = meta.sub || component.en;
+  const badge = meta.badge || component.level || '元件';
+  const info = meta.info || '點擊後可到「程式碼」頁編輯參數與匯出。';
+
+  card.innerHTML = `
+    <div class="card-head">
+      <div><h3>${title}<span class="en">${sub}</span></h3></div>
+      <button class="badge" type="button">${badge}</button>
+    </div>
+    <div class="preview"><div class="device ${state.platform}">${html}</div></div>
+    <div class="variant-meta"><b>${info}</b></div>
+  `;
+
+  card.onclick = () => {
+    state.activeComponent = component.en;
+    if(meta.layer && meta.value){
+      state.activeLayer = meta.layer;
+      state.selections[component.en][meta.layer] = meta.value;
+    }
+    renderAll();
+    showToast('已選取，可進入程式碼編輯');
+  };
+
+  return card;
+}
+
+function getCategoryVariantCards(component){
+  const cards = [];
+  cards.push({
+    component,
+    selections: cloneSelections(component),
+    meta: {
+      title: component.zh + ' 基本版',
+      sub: component.en + ' · Basic',
+      badge: '基本',
+      info: '基本預設版本'
+    }
+  });
+
+  Object.entries(component.layers).forEach(([layer, values]) => {
+    values.forEach(value => {
+      const selections = cloneSelections(component);
+      selections[layer] = value;
+      cards.push({
+        component,
+        selections,
+        meta: {
+          layer,
+          value,
+          title: component.zh + ' · ' + (layerLabels[layer] || layer),
+          sub: label(value),
+          badge: layerLabels[layer] || layer,
+          info: '變體預覽：' + label(value)
+        }
+      });
+    });
+  });
+
+  return cards;
+}
+
+
+function renderGallery(){
+  els.gallery.innerHTML='';
+
+  let cards = [];
+  const q = els.search.value.trim().toLowerCase();
+
+  if(state.category === 'All'){
+    const homeItems = q ? filtered().slice(0,3) : getHomeItems();
+    cards = homeItems.map(component => ({
+      component,
+      selections: cloneSelections(component),
+      meta: {
+        title: component.zh,
+        sub: component.en,
+        badge: '隨機',
+        info: '首頁隨機元件預覽'
+      }
+    }));
+  }else{
+    const component = registry.find(c => c.category === state.category);
+    if(component) cards = getCategoryVariantCards(component);
+  }
+
+  if(q && state.category !== 'All'){
+    cards = cards.filter(item => {
+      const text = [
+        item.component.zh,
+        item.component.en,
+        item.component.category,
+        item.meta.title,
+        item.meta.sub,
+        item.meta.badge,
+        item.meta.info
+      ].join(' ').toLowerCase();
+      return text.includes(q);
+    });
+  }
+
+  if(!cards.length){
+    els.gallery.innerHTML='<div class="card" style="grid-column:1/-1;padding:30px;color:var(--muted)">找不到符合的元件或變體。</div>';
+    return;
+  }
+
+  cards.forEach(item=>{
+    els.gallery.appendChild(makePreviewCard(item.component, item.selections, item.meta));
+  });
+}
+
 function renderInspector(){
   const comp=activeComponent(); els.componentSelect.innerHTML=registry.map(c=>`<option value="${c.en}">${c.zh} / ${c.en}</option>`).join(''); els.componentSelect.value=comp.en;
   const layers=Object.keys(comp.layers); if(!layers.includes(state.activeLayer)) state.activeLayer=layers[0];
@@ -640,20 +786,60 @@ document.getElementById('openInspectorFromCode').onclick=()=>openModal('inspecto
 document.getElementById('historyBtn').onclick=()=>openModal('historyModal');document.getElementById('notebookBtn').onclick=()=>openModal('notebookModal');document.getElementById('globalSettingsBtn').onclick=()=>openModal('globalSettingsModal');
 document.getElementById('saveNoteBtn').onclick=()=>{localStorage.setItem('mobspOSNote',document.getElementById('noteArea').value);showToast('記事已儲存');};document.getElementById('clearNoteBtn').onclick=()=>{document.getElementById('noteArea').value='';localStorage.removeItem('mobspOSNote');showToast('記事已清空');};document.getElementById('noteArea').value=localStorage.getItem('mobspOSNote')||'';
 document.querySelectorAll('[data-close]').forEach(btn=>btn.onclick=()=>closeModal(btn.dataset.close));document.querySelectorAll('.inspector,.sheet-modal').forEach(modal=>modal.addEventListener('click',event=>{if(event.target===modal)modal.classList.remove('open');}));document.addEventListener('keydown',event=>{if(event.key==='Escape')document.querySelectorAll('.inspector.open,.sheet-modal.open').forEach(m=>m.classList.remove('open'));});
-document.querySelectorAll('[data-theme-btn]').forEach(b=>b.onclick=()=>{document.documentElement.dataset.theme=b.dataset.themeBtn;refreshGlobalSettingActive();renderInspector();showToast('已套用主題');});document.querySelectorAll('[data-density-btn]').forEach(b=>b.onclick=()=>{document.documentElement.dataset.density=b.dataset.densityBtn;refreshGlobalSettingActive();renderInspector();showToast('已套用密度');});
-document.getElementById('contrastBtn').onclick=()=>{const r=document.documentElement;r.dataset.contrast=r.dataset.contrast==='high'?'normal':'high';refreshGlobalSettingActive();renderInspector();showToast('已切換高對比');};document.getElementById('motionBtn').onclick=()=>{const r=document.documentElement;r.dataset.motion=r.dataset.motion==='off'?'on':'off';refreshGlobalSettingActive();renderInspector();showToast('已切換動畫');};
 document.getElementById('workspacePlatformSelect').onchange=e=>{state.platform=e.target.value;renderAll();};document.getElementById('workspaceLayerSelect').onchange=e=>{els.layerFilter.value=e.target.value;renderAll();};document.querySelectorAll('.bottom-item').forEach(btn=>btn.onclick=()=>showTab(btn.dataset.tab));
+
 
 function refreshGlobalSettingActive(){
   document.querySelectorAll('[data-theme-btn]').forEach(btn=>{
     btn.classList.toggle('global-active', document.documentElement.dataset.theme === btn.dataset.themeBtn);
   });
+
   document.querySelectorAll('[data-density-btn]').forEach(btn=>{
     btn.classList.toggle('global-active', document.documentElement.dataset.density === btn.dataset.densityBtn);
   });
+
   document.getElementById('contrastBtn')?.classList.toggle('global-active', document.documentElement.dataset.contrast === 'high');
   document.getElementById('motionBtn')?.classList.toggle('global-active', document.documentElement.dataset.motion === 'off');
 }
+
+document.getElementById('globalSettingsModal').addEventListener('click', event=>{
+  const themeBtn = event.target.closest('[data-theme-btn]');
+  const densityBtn = event.target.closest('[data-density-btn]');
+
+  if(themeBtn){
+    document.documentElement.dataset.theme = themeBtn.dataset.themeBtn;
+    refreshGlobalSettingActive();
+    renderInspector();
+    showToast('已套用主題');
+    return;
+  }
+
+  if(densityBtn){
+    document.documentElement.dataset.density = densityBtn.dataset.densityBtn;
+    refreshGlobalSettingActive();
+    renderInspector();
+    showToast('已套用密度');
+    return;
+  }
+
+  if(event.target.closest('#contrastBtn')){
+    const root = document.documentElement;
+    root.dataset.contrast = root.dataset.contrast === 'high' ? 'normal' : 'high';
+    refreshGlobalSettingActive();
+    renderInspector();
+    showToast('已切換高對比');
+    return;
+  }
+
+  if(event.target.closest('#motionBtn')){
+    const root = document.documentElement;
+    root.dataset.motion = root.dataset.motion === 'off' ? 'on' : 'off';
+    refreshGlobalSettingActive();
+    renderInspector();
+    showToast('已切換動畫');
+    return;
+  }
+});
 
 let lastTouchEnd = 0;
 document.addEventListener('touchend', event=>{
