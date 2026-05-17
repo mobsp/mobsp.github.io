@@ -2,7 +2,7 @@
 <html lang="zh-Hant" data-theme="dark" data-density="comfortable" data-motion="on" data-contrast="normal">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>MobspOS UI Studio</title>
 <style>
 :root{
@@ -28,8 +28,8 @@
 [data-density="compact"]{--radius:18px;--radius-sm:12px}
 [data-density="dense"]{--radius:14px;--radius-sm:9px}
 [data-density="touch"]{--radius:28px;--radius-sm:20px}
-[data-motion="off"] *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-*{box-sizing:border-box}html{scroll-behavior:smooth}
+[data-motion="off"] *{animation:none!important;transition:none!important;scroll-行為:auto!important}
+*{box-sizing:border-box}html{scroll-行為:smooth}
 body{
   margin:0;min-height:100vh;font-family:var(--font);color:var(--text);
   background:radial-gradient(circle at 12% 8%,rgba(124,92,255,.28),transparent 27%),
@@ -81,6 +81,136 @@ svg{width:1.05em;height:1.05em;display:inline-block;vertical-align:-.18em;flex:0
 .note-area{width:100%;min-height:220px;border:1px solid var(--line);border-radius:18px;background:var(--surface);color:var(--text);padding:14px;resize:vertical;outline:none}.history-list{display:grid;gap:10px}.history-item{border:1px solid var(--line);border-radius:16px;padding:12px;background:var(--surface)}.history-item small{color:var(--muted)}
 @media(max-width:980px){.app-shell{padding-inline:14px}.toolbar{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.card{grid-column:span 12}}
 @media(max-width:620px){.app-shell{padding:12px 12px calc(var(--bottom-nav-height) + 18px)}.topbar{align-items:flex-start}.brand h1{font-size:17px}.brand p{font-size:11px}.top-actions{gap:6px}.icon-btn{width:38px;height:38px}.hero{padding:18px}.stats{grid-template-columns:1fr 1fr}.action-row{grid-template-columns:1fr}.panel{padding:14px}}
+
+/* ===== MobspOS App Behavior Patch ===== */
+html,
+body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  overscroll-行為:none;
+  touch-action:manipulation;
+  -webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+}
+
+body{
+  position:fixed;
+  inset:0;
+}
+
+input,
+textarea,
+select{
+  -webkit-user-select:text;
+  user-select:text;
+}
+
+.app-shell{
+  height:100dvh;
+  max-width:1180px;
+  padding:0 18px;
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr);
+  overflow:hidden;
+}
+
+.topbar{
+  position:relative;
+  top:auto;
+  flex:0 0 auto;
+  padding-top:calc(12px + env(safe-area-inset-top));
+  background:linear-gradient(180deg,var(--bg),rgba(7,11,18,.78));
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+
+.app-content{
+  min-height:0;
+  overflow:auto;
+  overscroll-行為:contain;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:calc(var(--bottom-nav-height) + 22px + env(safe-area-inset-bottom));
+}
+
+.home-remove{
+  display:none!important;
+}
+
+.search-card{
+  margin-top:12px;
+}
+
+.section-head{
+  margin-top:12px;
+}
+
+.service-slider{
+  margin-bottom:18px;
+}
+
+.gallery{
+  padding-bottom:20px;
+}
+
+.card{
+  grid-column:span 12;
+}
+
+.bottom-nav{
+  left:0;
+  right:0;
+  bottom:0;
+  transform:none;
+  width:100%;
+  max-width:none;
+  height:calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  padding:6px 10px calc(6px + env(safe-area-inset-bottom));
+  border-left:0;
+  border-right:0;
+  border-bottom:0;
+  border-radius:0;
+  background:rgba(8,13,27,.94);
+  box-shadow:0 -10px 34px rgba(0,0,0,.42);
+}
+
+.bottom-item{
+  border-radius:14px;
+  font-size:12px;
+}
+
+.bottom-item span:first-child{
+  font-size:22px;
+  line-height:1;
+}
+
+.bottom-item.active,
+.bottom-item:hover{
+  background:transparent;
+  color:var(--text);
+}
+
+.bottom-item.active span:first-child{
+  filter:drop-shadow(0 0 10px rgba(124,92,255,.7));
+}
+
+.global-active{
+  background:var(--brand)!important;
+  color:white!important;
+  border-color:transparent!important;
+}
+
+@media(max-width:620px){
+  .app-shell{
+    padding:0 12px;
+  }
+
+  .topbar{
+    padding-top:calc(10px + env(safe-area-inset-top));
+  }
+}
+
 </style>
 </head>
 <body>
@@ -94,14 +224,15 @@ svg{width:1.05em;height:1.05em;display:inline-block;vertical-align:-.18em;flex:0
   </div>
 </header>
 
+<div class="app-content">
 <section class="search-card"><div class="search-wrap"><span id="searchIcon"></span><input class="search" id="searchInput" placeholder="搜尋元件、變體、圖示、Modal、Table、Accessibility..."></div></section>
 
 <main id="homeView">
-  <section class="hero"><span class="eyebrow">MobspOS · App Template · Component Dock</span><h2>UI System Full Library</h2><p>UI 類別已移到「服務」圖示滑塊；右上角鈴鐺是匯出歷史、書籤是臨時記事本、齒輪是全域 Theme / Density / Tools。底部導覽保留首頁、程式碼、空位、空位、工作區設定。</p></section>
+  <section class="hero home-remove"><span class="eyebrow">MobspOS · App Template · Component Dock</span><h2>UI System Full Library</h2><p>UI 類別已移到「服務」圖示滑塊；右上角鈴鐺是匯出歷史、書籤是臨時記事本、齒輪是全域 Theme / Density / Tools。底部導覽保留首頁、程式碼、空位、空位、工作區設定。</p></section>
   <div class="section-head"><div><h3>服務</h3><p>點選 UI 類別，切換下方呈現區域。</p></div><button class="btn ghost" id="showAllBtn">全部</button></div>
   <section class="service-slider" id="serviceSlider"></section>
-  <section class="stats"><div class="stat"><b id="statComponents">0</b><span>元件數量</span></div><div class="stat"><b id="statVariants">0</b><span>變體數量</span></div><div class="stat"><b>5</b><span>按鈕層級</span></div><div class="stat"><b>14</b><span>主要分類</span></div></section>
-  <div class="toolbar"><select class="select" id="layerFilter"><option value="all">全部層級</option><option value="appearance">外觀</option><option value="size">尺寸</option><option value="state">狀態</option><option value="behavior">行為</option><option value="icon">圖示</option><option value="theme">主題</option><option value="platform">平台</option><option value="accessibility">無障礙</option></select><select class="select" id="platformSelect"><option value="desktop">桌面</option><option value="mobile">手機</option><option value="tablet">平板</option><option value="tv">電視</option><option value="foldable">摺疊裝置</option></select><button class="btn primary" id="exportBtn">匯出 JSON</button></div>
+  <section class="stats home-remove"><div class="stat"><b id="statComponents">0</b><span>元件數量</span></div><div class="stat"><b id="statVariants">0</b><span>變體數量</span></div><div class="stat"><b>5</b><span>按鈕層級</span></div><div class="stat"><b>14</b><span>主要分類</span></div></section>
+  <div class="toolbar home-remove"><select class="select" id="layerFilter"><option value="all">全部層級</option><option value="appearance">外觀</option><option value="size">尺寸</option><option value="state">狀態</option><option value="行為">行為</option><option value="icon">圖示</option><option value="theme">主題</option><option value="platform">平台</option><option value="accessibility">無障礙</option></select><select class="select" id="platformSelect"><option value="desktop">桌面</option><option value="mobile">手機</option><option value="tablet">平板</option><option value="tv">電視</option><option value="foldable">摺疊裝置</option></select><button class="btn primary" id="exportBtn">匯出 JSON</button></div>
   <section class="gallery" id="gallery"></section>
 </main>
 
@@ -111,6 +242,7 @@ svg{width:1.05em;height:1.05em;display:inline-block;vertical-align:-.18em;flex:0
   <section class="gallery"><article class="card" style="grid-column:span 6"><div class="card-head"><div><h3>Schema 結構<span class="en">目前元件參數</span></h3></div></div><div class="preview"><pre id="codeSchemaPreview"></pre></div></article><article class="card" style="grid-column:span 6"><div class="card-head"><div><h3>HTML 程式碼<span class="en">目前元件輸出</span></h3></div></div><div class="preview"><pre id="codeHtmlPreview"></pre></div></article></section>
 </main>
 </div>
+</div>
 
 <nav class="bottom-nav" aria-label="底部導覽"><button class="bottom-item active" data-tab="home"><span>⌂</span><span>首頁</span></button><button class="bottom-item" data-tab="code"><span>&lt;/&gt;</span><span>程式碼</span></button><button class="bottom-item" data-tab="blank1"><span>·</span><span></span></button><button class="bottom-item" data-tab="blank2"><span>·</span><span></span></button><button class="bottom-item" data-tab="workspaceSettings"><span>⚙</span><span>設定</span></button></nav>
 
@@ -119,7 +251,7 @@ svg{width:1.05em;height:1.05em;display:inline-block;vertical-align:-.18em;flex:0
 <aside class="sheet-modal" id="historyModal"><div class="panel"><div class="panel-head"><div><h2>匯出歷史紀錄</h2><p>鈴鐺圖示記錄你的匯出動作。</p></div><button class="close-btn" data-close="historyModal">✕</button></div><div class="history-list" id="historyList"></div></div></aside>
 <aside class="sheet-modal" id="notebookModal"><div class="panel"><div class="panel-head"><div><h2>臨時記事本</h2><p>書籤圖示改為暫存筆記。</p></div><button class="close-btn" data-close="notebookModal">✕</button></div><textarea class="note-area" id="noteArea" placeholder="例如：Button 的 Glass 版本要再亮一點..."></textarea><div class="action-row" style="margin-top:12px"><button class="btn primary" id="saveNoteBtn">儲存記事</button><button class="btn outline" id="clearNoteBtn">清空</button></div></div></aside>
 <aside class="sheet-modal" id="globalSettingsModal"><div class="panel"><div class="panel-head"><div><h2>全域設定</h2><p>設定整個網站的 Theme Engine、Density 與 Tools。</p></div><button class="close-btn" data-close="globalSettingsModal">✕</button></div><div class="section-head"><div><h3>Theme Engine</h3><p>網站整體主題。</p></div></div><div class="chips"><button class="chip" data-theme-btn="dark">Dark 暗色</button><button class="chip" data-theme-btn="light">Light 亮色</button><button class="chip" data-theme-btn="amoled">AMOLED 純黑</button><button class="chip" data-theme-btn="glass">Glass 玻璃</button><button class="chip" id="contrastBtn">High Contrast 高對比</button></div><div class="section-head"><div><h3>Density</h3><p>控制整體間距與圓角密度。</p></div></div><div class="chips"><button class="chip" data-density-btn="comfortable">Comfortable 舒適</button><button class="chip" data-density-btn="compact">Compact 緊湊</button><button class="chip" data-density-btn="dense">Dense 高密度</button><button class="chip" data-density-btn="touch">Touch Friendly 觸控</button></div><div class="section-head"><div><h3>Tools</h3><p>工具與動畫控制。</p></div></div><div class="chips"><button class="chip" id="openInspectorSettingBtn">Inspector 開關</button><button class="chip" id="motionBtn">Reduced Motion 動畫</button></div></div></aside>
-<aside class="sheet-modal" id="workspaceSettingsModal"><div class="panel"><div class="panel-head"><div><h2>工作區設定</h2><p>底部導覽設定只控制目前元件、程式碼與匯出工作區。</p></div><button class="close-btn" data-close="workspaceSettingsModal">✕</button></div><div class="field"><label>目前平台</label><select class="select" id="workspacePlatformSelect"><option value="desktop">桌面</option><option value="mobile">手機</option><option value="tablet">平板</option><option value="tv">電視</option><option value="foldable">摺疊裝置</option></select></div><div class="field"><label>目前層級篩選</label><select class="select" id="workspaceLayerSelect"><option value="all">全部層級</option><option value="appearance">外觀</option><option value="size">尺寸</option><option value="state">狀態</option><option value="behavior">行為</option><option value="icon">圖示</option><option value="theme">主題</option><option value="platform">平台</option><option value="accessibility">無障礙</option></select></div><button class="btn primary" id="openInspectorWorkspaceBtn">編輯目前元件</button></div></aside>
+<aside class="sheet-modal" id="workspaceSettingsModal"><div class="panel"><div class="panel-head"><div><h2>工作區設定</h2><p>底部導覽設定只控制目前元件、程式碼與匯出工作區。</p></div><button class="close-btn" data-close="workspaceSettingsModal">✕</button></div><div class="field"><label>目前平台</label><select class="select" id="workspacePlatformSelect"><option value="desktop">桌面</option><option value="mobile">手機</option><option value="tablet">平板</option><option value="tv">電視</option><option value="foldable">摺疊裝置</option></select></div><div class="field"><label>目前層級篩選</label><select class="select" id="workspaceLayerSelect"><option value="all">全部層級</option><option value="appearance">外觀</option><option value="size">尺寸</option><option value="state">狀態</option><option value="行為">行為</option><option value="icon">圖示</option><option value="theme">主題</option><option value="platform">平台</option><option value="accessibility">無障礙</option></select></div><button class="btn primary" id="openInspectorWorkspaceBtn">編輯目前元件</button></div></aside>
 <div class="toast" id="toast">Copied</div>
 
 <script>
@@ -147,11 +279,11 @@ const registry = [
       appearance:['Primary','Secondary','Outline','Ghost','Text','Link','Soft','Glass','Gradient','Neon','Destructive','Success','Warning'],
       size:['XS','SM','MD','LG','XL','Icon-only','Full-width'],
       state:['Default','Hover','Active','Pressed','Loading','Disabled','Success State','Error State'],
-      behavior:['Default','Toggle Button','Split Button','Dropdown Button','FAB','Long Press Button','Async Button'],
+      行為:['Default','Toggle Button','Split Button','Dropdown Button','FAB','Long Press Button','Async Button'],
       icon:['None','Leading SVG Icon','Trailing SVG Icon','Icon-only Button','Icon + Text Button','Dual Icon Button','Loading Spinner Icon','Success Check Icon','Error X Icon','Dropdown Chevron Icon']
     },
     render(sel){
-      const a = sel.appearance || 'Primary', size = sel.size || 'MD', st = sel.state || 'Default', beh = sel.behavior || 'Default', ic = sel.icon || 'None';
+      const a = sel.appearance || 'Primary', size = sel.size || 'MD', st = sel.state || 'Default', beh = sel.行為 || 'Default', ic = sel.icon || 'None';
       let cls = 'btn ' + a.toLowerCase().replaceAll(' ','-').replace('destructive','danger');
       if(size==='XS') cls+=' xs'; if(size==='SM') cls+=' sm'; if(size==='LG') cls+=' lg'; if(size==='XL') cls+=' xl';
       if(size==='Icon-only' || ic==='Icon-only Button') cls+=' icon-only';
@@ -160,7 +292,7 @@ const registry = [
       if(st==='Disabled') cls+=' disabled';
       if(st==='Pressed' || st==='Active') cls+=' pressed';
       const disabled = st==='Disabled' ? 'disabled' : '';
-      let left='', right='', text='Button';
+      let left='', right='', text='按鈕';
       if(ic==='Leading SVG Icon' || ic==='Icon + Text Button') left=icons.plus;
       if(ic==='Trailing SVG Icon') right=icons.arrow;
       if(ic==='Dual Icon Button'){left=icons.plus; right=icons.arrow;}
@@ -170,8 +302,8 @@ const registry = [
       if(ic==='Dropdown Chevron Icon' || beh==='Dropdown Button' || beh==='Split Button') right=icons.chevron;
       if(ic==='Icon-only Button' || size==='Icon-only'){left=icons.spark;text='';}
       if(beh==='FAB'){cls+=' icon-only'; left=icons.plus; text='';}
-      if(beh==='Toggle Button') text='Toggle';
-      if(beh==='Long Press Button') text='Long Press';
+      if(beh==='Toggle Button') text='切換';
+      if(beh==='Long Press Button') text='長按';
       return `<button class="${cls}" ${disabled}>${left}<span>${text}</span>${right}</button>`;
     }
   },
@@ -188,18 +320,18 @@ const registry = [
       let cls='demo-card '+s.split(' ')[0].toLowerCase()+' '+v.toLowerCase().replaceAll(' ','-').replace('blur-background','blur');
       if(v==='Glassmorphism') cls+=' glassmorphism';
       const icon=i==='Header Icon'?icons.spark:i==='Action Icon'?icons.chevron:i==='Status Icon'?icons.check:'';
-      if(s==='Dashboard Card') return `<article class="${cls}"><div>${icons.home}<br>Views</div><div>${icons.user}<br>Users</div><div>${icons.bell}<br>Alerts</div><div>${icons.spark}<br>AI</div></article>`;
-      if(s==='Stats Card') return `<article class="${cls}">${icon}<div class="num">12.8k</div><p>Visitors this month</p></article>`;
-      if(s==='Pricing Card') return `<article class="${cls}">${icon}<h4>Pro</h4><div class="price">$19</div><p>完整功能方案</p><button class="btn primary">Start</button></article>`;
+      if(s==='Dashboard Card') return `<article class="${cls}"><div>${icons.home}<br>瀏覽</div><div>${icons.user}<br>使用者</div><div>${icons.bell}<br>提醒</div><div>${icons.spark}<br>AI</div></article>`;
+      if(s==='Stats Card') return `<article class="${cls}">${icon}<div class="num">12.8k</div><p>本月訪客</p></article>`;
+      if(s==='Pricing Card') return `<article class="${cls}">${icon}<h4>Pro</h4><div class="price">$19</div><p>完整功能方案</p><button class="btn primary">開始</button></article>`;
       if(s==='Profile Card') return `<article class="${cls}"><div class="avatar">M</div><h4>Mobsp</h4><p>UI System Designer</p></article>`;
-      return `<article class="${cls}"><h4>${icon} ${s}</h4><p>${v} visual style with ${i}.</p></article>`;
+      return `<article class="${cls}"><h4>${icon} ${s}</h4><p>${v} 視覺樣式，搭配 ${i}.</p></article>`;
     }
   },
   {
     category:'3. Modal 模態對話框', zh:'模態對話框', en:'Modal', level:'Overlay',
     layers:{
       type:['Alert Dialog','Confirm Dialog','Form Dialog','Wizard Dialog','Fullscreen Dialog','Sheet Modal','Floating Modal'],
-      behavior:['Blocking','Non-blocking','Nested Modal','Draggable Modal','Resizable Modal'],
+      行為:['Blocking','Non-blocking','Nested Modal','Draggable Modal','Resizable Modal'],
       animation:['Fade','Scale','Slide','Spring','Blur Reveal'],
       icon:['None','Info Icon','Success Icon','Warning Icon','Error Icon']
     },
@@ -207,7 +339,7 @@ const registry = [
       const t=sel.type||'Alert Dialog', ic=sel.icon||'Info Icon';
       const icon=ic.includes('Success')?icons.check:ic.includes('Warning')?icons.warning:ic.includes('Error')?icons.close:ic==='None'?'':icons.info;
       const cls='modal-demo '+(t==='Fullscreen Dialog'?'full':'')+(t==='Sheet Modal'?' sheet':'');
-      return `<section class="${cls}"><h4>${icon} ${t}</h4><p>${sel.behavior||'Blocking'} · ${sel.animation||'Fade'} animation.</p><div class="action-row"><button class="btn ghost">Cancel</button><button class="btn primary">Confirm</button></div></section>`;
+      return `<section class="${cls}"><h4>${icon} ${t}</h4><p>${sel.行為||'Blocking'} · ${sel.animation||'Fade'} 動畫。</p><div class="action-row"><button class="btn ghost">取消</button><button class="btn primary">確認</button></div></section>`;
     }
   },
   {
@@ -221,7 +353,7 @@ const registry = [
     render(sel){
       const visual=sel.visual||'Zebra Stripe', func=sel.functional||'Basic Table', icon=sel.icon==='Sort Icon'?icons.chevron:sel.icon==='Filter Icon'?icons.search:sel.icon==='Edit Icon'?icons.plus:sel.icon==='Tree Icon'?icons.menu:'';
       let cls='demo-table'; if(visual==='Zebra Stripe')cls+=' zebra'; if(visual==='Compact')cls+=' compact'; if(visual==='Dense')cls+=' dense'; if(visual==='Borderless')cls+=' borderless'; if(visual==='Minimal')cls+=' minimal';
-      return `<table class="${cls}"><thead><tr><th>${icon} Name</th><th>Type</th><th>Status</th></tr></thead><tbody><tr><td>${func}</td><td>Component</td><td>Ready</td></tr><tr><td>Variant</td><td>${sel.interactive||'Sortable'}</td><td>Live</td></tr><tr><td>Schema</td><td>JSON</td><td>Edit</td></tr></tbody></table>`;
+      return `<table class="${cls}"><thead><tr><th>${icon} 名稱</th><th>類型</th><th>狀態</th></tr></thead><tbody><tr><td>${func}</td><td>元件</td><td>完成</td></tr><tr><td>變體</td><td>${sel.interactive||'Sortable'}</td><td>啟用</td></tr><tr><td>Schema</td><td>JSON</td><td>可編輯</td></tr></tbody></table>`;
     }
   },
   {
@@ -255,21 +387,21 @@ const registry = [
       const tab=sel.tabs||'Pill Tabs', side=sel.sidebar||'', ic=sel.icon||'Nav Item Icon';
       const icon=ic==='None'?'':ic==='Breadcrumb Icon'?icons.chevron:ic==='Sidebar Icon'?icons.menu:icons.home;
       let cls='nav-demo'; if(tab==='Vertical Tabs')cls+=' vertical'; if(tab==='Underline Tabs')cls+=' underline'; if(tab==='Segmented Tabs')cls+=' segmented'; if(side.includes('Sidebar'))cls+=' sidebar-demo';
-      return `<nav class="${cls}"><span>${icon} Home</span><span>${icons.spark} Components</span><span>${icons.user} Settings</span><span>${icons.chevron} More</span></nav>`;
+      return `<nav class="${cls}"><span>${icon} 首頁</span><span>${icons.spark} 元件</span><span>${icons.user} 設定</span><span>${icons.chevron} 更多</span></nav>`;
     }
   },
   {
     category:'7. List 列表', zh:'列表', en:'List', level:'Data Display',
     layers:{
       type:['Simple List','Rich List','Media List','Chat List','Activity Feed','Timeline List'],
-      behavior:['Default','Infinite List','Virtualized List','Sortable List','Draggable List','Expandable List'],
+      行為:['Default','Infinite List','Virtualized List','Sortable List','Draggable List','Expandable List'],
       icon:['None','Leading Icon','Status Icon','Action Icon']
     },
     render(sel){
       const t=sel.type||'Simple List', ic=sel.icon||'Leading Icon';
       const left=ic==='Leading Icon'?'<span class="avatar" style="width:32px;height:32px">M</span>':ic==='Status Icon'?icons.check:'';
       const action=ic==='Action Icon'?`<span>${icons.chevron}</span>`:'';
-      return `<div class="demo-list"><div class="demo-row">${left}<div class="grow"><b>${t}</b><small>${sel.behavior||'Default'} behavior</small></div>${action}</div><div class="demo-row">${left}<div class="grow"><b>Second item</b><small>Rich metadata</small></div>${action}</div><div class="demo-row">${left}<div class="grow"><b>Third item</b><small>Expandable content</small></div>${action}</div></div>`;
+      return `<div class="demo-list"><div class="demo-row">${left}<div class="grow"><b>${t}</b><small>${sel.行為||'Default'} 行為</small></div>${action}</div><div class="demo-row">${left}<div class="grow"><b>第二項</b><small>豐富資訊</small></div>${action}</div><div class="demo-row">${left}<div class="grow"><b>第三項</b><small>可展開內容</small></div>${action}</div></div>`;
     }
   },
   {
@@ -299,14 +431,14 @@ const registry = [
       const t=sel.type||'Toast', st=sel.state||'Info';
       const ic=st==='Success'?icons.check:st==='Warning'?icons.warning:st==='Error'?icons.close:st==='Loading'?icons.spinner:icons.info;
       const cls=t==='Banner'?'banner-demo':t==='Snackbar'?'snack-demo':'toast-demo';
-      return `<div class="${cls}">${ic}<div><b>${t}</b><br><small style="color:var(--muted)">${st} notification with ${sel.icon||'Status Icon'}.</small></div></div>`;
+      return `<div class="${cls}">${ic}<div><b>${t}</b><br><small style="color:var(--muted)">${st} 通知，搭配 ${sel.icon||'Status Icon'}.</small></div></div>`;
     }
   },
   {
     category:'10. Layout 版面', zh:'版面', en:'Layout', level:'Layout',
     layers:{
       structure:['Single Column','Two Panel','Three Panel','Split Layout','Workspace Layout'],
-      behavior:['Responsive Layout','Adaptive Layout','Dockable Layout','Drag Layout'],
+      行為:['Responsive Layout','Adaptive Layout','Dockable Layout','Drag Layout'],
       platform:['Desktop','Mobile','Tablet','TV','Foldable']
     },
     render(sel){
@@ -332,14 +464,14 @@ const registry = [
     category:'12. Progress 進度', zh:'進度', en:'Progress', level:'Feedback',
     layers:{
       type:['Linear','Circular','Stepper','Skeleton','Buffer Progress'],
-      behavior:['Determinate','Indeterminate','Animated','Streaming Progress'],
+      行為:['Determinate','Indeterminate','Animated','Streaming Progress'],
       state:['Default','Loading','Success','Error']
     },
     render(sel){
-      const t=sel.type||'Linear', b=sel.behavior||'Determinate';
+      const t=sel.type||'Linear', b=sel.行為||'Determinate';
       if(t==='Circular') return `<div class="circle"></div>`;
       if(t==='Skeleton') return `<div class="progress-wrap skeleton"><div class="sk" style="width:90%"></div><div class="sk" style="width:70%"></div><div class="sk" style="width:82%"></div></div>`;
-      if(t==='Stepper') return `<div class="nav-demo"><span>${icons.check} Step 1</span><span>${icons.spinner} Step 2</span><span>Step 3</span></div>`;
+      if(t==='Stepper') return `<div class="nav-demo"><span>${icons.check} 步驟 1</span><span>${icons.spinner} 步驟 2</span><span>步驟 3</span></div>`;
       return `<div class="progress-wrap"><div class="bar ${b==='Indeterminate'?'indeterminate':''}"><span></span></div><small style="color:var(--muted)">${t} · ${b}</small></div>`;
     }
   },
@@ -347,13 +479,13 @@ const registry = [
     category:'13. Dropdown 下拉選單', zh:'下拉選單', en:'Dropdown', level:'Overlay',
     layers:{
       type:['Basic Menu','Context Menu','Mega Menu','Command Menu','Searchable Dropdown'],
-      behavior:['Multi Select','Async Search','Nested Menu','Hover Trigger','Right Click Trigger'],
+      行為:['Multi Select','Async Search','Nested Menu','Hover Trigger','Right Click Trigger'],
       icon:['Item Icon','Check Icon','Chevron Icon']
     },
     render(sel){
       const t=sel.type||'Basic Menu', ic=sel.icon||'Item Icon';
       const left=ic==='Item Icon'?icons.spark:ic==='Check Icon'?icons.check:''; const right=ic==='Chevron Icon'?icons.chevron:'';
-      return `<div class="dropdown-demo"><div class="drop-item">${icons.search}<b>${t}</b></div><div class="drop-item">${left}<span>Option A</span><span class="right">${right}</span></div><div class="drop-item">${left}<span>Option B</span><span class="right">${right}</span></div><div class="drop-item">${left}<span>${sel.behavior||'Nested Menu'}</span><span class="right">${icons.chevron}</span></div></div>`;
+      return `<div class="dropdown-demo"><div class="drop-item">${icons.search}<b>${t}</b></div><div class="drop-item">${left}<span>選項 A</span><span class="right">${right}</span></div><div class="drop-item">${left}<span>選項 B</span><span class="right">${right}</span></div><div class="drop-item">${left}<span>${sel.行為||'Nested Menu'}</span><span class="right">${icons.chevron}</span></div></div>`;
     }
   },
   {
@@ -393,8 +525,42 @@ document.getElementById('notebookBtn').innerHTML = icons.bookmark || '';
 document.getElementById('globalSettingsBtn').innerHTML = icons.gear || '';
 document.getElementById('searchIcon').innerHTML = icons.search || '';
 
-const layerLabels = {appearance:'外觀',size:'尺寸',state:'狀態',behavior:'行為',icon:'圖示',structure:'結構',interactive:'互動',visual:'視覺',type:'類型',animation:'動畫',functional:'功能',navbar:'導覽列',sidebar:'側邊欄',tabs:'標籤',shape:'形狀',enhanced:'增強',density:'密度',theme:'主題',platform:'平台',accessibility:'無障礙'};
-const zh = {Primary:'主要',Secondary:'次要',Outline:'外框',Ghost:'幽靈',Text:'文字',Link:'連結',Soft:'柔和',Glass:'玻璃',Gradient:'漸層',Neon:'霓虹',Destructive:'危險',Success:'成功',Warning:'警告',Default:'預設',Hover:'滑過',Active:'啟用',Pressed:'按壓',Loading:'載入中',Disabled:'停用',Error:'錯誤',Readonly:'唯讀',Filled:'填滿式',Underline:'底線式',Circle:'圓形',Rounded:'圓角',Square:'方形',Hexagon:'六角形',Comfortable:'舒適',Compact:'緊湊',Dense:'高密度',Light:'亮色',Dark:'暗色',AMOLED:'純黑',Desktop:'桌面',Mobile:'手機',Tablet:'平板',TV:'電視',Foldable:'摺疊裝置'};
+const layerLabels = {appearance:'外觀',size:'尺寸',state:'狀態',行為:'行為',icon:'圖示',structure:'結構',interactive:'互動',visual:'視覺',type:'類型',animation:'動畫',functional:'功能',navbar:'導覽列',sidebar:'側邊欄',tabs:'標籤',shape:'形狀',enhanced:'增強',density:'密度',theme:'主題',platform:'平台',accessibility:'無障礙'};
+const zh = {
+Primary:'主要',Secondary:'次要',Outline:'外框',Ghost:'幽靈',Text:'文字',Link:'連結',Soft:'柔和',Glass:'玻璃',Gradient:'漸層',Neon:'霓虹',Destructive:'危險',Success:'成功',Warning:'警告',
+XS:'超小',SM:'小',MD:'中',LG:'大',XL:'超大','Icon-only':'純圖示','Full-width':'滿版',
+Default:'預設',Hover:'滑過',Active:'啟用',Pressed:'按壓',Loading:'載入中',Disabled:'停用','Success State':'成功狀態','Error State':'錯誤狀態',
+'Toggle Button':'切換按鈕','Split Button':'分裂按鈕','Dropdown Button':'下拉按鈕',FAB:'浮動按鈕','Long Press Button':'長按按鈕','Async Button':'非同步按鈕',
+None:'無','Leading SVG Icon':'左側 SVG 圖示','Trailing SVG Icon':'右側 SVG 圖示','Icon-only Button':'純圖示按鈕','Icon + Text Button':'圖示加文字','Dual Icon Button':'左右雙圖示','Loading Spinner Icon':'載入旋轉圖示','Success Check Icon':'成功勾勾圖示','Error X Icon':'錯誤叉叉圖示','Dropdown Chevron Icon':'下拉箭頭圖示',
+'Basic Card':'基本卡片','Media Card':'媒體卡片','Profile Card':'個人資料卡片','Dashboard Card':'儀表板卡片','Stats Card':'統計卡片','Pricing Card':'價格方案卡片','Article Card':'文章卡片','Product Card':'商品卡片',
+'Hover Card':'滑過卡片','Expandable Card':'可展開卡片','Draggable Card':'可拖曳卡片','Selectable Card':'可選擇卡片','Swipe Card':'滑動卡片',
+Elevated:'浮起陰影',Flat:'扁平',Glassmorphism:'玻璃擬態','Blur Background':'模糊背景',
+'Alert Dialog':'警示對話框','Confirm Dialog':'確認對話框','Form Dialog':'表單對話框','Wizard Dialog':'精靈流程','Fullscreen Dialog':'全螢幕對話框','Sheet Modal':'底部彈出層','Floating Modal':'浮動視窗',
+Blocking:'阻塞型','Non-blocking':'非阻塞型','Nested Modal':'巢狀視窗','Draggable Modal':'可拖曳視窗','Resizable Modal':'可調整大小',
+Fade:'淡入淡出',Scale:'縮放',Slide:'滑動',Spring:'彈簧動畫','Blur Reveal':'模糊顯現',
+'Info Icon':'資訊圖示','Success Icon':'成功圖示','Warning Icon':'警告圖示','Error Icon':'錯誤圖示',
+'Basic Table':'基本表格','Data Grid':'資料網格','Tree Table':'樹狀表格','Virtual Table':'虛擬表格','Spreadsheet Table':'試算表格','Editable Table':'可編輯表格',
+Sortable:'可排序',Filterable:'可篩選','Resizable Columns':'可調整欄寬','Sticky Header':'固定標題列','Infinite Scroll':'無限滾動',
+'Zebra Stripe':'斑馬紋',Compact:'緊湊',Dense:'高密度',Borderless:'無邊框',Minimal:'極簡',
+'Sort Icon':'排序圖示','Filter Icon':'篩選圖示','Edit Icon':'編輯圖示','Tree Icon':'樹狀圖示',
+Filled:'填滿式',Underline:'底線式','Text Input':'文字輸入','Search Input':'搜尋輸入','Password Input':'密碼輸入','OTP Input':'驗證碼輸入',Autocomplete:'自動完成','Token Input':'標籤輸入','AI Prompt Input':'AI 提示輸入',
+Error:'錯誤',Readonly:'唯讀','Search Icon':'搜尋圖示','Password Eye Icon':'密碼眼睛圖示','Clear Icon':'清除圖示','Prefix Icon':'前綴圖示','Suffix Icon':'後綴圖示',
+'Top Navbar':'頂部導覽列','Floating Navbar':'浮動導覽列','Transparent Navbar':'透明導覽列','Collapsible Navbar':'可收合導覽列','Sticky Navbar':'固定導覽列',
+'Mini Sidebar':'迷你側欄','Expandable Sidebar':'可展開側欄','Overlay Sidebar':'覆蓋式側欄','Dock Sidebar':'停靠式側欄','Tree Sidebar':'樹狀側欄',
+'Underline Tabs':'底線標籤','Pill Tabs':'膠囊標籤','Segmented Tabs':'分段標籤','Scrollable Tabs':'可滾動標籤','Vertical Tabs':'垂直標籤',
+'Nav Item Icon':'導航項目圖示','Sidebar Icon':'側欄圖示','Tab Icon':'標籤圖示','Breadcrumb Icon':'麵包屑圖示',
+'Simple List':'簡單列表','Rich List':'富內容列表','Media List':'媒體列表','Chat List':'聊天列表','Activity Feed':'活動動態流','Timeline List':'時間軸列表',
+'Infinite List':'無限列表','Virtualized List':'虛擬化列表','Sortable List':'可排序列表','Draggable List':'可拖曳列表','Expandable List':'可展開列表','Leading Icon':'前置圖示','Status Icon':'狀態圖示','Action Icon':'操作圖示',
+Circle:'圓形',Rounded:'圓角',Square:'方形',Hexagon:'六角形','Basic Avatar':'基本頭像','Status Avatar':'狀態頭像','Group Avatar':'群組頭像','Stack Avatar':'堆疊頭像','AI Avatar':'AI 頭像','Animated Avatar':'動畫頭像','User Icon':'使用者圖示','AI Icon':'AI 圖示','Status Dot':'狀態點',
+Toast:'吐司通知',Banner:'橫幅通知',Snackbar:'底部通知條','Push Notification':'推播通知','Inbox Notification':'通知中心','Toast Icon':'吐司圖示','Banner Icon':'橫幅圖示','Inbox Icon':'通知中心圖示',
+'Single Column':'單欄','Two Panel':'雙面板','Three Panel':'三面板','Split Layout':'分割佈局','Workspace Layout':'工作區佈局','Responsive Layout':'響應式佈局','Adaptive Layout':'自適應佈局','Dockable Layout':'可停靠佈局','Drag Layout':'拖曳佈局',
+Desktop:'桌面',Mobile:'手機',Tablet:'平板',TV:'電視',Foldable:'摺疊裝置',
+'No Data':'無資料','No Search Result':'無搜尋結果','No Connection':'無連線','Permission Denied':'權限不足','First Time Setup':'首次使用','CTA Empty State':'帶操作引導','AI Suggestion Empty State':'AI 建議空狀態','Illustration Empty State':'插圖空狀態','Illustration SVG':'插圖 SVG','Status SVG Icon':'狀態 SVG 圖示',
+Linear:'線性',Circular:'圓形',Stepper:'步驟式',Skeleton:'骨架載入','Buffer Progress':'緩衝進度',Determinate:'確定進度',Indeterminate:'不確定進度',Animated:'動畫','Streaming Progress':'串流進度',
+'Basic Menu':'基本選單','Context Menu':'右鍵選單','Mega Menu':'大型選單','Command Menu':'命令選單','Searchable Dropdown':'可搜尋下拉','Multi Select':'多選','Async Search':'非同步搜尋','Nested Menu':'巢狀選單','Hover Trigger':'滑過觸發','Right Click Trigger':'右鍵觸發','Item Icon':'項目圖示','Check Icon':'勾選圖示','Chevron Icon':'箭頭圖示',
+Comfortable:'舒適','Touch Friendly':'觸控友善',Light:'亮色',Dark:'暗色',AMOLED:'純黑','High Contrast':'高對比','Reduced Motion':'減少動畫','Screen Reader Mode':'螢幕閱讀器模式','Keyboard-only Mode':'純鍵盤操作','High Contrast Mode':'高對比模式',
+'Info Badge':'資訊徽章','Success Badge':'成功徽章','Warning Badge':'警告徽章','Error Badge':'錯誤徽章','Role Badge':'角色徽章','Icon Badge':'圖示徽章'
+};
 function label(value){return zh[value] ? `${zh[value]} ${value}` : value;}
 
 const serviceMeta = [
@@ -474,9 +640,33 @@ document.getElementById('openInspectorFromCode').onclick=()=>openModal('inspecto
 document.getElementById('historyBtn').onclick=()=>openModal('historyModal');document.getElementById('notebookBtn').onclick=()=>openModal('notebookModal');document.getElementById('globalSettingsBtn').onclick=()=>openModal('globalSettingsModal');
 document.getElementById('saveNoteBtn').onclick=()=>{localStorage.setItem('mobspOSNote',document.getElementById('noteArea').value);showToast('記事已儲存');};document.getElementById('clearNoteBtn').onclick=()=>{document.getElementById('noteArea').value='';localStorage.removeItem('mobspOSNote');showToast('記事已清空');};document.getElementById('noteArea').value=localStorage.getItem('mobspOSNote')||'';
 document.querySelectorAll('[data-close]').forEach(btn=>btn.onclick=()=>closeModal(btn.dataset.close));document.querySelectorAll('.inspector,.sheet-modal').forEach(modal=>modal.addEventListener('click',event=>{if(event.target===modal)modal.classList.remove('open');}));document.addEventListener('keydown',event=>{if(event.key==='Escape')document.querySelectorAll('.inspector.open,.sheet-modal.open').forEach(m=>m.classList.remove('open'));});
-document.querySelectorAll('[data-theme-btn]').forEach(b=>b.onclick=()=>{document.documentElement.dataset.theme=b.dataset.themeBtn;renderInspector();});document.querySelectorAll('[data-density-btn]').forEach(b=>b.onclick=()=>{document.documentElement.dataset.density=b.dataset.densityBtn;renderInspector();});
-document.getElementById('contrastBtn').onclick=()=>{const r=document.documentElement;r.dataset.contrast=r.dataset.contrast==='high'?'normal':'high';renderInspector();};document.getElementById('motionBtn').onclick=()=>{const r=document.documentElement;r.dataset.motion=r.dataset.motion==='off'?'on':'off';renderInspector();};
+document.querySelectorAll('[data-theme-btn]').forEach(b=>b.onclick=()=>{document.documentElement.dataset.theme=b.dataset.themeBtn;refreshGlobalSettingActive();renderInspector();showToast('已套用主題');});document.querySelectorAll('[data-density-btn]').forEach(b=>b.onclick=()=>{document.documentElement.dataset.density=b.dataset.densityBtn;refreshGlobalSettingActive();renderInspector();showToast('已套用密度');});
+document.getElementById('contrastBtn').onclick=()=>{const r=document.documentElement;r.dataset.contrast=r.dataset.contrast==='high'?'normal':'high';refreshGlobalSettingActive();renderInspector();showToast('已切換高對比');};document.getElementById('motionBtn').onclick=()=>{const r=document.documentElement;r.dataset.motion=r.dataset.motion==='off'?'on':'off';refreshGlobalSettingActive();renderInspector();showToast('已切換動畫');};
 document.getElementById('workspacePlatformSelect').onchange=e=>{state.platform=e.target.value;renderAll();};document.getElementById('workspaceLayerSelect').onchange=e=>{els.layerFilter.value=e.target.value;renderAll();};document.querySelectorAll('.bottom-item').forEach(btn=>btn.onclick=()=>showTab(btn.dataset.tab));
+
+function refreshGlobalSettingActive(){
+  document.querySelectorAll('[data-theme-btn]').forEach(btn=>{
+    btn.classList.toggle('global-active', document.documentElement.dataset.theme === btn.dataset.themeBtn);
+  });
+  document.querySelectorAll('[data-density-btn]').forEach(btn=>{
+    btn.classList.toggle('global-active', document.documentElement.dataset.density === btn.dataset.densityBtn);
+  });
+  document.getElementById('contrastBtn')?.classList.toggle('global-active', document.documentElement.dataset.contrast === 'high');
+  document.getElementById('motionBtn')?.classList.toggle('global-active', document.documentElement.dataset.motion === 'off');
+}
+
+let lastTouchEnd = 0;
+document.addEventListener('touchend', event=>{
+  const now = Date.now();
+  if(now - lastTouchEnd <= 300) event.preventDefault();
+  lastTouchEnd = now;
+}, {passive:false});
+
+document.addEventListener('gesturestart', event=>event.preventDefault());
+document.addEventListener('gesturechange', event=>event.preventDefault());
+document.addEventListener('gestureend', event=>event.preventDefault());
+
+refreshGlobalSettingActive();
 renderAll();
 </script>
 </body>
