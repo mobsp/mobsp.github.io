@@ -1,18 +1,34 @@
+(async () => {
+  const { loadDataset, getItems, getSavedIds, clearSaved, renderCard, mountSaveButtons } = window.App;
+  const listEl = document.getElementById("saved-list");
+  const countEl = document.getElementById("saved-count");
+  const clearBtn = document.getElementById("clear-saved");
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const data = await loadDataset();
-  const render = () => {
+  function render(items) {
     const ids = getSavedIds();
-    const items = data.items.filter(x => ids.includes(x.id));
-    const mount = qs('#saved-root');
-    qs('#saved-count').textContent = items.length;
-    if (!items.length) {
-      mount.innerHTML = `<div class="empty-state"><h2>目前沒有收藏</h2><p>去所有連結清單把常用項目先存起來。</p><a class="btn primary" href="./all-links.html">前往所有連結清單</a></div>`;
-      return;
-    }
-    mount.innerHTML = `<div class="grid cards">${items.map(cardTemplate).join('')}</div>`;
-    wireSaveButtons(mount);
-  };
-  document.addEventListener('saved:changed', render);
-  render();
-});
+    const saved = items.filter((item) => ids.includes(item.id));
+    countEl.textContent = `${saved.length} 筆`;
+
+    listEl.innerHTML = saved.length
+      ? saved.map(renderCard).join("")
+      : `<div class="empty-state">你目前還沒有收藏任何項目。</div>`;
+
+    mountSaveButtons(listEl);
+  }
+
+  try {
+    const dataset = await loadDataset();
+    const items = getItems(dataset);
+    render(items);
+
+    clearBtn.addEventListener("click", () => {
+      if (!confirm("確定要清空收藏嗎？")) return;
+      clearSaved();
+      render(items);
+    });
+
+    window.addEventListener("saved-changed", () => render(items));
+  } catch (error) {
+    listEl.innerHTML = `<div class="empty-state">${error.message}</div>`;
+  }
+})();

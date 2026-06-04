@@ -1,51 +1,50 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<title>詳情 | file-list</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="manifest" href="./manifest.json">
-<link rel="stylesheet" href="./assets/css/base.css">
-<link rel="stylesheet" href="./assets/css/theme-mobsp-blog.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>詳情</title>
+  <meta name="theme-color" content="#f5f7fb" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./assets/css/base.css" />
+  <link rel="stylesheet" href="./assets/css/theme-mobsp-blog.css" />
 </head>
-<body>
-
+<body data-page="detail">
+  <div class="app-shell">
     <header class="topbar">
-      <div class="wrap topbar-inner">
-        <div class="brand">
-          <div class="brand-badge">FL</div>
-          <div>
-            <div class="brand-title">Mobsp File List</div>
-            <div class="brand-sub">由 xlsx 轉成可搜尋的站內索引網站</div>
-          </div>
+      <div class="topbar__left">
+        <a class="icon-btn" href="./all-links.html" aria-label="返回">←</a>
+        <div>
+          <div class="eyebrow">Mobsp File List</div>
+          <h1 class="topbar__title">詳情</h1>
         </div>
-        <nav class="nav">
-          <a class="" href="./index.html">首頁</a>
-          <a class="" href="./all-links.html">所有連結清單</a>
-          <a class="" href="./saved.html">收藏</a>
-          <a class="" href="./settings.html">設定</a>
-        </nav>
+      </div>
+      <div class="topbar__right">
+        <button class="icon-btn" id="detail-fav-btn" aria-label="收藏">☆</button>
       </div>
     </header>
-    
 
-<main class="section">
-  <div class="wrap" id="detail-root">
-    <div class="empty-state"><p>載入中…</p></div>
-  </div>
-</main>
+    <main class="page">
+      <article class="detail-wrap" id="detail-wrap"></article>
 
-
-    <footer class="footer">
-      <div class="wrap">
-        <div class="footer-card panel">
-          <strong>file-list/</strong>
-          <p>放在 repo 根目錄即可。網站會讀取 <span class="mono">./data/files.json</span> 顯示 123 筆清單資料。</p>
+      <section class="section-card">
+        <div class="section-head">
+          <h3>相關項目</h3>
         </div>
-      </div>
-    </footer>
-    
-<script src="./assets/js/app.js"></script>
-<script src="./assets/js/detail.js"></script>
+        <div class="card-list" id="related-list"></div>
+      </section>
+    </main>
+
+    <nav class="tabbar">
+      <a class="tabbar__item" href="./index.html"><span>🏠</span><small>首頁</small></a>
+      <a class="tabbar__item" href="./all-links.html"><span>📚</span><small>清單</small></a>
+      <a class="tabbar__item" href="./all-links.html#search"><span>🔎</span><small>搜尋</small></a>
+      <a class="tabbar__item" href="./saved.html"><span>⭐</span><small>收藏</small></a>
+      <a class="tabbar__item" href="./settings.html"><span>⚙️</span><small>設定</small></a>
+    </nav>
+  </div>
+
+  <script src="./assets/js/app.js"></script>
+  <script src="./assets/js/detail.js"></script>
 </body>
 </html>

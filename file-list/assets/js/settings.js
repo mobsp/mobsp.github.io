@@ -1,25 +1,41 @@
+(async () => {
+  const { loadDataset, clearSaved } = window.App;
+  const metaEl = document.getElementById("dataset-meta");
+  const exportBtn = document.getElementById("export-json");
+  const clearBtn = document.getElementById("clear-storage");
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const data = await loadDataset();
-  qs('#dataset-info').innerHTML = `
-    <div class="kv">
-      <div class="kv-row"><div class="kv-key">來源</div><div>${escapeHtml(data.sourceWorkbook)}</div></div>
-      <div class="kv-row"><div class="kv-key">總筆數</div><div>${data.total}</div></div>
-      <div class="kv-row"><div class="kv-key">產生日期</div><div>${escapeHtml(data.generatedAt)}</div></div>
-      <div class="kv-row"><div class="kv-key">站點基底</div><div>${escapeHtml(data.siteBase)}</div></div>
-    </div>
-  `;
-  qs('#clear-saved').onclick = () => {
-    setSavedIds([]);
-    qs('#clear-saved').textContent = '已清除收藏';
-    setTimeout(() => qs('#clear-saved').textContent = '清除收藏', 1200);
-  };
-  qs('#export-json').onclick = () => {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'files.json';
-    a.click();
-    URL.revokeObjectURL(a.href);
-  };
-});
+  try {
+    const dataset = await loadDataset();
+    const meta = [
+      ["來源活頁簿", dataset.sourceWorkbook || "未知"],
+      ["總筆數", dataset.total || dataset.items?.length || 0],
+      ["產生時間", dataset.generatedAt || "未知"],
+      ["站點基底", dataset.siteBase || "未知"],
+    ];
+
+    metaEl.innerHTML = meta.map(([label, value]) => `
+      <div class="meta-item">
+        <div class="meta-item__label">${label}</div>
+        <div class="meta-item__value">${value}</div>
+      </div>
+    `).join("");
+
+    exportBtn.addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(dataset, null, 2)], { type: "application/json;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "files.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    clearBtn.addEventListener("click", () => {
+      if (!confirm("確定要清除收藏嗎？")) return;
+      clearSaved();
+      alert("已清除收藏。");
+    });
+  } catch (error) {
+    metaEl.innerHTML = `<div class="empty-state">${error.message}</div>`;
+  }
+})();
