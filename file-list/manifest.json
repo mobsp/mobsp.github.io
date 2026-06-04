@@ -1,0 +1,9 @@
+{
+  "name": "Mobsp File List",
+  "short_name": "file-list",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f6f7fb",
+  "theme_color": "#5b6ea8",
+  "icons": []
+}

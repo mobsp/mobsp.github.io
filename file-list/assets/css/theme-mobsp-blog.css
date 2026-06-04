@@ -1,0 +1,13 @@
+
+.quote-box{
+  border-left:4px solid var(--brand);
+  padding:14px 16px;
+  background:#f8faff;
+  border-radius:0 14px 14px 0;
+  color:var(--muted);
+}
+.reading-prose{max-width:72ch}
+.reading-prose h2,.reading-prose h3{line-height:1.25;margin:1.4em 0 .5em}
+.reading-prose p{margin:.9em 0}
+.reading-prose ul{padding-left:1.2em}
+.surface-soft{background:var(--surface-soft)}
