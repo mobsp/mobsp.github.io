@@ -1,13 +1,35 @@
-
-.quote-box{
-  border-left:4px solid var(--brand);
-  padding:14px 16px;
-  background:#f8faff;
-  border-radius:0 14px 14px 0;
-  color:var(--muted);
+.hero-card,
+.section-card,
+.detail-card,
+.search-panel,
+.filter-panel,
+.stat-card {
+  backdrop-filter: blur(8px);
 }
-.reading-prose{max-width:72ch}
-.reading-prose h2,.reading-prose h3{line-height:1.25;margin:1.4em 0 .5em}
-.reading-prose p{margin:.9em 0}
-.reading-prose ul{padding-left:1.2em}
-.surface-soft{background:var(--surface-soft)}
+
+.hero-card__content h2,
+.detail-title,
+.entry-card__title {
+  letter-spacing: -0.02em;
+}
+
+.article-like p + p,
+.detail-section p + p {
+  margin-top: 12px;
+}
+
+.entry-card,
+.quick-tile,
+.meta-item,
+.compact-row {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+}
+
+.entry-card:hover,
+.quick-tile:hover,
+.meta-item:hover,
+.compact-row:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(31, 41, 55, 0.08);
+  border-color: #d8e0eb;
+}

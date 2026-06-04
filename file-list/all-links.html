@@ -1,120 +1,111 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<title>所有連結清單 | file-list</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="manifest" href="./manifest.json">
-<link rel="stylesheet" href="./assets/css/base.css">
-<link rel="stylesheet" href="./assets/css/theme-mobsp-blog.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>全部連結</title>
+  <meta name="theme-color" content="#f5f7fb" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./assets/css/base.css" />
+  <link rel="stylesheet" href="./assets/css/theme-mobsp-blog.css" />
 </head>
-<body>
-
+<body data-page="all-links">
+  <div class="app-shell">
     <header class="topbar">
-      <div class="wrap topbar-inner">
-        <div class="brand">
-          <div class="brand-badge">FL</div>
-          <div>
-            <div class="brand-title">Mobsp File List</div>
-            <div class="brand-sub">由 xlsx 轉成可搜尋的站內索引網站</div>
-          </div>
+      <div class="topbar__left">
+        <a class="icon-btn" href="./index.html" aria-label="返回">←</a>
+        <div>
+          <div class="eyebrow">Mobsp File List</div>
+          <h1 class="topbar__title">全部連結</h1>
         </div>
-        <nav class="nav">
-          <a class="" href="./index.html">首頁</a>
-          <a class="active" href="./all-links.html">所有連結清單</a>
-          <a class="" href="./saved.html">收藏</a>
-          <a class="" href="./settings.html">設定</a>
-        </nav>
+      </div>
+      <div class="topbar__right">
+        <button class="icon-btn" id="toggle-filter-panel" aria-label="篩選">☰</button>
       </div>
     </header>
-    
 
-<main class="section">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <h1 style="margin:0">所有連結清單</h1>
-        <p>已內建 123 筆。可排序、切換顯示方式、即時搜尋、篩選資料夾/類型/風險。</p>
-      </div>
-    </div>
+    <main class="page page-list">
+      <section class="search-panel" id="search">
+        <label class="searchbar">
+          <span class="searchbar__icon">🔎</span>
+          <input id="search-input" type="search" placeholder="搜尋名稱、路徑、說明..." />
+        </label>
 
-    <section class="toolbar">
-      <div class="toolbar-grid">
-        <div class="field">
-          <label for="search">即時搜尋</label>
-          <input id="search" class="input" type="search" placeholder="搜尋名稱、路徑、說明、建議、風險">
-        </div>
-        <div class="field">
-          <label for="folder">資料夾</label>
-          <select id="folder" class="select"></select>
-        </div>
-        <div class="field">
-          <label for="type">類型</label>
-          <select id="type" class="select"></select>
-        </div>
-        <div class="field">
-          <label for="risk">風險</label>
-          <select id="risk" class="select">
-            <option value="all">全部風險</option>
-            <option value="高">高</option>
-            <option value="中">中</option>
-            <option value="低">低</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="sort">排序</label>
-          <select id="sort" class="select">
-            <option value="name-asc">名稱 A → Z</option>
-            <option value="name-desc">名稱 Z → A</option>
-            <option value="path-asc">路徑 A → Z</option>
-            <option value="path-desc">路徑 Z → A</option>
+        <div class="toolbar-row">
+          <select id="sort-select">
+            <option value="name-asc">名稱 A-Z</option>
+            <option value="name-desc">名稱 Z-A</option>
+            <option value="path-asc">路徑 A-Z</option>
+            <option value="path-desc">路徑 Z-A</option>
             <option value="risk-desc">風險高 → 低</option>
+            <option value="risk-asc">風險低 → 高</option>
           </select>
-        </div>
-        <div class="field">
-          <label>&nbsp;</label>
-          <button class="btn" id="reset-filters">重設</button>
-        </div>
-        <div class="field">
-          <label for="view">顯示方式</label>
-          <select id="view" class="select">
+
+          <select id="view-select">
             <option value="cards">卡片</option>
             <option value="compact">緊湊</option>
             <option value="table">表格</option>
           </select>
-        </div>
-        <div class="field">
-          <label for="per-page">每頁顯示</label>
-          <select id="per-page" class="select">
-            <option value="12">12</option>
-            <option value="24" selected>24</option>
-            <option value="48">48</option>
-            <option value="96">96</option>
+
+          <select id="page-size-select">
+            <option value="12">12 / 頁</option>
+            <option value="24" selected>24 / 頁</option>
+            <option value="48">48 / 頁</option>
+            <option value="96">96 / 頁</option>
           </select>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <div class="section-head" style="margin-top:16px">
-      <p id="result-meta">載入中…</p>
-    </div>
-
-    <div id="results"></div>
-    <div class="pagination" id="pagination"></div>
-  </div>
-</main>
-
-
-    <footer class="footer">
-      <div class="wrap">
-        <div class="footer-card panel">
-          <strong>file-list/</strong>
-          <p>放在 repo 根目錄即可。網站會讀取 <span class="mono">./data/files.json</span> 顯示 123 筆清單資料。</p>
+      <section class="filter-panel" id="filter-panel">
+        <div class="filter-grid">
+          <label>
+            <span>資料夾</span>
+            <select id="folder-filter">
+              <option value="">全部</option>
+            </select>
+          </label>
+          <label>
+            <span>類型</span>
+            <select id="type-filter">
+              <option value="">全部</option>
+            </select>
+          </label>
+          <label>
+            <span>風險</span>
+            <select id="risk-filter">
+              <option value="">全部</option>
+              <option value="高">高</option>
+              <option value="中">中</option>
+              <option value="低">低</option>
+            </select>
+          </label>
+          <label class="inline-check">
+            <input type="checkbox" id="public-filter" />
+            <span>只看可公開頁面</span>
+          </label>
         </div>
-      </div>
-    </footer>
-    
-<script src="./assets/js/app.js"></script>
-<script src="./assets/js/all-links.js"></script>
+      </section>
+
+      <section class="section-card section-card--flat">
+        <div class="section-head">
+          <h3 id="result-title">全部資料</h3>
+          <span class="count-badge" id="result-count">0 筆</span>
+        </div>
+        <div id="result-area" class="result-area"></div>
+        <div class="pagination" id="pagination"></div>
+      </section>
+    </main>
+
+    <nav class="tabbar">
+      <a class="tabbar__item" href="./index.html"><span>🏠</span><small>首頁</small></a>
+      <a class="tabbar__item is-active" href="./all-links.html"><span>📚</span><small>清單</small></a>
+      <a class="tabbar__item is-active" href="./all-links.html#search"><span>🔎</span><small>搜尋</small></a>
+      <a class="tabbar__item" href="./saved.html"><span>⭐</span><small>收藏</small></a>
+      <a class="tabbar__item" href="./settings.html"><span>⚙️</span><small>設定</small></a>
+    </nav>
+  </div>
+
+  <script src="./assets/js/app.js"></script>
+  <script src="./assets/js/all-links.js"></script>
 </body>
 </html>

@@ -1,67 +1,99 @@
+(async () => {
+  const {
+    loadDataset,
+    getItems,
+    safeName,
+    safeSummary,
+    prettyUrl,
+    typeLabel,
+    toggleSaved,
+    isSaved,
+    renderCard,
+    mountSaveButtons,
+    qs,
+    escapeHtml,
+  } = window.App;
 
-document.addEventListener('DOMContentLoaded', async () => {
-  const data = await loadDataset();
-  const id = new URLSearchParams(location.search).get('id');
-  const item = data.items.find(x => x.id === id);
+  const wrap = document.getElementById("detail-wrap");
+  const related = document.getElementById("related-list");
+  const favBtn = document.getElementById("detail-fav-btn");
+  const id = qs("id");
 
-  if (!item) {
-    qs('#detail-root').innerHTML = `<div class="empty-state"><h2>找不到這筆資料</h2><p>請從清單頁重新進入。</p><a class="btn primary" href="./all-links.html">回到所有連結清單</a></div>`;
-    return;
+  try {
+    const dataset = await loadDataset();
+    const items = getItems(dataset);
+    const item = items.find((entry) => entry.id === id);
+
+    if (!item) {
+      wrap.innerHTML = `<div class="empty-state">找不到這筆資料。</div>`;
+      return;
+    }
+
+    document.title = `${safeName(item)} - 詳情`;
+
+    function renderFav() {
+      favBtn.textContent = isSaved(item.id) ? "★" : "☆";
+    }
+
+    renderFav();
+    favBtn.addEventListener("click", () => {
+      toggleSaved(item.id);
+      renderFav();
+    });
+
+    wrap.innerHTML = `
+      <article class="detail-card">
+        <div class="detail-header">
+          <div class="eyebrow">${escapeHtml(item.folder || "root")}</div>
+          <h1 class="detail-title">${escapeHtml(safeName(item))}</h1>
+          <div class="detail-meta">
+            <span class="badge">${escapeHtml(typeLabel(item.type))}</span>
+            <span class="badge">${escapeHtml(item.folder || "root")}</span>
+            <span class="${item.riskLevel === "高" ? "badge badge-risk-high" : item.riskLevel === "中" ? "badge badge-risk-medium" : "badge badge-risk-low"}">${escapeHtml(item.riskLevel || "低")}</span>
+          </div>
+          <div class="detail-links">
+            <a class="btn btn-primary" href="${escapeHtml(item.url || "#")}" target="_blank" rel="noopener">開啟原始連結</a>
+            <a class="btn btn-secondary" href="${escapeHtml(prettyUrl(item))}" target="_blank" rel="noopener">開啟 Pretty URL</a>
+          </div>
+        </div>
+
+        <section class="detail-section">
+          <h3>檔案路徑</h3>
+          <p>${escapeHtml(item.path || "")}</p>
+        </section>
+
+        <section class="detail-section">
+          <h3>功能摘要</h3>
+          <p>${escapeHtml(safeSummary(item))}</p>
+        </section>
+
+        <section class="detail-section">
+          <h3>進階 / 優化建議</h3>
+          <p>${escapeHtml(item.improvements || "目前沒有補充建議。")}</p>
+        </section>
+
+        <section class="detail-section">
+          <h3>風險 / 安全 / 隱私 / 注意事項</h3>
+          <p>${escapeHtml(item.risks || "目前沒有補充風險說明。")}</p>
+        </section>
+
+        <section class="detail-section">
+          <h3>其它</h3>
+          <p>${escapeHtml(item.notes || "目前沒有其它補充。")}</p>
+        </section>
+      </article>
+    `;
+
+    const relatedItems = items
+      .filter((entry) => entry.id !== item.id && entry.folder === item.folder)
+      .slice(0, 4);
+
+    related.innerHTML = relatedItems.length
+      ? relatedItems.map(renderCard).join("")
+      : `<div class="empty-state">目前沒有更多同資料夾項目。</div>`;
+
+    mountSaveButtons(related);
+  } catch (error) {
+    wrap.innerHTML = `<div class="empty-state">${error.message}</div>`;
   }
-
-  document.title = `${item.name} | file-list`;
-  qs('#detail-root').innerHTML = `
-    <div class="detail-layout">
-      <section class="detail-section reading-prose">
-        <div class="meta">
-          ${badge(item.folder, 'folder')}
-          ${badge(fmtType(item.type))}
-          ${badge(`風險 ${item.riskLevel}`, `risk-${item.riskLevel}`)}
-        </div>
-        <h1>${escapeHtml(item.name)}</h1>
-        <p>${escapeHtml(item.summary || '尚未提供說明')}</p>
-        <div class="card-actions">
-          <a class="btn primary" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">開啟原始連結</a>
-          <button class="btn save-btn" data-id="${escapeHtml(item.id)}">收藏</button>
-          <button class="btn" id="copy-link">複製網址</button>
-        </div>
-
-        <div class="detail-section surface-soft" style="margin-top:16px">
-          <h2>進階/優化建議</h2>
-          <p>${escapeHtml(item.improvements || '目前沒有補充建議')}</p>
-        </div>
-
-        <div class="detail-section surface-soft" style="margin-top:16px">
-          <h2>風險/安全/隱私/注意事項</h2>
-          <p>${escapeHtml(item.risks || '目前沒有補充風險說明')}</p>
-        </div>
-
-        <div class="detail-section surface-soft" style="margin-top:16px">
-          <h2>其它</h2>
-          <p>${escapeHtml(item.notes || '—')}</p>
-        </div>
-      </section>
-
-      <aside class="detail-section">
-        <h2>檔案資訊</h2>
-        <div class="kv">
-          <div class="kv-row"><div class="kv-key">檔案路徑</div><div class="mono">${escapeHtml(item.path)}</div></div>
-          <div class="kv-row"><div class="kv-key">網站連結</div><div><a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">${escapeHtml(item.url)}</a></div></div>
-          <div class="kv-row"><div class="kv-key">Pretty URL</div><div><a href="${escapeHtml(item.prettyUrl)}" target="_blank" rel="noopener">${escapeHtml(item.prettyUrl)}</a></div></div>
-          <div class="kv-row"><div class="kv-key">資料夾</div><div>${escapeHtml(item.folder)}</div></div>
-          <div class="kv-row"><div class="kv-key">類型</div><div>${escapeHtml(fmtType(item.type))}</div></div>
-          <div class="kv-row"><div class="kv-key">公開頁面</div><div>${item.publicPage ? '是' : '否'}</div></div>
-        </div>
-      </aside>
-    </div>
-  `;
-
-  wireSaveButtons(qs('#detail-root'));
-  qs('#copy-link').onclick = async () => {
-    try {
-      await navigator.clipboard.writeText(item.url);
-      qs('#copy-link').textContent = '已複製';
-      setTimeout(() => qs('#copy-link').textContent = '複製網址', 1200);
-    } catch {}
-  };
-});
+})();

@@ -1,69 +1,66 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-<title>設定 | file-list</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="manifest" href="./manifest.json">
-<link rel="stylesheet" href="./assets/css/base.css">
-<link rel="stylesheet" href="./assets/css/theme-mobsp-blog.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>設定</title>
+  <meta name="theme-color" content="#f5f7fb" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./assets/css/base.css" />
+  <link rel="stylesheet" href="./assets/css/theme-mobsp-blog.css" />
 </head>
-<body>
-
+<body data-page="settings">
+  <div class="app-shell">
     <header class="topbar">
-      <div class="wrap topbar-inner">
-        <div class="brand">
-          <div class="brand-badge">FL</div>
-          <div>
-            <div class="brand-title">Mobsp File List</div>
-            <div class="brand-sub">由 xlsx 轉成可搜尋的站內索引網站</div>
-          </div>
+      <div class="topbar__left">
+        <div class="app-avatar">⚙</div>
+        <div>
+          <div class="eyebrow">Mobsp File List</div>
+          <h1 class="topbar__title">設定</h1>
         </div>
-        <nav class="nav">
-          <a class="" href="./index.html">首頁</a>
-          <a class="" href="./all-links.html">所有連結清單</a>
-          <a class="" href="./saved.html">收藏</a>
-          <a class="active" href="./settings.html">設定</a>
-        </nav>
       </div>
     </header>
-    
 
-<main class="section">
-  <div class="wrap">
-    <div class="section-head">
-      <div>
-        <h1 style="margin:0">設定</h1>
-        <p>查看資料來源、匯出 JSON、清除收藏與自動更新說明。</p>
-      </div>
-    </div>
-    <div class="detail-layout">
-      <section class="detail-section">
-        <h2>資料集資訊</h2>
-        <div id="dataset-info"></div>
+    <main class="page">
+      <section class="section-card">
+        <div class="section-head">
+          <h3>資料資訊</h3>
+        </div>
+        <div class="meta-list" id="dataset-meta"></div>
       </section>
-      <aside class="detail-section">
-        <h2>工具</h2>
-        <div class="card-actions">
-          <button class="btn primary" id="export-json">匯出 files.json</button>
-          <button class="btn" id="clear-saved">清除收藏</button>
+
+      <section class="section-card">
+        <div class="section-head">
+          <h3>操作</h3>
         </div>
-      </aside>
-    </div>
+        <div class="settings-actions">
+          <button class="btn btn-secondary" id="export-json">匯出 JSON</button>
+          <button class="btn btn-secondary" id="clear-storage">清除收藏</button>
+        </div>
+      </section>
+
+      <section class="section-card">
+        <div class="section-head">
+          <h3>說明</h3>
+        </div>
+        <div class="article-like">
+          <p>這個站以 App 操作模式整理整個 repo 的連結資料。</p>
+          <p>資料來源為 <code>file-list/data/files.json</code>，前端頁面會直接讀取這份資料。</p>
+          <p>若你之後有自動同步流程，更新 repo 後可重建該 JSON，網站內容就會跟著更新。</p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar">
+      <a class="tabbar__item" href="./index.html"><span>🏠</span><small>首頁</small></a>
+      <a class="tabbar__item" href="./all-links.html"><span>📚</span><small>清單</small></a>
+      <a class="tabbar__item" href="./all-links.html#search"><span>🔎</span><small>搜尋</small></a>
+      <a class="tabbar__item" href="./saved.html"><span>⭐</span><small>收藏</small></a>
+      <a class="tabbar__item is-active" href="./settings.html"><span>⚙️</span><small>設定</small></a>
+    </nav>
   </div>
-</main>
 
-
-    <footer class="footer">
-      <div class="wrap">
-        <div class="footer-card panel">
-          <strong>file-list/</strong>
-          <p>放在 repo 根目錄即可。網站會讀取 <span class="mono">./data/files.json</span> 顯示 123 筆清單資料。</p>
-        </div>
-      </div>
-    </footer>
-    
-<script src="./assets/js/app.js"></script>
-<script src="./assets/js/settings.js"></script>
+  <script src="./assets/js/app.js"></script>
+  <script src="./assets/js/settings.js"></script>
 </body>
 </html>
