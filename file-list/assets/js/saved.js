@@ -1,34 +1,36 @@
-(async () => {
-  const { loadDataset, getItems, getSavedIds, clearSaved, renderCard, mountSaveButtons } = window.App;
-  const listEl = document.getElementById("saved-list");
-  const countEl = document.getElementById("saved-count");
-  const clearBtn = document.getElementById("clear-saved");
+document.addEventListener('DOMContentLoaded', async () => {
+  const root = qs('#saved-root');
+  const count = qs('#saved-count');
 
-  function render(items) {
-    const ids = getSavedIds();
-    const saved = items.filter((item) => ids.includes(item.id));
-    countEl.textContent = `${saved.length} 筆`;
+  async function render() {
+    const data = await loadDataset();
+    const savedIds = getSavedIds();
+    const items = data.items.filter(item => savedIds.includes(item.id));
 
-    listEl.innerHTML = saved.length
-      ? saved.map(renderCard).join("")
-      : `<div class="empty-state">你目前還沒有收藏任何項目。</div>`;
+    count.textContent = String(items.length);
 
-    mountSaveButtons(listEl);
+    if (!items.length) {
+      root.innerHTML = `
+        <div class="empty-state panel">
+          <h3>目前沒有收藏</h3>
+          <p>你可以在清單頁或詳情頁按下收藏，之後會集中顯示在這裡。</p>
+          <div class="card-actions" style="justify-content:center;margin-top:14px">
+            <a class="btn primary" href="./all-links.html">前往所有連結</a>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    root.innerHTML = `
+      <div class="grid cards">
+        ${items.map(cardTemplate).join('')}
+      </div>
+    `;
+
+    wireSaveButtons(root);
   }
 
-  try {
-    const dataset = await loadDataset();
-    const items = getItems(dataset);
-    render(items);
-
-    clearBtn.addEventListener("click", () => {
-      if (!confirm("確定要清空收藏嗎？")) return;
-      clearSaved();
-      render(items);
-    });
-
-    window.addEventListener("saved-changed", () => render(items));
-  } catch (error) {
-    listEl.innerHTML = `<div class="empty-state">${error.message}</div>`;
-  }
-})();
+  document.addEventListener('saved:changed', render);
+  await render();
+});
