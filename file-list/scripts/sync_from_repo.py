@@ -1,233 +1,230 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+
 import argparse
+import datetime as dt
 import json
+import os
 import re
-from datetime import datetime, timezone
+import sys
 from pathlib import Path
 
 SITE_BASE = "https://mobsp.qzz.io"
-
 IGNORE_DIRS = {
-    ".git", ".github", "node_modules", ".vscode", ".idea", "__pycache__",
+    ".git",
+    ".github",
+    "node_modules",
+    ".vscode",
+    ".idea",
+    "__pycache__",
+    "file-list",
 }
-IGNORE_FILES = {
-    ".DS_Store",
-}
-TEXT_PRIORITIES = (
-    "summary",
-    "improvements",
-    "risks",
-    "notes",
-    "name",
-)
+IMAGE_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "webp", "svg", "bmp", "ico", "icon", "avif", "tif", "tiff"}
+AUDIO_EXTENSIONS = {"mp3", "wav", "m4a", "aac", "ogg", "flac", "opus"}
+VIDEO_EXTENSIONS = {"mp4", "webm", "mov", "m4v", "avi", "mkv", "ogv"}
 
-DEFAULT_TYPE_LABELS = {
-    "html-index": "頁面",
-    "html": "HTML 檔案",
-    "javascript": "JavaScript",
-    "json": "JSON 資料",
-    "css": "樣式表",
-    "python": "Python 腳本",
-    "workflow": "GitHub Actions",
-    "image": "圖片素材",
-    "pwa": "PWA 檔案",
-    "seo": "SEO 檔案",
-    "config": "設定檔",
-    "yaml": "YAML 設定",
-    "xml": "XML 檔案",
-    "markdown": "Markdown",
-    "dotfile": "隱藏檔案",
-    "other": "其它檔案",
-}
 
 def slugify(value: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-") or "item"
+    text = value.strip().lower()
+    text = re.sub(r"[^a-z0-9\u4e00-\u9fff]+", "-", text)
+    text = re.sub(r"-+", "-", text).strip("-")
+    return text or "item"
 
-def classify_type(path: str) -> str:
-    p = path.lower()
-    name = Path(p).name
-    if p.startswith(".github/workflows/"):
-        return "workflow"
-    if name == "manifest.json" or name == "sw.js":
+
+def get_extension(path: str) -> str:
+    return Path(path).suffix.lower().lstrip(".")
+
+
+def media_category(path: str) -> str:
+    ext = get_extension(path)
+    if ext in IMAGE_EXTENSIONS:
+        return "image"
+    if ext in AUDIO_EXTENSIONS:
+        return "audio"
+    if ext in VIDEO_EXTENSIONS:
+        return "video"
+    return "none"
+
+
+def detect_type(path: str) -> str:
+    suffix = Path(path).suffix.lower()
+    name = Path(path).name.lower()
+
+    if name.startswith("."):
+        return "dotfile"
+    if suffix == ".html":
+        return "html-index" if name == "index.html" else "html"
+    if suffix == ".js":
+        return "javascript"
+    if suffix == ".json":
+        return "json"
+    if suffix == ".css":
+        return "css"
+    if suffix == ".py":
+        return "python"
+    if suffix in {".yml", ".yaml"}:
+        return "workflow" if ".github/workflows/" in path else "yaml"
+    if suffix == ".xml":
+        return "xml"
+    if suffix == ".md":
+        return "markdown"
+    if suffix in {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".bmp", ".ico", ".avif", ".tif", ".tiff"}:
+        return "image"
+    if name in {"manifest.json", "sw.js"}:
         return "pwa"
     if name in {"robots.txt", "sitemap.xml"}:
         return "seo"
-    if name.startswith(".") and "." not in name[1:]:
-        return "dotfile"
-    if name == "index.html":
-        return "html-index"
-    ext = Path(name).suffix
-    mapping = {
-        ".html": "html",
-        ".js": "javascript",
-        ".json": "json",
-        ".css": "css",
-        ".py": "python",
-        ".yml": "workflow",
-        ".yaml": "yaml",
-        ".xml": "xml",
-        ".md": "markdown",
-        ".jpeg": "image",
-        ".jpg": "image",
-        ".png": "image",
-        ".svg": "image",
-        ".webp": "image",
-        ".txt": "config",
-        ".htaccess": "config",
-    }
-    return mapping.get(ext, "other")
+    return "config"
+
 
 def is_public_page(path: str) -> bool:
-    lower = path.lower()
-    if lower.endswith("/index.html"):
-        return True
-    if lower.endswith(".html") and not lower.startswith(".github/"):
-        return True
-    return False
+    return path.endswith("/index.html") or path.endswith(".html")
 
-def infer_name(path: str, item_type: str) -> str:
+
+def pretty_url(url: str, path: str) -> str:
+    return url[:-10] if path.endswith("/index.html") else url
+
+
+def first_folder(path: str) -> str:
+    parts = path.split("/")
+    return parts[0] if len(parts) > 1 else "root"
+
+
+def default_name(path: str) -> str:
     p = Path(path)
-    if p.name == "index.html":
-        folder = p.parent.name
-        return folder if folder not in {"", "."} else "首頁"
-    if p.name.startswith(".") and p.suffix:
-        return p.name
-    if p.suffix:
-        return p.stem
-    return p.name or path
+    if p.name == "index.html" and len(p.parts) >= 2:
+        return p.parts[-2]
+    return p.stem or p.name
 
-def infer_summary(path: str, item_type: str) -> str:
-    p = Path(path)
-    if item_type == "html-index":
-        return f"{p.parent.as_posix() or 'root'} 的入口頁面"
-    if item_type == "workflow":
-        return "GitHub Actions 工作流程設定"
-    if item_type == "python":
-        return "Python 腳本或資料處理工具"
-    if item_type == "javascript":
-        return "JavaScript 程式或前端邏輯"
-    if item_type == "json":
-        return "JSON 設定或資料檔"
-    if item_type == "css":
-        return "網站樣式表"
-    if item_type == "image":
-        return "圖片素材或品牌資源"
-    if item_type == "markdown":
-        return "Markdown 文字內容"
-    if item_type in {"yaml", "config"}:
-        return "站點或部署設定檔"
-    return f"{DEFAULT_TYPE_LABELS.get(item_type, '檔案')}"
 
-def infer_improvements(path: str, item_type: str) -> str:
-    if item_type in {"workflow", "yaml", "config"}:
-        return "補充用途註解，確認敏感設定未外露，並檢查錯誤回滾流程。"
-    if item_type in {"python", "javascript"}:
-        return "補上錯誤處理、輸入驗證與使用說明，必要時拆模組與加測試。"
-    if item_type in {"html-index", "html"}:
-        return "補 SEO、metadata、可及性標記與 loading/快取優化。"
-    if item_type == "json":
-        return "建立欄位說明與 schema，避免資料格式漂移。"
-    if item_type == "image":
-        return "壓縮圖片尺寸並提供替代文字或 WebP 版本。"
-    return "補充說明與維護註記，讓後續查找與修改更容易。"
+def default_summary(path: str, file_type: str) -> str:
+    media = media_category(path)
+    if media == "image":
+        return "圖像素材或品牌資產"
+    if media == "audio":
+        return "音訊檔案"
+    if media == "video":
+        return "影片檔案"
+    if file_type == "html-index":
+        return "網站入口頁面"
+    if file_type == "javascript":
+        return "前端或工具邏輯程式"
+    if file_type == "css":
+        return "樣式定義檔"
+    if file_type == "json":
+        return "資料或設定 JSON"
+    if file_type == "python":
+        return "自動化或資料處理腳本"
+    if file_type == "workflow":
+        return "GitHub Actions 自動化流程"
+    if file_type == "yaml":
+        return "設定檔"
+    return "檔案項目"
 
-def infer_risks(path: str, item_type: str) -> tuple[str, str]:
-    lower = path.lower()
-    if item_type in {"workflow", "yaml", "config"} or "security" in lower or lower.startswith(".github/"):
-        return "高", "涉及部署、權限、快取或自動化設定，變更前應先檢查副作用與敏感資訊。"
-    if item_type in {"python", "javascript", "json"}:
-        return "中", "程式或資料變更可能影響站點功能、資料格式或前端相容性。"
-    if item_type in {"html-index", "html", "css", "image"}:
-        return "低", "主要影響頁面呈現、導覽或使用者體驗。"
-    return "低", "修改前仍建議確認引用位置與用途。"
+def default_improvements(path: str, file_type: str) -> str:
+    if file_type in {"javascript", "python"}:
+        return "建議補齊錯誤處理、模組拆分與說明文件"
+    if file_type in {"html", "html-index"}:
+        return "建議補強語意標記、可及性與手機版細節"
+    if file_type == "css":
+        return "建議整理變數、元件層與響應式規則"
+    if file_type in {"workflow", "yaml"}:
+        return "建議檢查權限、觸發條件與敏感設定"
+    return "可視情況補充用途說明與維護註記"
 
-def path_to_url(path: str) -> tuple[str, str]:
-    path = path.replace("\\", "/")
-    url = f"{SITE_BASE}/{path}"
-    if path.endswith("/index.html"):
-        pretty = f"{SITE_BASE}/{path[:-10]}/"
-    else:
-        pretty = url
-    return url, pretty
+def default_risks(path: str, file_type: str) -> str:
+    media = media_category(path)
+    if file_type in {"workflow", "yaml"}:
+        return "設定錯誤可能影響部署、權限、快取或工作流程"
+    if file_type in {"javascript", "python"}:
+        return "程式錯誤可能影響互動、資料處理或站點功能"
+    if media != "none":
+        return "媒體檔案需注意容量、版權與公開存取"
+    return "請確認公開路徑、內容與用途是否符合預期"
 
-def load_existing(output_path: Path) -> dict[str, dict]:
+def risk_level(path: str, file_type: str) -> str:
+    if file_type in {"workflow", "yaml"}:
+        return "高"
+    if file_type in {"javascript", "python"}:
+        return "中"
+    return "低"
+
+def scan_repo(repo_root: Path) -> list[str]:
+    paths: list[str] = []
+    for root, dirs, files in os.walk(repo_root):
+        rel_root = Path(root).relative_to(repo_root)
+        dirs[:] = [d for d in dirs if d not in IGNORE_DIRS]
+
+        if rel_root.parts and rel_root.parts[0] in IGNORE_DIRS:
+            continue
+
+        for name in files:
+            rel_path = (rel_root / name).as_posix() if rel_root.parts else name
+            if rel_path.startswith("file-list/"):
+                continue
+            paths.append(rel_path)
+
+    return sorted(paths)
+
+def load_existing(output_path: Path) -> dict[str, dict[str, object]]:
     if not output_path.exists():
         return {}
     try:
-        payload = json.loads(output_path.read_text(encoding="utf-8"))
+        data = json.loads(output_path.read_text(encoding="utf-8"))
     except Exception:
         return {}
-    items = payload.get("items", [])
-    return {item.get("path"): item for item in items if item.get("path")}
+    return {item["path"]: item for item in data.get("items", []) if "path" in item}
 
-def should_skip(rel: Path) -> bool:
-    parts = rel.parts
-    if any(part in IGNORE_DIRS for part in parts):
-        return True
-    if parts and parts[0] == "file-list":
-        return True
-    if rel.name in IGNORE_FILES:
-        return True
-    return False
+def build_item(path: str, existing: dict[str, object]) -> dict[str, object]:
+    file_type = detect_type(path)
+    url = f"{SITE_BASE}/{path}"
+    name = str(existing.get("name") or default_name(path))
+    summary = str(existing.get("summary") or default_summary(path, file_type))
+    improvements = str(existing.get("improvements") or default_improvements(path, file_type))
+    risks = str(existing.get("risks") or default_risks(path, file_type))
+    notes = str(existing.get("notes") or "多半屬原始碼/設定檔，網址不一定適合一般訪客")
 
-def scan_repo(repo_root: Path) -> list[str]:
-    results: list[str] = []
-    for path in repo_root.rglob("*"):
-        if path.is_dir():
-            continue
-        rel = path.relative_to(repo_root)
-        if should_skip(rel):
-            continue
-        results.append(rel.as_posix())
-    return sorted(results)
-
-def build_item(path: str, existing: dict[str, dict]) -> dict:
-    prior = existing.get(path, {})
-    item_type = classify_type(path)
-    url, pretty_url = path_to_url(path)
-    level, default_risk = infer_risks(path, item_type)
-    folder = Path(path).parent.as_posix() if Path(path).parent.as_posix() not in {"", "."} else "root"
-    item = {
-        "id": prior.get("id") or slugify(path),
+    return {
+        "id": slugify(path),
         "path": path,
         "url": url,
-        "prettyUrl": pretty_url,
-        "name": prior.get("name") or infer_name(path, item_type),
-        "summary": prior.get("summary") or infer_summary(path, item_type),
-        "improvements": prior.get("improvements") or infer_improvements(path, item_type),
-        "risks": prior.get("risks") or default_risk,
-        "notes": prior.get("notes") or "網址可由此索引頁快速開啟；非 HTML 檔不一定適合一般訪客直接瀏覽。",
-        "folder": prior.get("folder") or folder,
-        "type": item_type,
-        "publicPage": is_public_page(path),
-        "riskLevel": prior.get("riskLevel") or level,
+        "prettyUrl": pretty_url(url, path),
+        "name": name,
+        "summary": summary,
+        "improvements": improvements,
+        "risks": risks,
+        "notes": notes,
+        "folder": first_folder(path),
+        "type": file_type,
+        "publicPage": bool(existing.get("publicPage")) if "publicPage" in existing else is_public_page(path),
+        "riskLevel": str(existing.get("riskLevel") or risk_level(path, file_type)),
     }
-    return item
 
 def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--repo-root", default=".")
-    parser.add_argument("--output", default="file-list/data/files.json")
+    parser = argparse.ArgumentParser(description="掃描 repo 並更新 file-list/data/files.json")
+    parser.add_argument("--repo-root", default=".", help="repo 根目錄")
+    parser.add_argument("--output", default="file-list/data/files.json", help="輸出 JSON 路徑")
     args = parser.parse_args()
 
     repo_root = Path(args.repo_root).resolve()
-    output_path = (repo_root / args.output).resolve()
+    output_path = Path(args.output).resolve()
 
-    existing = load_existing(output_path)
-    paths = scan_repo(repo_root)
-    items = [build_item(path, existing) for path in paths]
-    payload = {
-        "generatedAt": datetime.now(timezone.utc).isoformat(),
+    existing_by_path = load_existing(output_path)
+    scanned_paths = scan_repo(repo_root)
+
+    items = [build_item(path, existing_by_path.get(path, {})) for path in scanned_paths]
+
+    data = {
+        "generatedAt": dt.datetime.now().isoformat(timespec="seconds"),
         "siteBase": SITE_BASE,
-        "sourceWorkbook": "Github儲存庫_mobsp.xlsx",
+        "sourceWorkbook": "repo-scan",
         "total": len(items),
         "items": items,
     }
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"updated {output_path} with {len(items)} items")
+    output_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"updated {output_path}")
     return 0
 
 if __name__ == "__main__":
