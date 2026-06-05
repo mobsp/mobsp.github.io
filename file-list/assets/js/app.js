@@ -1,327 +1,429 @@
-window.App = (() => {
-  const DATA_URL = "./data/files.json";
-  const STORAGE_KEY = "mobsp-file-list-saved";
-  let datasetCache = null;
+const DATA_URL = './data/files.json';
+const REPO_OWNER = 'mobsp';
+const REPO_NAME = 'mobsp.github.io';
+const REPO_BRANCH = 'main';
 
-  function escapeHtml(value) {
-    return String(value ?? "")
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
+const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico', 'icon', 'avif', 'tif', 'tiff']);
+const AUDIO_EXTENSIONS = new Set(['mp3', 'wav', 'm4a', 'aac', 'ogg', 'flac', 'opus']);
+const VIDEO_EXTENSIONS = new Set(['mp4', 'webm', 'mov', 'm4v', 'avi', 'mkv', 'ogv']);
+const CODE_EXTENSIONS = new Set(['html', 'css', 'js', 'json', 'md', 'txt', 'xml', 'yml', 'yaml', 'py', 'svg']);
 
-  function slugify(value) {
-    return String(value ?? "")
-      .toLowerCase()
-      .replace(/[^a-z0-9\u4e00-\u9fff]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-  }
+const state = {
+  dataset: null,
+  deferredPrompt: null
+};
 
-  async function loadDataset() {
-    if (datasetCache) return datasetCache;
-    const response = await fetch(DATA_URL, { cache: "no-store" });
-    if (!response.ok) throw new Error(`無法載入資料: ${response.status}`);
-    datasetCache = await response.json();
-    if (!Array.isArray(datasetCache.items)) datasetCache.items = [];
-    return datasetCache;
-  }
+function qs(sel, root = document) {
+  return root.querySelector(sel);
+}
 
-  function getItems(dataset) {
-    return Array.isArray(dataset?.items) ? dataset.items : [];
-  }
+function qsa(sel, root = document) {
+  return Array.from(root.querySelectorAll(sel));
+}
 
-  function normalizeText(value) {
-    return String(value ?? "").trim();
-  }
+function escapeHtml(value = '') {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
 
-  function riskClass(level) {
-    if (level === "高") return "badge badge-risk-high";
-    if (level === "中") return "badge badge-risk-medium";
-    return "badge badge-risk-low";
-  }
+function getExtension(path = '') {
+  const clean = String(path).split('?')[0].split('#')[0];
+  const parts = clean.split('/');
+  const fileName = parts[parts.length - 1] || '';
+  const dotIndex = fileName.lastIndexOf('.');
+  return dotIndex >= 0 ? fileName.slice(dotIndex + 1).toLowerCase() : '';
+}
 
-  function safeName(item) {
-    return normalizeText(item.name) || normalizeText(item.path) || "未命名";
-  }
+function getMediaCategory(path = '') {
+  const ext = getExtension(path);
+  if (IMAGE_EXTENSIONS.has(ext)) return 'image';
+  if (AUDIO_EXTENSIONS.has(ext)) return 'audio';
+  if (VIDEO_EXTENSIONS.has(ext)) return 'video';
+  return 'none';
+}
 
-  function safeSummary(item) {
-    return normalizeText(item.summary) || "目前沒有補充摘要。";
-  }
+function isCodeFile(path = '') {
+  const ext = getExtension(path);
+  return CODE_EXTENSIONS.has(ext);
+}
 
-  function typeLabel(type) {
-    const map = {
-      "html-index": "HTML 入口頁",
-      html: "HTML 頁面",
-      json: "JSON 資料",
-      yaml: "YAML",
-      yml: "YML",
-      markdown: "Markdown",
-      css: "CSS",
-      javascript: "JavaScript",
-      python: "Python",
-      workflow: "Workflow",
-      image: "圖片",
-      text: "文字",
-      other: "其它",
-    };
-    return map[type] || type || "未知";
-  }
+function getLanguage(path = '') {
+  const ext = getExtension(path);
+  const map = {
+    html: 'html',
+    css: 'css',
+    js: 'javascript',
+    json: 'json',
+    md: 'markdown',
+    txt: 'text',
+    xml: 'xml',
+    yml: 'yaml',
+    yaml: 'yaml',
+    py: 'python',
+    svg: 'svg'
+  };
+  return map[ext] || 'text';
+}
 
-  function prettyUrl(item) {
-    return item.prettyUrl || item.url || "#";
-  }
+function deriveGithubBlobUrl(path) {
+  return `https://github.com/${REPO_OWNER}/${REPO_NAME}/blob/${REPO_BRANCH}/${path}`;
+}
 
-  function byRiskValue(level) {
-    if (level === "高") return 3;
-    if (level === "中") return 2;
-    return 1;
-  }
+function deriveGithubEditUrl(path) {
+  return `https://github.com/${REPO_OWNER}/${REPO_NAME}/edit/${REPO_BRANCH}/${path}`;
+}
 
-  function filterItems(items, state) {
-    return items.filter((item) => {
-      const q = normalizeText(state.q).toLowerCase();
-      if (q) {
-        const haystack = [
-          item.name,
-          item.path,
-          item.summary,
-          item.improvements,
-          item.risks,
-          item.notes,
-          item.folder,
-          item.type,
-        ].join(" ").toLowerCase();
-        if (!haystack.includes(q)) return false;
-      }
+function deriveGithubRawUrl(path) {
+  return `https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${REPO_BRANCH}/${path}`;
+}
 
-      if (state.folder && item.folder !== state.folder) return false;
-      if (state.type && item.type !== state.type) return false;
-      if (state.risk && item.riskLevel !== state.risk) return false;
-      if (state.publicOnly && !item.publicPage) return false;
+function fmtType(type) {
+  const map = {
+    'html-index': 'HTML 頁面',
+    html: 'HTML 檔',
+    javascript: 'JavaScript',
+    json: 'JSON',
+    css: 'CSS',
+    python: 'Python',
+    workflow: 'Workflow',
+    image: '圖片',
+    pwa: 'PWA',
+    seo: 'SEO',
+    config: '設定',
+    yaml: 'YAML',
+    xml: 'XML',
+    markdown: 'Markdown',
+    dotfile: '隱藏檔'
+  };
+  return map[type] || type || '未知';
+}
 
-      return true;
-    });
-  }
+function badge(text, className = '') {
+  return `<span class="badge ${className}">${escapeHtml(text)}</span>`;
+}
 
-  function sortItems(items, sort) {
-    const list = [...items];
-    list.sort((a, b) => {
-      if (sort === "name-desc") return safeName(b).localeCompare(safeName(a), "zh-Hant");
-      if (sort === "path-asc") return (a.path || "").localeCompare(b.path || "", "zh-Hant");
-      if (sort === "path-desc") return (b.path || "").localeCompare(a.path || "", "zh-Hant");
-      if (sort === "risk-desc") return byRiskValue(b.riskLevel) - byRiskValue(a.riskLevel);
-      if (sort === "risk-asc") return byRiskValue(a.riskLevel) - byRiskValue(b.riskLevel);
-      return safeName(a).localeCompare(safeName(b), "zh-Hant");
-    });
-    return list;
-  }
-
-  function paginate(items, page, pageSize) {
-    const total = items.length;
-    const pages = Math.max(1, Math.ceil(total / pageSize));
-    const currentPage = Math.min(Math.max(1, page), pages);
-    const start = (currentPage - 1) * pageSize;
-    return {
-      total,
-      pages,
-      currentPage,
-      pageItems: items.slice(start, start + pageSize),
-    };
-  }
-
-  function getSavedIds() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      const parsed = JSON.parse(raw || "[]");
-      return Array.isArray(parsed) ? parsed : [];
-    } catch {
-      return [];
-    }
-  }
-
-  function setSavedIds(ids) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify([...new Set(ids)]));
-    window.dispatchEvent(new CustomEvent("saved-changed"));
-  }
-
-  function isSaved(id) {
-    return getSavedIds().includes(id);
-  }
-
-  function toggleSaved(id) {
-    const ids = getSavedIds();
-    if (ids.includes(id)) {
-      setSavedIds(ids.filter((x) => x !== id));
-      return false;
-    }
-    ids.push(id);
-    setSavedIds(ids);
-    return true;
-  }
-
-  function clearSaved() {
-    localStorage.removeItem(STORAGE_KEY);
-    window.dispatchEvent(new CustomEvent("saved-changed"));
-  }
-
-  function renderBadges(item) {
-    return `
-      <div class="entry-card__meta">
-        <span class="badge">${escapeHtml(item.folder || "root")}</span>
-        <span class="badge">${escapeHtml(typeLabel(item.type))}</span>
-        <span class="${riskClass(item.riskLevel)}">${escapeHtml(item.riskLevel || "低")}</span>
-      </div>
-    `;
-  }
-
-  function renderCard(item) {
-    const fav = isSaved(item.id) ? "★" : "☆";
-    return `
-      <article class="entry-card" data-id="${escapeHtml(item.id)}">
-        <div class="entry-card__top">
-          <div>
-            <h3 class="entry-card__title">${escapeHtml(safeName(item))}</h3>
-            ${renderBadges(item)}
-          </div>
-          <button class="icon-btn js-save-btn" data-id="${escapeHtml(item.id)}" aria-label="收藏">${fav}</button>
-        </div>
-        <div class="entry-card__summary">${escapeHtml(safeSummary(item))}</div>
-        <div class="entry-card__meta">
-          <span>${escapeHtml(item.path || "")}</span>
-        </div>
-        <div class="entry-card__actions">
-          <a class="btn btn-primary" href="./detail.html?id=${encodeURIComponent(item.id)}">查看詳情</a>
-          <a class="btn btn-secondary" href="${escapeHtml(item.url || "#")}" target="_blank" rel="noopener">開啟連結</a>
-        </div>
-      </article>
-    `;
-  }
-
-  function renderCompactRow(item) {
-    const fav = isSaved(item.id) ? "★" : "☆";
-    return `
-      <article class="compact-row">
-        <div class="compact-row__head">
-          <div>
-            <div class="compact-row__title">${escapeHtml(safeName(item))}</div>
-            <div class="compact-row__meta">
-              <span>${escapeHtml(item.path || "")}</span>
-              <span>${escapeHtml(typeLabel(item.type))}</span>
-              <span>${escapeHtml(item.riskLevel || "低")}</span>
-            </div>
-          </div>
-          <button class="icon-btn js-save-btn" data-id="${escapeHtml(item.id)}">${fav}</button>
-        </div>
-        <div class="entry-card__actions">
-          <a class="btn btn-primary" href="./detail.html?id=${encodeURIComponent(item.id)}">詳情</a>
-          <a class="btn btn-secondary" href="${escapeHtml(item.url || "#")}" target="_blank" rel="noopener">開啟</a>
-        </div>
-      </article>
-    `;
-  }
-
-  function renderTable(items) {
-    return `
-      <div class="table-wrap">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>名稱</th>
-              <th>路徑</th>
-              <th>類型</th>
-              <th>風險</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${items.map((item) => `
-              <tr>
-                <td>${escapeHtml(safeName(item))}</td>
-                <td>${escapeHtml(item.path || "")}</td>
-                <td>${escapeHtml(typeLabel(item.type))}</td>
-                <td>${escapeHtml(item.riskLevel || "低")}</td>
-                <td>
-                  <a href="./detail.html?id=${encodeURIComponent(item.id)}">詳情</a> ·
-                  <a href="${escapeHtml(item.url || "#")}" target="_blank" rel="noopener">開啟</a>
-                </td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      </div>
-    `;
-  }
-
-  function mountSaveButtons(root = document) {
-    root.querySelectorAll(".js-save-btn").forEach((button) => {
-      button.addEventListener("click", () => {
-        const id = button.dataset.id;
-        const saved = toggleSaved(id);
-        button.textContent = saved ? "★" : "☆";
-      });
-    });
-  }
-
-  function renderPagination(container, currentPage, pages, onChange) {
-    if (!container) return;
-    if (pages <= 1) {
-      container.innerHTML = "";
-      return;
-    }
-
-    const buttons = [];
-    for (let page = 1; page <= pages; page += 1) {
-      buttons.push(`
-        <button class="page-btn ${page === currentPage ? "is-active" : ""}" data-page="${page}">
-          ${page}
-        </button>
-      `);
-    }
-
-    container.innerHTML = buttons.join("");
-    container.querySelectorAll("[data-page]").forEach((button) => {
-      button.addEventListener("click", () => onChange(Number(button.dataset.page)));
-    });
-  }
-
-  function qs(name) {
-    return new URLSearchParams(location.search).get(name);
-  }
-
-  async function registerServiceWorker() {
-    if ("serviceWorker" in navigator) {
-      try {
-        await navigator.serviceWorker.register("./sw.js");
-      } catch {}
-    }
-  }
-
-  registerServiceWorker();
+function withDerivedFields(item) {
+  const mediaCategory = getMediaCategory(item.path);
+  const extension = getExtension(item.path);
 
   return {
-    escapeHtml,
-    slugify,
-    loadDataset,
-    getItems,
-    safeName,
-    safeSummary,
-    typeLabel,
-    prettyUrl,
-    filterItems,
-    sortItems,
-    paginate,
-    renderCard,
-    renderCompactRow,
-    renderTable,
-    renderPagination,
-    mountSaveButtons,
-    getSavedIds,
-    setSavedIds,
-    isSaved,
-    toggleSaved,
-    clearSaved,
-    qs,
+    ...item,
+    extension,
+    mediaCategory,
+    isImage: mediaCategory === 'image',
+    isAudio: mediaCategory === 'audio',
+    isVideo: mediaCategory === 'video',
+    isCodeFile: isCodeFile(item.path),
+    language: getLanguage(item.path),
+    githubBlobUrl: deriveGithubBlobUrl(item.path),
+    githubEditUrl: deriveGithubEditUrl(item.path),
+    githubRawUrl: deriveGithubRawUrl(item.path)
   };
-})();
+}
+
+async function loadDataset() {
+  if (state.dataset) return state.dataset;
+
+  const res = await fetch(DATA_URL, { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error('無法載入 files.json');
+  }
+
+  const raw = await res.json();
+  state.dataset = {
+    ...raw,
+    items: (raw.items || []).map(withDerivedFields),
+    total: (raw.items || []).length
+  };
+  return state.dataset;
+}
+
+function mediaBadge(item) {
+  if (item.mediaCategory === 'image') return badge('圖檔', 'media-image');
+  if (item.mediaCategory === 'audio') return badge('音訊', 'media-audio');
+  if (item.mediaCategory === 'video') return badge('影片', 'media-video');
+  return '';
+}
+
+function cardTemplate(item) {
+  return `
+    <article class="card">
+      <div class="card-top">
+        <div>
+          <h3 class="card-title">${escapeHtml(item.name)}</h3>
+          <div class="card-sub mono">${escapeHtml(item.path)}</div>
+        </div>
+      </div>
+
+      <div class="meta">
+        ${badge(item.folder, 'folder')}
+        ${badge(fmtType(item.type))}
+        ${badge(`風險 ${item.riskLevel}`, `risk-${item.riskLevel}`)}
+        ${mediaBadge(item)}
+      </div>
+
+      <p>${escapeHtml(item.summary || '尚未提供說明')}</p>
+
+      <div class="card-actions">
+        <a class="btn primary" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">開啟連結</a>
+        <a class="btn" href="./detail.html?id=${encodeURIComponent(item.id)}">查看詳情</a>
+        <button class="btn save-btn" data-id="${escapeHtml(item.id)}" type="button">${isSaved(item.id) ? '取消收藏' : '收藏'}</button>
+      </div>
+    </article>
+  `;
+}
+
+function compactTemplate(item) {
+  return `
+    <div class="compact-item">
+      <div>
+        <strong>${escapeHtml(item.name)}</strong>
+        <div class="card-sub mono">${escapeHtml(item.path)}</div>
+        <div class="meta">
+          ${badge(item.folder, 'folder')}
+          ${badge(fmtType(item.type))}
+          ${badge(`風險 ${item.riskLevel}`, `risk-${item.riskLevel}`)}
+          ${mediaBadge(item)}
+        </div>
+      </div>
+      <div class="card-actions">
+        <a class="btn primary" href="${escapeHtml(item.url)}" target="_blank" rel="noopener">開啟</a>
+        <a class="btn" href="./detail.html?id=${encodeURIComponent(item.id)}">詳情</a>
+      </div>
+    </div>
+  `;
+}
+
+function tableTemplate(items) {
+  return `
+    <div class="list-table-wrap">
+      <table class="list-table">
+        <thead>
+          <tr>
+            <th>名稱</th>
+            <th>路徑</th>
+            <th>資料夾</th>
+            <th>類型</th>
+            <th>媒體</th>
+            <th>風險</th>
+            <th>網站連結</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items.map(item => `
+            <tr>
+              <td>
+                <a href="./detail.html?id=${encodeURIComponent(item.id)}">${escapeHtml(item.name)}</a>
+                <div class="card-sub">${escapeHtml(item.summary || '')}</div>
+              </td>
+              <td class="mono">${escapeHtml(item.path)}</td>
+              <td>${escapeHtml(item.folder)}</td>
+              <td>${escapeHtml(fmtType(item.type))}</td>
+              <td>${item.mediaCategory === 'none' ? '—' : escapeHtml(item.mediaCategory)}</td>
+              <td>${badge(item.riskLevel, `risk-${item.riskLevel}`)}</td>
+              <td><a href="${escapeHtml(item.url)}" target="_blank" rel="noopener">開啟</a></td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
+function getSavedIds() {
+  try {
+    return JSON.parse(localStorage.getItem('file-list:saved') || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function setSavedIds(ids) {
+  localStorage.setItem('file-list:saved', JSON.stringify([...new Set(ids)]));
+  document.dispatchEvent(new CustomEvent('saved:changed'));
+}
+
+function isSaved(id) {
+  return getSavedIds().includes(id);
+}
+
+function toggleSaved(id) {
+  const ids = getSavedIds();
+  if (ids.includes(id)) {
+    setSavedIds(ids.filter(x => x !== id));
+  } else {
+    setSavedIds([...ids, id]);
+  }
+}
+
+function wireSaveButtons(root = document) {
+  qsa('.save-btn', root).forEach(btn => {
+    btn.onclick = () => {
+      const { id } = btn.dataset;
+      toggleSaved(id);
+      const savedNow = isSaved(id);
+      btn.textContent = savedNow ? '取消收藏' : '收藏';
+    };
+  });
+}
+
+function riskRank(value) {
+  if (value === '高') return 3;
+  if (value === '中') return 2;
+  return 1;
+}
+
+function sortItems(items, sort) {
+  const sorted = items.slice();
+  sorted.sort((a, b) => {
+    if (sort === 'name-asc') return a.name.localeCompare(b.name, 'zh-Hant');
+    if (sort === 'name-desc') return b.name.localeCompare(a.name, 'zh-Hant');
+    if (sort === 'path-asc') return a.path.localeCompare(b.path, 'en');
+    if (sort === 'path-desc') return b.path.localeCompare(a.path, 'en');
+    if (sort === 'risk-desc') return riskRank(b.riskLevel) - riskRank(a.riskLevel) || a.name.localeCompare(b.name, 'zh-Hant');
+    return 0;
+  });
+  return sorted;
+}
+
+function filterItems(items, filters) {
+  return items.filter(item => {
+    const q = String(filters.q || '').trim().toLowerCase();
+    const media = item.mediaCategory;
+
+    if (filters.folder && filters.folder !== 'all' && item.folder !== filters.folder) {
+      return false;
+    }
+
+    if (filters.type && filters.type !== 'all' && item.type !== filters.type) {
+      return false;
+    }
+
+    if (filters.risk && filters.risk !== 'all' && item.riskLevel !== filters.risk) {
+      return false;
+    }
+
+    if (media === 'image' && !filters.showImages) return false;
+    if (media === 'audio' && !filters.showAudio) return false;
+    if (media === 'video' && !filters.showVideo) return false;
+
+    if (!q) return true;
+
+    const pool = [
+      item.name,
+      item.path,
+      item.summary,
+      item.improvements,
+      item.risks,
+      item.notes,
+      item.folder,
+      item.type
+    ].join(' ').toLowerCase();
+
+    return pool.includes(q);
+  });
+}
+
+function paginate(items, page = 1, perPage = 24) {
+  const totalPages = Math.max(1, Math.ceil(items.length / perPage));
+  const nextPage = Math.min(Math.max(1, page), totalPages);
+  const start = (nextPage - 1) * perPage;
+  return {
+    page: nextPage,
+    totalPages,
+    items: items.slice(start, start + perPage)
+  };
+}
+
+function renderPagination(root, currentPage, totalPages, onPageClick) {
+  if (!root) return;
+  if (totalPages <= 1) {
+    root.innerHTML = '';
+    return;
+  }
+
+  const parts = [];
+  const pages = new Set([1, totalPages, currentPage - 1, currentPage, currentPage + 1]);
+
+  for (let i = 1; i <= totalPages; i += 1) {
+    if (pages.has(i)) parts.push(i);
+  }
+
+  const normalized = [];
+  let previous = 0;
+  for (const p of [...parts].sort((a, b) => a - b)) {
+    if (previous && p - previous > 1) normalized.push('…');
+    normalized.push(p);
+    previous = p;
+  }
+
+  root.innerHTML = `
+    <button class="btn" type="button" data-page="${Math.max(1, currentPage - 1)}">上一頁</button>
+    ${normalized.map(v => v === '…'
+      ? `<span class="btn ghost">…</span>`
+      : `<button class="btn ${v === currentPage ? 'primary' : ''}" type="button" data-page="${v}">${v}</button>`).join('')}
+    <button class="btn" type="button" data-page="${Math.min(totalPages, currentPage + 1)}">下一頁</button>
+  `;
+
+  qsa('button[data-page]', root).forEach(btn => {
+    btn.onclick = () => onPageClick(Number(btn.dataset.page));
+  });
+}
+
+function makeQuickLink(item) {
+  const icon = item.publicPage
+    ? '◎'
+    : item.isCodeFile
+      ? '</>'
+      : item.mediaCategory === 'image'
+        ? '圖'
+        : item.mediaCategory === 'audio'
+          ? '音'
+          : item.mediaCategory === 'video'
+            ? '影'
+            : '•';
+
+  return `
+    <a class="quick-link" href="./detail.html?id=${encodeURIComponent(item.id)}">
+      <div class="quick-link-icon">${escapeHtml(icon)}</div>
+      <div class="quick-link-title">${escapeHtml(item.name)}</div>
+      <div class="quick-link-sub">${escapeHtml(item.folder)}</div>
+    </a>
+  `;
+}
+
+function triggerDownload(filename, content, type = 'text/plain;charset=utf-8') {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+
+function installPwaPrompt() {
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    state.deferredPrompt = event;
+    const btn = qs('#install-btn');
+    if (!btn) return;
+
+    btn.classList.remove('hide');
+    btn.onclick = async () => {
+      if (!state.deferredPrompt) return;
+      state.deferredPrompt.prompt();
+      await state.deferredPrompt.userChoice;
+      state.deferredPrompt = null;
+      btn.classList.add('hide');
+    };
+  });
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+}
