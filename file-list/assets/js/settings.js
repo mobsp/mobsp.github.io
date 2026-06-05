@@ -1,41 +1,93 @@
-(async () => {
-  const { loadDataset, clearSaved } = window.App;
-  const metaEl = document.getElementById("dataset-meta");
-  const exportBtn = document.getElementById("export-json");
-  const clearBtn = document.getElementById("clear-storage");
+document.addEventListener('DOMContentLoaded', async () => {
+  const infoRoot = qs('#dataset-info');
+  const exportBtn = qs('#export-json');
+  const clearBtn = qs('#clear-saved');
 
-  try {
-    const dataset = await loadDataset();
-    const meta = [
-      ["來源活頁簿", dataset.sourceWorkbook || "未知"],
-      ["總筆數", dataset.total || dataset.items?.length || 0],
-      ["產生時間", dataset.generatedAt || "未知"],
-      ["站點基底", dataset.siteBase || "未知"],
-    ];
+  const data = await loadDataset();
 
-    metaEl.innerHTML = meta.map(([label, value]) => `
-      <div class="meta-item">
-        <div class="meta-item__label">${label}</div>
-        <div class="meta-item__value">${value}</div>
+  const folders = new Set(data.items.map(item => item.folder)).size;
+  const publicPages = data.items.filter(item => item.publicPage).length;
+  const codeFiles = data.items.filter(item => item.isCodeFile).length;
+  const imageFiles = data.items.filter(item => item.isImage).length;
+  const audioFiles = data.items.filter(item => item.isAudio).length;
+  const videoFiles = data.items.filter(item => item.isVideo).length;
+  const highRisk = data.items.filter(item => item.riskLevel === '高').length;
+  const mediumRisk = data.items.filter(item => item.riskLevel === '中').length;
+  const lowRisk = data.items.filter(item => item.riskLevel === '低').length;
+  const savedCount = getSavedIds().length;
+
+  infoRoot.innerHTML = `
+    <div class="kv">
+      <div class="kv-row">
+        <div class="kv-key">資料來源</div>
+        <div>${escapeHtml(data.sourceWorkbook || 'files.json')}</div>
       </div>
-    `).join("");
+      <div class="kv-row">
+        <div class="kv-key">站點基底</div>
+        <div><a href="${escapeHtml(data.siteBase || './')}" target="_blank" rel="noopener">${escapeHtml(data.siteBase || './')}</a></div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">產生時間</div>
+        <div>${escapeHtml(data.generatedAt || '未知')}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">總項目</div>
+        <div>${data.items.length}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">資料夾數量</div>
+        <div>${folders}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">公開頁面</div>
+        <div>${publicPages}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">程式碼檔</div>
+        <div>${codeFiles}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">圖檔</div>
+        <div>${imageFiles}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">音訊</div>
+        <div>${audioFiles}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">影片</div>
+        <div>${videoFiles}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">高風險</div>
+        <div>${highRisk}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">中風險</div>
+        <div>${mediumRisk}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">低風險</div>
+        <div>${lowRisk}</div>
+      </div>
+      <div class="kv-row">
+        <div class="kv-key">目前收藏</div>
+        <div>${savedCount}</div>
+      </div>
+    </div>
+  `;
 
-    exportBtn.addEventListener("click", () => {
-      const blob = new Blob([JSON.stringify(dataset, null, 2)], { type: "application/json;charset=utf-8" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "files.json";
-      a.click();
-      URL.revokeObjectURL(url);
-    });
+  exportBtn.onclick = () => {
+    triggerDownload('files.json', JSON.stringify(data, null, 2), 'application/json;charset=utf-8');
+  };
 
-    clearBtn.addEventListener("click", () => {
-      if (!confirm("確定要清除收藏嗎？")) return;
-      clearSaved();
-      alert("已清除收藏。");
-    });
-  } catch (error) {
-    metaEl.innerHTML = `<div class="empty-state">${error.message}</div>`;
-  }
-})();
+  clearBtn.onclick = () => {
+    localStorage.removeItem('file-list:saved');
+    document.dispatchEvent(new CustomEvent('saved:changed'));
+    clearBtn.textContent = '已清除';
+    setTimeout(() => {
+      clearBtn.textContent = '清除收藏';
+      location.reload();
+    }, 800);
+  };
+});
