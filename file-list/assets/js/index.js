@@ -1,45 +1,23 @@
-(async () => {
-  const { loadDataset, getItems, renderCard, mountSaveButtons } = window.App;
-  const statsEl = document.getElementById("home-stats");
-  const folderEl = document.getElementById("folder-chips");
-  const featuredEl = document.getElementById("featured-list");
+document.addEventListener('DOMContentLoaded', async () => {
+  installPwaPrompt();
 
-  try {
-    const dataset = await loadDataset();
-    const items = getItems(dataset);
-    const publicCount = items.filter((item) => item.publicPage).length;
-    const folders = [...new Set(items.map((item) => item.folder || "root"))].sort((a, b) => a.localeCompare(b, "zh-Hant"));
-    const highRisk = items.filter((item) => item.riskLevel === "高").length;
+  const data = await loadDataset();
+  const items = data.items;
 
-    statsEl.innerHTML = [
-      ["總筆數", items.length],
-      ["公開頁面", publicCount],
-      ["資料夾數", folders.length],
-      ["高風險", highRisk],
-    ].map(([label, value]) => `
-      <article class="stat-card">
-        <div class="eyebrow">${label}</div>
-        <div class="stat-card__value">${value}</div>
-        <div class="stat-card__label">${label}</div>
-      </article>
-    `).join("");
+  qs('#total-count').textContent = String(items.length);
+  qs('#public-count').textContent = String(items.filter(item => item.publicPage).length);
+  qs('#folder-count').textContent = String(new Set(items.map(item => item.folder)).size);
+  qs('#high-risk-count').textContent = String(items.filter(item => item.riskLevel === '高').length);
 
-    folderEl.innerHTML = folders.slice(0, 12).map((folder) => `
-      <a class="chip" href="./all-links.html?folder=${encodeURIComponent(folder)}">${folder}</a>
-    `).join("");
+  const folders = [...new Set(items.map(item => item.folder))].sort((a, b) => a.localeCompare(b, 'zh-Hant'));
+  qs('#folder-chips').innerHTML = folders
+    .map(folder => `<a class="btn" href="./all-links.html?folder=${encodeURIComponent(folder)}">${escapeHtml(folder)}</a>`)
+    .join('');
 
-    const featured = items
-      .slice()
-      .sort((a, b) => {
-        const scoreA = (a.publicPage ? 2 : 0) + (a.type === "html-index" ? 2 : 0) + (a.riskLevel === "高" ? -1 : 0);
-        const scoreB = (b.publicPage ? 2 : 0) + (b.type === "html-index" ? 2 : 0) + (b.riskLevel === "高" ? -1 : 0);
-        return scoreB - scoreA;
-      })
-      .slice(0, 6);
+  const publicShortcuts = items.filter(item => item.publicPage).slice(0, 6);
+  qs('#public-shortcuts').innerHTML = publicShortcuts.map(makeQuickLink).join('');
 
-    featuredEl.innerHTML = featured.map(renderCard).join("");
-    mountSaveButtons(featuredEl);
-  } catch (error) {
-    statsEl.innerHTML = `<div class="empty-state">${error.message}</div>`;
-  }
-})();
+  const featured = items.slice().sort((a, b) => a.path.localeCompare(b.path, 'en')).slice(0, 6);
+  qs('#featured-grid').innerHTML = featured.map(cardTemplate).join('');
+  wireSaveButtons(qs('#featured-grid'));
+});
