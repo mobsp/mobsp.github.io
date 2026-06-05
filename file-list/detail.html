@@ -1,48 +1,60 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>詳情</title>
-  <meta name="theme-color" content="#f5f7fb" />
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./assets/css/base.css" />
-  <link rel="stylesheet" href="./assets/css/theme-mobsp-blog.css" />
+  <meta charset="utf-8">
+  <title>詳情 | file-list</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090b11">
+  <meta name="description" content="檔案詳情，支援原始碼檢視、本地編輯、下載與媒體預覽。">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/theme-mobsp-blog.css">
 </head>
 <body data-page="detail">
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="topbar__left">
-        <a class="icon-btn" href="./all-links.html" aria-label="返回">←</a>
-        <div>
-          <div class="eyebrow">Mobsp File List</div>
-          <h1 class="topbar__title">詳情</h1>
+  <header class="app-header">
+    <div class="wrap app-header-inner">
+      <div class="brand-block">
+        <div class="brand-mark">FL</div>
+        <div class="brand-copy">
+          <div class="brand-title">檔案詳情</div>
+          <div class="brand-sub">檢視、預覽、編輯、下載</div>
         </div>
       </div>
-      <div class="topbar__right">
-        <button class="icon-btn" id="detail-fav-btn" aria-label="收藏">☆</button>
+
+      <div class="header-actions">
+        <a class="icon-btn" href="./all-links.html" aria-label="回清單">←</a>
+        <a class="icon-btn" href="./saved.html" aria-label="收藏">🔖</a>
+        <a class="icon-btn" href="./settings.html" aria-label="設定">⚙️</a>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main class="page">
-      <article class="detail-wrap" id="detail-wrap"></article>
+  <main class="app-main">
+    <div class="wrap app-shell" id="detail-root">
+      <div class="empty-state panel">
+        <h2>載入中…</h2>
+      </div>
+    </div>
+  </main>
 
-      <section class="section-card">
-        <div class="section-head">
-          <h3>相關項目</h3>
-        </div>
-        <div class="card-list" id="related-list"></div>
-      </section>
-    </main>
-
-    <nav class="tabbar">
-      <a class="tabbar__item" href="./index.html"><span>🏠</span><small>首頁</small></a>
-      <a class="tabbar__item" href="./all-links.html"><span>📚</span><small>清單</small></a>
-      <a class="tabbar__item" href="./all-links.html#search"><span>🔎</span><small>搜尋</small></a>
-      <a class="tabbar__item" href="./saved.html"><span>⭐</span><small>收藏</small></a>
-      <a class="tabbar__item" href="./settings.html"><span>⚙️</span><small>設定</small></a>
-    </nav>
-  </div>
+  <nav class="bottom-tabbar" aria-label="主要分頁">
+    <a class="tab-link" href="./index.html">
+      <span class="tab-icon">⌂</span>
+      <span class="tab-label">首頁</span>
+    </a>
+    <a class="tab-link active" href="./all-links.html">
+      <span class="tab-icon">≣</span>
+      <span class="tab-label">清單</span>
+    </a>
+    <a class="tab-link" href="./saved.html">
+      <span class="tab-icon">★</span>
+      <span class="tab-label">收藏</span>
+    </a>
+    <a class="tab-link" href="./settings.html">
+      <span class="tab-icon">⚙</span>
+      <span class="tab-label">設定</span>
+    </a>
+  </nav>
 
   <script src="./assets/js/app.js"></script>
   <script src="./assets/js/detail.js"></script>
