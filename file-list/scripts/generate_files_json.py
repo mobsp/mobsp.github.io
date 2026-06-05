@@ -1,113 +1,206 @@
 #!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import datetime as dt
 import json
+import os
 import re
 import sys
 import zipfile
-import xml.etree.ElementTree as ET
 from pathlib import Path
+from xml.etree import ElementTree as ET
 
-NS = {
-    "a": "http://schemas.openxmlformats.org/spreadsheetml/2006/main",
-    "r": "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
-}
+SITE_BASE = "https://mobsp.qzz.io"
 
-def col_to_idx(col: str) -> int:
-    n = 0
-    for ch in col:
-        n = n * 26 + ord(ch) - 64
-    return n - 1
 
-def load_shared_strings(zf: zipfile.ZipFile) -> list[str]:
-    if "xl/sharedStrings.xml" not in zf.namelist():
-        return []
-    root = ET.fromstring(zf.read("xl/sharedStrings.xml"))
-    values = []
-    for si in root.findall("a:si", NS):
-        parts = []
-        for node in si.iter("{http://schemas.openxmlformats.org/spreadsheetml/2006/main}t"):
-            parts.append(node.text or "")
-        values.append("".join(parts))
-    return values
+def slugify(value: str) -> str:
+    text = value.strip().lower()
+    text = re.sub(r"[^a-z0-9\u4e00-\u9fff]+", "-", text)
+    text = re.sub(r"-+", "-", text).strip("-")
+    return text or "item"
 
-def parse_first_sheet(xlsx_path: Path) -> list[dict]:
-    with zipfile.ZipFile(xlsx_path) as zf:
-        sst = load_shared_strings(zf)
-        root = ET.fromstring(zf.read("xl/worksheets/sheet1.xml"))
-        rows = []
-        for row in root.findall(".//a:sheetData/a:row", NS):
-            vals = {}
-            for cell in row.findall("a:c", NS):
-                ref = cell.attrib["r"]
-                idx = col_to_idx(re.match(r"([A-Z]+)", ref).group(1))
-                t = cell.attrib.get("t")
-                v = cell.find("a:v", NS)
-                if v is None:
-                    value = ""
-                elif t == "s":
-                    value = sst[int(v.text)]
-                else:
-                    value = v.text or ""
-                vals[idx] = value
-            max_idx = max(vals) if vals else -1
-            rows.append([vals.get(i, "") for i in range(max_idx + 1)])
-    headers = rows[0]
-    return [{headers[i]: row[i] if i < len(row) else "" for i in range(len(headers))} for row in rows[1:]]
 
-def classify_type(path: str) -> str:
-    name = Path(path).name.lower()
-    if name == "index.html":
-        return "html-index"
-    ext = Path(name).suffix.lower()
-    if path.startswith(".github/workflows/"):
-        return "workflow"
-    mapping = {
-        ".html": "html", ".js": "javascript", ".json": "json", ".css": "css",
-        ".py": "python", ".yml": "workflow", ".yaml": "yaml", ".xml": "xml",
-        ".md": "markdown", ".jpeg": "image", ".jpg": "image", ".png": "image",
-        ".svg": "image", ".webp": "image",
-    }
-    return mapping.get(ext, "other")
-
-def risk_level(text: str) -> str:
-    if any(k in text for k in ["敏感", "金鑰", "暴露", "權限", "安全", "隱私", "secrets"]):
-        return "高"
-    if any(k in text for k in ["錯誤可能影響", "設定錯誤", "公開", "注意", "快取", "路由"]):
-        return "中"
+def risk_from_text(text: str) -> str:
+    content = text.lower()
+    if any(keyword in content for keyword in ["高", "secret", "token", "workflow", "設定錯誤", "權限", "暴露"]):
+      return "高"
+    if any(keyword in content for keyword in ["中", "注意", "快取", "外部", "依賴"]):
+      return "中"
     return "低"
 
-def build_dataset(rows: list[dict]) -> dict:
-    items = []
-    for row in rows:
-        path = row["檔案路徑"]
-        item_type = classify_type(path)
-        items.append({
-            "id": re.sub(r"[^a-z0-9]+", "-", path.lower()).strip("-") or "item",
-            "path": path,
-            "url": row["網站連結"],
-            "prettyUrl": row["網站連結"][:-10] if path.endswith("/index.html") else row["網站連結"],
-            "name": row["名稱"] or Path(path).name,
-            "summary": row["簡易網站功能作用說明"],
-            "improvements": row["進階/優化建議"],
-            "risks": row["風險/安全/隱私/注意事項"],
-            "notes": row["其它"],
-            "folder": path.split("/")[0] if "/" in path else "root",
-            "type": item_type,
-            "publicPage": item_type in {"html", "html-index"} and not path.startswith(".github/"),
-            "riskLevel": risk_level(row["風險/安全/隱私/注意事項"] or ""),
-        })
+
+def detect_type(path: str) -> str:
+    suffix = Path(path).suffix.lower()
+    name = Path(path).name.lower()
+
+    if name.startswith("."):
+        return "dotfile"
+    if suffix in {".html"}:
+        return "html-index" if name == "index.html" else "html"
+    if suffix in {".js"}:
+        return "javascript"
+    if suffix in {".json"}:
+        return "json"
+    if suffix in {".css"}:
+        return "css"
+    if suffix in {".py"}:
+        return "python"
+    if suffix in {".yml", ".yaml"}:
+        return "workflow" if ".github/workflows/" in path else "yaml"
+    if suffix in {".xml"}:
+        return "xml"
+    if suffix in {".md"}:
+        return "markdown"
+    if suffix in {".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".bmp", ".ico", ".avif", ".tif", ".tiff"}:
+        return "image"
+    if name == "manifest.json" or name == "sw.js":
+        return "pwa"
+    if name in {"robots.txt", "sitemap.xml"}:
+        return "seo"
+    if suffix in {".txt"}:
+        return "text"
+    return "config"
+
+
+def pretty_url(url: str, path: str) -> str:
+    if path.endswith("/index.html"):
+        return url[:-10]
+    return url
+
+
+def public_page(path: str) -> bool:
+    if path.endswith("/index.html"):
+        return True
+    if Path(path).suffix.lower() in {".html"} and ".github/" not in path:
+        return True
+    return False
+
+
+def first_folder(path: str) -> str:
+    parts = path.split("/")
+    return parts[0] if len(parts) > 1 else "root"
+
+
+def extract_shared_strings(zf: zipfile.ZipFile) -> list[str]:
+    try:
+        root = ET.fromstring(zf.read("xl/sharedStrings.xml"))
+    except KeyError:
+        return []
+
+    namespace = {"a": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    values: list[str] = []
+    for item in root.findall("a:si", namespace):
+        text_parts = [node.text or "" for node in item.findall(".//a:t", namespace)]
+        values.append("".join(text_parts))
+    return values
+
+
+def cell_value(cell: ET.Element, shared_strings: list[str]) -> str:
+    value_node = cell.find("{http://schemas.openxmlformats.org/spreadsheetml/2006/main}v")
+    if value_node is None or value_node.text is None:
+        return ""
+
+    value = value_node.text
+    if cell.get("t") == "s":
+        return shared_strings[int(value)]
+    return value
+
+
+def parse_sheet_rows(xlsx_path: Path) -> list[list[str]]:
+    with zipfile.ZipFile(xlsx_path) as zf:
+        shared_strings = extract_shared_strings(zf)
+        sheet_xml = zf.read("xl/worksheets/sheet1.xml")
+        root = ET.fromstring(sheet_xml)
+
+    ns = {"a": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
+    rows: list[list[str]] = []
+
+    for row in root.findall(".//a:sheetData/a:row", ns):
+        row_values: list[str] = []
+        for cell in row.findall("a:c", ns):
+            row_values.append(cell_value(cell, shared_strings))
+        rows.append(row_values)
+
+    return rows
+
+
+def normalize_record(headers: list[str], row: list[str]) -> dict[str, str]:
+    values = row + [""] * (len(headers) - len(row))
+    return {headers[i]: values[i].strip() for i in range(len(headers))}
+
+
+def build_item(record: dict[str, str]) -> dict[str, object]:
+    path = record.get("檔案路徑", "").strip()
+    if not path:
+        return {}
+
+    url = record.get("網站連結", "").strip() or f"{SITE_BASE}/{path}"
+    summary = record.get("簡易網站功能作用說明", "").strip()
+    improvements = record.get("進階/優化建議", "").strip()
+    risks = record.get("風險/安全/隱私/注意事項", "").strip()
+    notes = record.get("其它", "").strip()
+    name = record.get("名稱", "").strip() or Path(path).stem or path
+
     return {
-        "generatedAt": "manual",
+        "id": slugify(path),
+        "path": path,
+        "url": url,
+        "prettyUrl": pretty_url(url, path),
+        "name": name,
+        "summary": summary,
+        "improvements": improvements,
+        "risks": risks,
+        "notes": notes,
+        "folder": first_folder(path),
+        "type": detect_type(path),
+        "publicPage": public_page(path),
+        "riskLevel": risk_from_text(" ".join([summary, improvements, risks, notes, path, name])),
+    }
+
+
+def generate_dataset(xlsx_path: Path) -> dict[str, object]:
+    rows = parse_sheet_rows(xlsx_path)
+    if not rows:
+        raise ValueError("xlsx 內容為空")
+
+    headers = rows[0]
+    items: list[dict[str, object]] = []
+
+    for row in rows[1:]:
+        record = normalize_record(headers, row)
+        item = build_item(record)
+        if item:
+            items.append(item)
+
+    return {
+        "generatedAt": dt.datetime.now().isoformat(timespec="seconds"),
+        "siteBase": SITE_BASE,
         "sourceWorkbook": xlsx_path.name,
-        "siteBase": "https://mobsp.qzz.io",
         "total": len(items),
         "items": items,
     }
 
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="從 xlsx 產生 file-list/data/files.json")
+    parser.add_argument("xlsx", help="xlsx 檔案路徑")
+    parser.add_argument("-o", "--output", default="data/files.json", help="輸出 JSON 路徑")
+    args = parser.parse_args()
+
+    xlsx_path = Path(args.xlsx)
+    if not xlsx_path.exists():
+        print(f"找不到 xlsx: {xlsx_path}", file=sys.stderr)
+        return 1
+
+    data = generate_dataset(xlsx_path)
+
+    output_path = Path(args.output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"已產生 {output_path}")
+    return 0
+
+
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        raise SystemExit("usage: python scripts/generate_files_json.py input.xlsx output.json")
-    xlsx_path = Path(sys.argv[1])
-    output_path = Path(sys.argv[2])
-    rows = parse_first_sheet(xlsx_path)
-    output_path.write_text(json.dumps(build_dataset(rows), ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"wrote {output_path}")
+    raise SystemExit(main())
