@@ -1,64 +1,74 @@
 <!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <title>設定</title>
-  <meta name="theme-color" content="#f5f7fb" />
-  <link rel="manifest" href="./manifest.json" />
-  <link rel="stylesheet" href="./assets/css/base.css" />
-  <link rel="stylesheet" href="./assets/css/theme-mobsp-blog.css" />
+  <meta charset="utf-8">
+  <title>設定 | file-list</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#090b11">
+  <meta name="description" content="file-list 設定與資料資訊頁。">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./assets/css/base.css">
+  <link rel="stylesheet" href="./assets/css/theme-mobsp-blog.css">
 </head>
 <body data-page="settings">
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="topbar__left">
-        <div class="app-avatar">⚙</div>
-        <div>
-          <div class="eyebrow">Mobsp File List</div>
-          <h1 class="topbar__title">設定</h1>
+  <header class="app-header">
+    <div class="wrap app-header-inner">
+      <div class="brand-block">
+        <div class="brand-mark">FL</div>
+        <div class="brand-copy">
+          <div class="brand-title">設定</div>
+          <div class="brand-sub">資料與工具</div>
         </div>
       </div>
-    </header>
 
-    <main class="page">
-      <section class="section-card">
-        <div class="section-head">
-          <h3>資料資訊</h3>
-        </div>
-        <div class="meta-list" id="dataset-meta"></div>
+      <div class="header-actions">
+        <a class="icon-btn" href="./index.html" aria-label="首頁">⌂</a>
+        <a class="icon-btn" href="./all-links.html" aria-label="清單">≣</a>
+        <a class="icon-btn" href="./saved.html" aria-label="收藏">🔖</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <div class="wrap app-shell">
+      <section class="detail-layout single-column-mobile">
+        <section class="detail-section panel">
+          <h2>資料集資訊</h2>
+          <div id="dataset-info"></div>
+        </section>
+
+        <aside class="detail-section panel">
+          <h2>工具</h2>
+          <div class="card-actions">
+            <button class="btn primary" id="export-json" type="button">匯出 files.json</button>
+            <button class="btn" id="clear-saved" type="button">清除收藏</button>
+          </div>
+          <div class="quote-box" style="margin-top:16px">
+            收藏存在瀏覽器本機，不會同步到 GitHub。
+          </div>
+        </aside>
       </section>
+    </div>
+  </main>
 
-      <section class="section-card">
-        <div class="section-head">
-          <h3>操作</h3>
-        </div>
-        <div class="settings-actions">
-          <button class="btn btn-secondary" id="export-json">匯出 JSON</button>
-          <button class="btn btn-secondary" id="clear-storage">清除收藏</button>
-        </div>
-      </section>
-
-      <section class="section-card">
-        <div class="section-head">
-          <h3>說明</h3>
-        </div>
-        <div class="article-like">
-          <p>這個站以 App 操作模式整理整個 repo 的連結資料。</p>
-          <p>資料來源為 <code>file-list/data/files.json</code>，前端頁面會直接讀取這份資料。</p>
-          <p>若你之後有自動同步流程，更新 repo 後可重建該 JSON，網站內容就會跟著更新。</p>
-        </div>
-      </section>
-    </main>
-
-    <nav class="tabbar">
-      <a class="tabbar__item" href="./index.html"><span>🏠</span><small>首頁</small></a>
-      <a class="tabbar__item" href="./all-links.html"><span>📚</span><small>清單</small></a>
-      <a class="tabbar__item" href="./all-links.html#search"><span>🔎</span><small>搜尋</small></a>
-      <a class="tabbar__item" href="./saved.html"><span>⭐</span><small>收藏</small></a>
-      <a class="tabbar__item is-active" href="./settings.html"><span>⚙️</span><small>設定</small></a>
-    </nav>
-  </div>
+  <nav class="bottom-tabbar" aria-label="主要分頁">
+    <a class="tab-link" href="./index.html">
+      <span class="tab-icon">⌂</span>
+      <span class="tab-label">首頁</span>
+    </a>
+    <a class="tab-link" href="./all-links.html">
+      <span class="tab-icon">≣</span>
+      <span class="tab-label">清單</span>
+    </a>
+    <a class="tab-link" href="./saved.html">
+      <span class="tab-icon">★</span>
+      <span class="tab-label">收藏</span>
+    </a>
+    <a class="tab-link active" href="./settings.html">
+      <span class="tab-icon">⚙</span>
+      <span class="tab-label">設定</span>
+    </a>
+  </nav>
 
   <script src="./assets/js/app.js"></script>
   <script src="./assets/js/settings.js"></script>
