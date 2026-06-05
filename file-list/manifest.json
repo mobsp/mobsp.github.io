@@ -1,9 +1,11 @@
 {
   "name": "Mobsp File List",
-  "short_name": "file-list",
+  "short_name": "File List",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f6f7fb",
-  "theme_color": "#5b6ea8",
+  "background_color": "#090b11",
+  "theme_color": "#090b11",
+  "description": "Mobsp 檔案清單入口，支援搜尋、收藏、媒體控制、原始碼檢視與本地編輯。",
+  "scope": "./",
   "icons": []
 }
