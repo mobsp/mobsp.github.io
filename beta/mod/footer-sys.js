@@ -39,7 +39,7 @@ export function initFooter() {
             <i class="fa-brands fa-line"></i>
         </div>
         <div class="footer-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
-        <p class="copyright">莫比空間｜Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Ⓒ 2023-2026<br>資源整合與數位服務入口網</p>
+        <p class="copyright">莫比空間｜Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ Ⓒ 2023-2026</p>
     `;
     document.body.appendChild(footer);
 }
