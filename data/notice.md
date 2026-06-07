@@ -1,131 +1,25 @@
-[![20241111_085125](https://hackmd.io/_uploads/B1nm0R0-kx.png =48%x)](https://hackmd.io/login)    [![20241111_091022](https://hackmd.io/_uploads/ryB4R0Cb1l.png =48%x)](https://hackmd.io/join)
+#v1.0
 
+[更新] 2026 專案架構全面優化，Vue.js SPA 帶來更絲滑的頁面切換體感。
 
-- 工具資源
+[更新] Ⲙⳝ 工具庫已同步多項開發輔助工具，讓您的工作流更加流暢高效。
 
+[更新] 新增服務已同步至 sub.json，立即探索全新的子頁面功能。
 
->::::spoiler ⋆
->[隨機生成×高強度密碼](https://pwm.trendmicro.com/password-generator)
->[檢視網站原始碼](https://www.ifreesite.com/viewsource/)
->[線上傳真服務](https://www.moonlol.com/%e7%b7%9a%e4%b8%8a%e5%82%b3%e7%9c%9fonline-fax-6067.html)
->[菜鳥工具](https://www.jyshare.com/)
->[工具邦](https://tw.piliapp.com/)
->[線上轉檔工具](https://www.onlineconvert.com/)
->[Nute編輯文本儲存檔](https://nute.app/)
->[QR碼產生器](https://qr.calm9.com/tw/)
->[HiNet域名](https://domain.hinet.net/#/)
->[密碼產生器](https://www.expressvpn.com/expressvpn-password-generator-v2)
+[更新] Ⲙⳝ Wiki 支援中心內容擴充，解鎖更多專案架構與開發背後的秘密。
 
+[公告] 歡迎來到莫比空間：探索品牌導覽、高效工具庫與多媒體服務的完美整合。
 
-- 電子郵件
+[公告] 跨界探索：從 Ⲙⳝ 網誌到音樂頻道，莫比空間為您串聯數位生活的所有可能。
 
+[公告] 數據驅動核心：工具庫由 data.json 實時驅動，提供最精準的數位解決方案。
 
->::::spoiler ⋆
->[iCloud Mail](https://www.icloud.com/mail)
->[Mailfence Mail](https://mailfence.com/m/#/)
->[Proton Mail](https://proton.me/mail)
->[AOL Mail](https://mail.aol.com/)
->[VIVALDI Mail](https://webmail.vivaldi.net/)
->[Firefox Relay](https://relay.firefox.com/)
->[WordPress Mail Pro](https://wordpress.com/email/mosp.cc)
->[ImprovMX](https://improvmx.com/)
+[公告] 莫比音樂頻道：發現專屬於您的空間節奏，沉浸在莫比專選的影音世界。
 
+[重要!] 快速導覽：點擊進入 Ⲙⳝ 工具庫，體驗由 Vue.js 驅動的極速生產力工具。
 
-- 開發資源
+[重要!] 系統狀態：2026 核心架構優化完成，若遇頁面異常請嘗試重新整理。
 
+[活動] 精彩短瞬：莫比 Shorts 帶您快速概覽品牌動態與創意生活碎片。
 
->::::spoiler ⋆
->[WP開發者資源](https://developer.wordpress.org/)
->[莫比空間-Blogger Admin](https://www.blogger.com/about/?bpli=1)
->[Parcel 零配置構建工具](https://parceljs.org/)
->[可視化網頁文本編輯器](https://swagger.io/tools/swagger-editor/)
->[Vitejs-DEV容器](https://stackblitz.com/edit/vitejs-vite-pegtzn?file=index.html&terminal=dev)
->[W3C認證平台｜HTML教程](https://www.w3.org/TR/html4/)
->[Visual Studio Code](https://vscode.dev/?vscode-lang=zh-tw)
->[YOURLS縮網址-開源教程](https://rdfarm.net/shorturl-yourls/)
-
-
-- 應用推薦
-
-
->::::spoiler ⋆
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
-
-
-- 教程技巧
-
-
->::::spoiler ⋆
->[轉生史萊姆魔王與龍的建國譚-遊戲攻略WIKI](https://appmedia.jp/ten-sura-mhttps://appmedia.jp/ten-sura-m)
->[關於我轉生變成史萊姆這個檔事 Wiki | Fandom](https://tensura.fandom.com/zh/wiki/关于我转生变成史莱姆这档事_Wiki)
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
-
-
-- 購物網
-
-
->::::spoiler ⋆
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
-
-
-- 符號
-
-
->::::spoiler ⋆
->[特殊符號](https://hackmd.io/@Hack-md/symbol) [EMOJI](https://hackmd.io/@Hack-md/google_emoji)
-
-
-- 其它
-
-
->::::spoiler ⋆
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
->[]()
-
-
-- ⊘[]
-
-
->::::spoiler ⊘
->[¹⁸禁區](https://hackmd.io/@Hack-md/H_Box)
+[活動] 靈感捕捉：使用 Ⲙⳝ 記事隨時捕捉想法，或透過可視化編輯器即時創作。
