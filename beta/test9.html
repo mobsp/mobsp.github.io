@@ -18,7 +18,7 @@
     <meta property="og:description" content="MobiSpace 空白文章通用模板">
     <meta property="og:url" content="https://mobsp.qzz.io/beta/test1.html">
     <meta property="og:site_name" content="MOBSP">
-    <meta property="og:image" content="https://mobsp.qzz.io/og-image.webp">
+    <meta property="og:image" content="https://mobsp.qzz.io/og-image.jpg">
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="MobiSpace 空白文章模板 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
@@ -28,7 +28,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="apple-touch-icon" href="/icons/icon-192.webp">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
 
     <style>
         :root[data-theme="light"] {
@@ -46,7 +46,6 @@
             --gradient-2: #fae8ff;
             --gradient-3: #dcfce7;
             --gradient-4: #fef2f2;
-            --modal-mask: rgba(15, 23, 42, 0.45);
         }
 
         :root[data-theme="dark"] {
@@ -64,7 +63,6 @@
             --gradient-2: #1e1b4b;
             --gradient-3: #312e81;
             --gradient-4: #020617;
-            --modal-mask: rgba(2, 6, 23, 0.72);
         }
 
         * {
@@ -75,10 +73,12 @@
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
         }
 
-        html, body {
+        html,
+        body {
             width: 100%;
             height: 100dvh;
             overflow: hidden;
+            touch-action: manipulation;
         }
 
         body {
@@ -91,6 +91,13 @@
         a {
             text-decoration: none;
             color: var(--accent-brand);
+        }
+
+        button,
+        a,
+        #app-container,
+        #main-view {
+            touch-action: manipulation;
         }
 
         .visually-hidden {
@@ -248,7 +255,7 @@
 
         .post-title {
             min-height: 2.6em;
-            margin-bottom: 14px;
+            margin-bottom: 18px;
             text-align: center;
             font-size: 1.7rem;
             line-height: 1.35;
@@ -271,33 +278,11 @@
             text-align: center;
         }
 
-        .summary-action {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 16px;
-        }
-
-        .summary-btn {
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-color);
-            border-radius: 999px;
-            padding: 8px 14px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: transform 0.2s ease, opacity 0.2s ease;
-        }
-
-        .summary-btn:active {
-            transform: scale(0.97);
-            opacity: 0.88;
-        }
-
         .meta-row {
             display: flex;
             align-items: flex-start;
-            justify-content: space-between;
-            gap: 14px;
+            justify-content: flex-start;
+            gap: 8px;
             margin-bottom: 24px;
         }
 
@@ -305,7 +290,7 @@
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            flex: 1;
+            width: 100%;
         }
 
         .tag-chip {
@@ -317,16 +302,6 @@
             font-size: 0.76rem;
             line-height: 1;
             white-space: nowrap;
-        }
-
-        .post-dates {
-            flex-shrink: 0;
-            text-align: right;
-            font-size: 0.68rem;
-            line-height: 1.6;
-            color: var(--text-secondary);
-            white-space: nowrap;
-            padding-top: 2px;
         }
 
         .cover-image {
@@ -371,70 +346,12 @@
             text-align: center;
         }
 
-        .copyright {
+        .copyright-link {
+            display: inline-block;
             font-size: 10px;
-            opacity: 0.7;
             line-height: 1.6;
             letter-spacing: 0.8px;
             color: var(--text-secondary);
-        }
-
-        .modal-mask {
-            position: fixed;
-            inset: 0;
-            z-index: 9999;
-            background: var(--modal-mask);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal-mask.show {
-            display: flex;
-        }
-
-        .summary-modal {
-            width: 100%;
-            max-width: 420px;
-            background: var(--container-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 22px;
-            padding: 20px 18px 18px;
-            box-shadow: 0 20px 45px rgba(0,0,0,0.35);
-            backdrop-filter: blur(18px);
-        }
-
-        .summary-modal-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .summary-modal-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-color);
-        }
-
-        .summary-close {
-            width: 34px;
-            height: 34px;
-            border-radius: 999px;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-color);
-            cursor: pointer;
-            font-size: 1rem;
-        }
-
-        .summary-text {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.95;
-            white-space: pre-line;
         }
 
         @media (max-width: 420px) {
@@ -446,14 +363,6 @@
             .post-title,
             .post-title.empty-slot:empty::before {
                 font-size: 1.58rem;
-            }
-
-            .meta-row {
-                gap: 10px;
-            }
-
-            .post-dates {
-                font-size: 0.64rem;
             }
         }
     </style>
@@ -481,21 +390,12 @@
             <section class="content">
                 <h2 class="post-title empty-slot" data-placeholder="文章標題"></h2>
 
-                <div class="summary-action">
-                    <button class="summary-btn" id="summaryBtn" type="button">文章摘要</button>
-                </div>
-
                 <div class="meta-row">
                     <div class="tag-cloud" aria-label="文章類別標籤">
                         <span class="tag-chip">#設計哲學</span>
                         <span class="tag-chip">#MobiSpace</span>
                         <span class="tag-chip">#前端介面</span>
                         <span class="tag-chip">#內容模板</span>
-                    </div>
-
-                    <div class="post-dates">
-                        <div>發佈 2026.03.19</div>
-                        <div>編輯 2026.03.19</div>
                     </div>
                 </div>
 
@@ -507,20 +407,8 @@
         </main>
 
         <footer class="app-footer">
-            <div class="copyright">© 2026 <strong>mobsp.qzz.io</strong></div>
+            <a class="copyright-link" href="https://mobsp.qzz.io" target="_self">莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ • 2026</a>
         </footer>
-    </div>
-
-    <div class="modal-mask" id="summaryModal" aria-hidden="true">
-        <div class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summaryModalTitle">
-            <div class="summary-modal-head">
-                <div class="summary-modal-title" id="summaryModalTitle">文章摘要</div>
-                <button class="summary-close" id="summaryClose" type="button" aria-label="關閉摘要">✕</button>
-            </div>
-            <div class="summary-text">
-這是一個適用於 MobiSpace 的通用文章模板，保留固定頁首、頁尾與動態公告區，並將文章資訊簡化為標題、摘要、分類標籤、日期與內容區，方便快速套用到不同主題的文章頁面。
-            </div>
-        </div>
     </div>
 
     <script>
@@ -531,9 +419,6 @@
 
         const switchBtn = document.getElementById('themeSwitch');
         const html = document.documentElement;
-        const summaryBtn = document.getElementById('summaryBtn');
-        const summaryModal = document.getElementById('summaryModal');
-        const summaryClose = document.getElementById('summaryClose');
 
         function updateThemeIcon(theme) {
             const isDark = theme === 'dark';
@@ -561,24 +446,14 @@
             updateThemeIcon('light');
         }
 
-        summaryBtn.addEventListener('click', () => {
-            summaryModal.classList.add('show');
-            summaryModal.setAttribute('aria-hidden', 'false');
-        });
-
-        function closeSummaryModal() {
-            summaryModal.classList.remove('show');
-            summaryModal.setAttribute('aria-hidden', 'true');
-        }
-
-        summaryClose.addEventListener('click', closeSummaryModal);
-        summaryModal.addEventListener('click', (event) => {
-            if (event.target === summaryModal) closeSummaryModal();
-        });
-
-        document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') closeSummaryModal();
-        });
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', (event) => {
+            const now = Date.now();
+            if (now - lastTouchEnd <= 300) {
+                event.preventDefault();
+            }
+            lastTouchEnd = now;
+        }, { passive: false });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -588,7 +463,7 @@
     });
 
     const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MS,"exp":2086833761}.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
     async function initNoticeSystem() {
         const vTag = document.getElementById('v-tag');
