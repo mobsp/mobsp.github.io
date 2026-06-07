@@ -4,7 +4,7 @@
     <script>if(self!==top){top.location=self.location;}</script>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>MobiSpace 空白文章模板 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
     <meta name="description" content="MobiSpace 空白文章通用模板">
     <meta name="theme-color" content="#0b1020">
@@ -46,41 +46,45 @@
             --gradient-2: #fae8ff;
             --gradient-3: #dcfce7;
             --gradient-4: #fef2f2;
+            --modal-mask: rgba(15, 23, 42, 0.45);
         }
 
         :root[data-theme="dark"] {
             --bg-color: #050508;
-            --container-bg: rgba(15, 15, 22, 0.85);
+            --container-bg: rgba(10, 10, 18, 0.94);
             --text-color: #f1f5f9;
             --text-secondary: #94a3b8;
             --accent-brand: #818cf8;
             --border-color: #1e293b;
-            --card-bg: rgba(30, 41, 59, 0.4);
-            --header-bg: rgba(15, 15, 22, 0.76);
-            --footer-bg: rgba(15, 15, 22, 0.76);
+            --card-bg: rgba(17, 24, 39, 0.72);
+            --header-bg: rgba(8, 10, 18, 0.92);
+            --footer-bg: rgba(8, 10, 18, 0.96);
             --placeholder-color: rgba(148, 163, 184, 0.78);
             --gradient-1: #0f172a;
             --gradient-2: #1e1b4b;
             --gradient-3: #312e81;
             --gradient-4: #020617;
+            --modal-mask: rgba(2, 6, 23, 0.72);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
             font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
         }
 
         html, body {
-            min-height: 100%;
+            width: 100%;
+            height: 100dvh;
+            overflow: hidden;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             transition: background-color 0.5s ease, color 0.5s ease;
-            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
 
@@ -109,7 +113,7 @@
             background-size: 400% 400%;
             animation: mobiGradient 15s ease infinite;
             filter: blur(60px);
-            opacity: 0.9;
+            opacity: 0.92;
         }
 
         @keyframes mobiGradient {
@@ -118,74 +122,45 @@
             100% { background-position: 0% 50%; }
         }
 
-        .app-shell {
+        #app-container {
             max-width: 500px;
             margin: 0 auto;
-            min-height: 100vh;
-            position: relative;
             background: var(--container-bg);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 0 50px rgba(0,0,0,0.15);
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
             border-left: 1px solid var(--border-color);
             border-right: 1px solid var(--border-color);
+            backdrop-filter: blur(20px);
+            box-shadow: 0 0 50px rgba(0,0,0,0.15);
         }
 
-        .mobi-header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            max-width: 500px;
-            z-index: 1000;
-            padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 12px;
+        .app-header {
+            flex-shrink: 0;
+            padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
             background: var(--header-bg);
             border-bottom: 1px solid var(--border-color);
             backdrop-filter: blur(18px);
+            z-index: 10;
         }
 
-        .header-top {
+        .header-bar {
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            margin-bottom: 10px;
-            min-height: 40px;
-        }
-
-        .theme-toggle-btn {
-            width: 40px;
-            height: 40px;
-            border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-color);
-            border-radius: 999px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .theme-toggle-btn:active {
-            transform: scale(0.95);
-        }
-
-        .theme-toggle-btn svg {
-            width: 18px;
-            height: 18px;
-            display: block;
-            fill: currentColor;
+            gap: 10px;
+            width: 100%;
         }
 
         .marquee-row {
             display: flex;
             align-items: center;
+            flex: 1;
+            min-width: 0;
             background: rgba(255,255,255,0.05);
             padding: 6px 12px;
-            border-radius: 10px;
+            border-radius: 12px;
             overflow: hidden;
-            min-height: 28px;
-            width: 100%;
-            box-sizing: border-box;
+            min-height: 40px;
             border: 1px solid var(--border-color);
         }
 
@@ -194,10 +169,11 @@
             color: #fff;
             font-size: 9px;
             font-weight: 900;
-            padding: 2px 6px;
-            border-radius: 4px;
+            padding: 3px 8px;
+            border-radius: 6px;
             margin-right: 10px;
             white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .tag-important {
@@ -212,6 +188,7 @@
 
         .mq-box {
             flex: 1;
+            min-width: 0;
             overflow: hidden;
             white-space: nowrap;
             position: relative;
@@ -232,56 +209,124 @@
             100% { transform: translateX(-100%); }
         }
 
+        .theme-toggle-btn {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 999px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-toggle-btn:active {
+            transform: scale(0.95);
+        }
+
+        .theme-toggle-btn svg {
+            width: 18px;
+            height: 18px;
+            display: block;
+            fill: currentColor;
+        }
+
+        #main-view {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            min-height: 0;
+        }
+
         .content {
-            padding: 120px 24px 96px;
+            padding: 22px 22px 32px;
         }
 
         .post-title {
-            min-height: 2.8em;
-            margin-bottom: 20px;
-            font-size: 1.9rem;
-            line-height: 1.4;
+            min-height: 2.6em;
+            margin-bottom: 14px;
+            text-align: center;
+            font-size: 1.7rem;
+            line-height: 1.35;
             font-weight: 800;
             letter-spacing: -0.02em;
         }
 
-        .author-box {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
+        .empty-slot:empty::before {
+            content: attr(data-placeholder);
+            color: var(--placeholder-color);
+            display: block;
+            white-space: pre-line;
         }
 
-        .avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #6366f1, #a855f7);
-            margin-right: 15px;
+        .post-title.empty-slot:empty::before {
+            font-size: 1.7rem;
+            line-height: 1.35;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            text-align: center;
+        }
+
+        .summary-action {
             display: flex;
-            align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: bold;
-            border: 2px solid var(--border-color);
-            flex-shrink: 0;
+            margin-bottom: 16px;
         }
 
-        .author-info {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .author-name {
-            min-height: 1.2em;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .post-meta {
-            min-height: 1.2em;
+        .summary-btn {
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            border-radius: 999px;
+            padding: 8px 14px;
             font-size: 0.8rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .summary-btn:active {
+            transform: scale(0.97);
+            opacity: 0.88;
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .tag-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .tag-chip {
+            padding: 5px 11px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             color: var(--text-secondary);
+            border-radius: 999px;
+            font-size: 0.76rem;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        .post-dates {
+            flex-shrink: 0;
+            text-align: right;
+            font-size: 0.68rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            padding-top: 2px;
         }
 
         .cover-image {
@@ -289,7 +334,7 @@
             aspect-ratio: 16/10;
             background: #222;
             border-radius: 16px;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
             overflow: hidden;
             position: relative;
             border: 1px solid var(--border-color);
@@ -309,7 +354,7 @@
         .article-body {
             min-height: 260px;
             font-size: 1.05rem;
-            line-height: 1.85;
+            line-height: 1.9;
             letter-spacing: 0.01em;
             background: var(--card-bg);
             border: 1px dashed var(--border-color);
@@ -317,33 +362,12 @@
             padding: 22px 20px;
         }
 
-        .empty-slot:empty::before {
-            content: attr(data-placeholder);
-            color: var(--placeholder-color);
-            display: block;
-            white-space: pre-line;
-        }
-
-        .post-title.empty-slot:empty::before {
-            font-size: 1.9rem;
-            line-height: 1.4;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-        }
-
-        .mobi-footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            max-width: 500px;
+        .app-footer {
+            flex-shrink: 0;
+            padding: 14px 24px calc(14px + env(safe-area-inset-bottom));
             background: var(--footer-bg);
             border-top: 1px solid var(--border-color);
-            padding: 14px 24px calc(14px + env(safe-area-inset-bottom, 0px));
-            display: flex;
-            justify-content: center;
-            align-items: center;
             backdrop-filter: blur(15px);
-            z-index: 1000;
             text-align: center;
         }
 
@@ -355,15 +379,81 @@
             color: var(--text-secondary);
         }
 
+        .modal-mask {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--modal-mask);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-mask.show {
+            display: flex;
+        }
+
+        .summary-modal {
+            width: 100%;
+            max-width: 420px;
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 22px;
+            padding: 20px 18px 18px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+            backdrop-filter: blur(18px);
+        }
+
+        .summary-modal-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .summary-modal-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-color);
+        }
+
+        .summary-close {
+            width: 34px;
+            height: 34px;
+            border-radius: 999px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .summary-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.95;
+            white-space: pre-line;
+        }
+
         @media (max-width: 420px) {
             .content {
-                padding-left: 18px;
-                padding-right: 18px;
+                padding-left: 16px;
+                padding-right: 16px;
             }
 
             .post-title,
             .post-title.empty-slot:empty::before {
-                font-size: 1.7rem;
+                font-size: 1.58rem;
+            }
+
+            .meta-row {
+                gap: 10px;
+            }
+
+            .post-dates {
+                font-size: 0.64rem;
             }
         }
     </style>
@@ -371,52 +461,79 @@
 <body>
     <div class="mobi-flow-bg"></div>
 
-    <div class="app-shell">
-        <header class="mobi-header">
+    <div id="app-container">
+        <header class="app-header">
             <h1 class="visually-hidden">MobiSpace 空白文章模板</h1>
 
-            <div class="header-top">
+            <div class="header-bar">
+                <nav class="marquee-row" aria-label="系統公告">
+                    <span class="v-tag" id="v-tag">SYNCING</span>
+                    <div class="mq-box">
+                        <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
+                    </div>
+                </nav>
+
                 <button class="theme-toggle-btn" id="themeSwitch" type="button" aria-label="切換主題" title="切換主題"></button>
             </div>
-
-            <nav class="marquee-row">
-                <span class="v-tag" id="v-tag">SYNCING</span>
-                <div class="mq-box">
-                    <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
-                </div>
-            </nav>
         </header>
 
-        <main class="content">
-            <h2 class="post-title empty-slot" data-placeholder="文章標題"></h2>
+        <main id="main-view">
+            <section class="content">
+                <h2 class="post-title empty-slot" data-placeholder="文章標題"></h2>
 
-            <div class="author-box">
-                <div class="avatar">M</div>
-                <div class="author-info">
-                    <span class="author-name empty-slot" data-placeholder="作者名稱"></span>
-                    <span class="post-meta empty-slot" data-placeholder="日期 · 閱讀時間"></span>
+                <div class="summary-action">
+                    <button class="summary-btn" id="summaryBtn" type="button">文章摘要</button>
                 </div>
-            </div>
 
-            <div class="cover-image"></div>
+                <div class="meta-row">
+                    <div class="tag-cloud" aria-label="文章類別標籤">
+                        <span class="tag-chip">#設計哲學</span>
+                        <span class="tag-chip">#MobiSpace</span>
+                        <span class="tag-chip">#前端介面</span>
+                        <span class="tag-chip">#內容模板</span>
+                    </div>
 
-            <article class="article-body empty-slot" data-placeholder="這裡是空白文章內容區。
+                    <div class="post-dates">
+                        <div>發佈 2026.03.19</div>
+                        <div>編輯 2026.03.19</div>
+                    </div>
+                </div>
+
+                <div class="cover-image"></div>
+
+                <article class="article-body empty-slot" data-placeholder="這裡是空白文章內容區。
 可直接貼入段落、圖片、引用區塊或其他內容模組。"></article>
+            </section>
         </main>
 
-        <footer class="mobi-footer">
-            <div class="copyright">© 2026 <strong>MobiSpace Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong> · All Rights Reserved</div>
+        <footer class="app-footer">
+            <div class="copyright">© 2026 <strong>mobsp.qzz.io</strong></div>
         </footer>
+    </div>
+
+    <div class="modal-mask" id="summaryModal" aria-hidden="true">
+        <div class="summary-modal" role="dialog" aria-modal="true" aria-labelledby="summaryModalTitle">
+            <div class="summary-modal-head">
+                <div class="summary-modal-title" id="summaryModalTitle">文章摘要</div>
+                <button class="summary-close" id="summaryClose" type="button" aria-label="關閉摘要">✕</button>
+            </div>
+            <div class="summary-text">
+這是一個適用於 MobiSpace 的通用文章模板，保留固定頁首、頁尾與動態公告區，並將文章資訊簡化為標題、摘要、分類標籤、日期與內容區，方便快速套用到不同主題的文章頁面。
+            </div>
+        </div>
     </div>
 
     <script>
         const ICONS = {
-            moonFill: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon-stars-fill" viewBox="0 0 16 16"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.73 1.73 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.73 1.73 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.73 1.73 0 0 0 1.097-1.097zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a.16 1.16 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/></svg>`,
+            moonFill: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon-stars-fill" viewBox="0 0 16 16"><path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/><path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.73 1.73 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.73 1.73 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.73 1.73 0 0 0 1.097-1.097zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/></svg>`,
             sunFill: `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-sun-fill" viewBox="0 0 16 16"><path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0m0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13m8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5M3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8m10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0m-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0m9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707M4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708"/></svg>`
         };
 
         const switchBtn = document.getElementById('themeSwitch');
         const html = document.documentElement;
+        const summaryBtn = document.getElementById('summaryBtn');
+        const summaryModal = document.getElementById('summaryModal');
+        const summaryClose = document.getElementById('summaryClose');
 
         function updateThemeIcon(theme) {
             const isDark = theme === 'dark';
@@ -443,6 +560,25 @@
         } else {
             updateThemeIcon('light');
         }
+
+        summaryBtn.addEventListener('click', () => {
+            summaryModal.classList.add('show');
+            summaryModal.setAttribute('aria-hidden', 'false');
+        });
+
+        function closeSummaryModal() {
+            summaryModal.classList.remove('show');
+            summaryModal.setAttribute('aria-hidden', 'true');
+        }
+
+        summaryClose.addEventListener('click', closeSummaryModal);
+        summaryModal.addEventListener('click', (event) => {
+            if (event.target === summaryModal) closeSummaryModal();
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSummaryModal();
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -452,7 +588,7 @@
     });
 
     const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MS,"exp":2086833761}.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
     async function initNoticeSystem() {
         const vTag = document.getElementById('v-tag');
@@ -479,12 +615,12 @@
         if (!vTag || !mqText || !data.length) return;
 
         const randomItem = data[Math.floor(Math.random() * data.length)];
-        const category = randomItem.type || "NEWS";
+        const category = randomItem.type || 'NEWS';
         vTag.classList.remove('tag-important', 'tag-update');
         if (category.match(/重要|守則/)) vTag.classList.add('tag-important');
         else if (category.match(/更新|系統/)) vTag.classList.add('tag-update');
         vTag.innerText = `${isCached ? 'OFFLINE' : 'v2.0'} | ${category}`;
-        mqText.innerText = randomItem.message || "";
+        mqText.innerText = randomItem.message || '';
     }
     </script>
 
