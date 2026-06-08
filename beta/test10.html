@@ -2,29 +2,39 @@
 <html lang="zh-TW">
 <head>
 <script>if(self!==top){top.location=self.location;}</script>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 
-<link rel="icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.webp" type="image/jpeg">
-<link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.webp">
+<link rel="icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+<link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-startup-image" href="https://mobsp.qzz.io/assets/brand/ms-guide.webp">
+<link rel="apple-touch-startup-image" href="https://mobsp.qzz.io/assets/brand/ms-guide.JPEG">
 
 <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
+
 <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
 <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
-<meta property="og:image" content="https://mobsp.qzz.io/assets/brand/ms-logo1.webp">
+<meta property="og:image" content="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
 <meta property="og:type" content="website">
 <meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
 <meta property="og:url" content="https://mobsp.qzz.io/">
 <meta property="og:site_name" content="MOBSP">
+
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
 <meta name="twitter:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
+
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#050507">
+<meta name="apple-mobile-web-app-title" content="莫比空間">
+<meta name="theme-color" content="#000000">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
 <link rel="canonical" href="https://mobsp.qzz.io/">
 <link rel="alternate" hreflang="x-default" href="https://mobsp.qzz.io/">
 
@@ -32,10 +42,10 @@
 :root {
     --ios-bg: #050507;
     --ios-bg-deep: #101014;
-    --ios-card: rgba(28, 28, 30, 0.72);
+    --ios-card: rgba(255, 255, 255, 0.12);
     --ios-text: #f5f5f7;
     --ios-muted: rgba(235, 235, 245, 0.62);
-    --ios-line: rgba(235, 235, 245, 0.16);
+    --ios-line: rgba(255, 255, 255, 0.25);
     --ios-blue: #007aff;
     --ios-red: #ff3b30;
     --ios-green: #34c759;
@@ -44,12 +54,76 @@
     --ios-ease: cubic-bezier(.2,.8,.2,1);
 }
 
+*, *::before, *::after {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    box-sizing: border-box;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+}
+
+html,
+body {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    position: fixed;
+    background:
+        radial-gradient(circle at top left, rgba(0,122,255,.18), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(175,82,222,.16), transparent 36%),
+        linear-gradient(180deg, var(--ios-bg), var(--ios-bg-deep));
+    color: var(--ios-text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "PingFang TC", sans-serif;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 100% 8px;
+    opacity: .35;
+}
+
+.ios-hardware-layer {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform, opacity;
+}
+
+.ios-liquid-glass {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(35px) saturate(210%);
+    -webkit-backdrop-filter: blur(35px) saturate(210%);
+    border: 0.5px solid rgba(255, 255, 255, 0.25);
+    border-bottom-color: rgba(255, 255, 255, 0.15);
+    box-shadow:
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
+        0 4px 24px -1px rgba(0, 0, 0, 0.12),
+        0 1px 3px 0 rgba(0, 0, 0, 0.08);
+}
+
 #fake-splash {
     position: fixed;
     inset: 0;
     background:
         radial-gradient(circle at 50% 15%, rgba(255,255,255,.28), transparent 36%),
-        #050508 url('https://mobsp.qzz.io/assets/brand/ms-guide.webp') center/cover no-repeat;
+        #050508 url('https://mobsp.qzz.io/assets/brand/ms-guide.JPEG') center/cover no-repeat;
     z-index: 99999;
     display: grid;
     place-items: center;
@@ -69,39 +143,6 @@
 #fake-splash.fade-out {
     opacity: 0;
     visibility: hidden;
-}
-
-* {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-html,
-body {
-    width: 100%;
-    height: 100dvh;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    position: fixed;
-    background:
-        radial-gradient(circle at top left, rgba(0,122,255,.16), transparent 34%),
-        radial-gradient(circle at bottom right, rgba(175,82,222,.15), transparent 36%),
-        linear-gradient(180deg, var(--ios-bg), var(--ios-bg-deep));
-    color: var(--ios-text);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang TC", system-ui, sans-serif;
-    touch-action: manipulation;
-    overscroll-behavior: none;
-}
-
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px);
-    background-size: 100% 8px;
-    opacity: .35;
 }
 
 .visually-hidden {
@@ -133,13 +174,8 @@ body::before {
 }
 
 .header-glass {
-    border: 1px solid var(--ios-line);
-    background: var(--ios-card);
-    backdrop-filter: blur(28px) saturate(180%);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    border-radius: 0 0 var(--ios-radius-xl) var(--ios-radius-xl);
-    box-shadow: 0 12px 36px rgba(0,0,0,.16);
     padding: 12px;
+    border-radius: 0 0 var(--ios-radius-xl) var(--ios-radius-xl);
 }
 
 .marquee-row {
@@ -188,7 +224,7 @@ body::before {
 .mq-text {
     display: inline-block;
     padding-left: 100%;
-    animation: mq 95s linear infinite;
+    animation: mq 120s linear infinite;
     font-size: 12px;
     color: rgba(255,255,255,.88);
     letter-spacing: .3px;
@@ -210,6 +246,7 @@ body::before {
     scroll-snap-type: x mandatory;
     scroll-padding: 22px;
     scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
 }
 
 .app-main::-webkit-scrollbar {
@@ -226,17 +263,20 @@ body::before {
     display: block;
     text-decoration: none;
     border-radius: var(--ios-radius-xl);
-    border: 1px solid var(--ios-line);
+    border: 0.5px solid rgba(255, 255, 255, 0.22);
     background-color: rgba(36, 36, 38, 0.92);
     background-position: center;
     background-size: cover;
     box-shadow: var(--ios-shadow);
     isolation: isolate;
     transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform, opacity;
     transition:
-        transform .34s var(--ios-ease),
-        filter .34s var(--ios-ease),
-        box-shadow .34s var(--ios-ease);
+        transform .16s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        filter .16s ease,
+        box-shadow .24s var(--ios-ease);
 }
 
 .action-btn::before {
@@ -250,21 +290,18 @@ body::before {
     pointer-events: none;
 }
 
-/* 已移除右上角小框 */
-/* .action-btn::after 不再使用 */
-
 .action-btn:active {
-    transform: scale(.965);
-    filter: brightness(.9) saturate(1.08);
+    transform: scale(0.96) translateZ(0);
+    filter: brightness(0.9);
     box-shadow: 0 12px 34px rgba(0,0,0,.28);
 }
 
-.btn-blog { background-image: url('https://mobsp.qzz.io/assets/brand/ms-blog.webp'); }
-.btn-tools { background-image: url('https://mobsp.qzz.io/assets/brand/ms-tools.webp'); }
-.btn-music { background-image: url('https://mobsp.qzz.io/assets/brand/ms-music.webp'); }
-.btn-shorts { background-image: url('https://mobsp.qzz.io/assets/brand/ms-shorts.webp'); }
-.btn-wiki { background-image: url('https://mobsp.qzz.io/assets/brand/ms-wiki.webp'); }
-.btn-logo { background-image: url('https://mobsp.qzz.io/assets/brand/ms-logo.webp'); }
+.btn-blog { background-image: url('https://mobsp.qzz.io/assets/brand/ms-blog.JPEG'); }
+.btn-tools { background-image: url('https://mobsp.qzz.io/assets/brand/ms-tools.JPEG'); }
+.btn-music { background-image: url('https://mobsp.qzz.io/assets/brand/ms-music.JPEG'); }
+.btn-shorts { background-image: url('https://mobsp.qzz.io/assets/brand/ms-shorts.JPEG'); }
+.btn-wiki { background-image: url('https://mobsp.qzz.io/assets/brand/ms-wiki.JPEG'); }
+.btn-logo { background-image: url('https://mobsp.qzz.io/assets/brand/ms-logo.JPEG'); }
 
 .btn-overlay {
     position: absolute;
@@ -318,10 +355,6 @@ body::before {
 
 .footer-glass {
     border-radius: 24px;
-    border: 1px solid var(--ios-line);
-    background: var(--ios-card);
-    backdrop-filter: blur(26px) saturate(180%);
-    -webkit-backdrop-filter: blur(26px) saturate(180%);
     padding: 12px 14px 10px;
 }
 
@@ -368,7 +401,7 @@ body::before {
 
 <div class="page-wrapper">
     <header class="app-header">
-        <div class="header-glass">
+        <div class="header-glass ios-liquid-glass ios-hardware-layer">
             <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間</h1>
 
             <nav class="marquee-row" aria-label="系統公告">
@@ -381,7 +414,7 @@ body::before {
     </header>
 
     <main class="app-main" id="app-main" aria-label="莫比空間服務入口">
-        <a href="https://mobsp.qzz.io/blog/" class="action-btn btn-blog" aria-label="前往部落格" rel="noopener noreferrer">
+        <a href="https://mobsp.qzz.io/blog/" class="action-btn btn-blog ios-hardware-layer" aria-label="前往部落格" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">MOBSP JOURNAL</div>
                 <div class="btn-title">部落格</div>
@@ -389,7 +422,7 @@ body::before {
             </div>
         </a>
 
-        <a href="https://mobsp.qzz.io/tol/" class="action-btn btn-tools" aria-label="前往工具庫" rel="noopener noreferrer">
+        <a href="https://mobsp.qzz.io/tol/" class="action-btn btn-tools ios-hardware-layer" aria-label="前往工具庫" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">TOOLS LIBRARY</div>
                 <div class="btn-title">工具庫</div>
@@ -397,7 +430,7 @@ body::before {
             </div>
         </a>
 
-        <a href="https://mobsp.qzz.io/music/" class="action-btn btn-music" aria-label="前往音樂頻道" rel="noopener noreferrer">
+        <a href="https://mobsp.qzz.io/music/" class="action-btn btn-music ios-hardware-layer" aria-label="前往音樂頻道" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">MUSIC CHANNEL</div>
                 <div class="btn-title">音樂頻道</div>
@@ -405,7 +438,7 @@ body::before {
             </div>
         </a>
 
-        <a href="https://mobsp.qzz.io/shorts/" class="action-btn btn-shorts" aria-label="前往Shorts" rel="noopener noreferrer">
+        <a href="https://mobsp.qzz.io/shorts/" class="action-btn btn-shorts ios-hardware-layer" aria-label="前往 Shorts" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">SHORTS SPACE</div>
                 <div class="btn-title">Shorts</div>
@@ -413,7 +446,7 @@ body::before {
             </div>
         </a>
 
-        <a href="https://mobsp.qzz.io/wiki/" class="action-btn btn-wiki" aria-label="前往支援中心" rel="noopener noreferrer">
+        <a href="https://mobsp.qzz.io/wiki/" class="action-btn btn-wiki ios-hardware-layer" aria-label="前往支援中心" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">HELP CENTER</div>
                 <div class="btn-title">支援中心</div>
@@ -421,7 +454,7 @@ body::before {
             </div>
         </a>
 
-        <a href="https://mobsp.qzz.io/history/" class="action-btn btn-logo" aria-label="查看歷史紀錄" rel="noopener noreferrer">
+        <a href="https://mobsp.qzz.io/history/" class="action-btn btn-logo ios-hardware-layer" aria-label="查看歷史紀錄" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">HISTORY LOG</div>
                 <div class="btn-title">歷史紀錄</div>
@@ -429,7 +462,7 @@ body::before {
             </div>
         </a>
 
-        <a href="https://mobsp.qzz.io/setting" class="action-btn btn-logo" aria-label="開啟設定" rel="noopener noreferrer">
+        <a href="https://mobsp.qzz.io/setting" class="action-btn btn-logo ios-hardware-layer" aria-label="開啟設定" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">APP SETTINGS</div>
                 <div class="btn-title">設定</div>
@@ -439,7 +472,7 @@ body::before {
     </main>
 
     <footer class="app-footer">
-        <div class="footer-glass">
+        <div class="footer-glass ios-liquid-glass ios-hardware-layer">
             <div class="copyright">
                 莫比空間 Ⓒ <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong> • 2026<br>
                 資源整合與數位服務入口網
