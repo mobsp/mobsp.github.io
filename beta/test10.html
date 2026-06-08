@@ -4,14 +4,16 @@
 <script>if(self!==top){top.location=self.location;}</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.webp" type="image/jpeg">
-<link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.webp">
+
+<link rel="icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+<link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-startup-image" href="https://mobsp.github.io/assets/brand/ms-guide.webp">
+<link rel="apple-touch-startup-image" href="https://mobsp.qzz.io/assets/brand/ms-guide.JPEG">
+
 <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
 <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
 <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
-<meta property="og:image" content="https://mobsp.github.io/assets/brand/ms-logo1.webp">
+<meta property="og:image" content="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
 <meta property="og:type" content="website">
 <meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
 <meta property="og:url" content="https://mobsp.qzz.io/">
@@ -22,51 +24,38 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#f5f5f7">
+<meta name="theme-color" content="#050507">
 <link rel="canonical" href="https://mobsp.qzz.io/">
 <link rel="alternate" hreflang="x-default" href="https://mobsp.qzz.io/">
+
 <style>
 :root {
-    --ios-bg: #f5f5f7;
-    --ios-bg-deep: #e8e8ed;
-    --ios-card: rgba(255, 255, 255, 0.72);
-    --ios-card-strong: rgba(255, 255, 255, 0.92);
-    --ios-text: #111114;
-    --ios-muted: rgba(60, 60, 67, 0.68);
-    --ios-line: rgba(60, 60, 67, 0.18);
+    --ios-bg: #050507;
+    --ios-bg-deep: #101014;
+    --ios-card: rgba(28, 28, 30, 0.72);
+    --ios-text: #f5f5f7;
+    --ios-muted: rgba(235, 235, 245, 0.62);
+    --ios-line: rgba(235, 235, 245, 0.16);
     --ios-blue: #007aff;
     --ios-red: #ff3b30;
     --ios-green: #34c759;
-    --ios-shadow: 0 24px 60px rgba(0,0,0,.16);
+    --ios-shadow: 0 24px 70px rgba(0,0,0,.55);
     --ios-radius-xl: 34px;
-    --ios-radius-lg: 26px;
-    --ios-radius-md: 18px;
     --ios-ease: cubic-bezier(.2,.8,.2,1);
 }
-@media (prefers-color-scheme: dark) {
-    :root {
-        --ios-bg: #000;
-        --ios-bg-deep: #101014;
-        --ios-card: rgba(28, 28, 30, 0.72);
-        --ios-card-strong: rgba(36, 36, 38, 0.92);
-        --ios-text: #f5f5f7;
-        --ios-muted: rgba(235, 235, 245, 0.62);
-        --ios-line: rgba(235, 235, 245, 0.16);
-        --ios-shadow: 0 24px 70px rgba(0,0,0,.55);
-    }
-}
-/* 啟動畫面，保留原圖片，但調成 iOS 啟動頁質感 */
+
 #fake-splash {
     position: fixed;
     inset: 0;
     background:
         radial-gradient(circle at 50% 15%, rgba(255,255,255,.28), transparent 36%),
-        #050508 url('https://mobsp.github.io/assets/brand/ms-guide.webp') center/cover no-repeat;
+        #050508 url('https://mobsp.qzz.io/assets/brand/ms-guide.JPEG') center/cover no-repeat;
     z-index: 99999;
     display: grid;
     place-items: center;
     transition: opacity .8s var(--ios-ease), visibility .8s;
 }
+
 #fake-splash::after {
     content: "莫比空間";
     position: absolute;
@@ -76,14 +65,17 @@
     letter-spacing: 4px;
     font-weight: 700;
 }
+
 #fake-splash.fade-out {
     opacity: 0;
     visibility: hidden;
 }
+
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
 }
+
 html,
 body {
     width: 100%;
@@ -93,14 +85,15 @@ body {
     overflow: hidden;
     position: fixed;
     background:
-        radial-gradient(circle at top left, rgba(0,122,255,.18), transparent 34%),
-        radial-gradient(circle at bottom right, rgba(175,82,222,.16), transparent 36%),
+        radial-gradient(circle at top left, rgba(0,122,255,.16), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(175,82,222,.15), transparent 36%),
         linear-gradient(180deg, var(--ios-bg), var(--ios-bg-deep));
     color: var(--ios-text);
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "PingFang TC", system-ui, sans-serif;
     touch-action: manipulation;
     overscroll-behavior: none;
 }
+
 body::before {
     content: "";
     position: fixed;
@@ -108,8 +101,9 @@ body::before {
     pointer-events: none;
     background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px);
     background-size: 100% 8px;
-    opacity: .38;
+    opacity: .35;
 }
+
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -120,6 +114,7 @@ body::before {
     clip: rect(0,0,0,0);
     border: 0;
 }
+
 .page-wrapper {
     width: 100%;
     height: 100dvh;
@@ -130,26 +125,27 @@ body::before {
     overflow: hidden;
     position: relative;
 }
-/* iOS 導航列 */
+
 .app-header {
     flex-shrink: 0;
-    padding: calc(14px + env(safe-area-inset-top)) 16px 12px;
+    padding: calc(14px + env(safe-area-inset-top)) 16px 10px;
     z-index: 10;
 }
+
 .header-glass {
     border: 1px solid var(--ios-line);
     background: var(--ios-card);
     backdrop-filter: blur(28px) saturate(180%);
     -webkit-backdrop-filter: blur(28px) saturate(180%);
     border-radius: 0 0 var(--ios-radius-xl) var(--ios-radius-xl);
-    box-shadow: 0 12px 36px rgba(0,0,0,.10);
+    box-shadow: 0 12px 36px rgba(0,0,0,.16);
     padding: 12px;
 }
-/* 動態島公告列 */
+
 .marquee-row {
-    width: min(100%, 410px);
+    width: 100%;
     min-height: 38px;
-    margin: 0 auto 12px;
+    margin: 0 auto;
     padding: 7px 10px;
     display: flex;
     align-items: center;
@@ -160,6 +156,7 @@ body::before {
     color: #fff;
     box-shadow: inset 0 0 0 1px rgba(255,255,255,.05), 0 10px 24px rgba(0,0,0,.22);
 }
+
 .v-tag {
     flex-shrink: 0;
     background: var(--ios-blue);
@@ -172,71 +169,56 @@ body::before {
     white-space: nowrap;
     letter-spacing: .4px;
 }
+
 .tag-important {
     background: var(--ios-red);
 }
+
 .tag-update {
     background: var(--ios-green);
     color: #06130a;
 }
+
 .mq-box {
     flex: 1;
     overflow: hidden;
     white-space: nowrap;
 }
+
 .mq-text {
     display: inline-block;
     padding-left: 100%;
-    animation: mq 42s linear infinite;
+    animation: mq 95s linear infinite;
     font-size: 12px;
     color: rgba(255,255,255,.88);
     letter-spacing: .3px;
 }
+
 @keyframes mq {
     0% { transform: translateX(0); }
     100% { transform: translateX(-100%); }
 }
-/* 品牌圖，變成 iOS 卡片內的 Banner */
-.brand-title-link {
-    display: block;
-    width: 100%;
-    border-radius: 24px;
-    overflow: hidden;
-    text-decoration: none;
-    background: var(--ios-card-strong);
-    border: 1px solid var(--ios-line);
-    box-shadow: 0 12px 26px rgba(0,0,0,.10);
-    transition: transform .28s var(--ios-ease), filter .28s var(--ios-ease);
-}
-.brand-title-link:active {
-    transform: scale(.985);
-    filter: brightness(.94);
-}
-.brand-title-img {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-/* 主內容水平卡片 */
+
 .app-main {
     flex: 1;
     display: flex;
     align-items: stretch;
     gap: 18px;
-    padding: 12px 22px 18px;
+    padding: 14px 22px 18px;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
     scroll-padding: 22px;
     scrollbar-width: none;
 }
+
 .app-main::-webkit-scrollbar {
     display: none;
 }
-/* iOS App 大卡片 */
+
 .action-btn {
-    flex: 0 0 82%;
-    max-width: 390px;
+    flex: 0 0 88%;
+    max-width: 430px;
     min-height: 100%;
     scroll-snap-align: center;
     position: relative;
@@ -245,7 +227,7 @@ body::before {
     text-decoration: none;
     border-radius: var(--ios-radius-xl);
     border: 1px solid var(--ios-line);
-    background-color: var(--ios-card-strong);
+    background-color: rgba(36, 36, 38, 0.92);
     background-position: center;
     background-size: cover;
     box-shadow: var(--ios-shadow);
@@ -256,49 +238,42 @@ body::before {
         filter .34s var(--ios-ease),
         box-shadow .34s var(--ios-ease);
 }
+
 .action-btn::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: 1;
     background:
-        linear-gradient(180deg, rgba(255,255,255,.28), transparent 32%),
-        linear-gradient(0deg, rgba(0,0,0,.84), rgba(0,0,0,.04) 58%, rgba(255,255,255,.14));
+        linear-gradient(180deg, rgba(255,255,255,.18), transparent 30%),
+        linear-gradient(0deg, rgba(0,0,0,.86), rgba(0,0,0,.03) 58%, rgba(255,255,255,.08));
     pointer-events: none;
 }
-.action-btn::after {
-    content: "";
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 54px;
-    height: 54px;
-    border-radius: 18px;
-    z-index: 2;
-    background: rgba(255,255,255,.22);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255,255,255,.24);
-    box-shadow: inset 0 1px rgba(255,255,255,.18);
-}
+
+/* 已移除右上角小框 */
+/* .action-btn::after 不再使用 */
+
 .action-btn:active {
     transform: scale(.965);
     filter: brightness(.9) saturate(1.08);
     box-shadow: 0 12px 34px rgba(0,0,0,.28);
 }
-.btn-blog { background-image: url('https://mobsp.github.io/assets/brand/ms-blog.webp'); }
-.btn-tools { background-image: url('https://mobsp.github.io/assets/brand/ms-tools.webp'); }
-.btn-music { background-image: url('https://mobsp.github.io/assets/brand/ms-music.webp'); }
-.btn-shorts { background-image: url('https://mobsp.github.io/assets/brand/ms-shorts.webp'); }
-.btn-wiki { background-image: url('https://mobsp.github.io/assets/brand/ms-wiki.webp'); }
-.btn-logo { background-image: url('https://mobsp.github.io/assets/brand/ms-logo.webp'); }
+
+.btn-blog { background-image: url('https://mobsp.qzz.io/assets/brand/ms-blog.JPEG'); }
+.btn-tools { background-image: url('https://mobsp.qzz.io/assets/brand/ms-tools.JPEG'); }
+.btn-music { background-image: url('https://mobsp.qzz.io/assets/brand/ms-music.JPEG'); }
+.btn-shorts { background-image: url('https://mobsp.qzz.io/assets/brand/ms-shorts.JPEG'); }
+.btn-wiki { background-image: url('https://mobsp.qzz.io/assets/brand/ms-wiki.JPEG'); }
+.btn-logo { background-image: url('https://mobsp.qzz.io/assets/brand/ms-logo.JPEG'); }
+
 .btn-overlay {
     position: absolute;
     inset: auto 0 0 0;
     z-index: 3;
-    padding: 88px 24px 26px;
-    background: linear-gradient(transparent, rgba(0,0,0,.90));
+    padding: 96px 26px 30px;
+    background: linear-gradient(transparent, rgba(0,0,0,.92));
 }
+
 .btn-kicker {
     display: inline-flex;
     align-items: center;
@@ -309,6 +284,7 @@ body::before {
     font-weight: 700;
     letter-spacing: .8px;
 }
+
 .btn-kicker::before {
     content: "";
     width: 7px;
@@ -317,26 +293,29 @@ body::before {
     background: #30d158;
     box-shadow: 0 0 16px #30d158;
 }
+
 .btn-title {
     color: #fff;
-    font-size: clamp(2rem, 8vw, 3.1rem);
+    font-size: clamp(2.35rem, 10vw, 3.45rem);
     font-weight: 900;
     letter-spacing: -1px;
     line-height: 1;
     text-shadow: 0 6px 18px rgba(0,0,0,.44);
 }
+
 .btn-subtitle {
     margin-top: 10px;
     color: rgba(255,255,255,.72);
-    font-size: 13px;
+    font-size: 14px;
     line-height: 1.55;
 }
-/* iOS 底部工具列 */
+
 .app-footer {
     flex-shrink: 0;
     padding: 10px 18px calc(12px + env(safe-area-inset-bottom));
     text-align: center;
 }
+
 .footer-glass {
     border-radius: 24px;
     border: 1px solid var(--ios-line);
@@ -345,12 +324,14 @@ body::before {
     -webkit-backdrop-filter: blur(26px) saturate(180%);
     padding: 12px 14px 10px;
 }
+
 .copyright {
     font-size: 11px;
     color: var(--ios-muted);
     line-height: 1.55;
     letter-spacing: .4px;
 }
+
 .home-indicator {
     width: 128px;
     height: 5px;
@@ -359,40 +340,17 @@ body::before {
     background: var(--ios-text);
     opacity: .22;
 }
-/* 橫向滑動提示小圓點 */
-.page-dots {
-    position: absolute;
-    left: 50%;
-    bottom: calc(88px + env(safe-area-inset-bottom));
-    transform: translateX(-50%);
-    z-index: 8;
-    display: flex;
-    gap: 6px;
-    padding: 6px 8px;
-    border-radius: 999px;
-    background: rgba(0,0,0,.18);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-}
-.page-dots span {
-    width: 6px;
-    height: 6px;
-    border-radius: 999px;
-    background: rgba(255,255,255,.46);
-    transition: width .28s var(--ios-ease), background .28s var(--ios-ease);
-}
-.page-dots span.active {
-    width: 18px;
-    background: rgba(255,255,255,.94);
-}
+
 @media (min-width: 700px) {
     .page-wrapper {
         max-width: 640px;
     }
+
     .action-btn {
-        flex-basis: 72%;
+        flex-basis: 78%;
     }
 }
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
@@ -404,67 +362,74 @@ body::before {
 }
 </style>
 </head>
+
 <body>
 <div id="fake-splash" aria-hidden="true"></div>
+
 <div class="page-wrapper">
     <header class="app-header">
         <div class="header-glass">
             <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間</h1>
+
             <nav class="marquee-row" aria-label="系統公告">
                 <span class="v-tag" id="v-tag">SYNCING</span>
                 <div class="mq-box">
                     <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
                 </div>
             </nav>
-            <a href="https://mobsp.github.io" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" rel="noopener noreferrer">
-                <img src="assets/brand/ms-guide-title.webp" alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
-            </a>
         </div>
     </header>
+
     <main class="app-main" id="app-main" aria-label="莫比空間服務入口">
-        <a href="https://mobsp.github.io/blog/" class="action-btn btn-blog" aria-label="前往部落格" rel="noopener noreferrer">
+        <a href="https://mobsp.qzz.io/blog/" class="action-btn btn-blog" aria-label="前往部落格" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">MOBSP JOURNAL</div>
                 <div class="btn-title">部落格</div>
                 <div class="btn-subtitle">文章、觀點、紀錄與莫比宇宙的文字艙。</div>
             </div>
         </a>
-        <a href="https://mobsp.github.io/tol/" class="action-btn btn-tools" aria-label="前往工具庫" rel="noopener noreferrer">
+
+        <a href="https://mobsp.qzz.io/tol/" class="action-btn btn-tools" aria-label="前往工具庫" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">TOOLS LIBRARY</div>
                 <div class="btn-title">工具庫</div>
                 <div class="btn-subtitle">常用工具、線上功能與實驗型小裝置。</div>
             </div>
         </a>
-        <a href="https://mobsp.github.io/music/" class="action-btn btn-music" aria-label="前往音樂頻道" rel="noopener noreferrer">
+
+        <a href="https://mobsp.qzz.io/music/" class="action-btn btn-music" aria-label="前往音樂頻道" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">MUSIC CHANNEL</div>
                 <div class="btn-title">音樂頻道</div>
                 <div class="btn-subtitle">聲音收藏、播放入口與靈感節拍。</div>
             </div>
         </a>
-        <a href="https://mobsp.github.io/shorts/" class="action-btn btn-shorts" aria-label="前往Shorts" rel="noopener noreferrer">
+
+        <a href="https://mobsp.qzz.io/shorts/" class="action-btn btn-shorts" aria-label="前往Shorts" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">SHORTS SPACE</div>
                 <div class="btn-title">Shorts</div>
                 <div class="btn-subtitle">短內容、片段記錄與快速瀏覽區。</div>
             </div>
         </a>
-        <a href="https://mobsp.github.io/wiki/" class="action-btn btn-wiki" aria-label="前往支援中心" rel="noopener noreferrer">
+
+        <a href="https://mobsp.qzz.io/wiki/" class="action-btn btn-wiki" aria-label="前往支援中心" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">HELP CENTER</div>
                 <div class="btn-title">支援中心</div>
                 <div class="btn-subtitle">說明文件、導覽與常見問題入口。</div>
             </div>
         </a>
-        <a href="https://mobsp.github.io/history/" class="action-btn btn-logo" aria-label="查看歷史紀錄" rel="noopener noreferrer">
+
+        <a href="https://mobsp.qzz.io/history/" class="action-btn btn-logo" aria-label="查看歷史紀錄" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">HISTORY LOG</div>
                 <div class="btn-title">歷史紀錄</div>
                 <div class="btn-subtitle">站點紀錄、版本脈絡與變更軌跡。</div>
             </div>
         </a>
-        <a href="https://mobsp.github.io/setting" class="action-btn btn-logo" aria-label="開啟設定" rel="noopener noreferrer">
+
+        <a href="https://mobsp.qzz.io/setting" class="action-btn btn-logo" aria-label="開啟設定" rel="noopener noreferrer">
             <div class="btn-overlay">
                 <div class="btn-kicker">APP SETTINGS</div>
                 <div class="btn-title">設定</div>
@@ -472,7 +437,7 @@ body::before {
             </div>
         </a>
     </main>
-    <div class="page-dots" id="page-dots" aria-hidden="true"></div>
+
     <footer class="app-footer">
         <div class="footer-glass">
             <div class="copyright">
@@ -483,11 +448,13 @@ body::before {
         </div>
     </footer>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('fake-splash');
-    // 啟動畫面淡出，保留原本邏輯
+
     const hideSplash = () => {
         setTimeout(() => {
             if (splash) {
@@ -498,19 +465,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, 1000);
     };
+
     window.addEventListener('load', hideSplash);
     setTimeout(hideSplash, 3500);
-    // 啟動公告系統
+
     initNoticeSystem();
-    // 啟動 iOS 風格滑動圓點
-    initIOSCardDots();
-    // 阻止 iOS Safari 雙擊放大
     preventDoubleTapZoom();
 });
+
 const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+
 async function initNoticeSystem() {
     const cachedData = localStorage.getItem('mobsp_notices');
+
     if (cachedData) {
         try {
             renderNotice(JSON.parse(cachedData), true);
@@ -518,13 +486,16 @@ async function initNoticeSystem() {
             localStorage.removeItem('mobsp_notices');
         }
     }
+
     try {
         if (typeof supabase === 'undefined') return;
+
         const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         const { data, error } = await client
             .from('notices')
             .select('type, message')
             .order('created_at', { ascending: false });
+
         if (!error && data && data.length > 0) {
             localStorage.setItem('mobsp_notices', JSON.stringify(data));
             renderNotice(data, false);
@@ -533,62 +504,42 @@ async function initNoticeSystem() {
         console.warn('公告更新受阻');
     }
 }
+
 function renderNotice(data, isCached) {
     const vTag = document.getElementById('v-tag');
     const mqText = document.getElementById('mq-text');
+
     if (!vTag || !mqText || !data.length) return;
+
     const randomItem = data[Math.floor(Math.random() * data.length)];
     const category = randomItem.type || 'NEWS';
+
     vTag.classList.remove('tag-important', 'tag-update');
+
     if (category.match(/重要|守則/)) {
         vTag.classList.add('tag-important');
     } else if (category.match(/更新|系統/)) {
         vTag.classList.add('tag-update');
     }
+
     vTag.innerText = `${isCached ? 'OFFLINE' : 'v2.0'} | ${category}`;
     mqText.innerText = randomItem.message || '';
 }
-// 建立 iOS 風格滑動圓點
-function initIOSCardDots() {
-    const main = document.getElementById('app-main');
-    const dots = document.getElementById('page-dots');
-    if (!main || !dots) return;
-    const cards = Array.from(main.querySelectorAll('.action-btn'));
-    if (!cards.length) return;
-    dots.innerHTML = cards.map(() => '<span></span>').join('');
-    const dotItems = Array.from(dots.querySelectorAll('span'));
-    const updateDots = () => {
-        const center = main.scrollLeft + main.clientWidth / 2;
-        let activeIndex = 0;
-        let minDistance = Infinity;
-        cards.forEach((card, index) => {
-            const cardCenter = card.offsetLeft + card.clientWidth / 2;
-            const distance = Math.abs(center - cardCenter);
-            if (distance < minDistance) {
-                minDistance = distance;
-                activeIndex = index;
-            }
-        });
-        dotItems.forEach((dot, index) => {
-            dot.classList.toggle('active', index === activeIndex);
-        });
-    };
-    main.addEventListener('scroll', () => {
-        requestAnimationFrame(updateDots);
-    }, { passive: true });
-    updateDots();
-}
-// 減少 iPhone Safari 雙擊放大
+
 function preventDoubleTapZoom() {
     let lastTouchEnd = 0;
+
     document.addEventListener('touchend', event => {
         const now = Date.now();
+
         if (now - lastTouchEnd <= 300) {
             event.preventDefault();
         }
+
         lastTouchEnd = now;
     }, { passive: false });
 }
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').catch(() => {});
