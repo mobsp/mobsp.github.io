@@ -1,0 +1,1 @@
+export const state={songs:[],page:1,perPage:8,filter:'all',search:''};
