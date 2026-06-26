@@ -87,7 +87,6 @@ body {
     touch-action: manipulation;
 }
 
-/* 紅框優化：背景網格全面覆蓋安全區域，消除黑白死角 */
 body::before {
     content: "";
     position: fixed;
@@ -106,7 +105,6 @@ body::before {
     will-change: transform, opacity;
 }
 
-/* 藍框優化：移除過度濃烈的液態玻璃樣式，改為精緻微調透光 */
 .ios-liquid-glass {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px) saturate(140%);
@@ -176,7 +174,6 @@ body::before {
     border-radius: var(--ios-radius-xl);
 }
 
-/* 黃框優化：預留跑馬燈結構位置，現設定為隱藏，隨時可移除 display:none 恢復 */
 .marquee-row {
     display: none !important; 
     width: 100%;
@@ -241,7 +238,6 @@ body::before {
     display: none;
 }
 
-/* 藍框優化：移除初次進入與 active 時的多餘彈跳與放大縮小震盪特效，保持平滑與穩定度 */
 .action-btn {
     flex: 0 0 88%;
     max-width: 430px;
@@ -286,7 +282,6 @@ body::before {
 .btn-wiki { background-image: url('https://mobsp.qzz.io/assets/brand/ms-wiki.JPEG'); }
 .btn-logo { background-image: url('https://mobsp.qzz.io/assets/brand/ms-logo.JPEG'); }
 
-/* 綠框優化：結構大改版，標題與狀態點完全移至頂部配置 */
 .card-top-meta {
     position: relative;
     z-index: 3;
@@ -311,7 +306,25 @@ body::before {
     text-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
-/* 綠色多功能狀態色點設計：可擴充 status-update, status-important 等詞庫 */
+/* 紫框優化：中央極簡發光字體外觀樣式 */
+.card-center-brand {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    pointer-events: none;
+    background: linear-gradient(135deg, #ffd700 0%, #f5f5f7 60%, #b8860b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8));
+    text-shadow: 0 0 20px rgba(255,215,0,0.25);
+}
+
 .status-indicator {
     display: inline-flex;
     align-items: center;
@@ -332,7 +345,6 @@ body::before {
     box-shadow: 0 0 10px var(--ios-green);
 }
 
-/* 色點狀態詞定義庫 */
 .status-dot.status-update { background: var(--ios-green); box-shadow: 0 0 10px var(--ios-green); }
 .status-dot.status-important { background: var(--ios-red); box-shadow: 0 0 10px var(--ios-red); }
 .status-dot.status-normal { background: var(--ios-blue); box-shadow: 0 0 10px var(--ios-blue); }
@@ -358,7 +370,6 @@ body::before {
     text-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
-/* 綠框全新設計：預留隨機 3-5 個子網頁快捷鍵入口區塊 */
 .card-shortcuts {
     margin-top: 14px;
     display: flex;
@@ -385,7 +396,6 @@ body::before {
     transform: scale(0.95);
 }
 
-/* 藍框與紅框優化：移除原本懸浮的版權卡片，將版權文字移至頁面最底部安全區 */
 .app-footer {
     flex-shrink: 0;
     padding: 8px 24px calc(14px + env(safe-area-inset-bottom));
@@ -404,8 +414,6 @@ body::before {
     color: rgba(255, 255, 255, 0.65);
     font-weight: 600;
 }
-
-/* 橘框優化：已完全拔除舊有內部 home-indicator 線條條組件 */
 
 @media (min-width: 700px) {
     .page-wrapper { max-width: 640px; }
@@ -450,6 +458,9 @@ body::before {
                     <span class="status-text">已更新</span>
                 </div>
             </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">文章、觀點、紀錄與莫比宇宙的文字艙。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
@@ -470,6 +481,9 @@ body::before {
                     <span class="status-text">運作中</span>
                 </div>
             </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">常用工具、線上功能與實驗型小裝置。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
@@ -490,6 +504,9 @@ body::before {
                     <span class="status-text">線上</span>
                 </div>
             </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">聲音收藏、播放入口與靈感節拍。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
@@ -509,6 +526,9 @@ body::before {
                     <span class="status-text">新片</span>
                 </div>
             </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">短內容、片段記錄與快速瀏覽區。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
@@ -528,6 +548,9 @@ body::before {
                     <span class="status-text">指南</span>
                 </div>
             </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">說明文件、導覽與常見問題入口。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
@@ -547,6 +570,9 @@ body::before {
                     <span class="status-text">維護</span>
                 </div>
             </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">站點紀錄、版本脈絡與變更軌跡。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
@@ -565,6 +591,9 @@ body::before {
                     <span class="status-text">配置</span>
                 </div>
             </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">偏好設定、系統選項與個人化控制。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
