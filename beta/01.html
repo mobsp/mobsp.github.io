@@ -42,15 +42,15 @@
 :root {
     --ios-bg: #050507;
     --ios-bg-deep: #101014;
-    --ios-card: rgba(255, 255, 255, 0.12);
+    --ios-card: rgba(255, 255, 255, 0.08);
     --ios-text: #f5f5f7;
     --ios-muted: rgba(235, 235, 245, 0.62);
-    --ios-line: rgba(255, 255, 255, 0.25);
+    --ios-line: rgba(255, 255, 255, 0.15);
     --ios-blue: #007aff;
     --ios-red: #ff3b30;
     --ios-green: #34c759;
-    --ios-shadow: 0 24px 70px rgba(0,0,0,.55);
-    --ios-radius-xl: 34px;
+    --ios-shadow: 0 24px 70px rgba(0,0,0,.65);
+    --ios-radius-xl: 30px;
     --ios-ease: cubic-bezier(.2,.8,.2,1);
 }
 
@@ -72,16 +72,14 @@ textarea,
 
 html,
 body {
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
+    width: 100%;
+    height: 100%;
     margin: 0;
     padding: 0;
     overflow: hidden;
-    position: fixed;
     background:
-        radial-gradient(circle at top left, rgba(0,122,255,.18), transparent 34%),
-        radial-gradient(circle at bottom right, rgba(175,82,222,.16), transparent 36%),
+        radial-gradient(circle at top left, rgba(0,122,255,.15), transparent 40%),
+        radial-gradient(circle at bottom right, rgba(175,82,222,.12), transparent 40%),
         linear-gradient(180deg, var(--ios-bg), var(--ios-bg-deep));
     color: var(--ios-text);
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "PingFang TC", sans-serif;
@@ -89,14 +87,16 @@ body {
     touch-action: manipulation;
 }
 
+/* 紅框優化：背景網格全面覆蓋安全區域，消除黑白死角 */
 body::before {
     content: "";
     position: fixed;
     inset: 0;
     pointer-events: none;
-    background-image: linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px);
+    background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px);
     background-size: 100% 8px;
     opacity: .35;
+    z-index: 0;
 }
 
 .ios-hardware-layer {
@@ -106,16 +106,13 @@ body::before {
     will-change: transform, opacity;
 }
 
+/* 藍框優化：移除過度濃烈的液態玻璃樣式，改為精緻微調透光 */
 .ios-liquid-glass {
-    background: rgba(255, 255, 255, 0.12);
-    backdrop-filter: blur(35px) saturate(210%);
-    -webkit-backdrop-filter: blur(35px) saturate(210%);
-    border: 0.5px solid rgba(255, 255, 255, 0.25);
-    border-bottom-color: rgba(255, 255, 255, 0.15);
-    box-shadow:
-        inset 0 1px 1px 0 rgba(255, 255, 255, 0.2),
-        0 4px 24px -1px rgba(0, 0, 0, 0.12),
-        0 1px 3px 0 rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
 }
 
 #fake-splash {
@@ -165,25 +162,27 @@ body::before {
     flex-direction: column;
     overflow: hidden;
     position: relative;
+    z-index: 1;
 }
 
 .app-header {
     flex-shrink: 0;
-    padding: calc(14px + env(safe-area-inset-top)) 16px 10px;
+    padding: calc(12px + env(safe-area-inset-top)) 16px 4px;
     z-index: 10;
 }
 
 .header-glass {
-    padding: 12px;
-    border-radius: 0 0 var(--ios-radius-xl) var(--ios-radius-xl);
+    padding: 4px;
+    border-radius: var(--ios-radius-xl);
 }
 
+/* 黃框優化：預留跑馬燈結構位置，現設定為隱藏，隨時可移除 display:none 恢復 */
 .marquee-row {
+    display: none !important; 
     width: 100%;
     min-height: 38px;
     margin: 0 auto;
     padding: 7px 10px;
-    display: flex;
     align-items: center;
     overflow: hidden;
     border-radius: 999px;
@@ -206,21 +205,10 @@ body::before {
     letter-spacing: .4px;
 }
 
-.tag-important {
-    background: var(--ios-red);
-}
+.tag-important { background: var(--ios-red); }
+.tag-update { background: var(--ios-green); color: #06130a; }
 
-.tag-update {
-    background: var(--ios-green);
-    color: #06130a;
-}
-
-.mq-box {
-    flex: 1;
-    overflow: hidden;
-    white-space: nowrap;
-}
-
+.mq-box { flex: 1; overflow: hidden; white-space: nowrap; }
 .mq-text {
     display: inline-block;
     padding-left: 100%;
@@ -239,12 +227,12 @@ body::before {
     flex: 1;
     display: flex;
     align-items: stretch;
-    gap: 18px;
-    padding: 14px 22px 18px;
+    gap: 20px;
+    padding: 16px 24px 24px;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
-    scroll-padding: 22px;
+    scroll-padding: 24px;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
 }
@@ -253,6 +241,7 @@ body::before {
     display: none;
 }
 
+/* 藍框優化：移除初次進入與 active 時的多餘彈跳與放大縮小震盪特效，保持平滑與穩定度 */
 .action-btn {
     flex: 0 0 88%;
     max-width: 430px;
@@ -260,23 +249,19 @@ body::before {
     scroll-snap-align: center;
     position: relative;
     overflow: hidden;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     text-decoration: none;
     border-radius: var(--ios-radius-xl);
-    border: 0.5px solid rgba(255, 255, 255, 0.22);
-    background-color: rgba(36, 36, 38, 0.92);
+    border: 0.5px solid rgba(255, 255, 255, 0.18);
+    background-color: rgba(20, 20, 22, 0.95);
     background-position: center;
     background-size: cover;
     box-shadow: var(--ios-shadow);
     isolation: isolate;
     transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000px;
-    will-change: transform, opacity;
-    transition:
-        transform .16s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        filter .16s ease,
-        box-shadow .24s var(--ios-ease);
+    transition: filter .2s ease;
 }
 
 .action-btn::before {
@@ -285,15 +270,13 @@ body::before {
     inset: 0;
     z-index: 1;
     background:
-        linear-gradient(180deg, rgba(255,255,255,.18), transparent 30%),
-        linear-gradient(0deg, rgba(0,0,0,.86), rgba(0,0,0,.03) 58%, rgba(255,255,255,.08));
+        linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 40%),
+        linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.2) 60%);
     pointer-events: none;
 }
 
 .action-btn:active {
-    transform: scale(0.96) translateZ(0);
-    filter: brightness(0.9);
-    box-shadow: 0 12px 34px rgba(0,0,0,.28);
+    filter: brightness(0.85);
 }
 
 .btn-blog { background-image: url('https://mobsp.qzz.io/assets/brand/ms-blog.JPEG'); }
@@ -303,91 +286,134 @@ body::before {
 .btn-wiki { background-image: url('https://mobsp.qzz.io/assets/brand/ms-wiki.JPEG'); }
 .btn-logo { background-image: url('https://mobsp.qzz.io/assets/brand/ms-logo.JPEG'); }
 
-.btn-overlay {
-    position: absolute;
-    inset: auto 0 0 0;
+/* 綠框優化：結構大改版，標題與狀態點完全移至頂部配置 */
+.card-top-meta {
+    position: relative;
     z-index: 3;
-    padding: 96px 26px 30px;
-    background: linear-gradient(transparent, rgba(0,0,0,.92));
+    padding: 24px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 
-.btn-kicker {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
-    color: rgba(255,255,255,.76);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: .8px;
-}
-
-.btn-kicker::before {
-    content: "";
-    width: 7px;
-    height: 7px;
-    border-radius: 99px;
-    background: #30d158;
-    box-shadow: 0 0 16px #30d158;
+.card-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .btn-title {
     color: #fff;
-    font-size: clamp(2.35rem, 10vw, 3.45rem);
+    font-size: clamp(1.8rem, 8vw, 2.4rem);
     font-weight: 900;
-    letter-spacing: -1px;
-    line-height: 1;
-    text-shadow: 0 6px 18px rgba(0,0,0,.44);
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* 綠色多功能狀態色點設計：可擴充 status-update, status-important 等詞庫 */
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 99px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 0.5px solid rgba(255,255,255,0.1);
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 99px;
+    background: var(--ios-green);
+    box-shadow: 0 0 10px var(--ios-green);
+}
+
+/* 色點狀態詞定義庫 */
+.status-dot.status-update { background: var(--ios-green); box-shadow: 0 0 10px var(--ios-green); }
+.status-dot.status-important { background: var(--ios-red); box-shadow: 0 0 10px var(--ios-red); }
+.status-dot.status-normal { background: var(--ios-blue); box-shadow: 0 0 10px var(--ios-blue); }
+
+.status-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.card-bottom-meta {
+    position: relative;
+    z-index: 3;
+    padding: 0 24px 28px;
 }
 
 .btn-subtitle {
-    margin-top: 10px;
-    color: rgba(255,255,255,.72);
-    font-size: 14px;
-    line-height: 1.55;
+    margin-top: 0;
+    color: rgba(255,255,255,.76);
+    font-size: 13px;
+    line-height: 1.5;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
+/* 綠框全新設計：預留隨機 3-5 個子網頁快捷鍵入口區塊 */
+.card-shortcuts {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.shortcut-link {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background .2s, transform .2s;
+}
+
+.shortcut-link:active {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(0.95);
+}
+
+/* 藍框與紅框優化：移除原本懸浮的版權卡片，將版權文字移至頁面最底部安全區 */
 .app-footer {
     flex-shrink: 0;
-    padding: 10px 18px calc(12px + env(safe-area-inset-bottom));
+    padding: 8px 24px calc(14px + env(safe-area-inset-bottom));
     text-align: center;
-}
-
-.footer-glass {
-    border-radius: 24px;
-    padding: 12px 14px 10px;
+    z-index: 10;
 }
 
 .copyright {
     font-size: 11px;
-    color: var(--ios-muted);
-    line-height: 1.55;
-    letter-spacing: .4px;
+    color: rgba(235, 235, 245, 0.45);
+    line-height: 1.6;
+    letter-spacing: .5px;
 }
 
-.home-indicator {
-    width: 128px;
-    height: 5px;
-    margin: 10px auto 0;
-    border-radius: 999px;
-    background: var(--ios-text);
-    opacity: .22;
+.copyright strong {
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 600;
 }
+
+/* 橘框優化：已完全拔除舊有內部 home-indicator 線條條組件 */
 
 @media (min-width: 700px) {
-    .page-wrapper {
-        max-width: 640px;
-    }
-
-    .action-btn {
-        flex-basis: 78%;
-    }
+    .page-wrapper { max-width: 640px; }
+    .action-btn { flex-basis: 78%; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
         animation-duration: .001ms !important;
         transition-duration: .001ms !important;
         scroll-behavior: auto !important;
@@ -401,9 +427,8 @@ body::before {
 
 <div class="page-wrapper">
     <header class="app-header">
-        <div class="header-glass ios-liquid-glass ios-hardware-layer">
+        <div class="header-glass ios-hardware-layer">
             <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間</h1>
-
             <nav class="marquee-row" aria-label="系統公告">
                 <span class="v-tag" id="v-tag">SYNCING</span>
                 <div class="mq-box">
@@ -414,70 +439,145 @@ body::before {
     </header>
 
     <main class="app-main" id="app-main" aria-label="莫比空間服務入口">
+        
         <a href="https://mobsp.qzz.io/blog/" class="action-btn btn-blog ios-hardware-layer" aria-label="前往部落格" rel="noopener noreferrer">
-            <div class="btn-overlay">
-                <div class="btn-kicker">MOBSP JOURNAL</div>
-                <div class="btn-title">部落格</div>
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">部落格</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-update"></span>
+                    <span class="status-text">已更新</span>
+                </div>
+            </div>
+            <div class="card-bottom-meta">
                 <div class="btn-subtitle">文章、觀點、紀錄與莫比宇宙的文字艙。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/blog/tech" class="shortcut-link">技術觀點</a></object>
+                    <object><a href="https://mobsp.qzz.io/blog/life" class="shortcut-link">生活隨筆</a></object>
+                    <object><a href="https://mobsp.qzz.io/blog/archive" class="shortcut-link">所有存檔</a></object>
+                </div>
             </div>
         </a>
 
         <a href="https://mobsp.qzz.io/tol/" class="action-btn btn-tools ios-hardware-layer" aria-label="前往工具庫" rel="noopener noreferrer">
-            <div class="btn-overlay">
-                <div class="btn-kicker">TOOLS LIBRARY</div>
-                <div class="btn-title">工具庫</div>
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">工具庫</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-normal"></span>
+                    <span class="status-text">運作中</span>
+                </div>
+            </div>
+            <div class="card-bottom-meta">
                 <div class="btn-subtitle">常用工具、線上功能與實驗型小裝置。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/tol/json" class="shortcut-link">JSON格式化</a></object>
+                    <object><a href="https://mobsp.qzz.io/tol/crypto" class="shortcut-link">加解密工具</a></object>
+                    <object><a href="https://mobsp.qzz.io/tol/regex" class="shortcut-link">正則測試</a></object>
+                </div>
             </div>
         </a>
 
         <a href="https://mobsp.qzz.io/music/" class="action-btn btn-music ios-hardware-layer" aria-label="前往音樂頻道" rel="noopener noreferrer">
-            <div class="btn-overlay">
-                <div class="btn-kicker">MUSIC CHANNEL</div>
-                <div class="btn-title">音樂頻道</div>
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">音樂頻道</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-normal"></span>
+                    <span class="status-text">線上</span>
+                </div>
+            </div>
+            <div class="card-bottom-meta">
                 <div class="btn-subtitle">聲音收藏、播放入口與靈感節拍。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/music/lofi" class="shortcut-link">Lofi 節拍</a></object>
+                    <object><a href="https://mobsp.qzz.io/music/playlist" class="shortcut-link">精選歌單</a></object>
+                </div>
             </div>
         </a>
 
         <a href="https://mobsp.qzz.io/shorts/" class="action-btn btn-shorts ios-hardware-layer" aria-label="前往 Shorts" rel="noopener noreferrer">
-            <div class="btn-overlay">
-                <div class="btn-kicker">SHORTS SPACE</div>
-                <div class="btn-title">Shorts</div>
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">Shorts</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-update"></span>
+                    <span class="status-text">新片</span>
+                </div>
+            </div>
+            <div class="card-bottom-meta">
                 <div class="btn-subtitle">短內容、片段記錄與快速瀏覽區。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/shorts/latest" class="shortcut-link">最新短片</a></object>
+                    <object><a href="https://mobsp.qzz.io/shorts/trend" class="shortcut-link">熱門排行</a></object>
+                </div>
             </div>
         </a>
 
         <a href="https://mobsp.qzz.io/wiki/" class="action-btn btn-wiki ios-hardware-layer" aria-label="前往支援中心" rel="noopener noreferrer">
-            <div class="btn-overlay">
-                <div class="btn-kicker">HELP CENTER</div>
-                <div class="btn-title">支援中心</div>
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">支援中心</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-normal"></span>
+                    <span class="status-text">指南</span>
+                </div>
+            </div>
+            <div class="card-bottom-meta">
                 <div class="btn-subtitle">說明文件、導覽與常見問題入口。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/wiki/faq" class="shortcut-link">常見問題</a></object>
+                    <object><a href="https://mobsp.qzz.io/wiki/guide" class="shortcut-link">新手導覽</a></object>
+                </div>
             </div>
         </a>
 
         <a href="https://mobsp.qzz.io/history/" class="action-btn btn-logo ios-hardware-layer" aria-label="查看歷史紀錄" rel="noopener noreferrer">
-            <div class="btn-overlay">
-                <div class="btn-kicker">HISTORY LOG</div>
-                <div class="btn-title">歷史紀錄</div>
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">歷史紀錄</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-important"></span>
+                    <span class="status-text">維護</span>
+                </div>
+            </div>
+            <div class="card-bottom-meta">
                 <div class="btn-subtitle">站點紀錄、版本脈絡與變更軌跡。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/history/v2" class="shortcut-link">v2.0 變更</a></object>
+                </div>
             </div>
         </a>
 
         <a href="https://mobsp.qzz.io/setting" class="action-btn btn-logo ios-hardware-layer" aria-label="開啟設定" rel="noopener noreferrer">
-            <div class="btn-overlay">
-                <div class="btn-kicker">APP SETTINGS</div>
-                <div class="btn-title">設定</div>
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">設定</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-normal"></span>
+                    <span class="status-text">配置</span>
+                </div>
+            </div>
+            <div class="card-bottom-meta">
                 <div class="btn-subtitle">偏好設定、系統選項與個人化控制。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/setting/theme" class="shortcut-link">主題配色</a></object>
+                </div>
             </div>
         </a>
     </main>
 
     <footer class="app-footer">
-        <div class="footer-glass ios-liquid-glass ios-hardware-layer">
-            <div class="copyright">
-                莫比空間 Ⓒ <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong> • 2026<br>
-                資源整合與數位服務入口網
-            </div>
-            <div class="home-indicator" aria-hidden="true"></div>
+        <div class="copyright">
+            莫比空間 Ⓒ <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong> • 2026<br>
+            資源整合與數位服務入口網
         </div>
     </footer>
 </div>
