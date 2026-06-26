@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<script>if(self!==top){top.location=self.location;}</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+<link rel="icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+<link rel="apple-touch-icon" href="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-startup-image" href="https://mobsp.qzz.io/assets/brand/ms-guide.JPEG">
+
+<title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
+
+<meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
+<meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
+<meta property="og:image" content="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
+<meta property="og:type" content="website">
+<meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
+<meta property="og:url" content="https://mobsp.qzz.io/">
+<meta property="og:site_name" content="MOBSP">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
+<meta name="twitter:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="莫比空間">
+<meta name="theme-color" content="#000000">
+
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+
+<link rel="canonical" href="https://mobsp.qzz.io/">
+<link rel="alternate" hreflang="x-default" href="https://mobsp.qzz.io/">
+
+<style>
+:root {
+    --ios-bg: #050507;
+    --ios-bg-deep: #101014;
+    --ios-card: rgba(255, 255, 255, 0.08);
+    --ios-text: #f5f5f7;
+    --ios-muted: rgba(235, 235, 245, 0.62);
+    --ios-line: rgba(255, 255, 255, 0.15);
+    --ios-blue: #007aff;
+    --ios-red: #ff3b30;
+    --ios-green: #34c759;
+    --ios-shadow: 0 24px 70px rgba(0,0,0,.65);
+    --ios-radius-xl: 30px;
+    --ios-ease: cubic-bezier(.2,.8,.2,1);
+}
+
+*, *::before, *::after {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    box-sizing: border-box;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+    -webkit-touch-callout: default;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at top left, rgba(0,122,255,.15), transparent 40%),
+        radial-gradient(circle at bottom right, rgba(175,82,222,.12), transparent 40%),
+        linear-gradient(180deg, var(--ios-bg), var(--ios-bg-deep));
+    color: var(--ios-text);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "PingFang TC", sans-serif;
+    overscroll-behavior: none;
+    touch-action: manipulation;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 100% 8px;
+    opacity: .35;
+    z-index: 0;
+}
+
+.ios-hardware-layer {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform, opacity;
+}
+
+.ios-liquid-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+}
+
+#fake-splash {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 50% 15%, rgba(255,255,255,.28), transparent 36%),
+        #050508 url('https://mobsp.qzz.io/assets/brand/ms-guide.JPEG') center/cover no-repeat;
+    z-index: 99999;
+    display: grid;
+    place-items: center;
+    transition: opacity .8s var(--ios-ease), visibility .8s;
+}
+
+#fake-splash::after {
+    content: "莫比空間";
+    position: absolute;
+    bottom: calc(42px + env(safe-area-inset-bottom));
+    color: rgba(255,255,255,.72);
+    font-size: 13px;
+    letter-spacing: 4px;
+    font-weight: 700;
+}
+
+#fake-splash.fade-out {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
+.page-wrapper {
+    width: 100%;
+    height: 100dvh;
+    max-width: 520px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.app-header {
+    flex-shrink: 0;
+    padding: calc(12px + env(safe-area-inset-top)) 16px 4px;
+    z-index: 10;
+}
+
+.header-glass {
+    padding: 4px;
+    border-radius: var(--ios-radius-xl);
+}
+
+.marquee-row {
+    display: none !important; 
+    width: 100%;
+    min-height: 38px;
+    margin: 0 auto;
+    padding: 7px 10px;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,.14);
+    background: rgba(0,0,0,.84);
+    color: #fff;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.05), 0 10px 24px rgba(0,0,0,.22);
+}
+
+.v-tag {
+    flex-shrink: 0;
+    background: var(--ios-blue);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 4px 8px;
+    border-radius: 999px;
+    margin-right: 9px;
+    white-space: nowrap;
+    letter-spacing: .4px;
+}
+
+.tag-important { background: var(--ios-red); }
+.tag-update { background: var(--ios-green); color: #06130a; }
+
+.mq-box { flex: 1; overflow: hidden; white-space: nowrap; }
+.mq-text {
+    display: inline-block;
+    padding-left: 100%;
+    animation: mq 120s linear infinite;
+    font-size: 12px;
+    color: rgba(255,255,255,.88);
+    letter-spacing: .3px;
+}
+
+@keyframes mq {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-100%); }
+}
+
+.app-main {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+    gap: 20px;
+    padding: 16px 24px 24px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 24px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.app-main::-webkit-scrollbar {
+    display: none;
+}
+
+.action-btn {
+    flex: 0 0 88%;
+    max-width: 430px;
+    min-height: 100%;
+    scroll-snap-align: center;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-decoration: none;
+    border-radius: var(--ios-radius-xl);
+    border: 0.5px solid rgba(255, 255, 255, 0.18);
+    background-color: rgba(20, 20, 22, 0.95);
+    background-position: center;
+    background-size: cover;
+    box-shadow: var(--ios-shadow);
+    isolation: isolate;
+    transform: translateZ(0);
+    transition: filter .2s ease;
+}
+
+.action-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        linear-gradient(180deg, rgba(0,0,0,0.4) 0%, transparent 40%),
+        linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.2) 60%);
+    pointer-events: none;
+}
+
+.action-btn:active {
+    filter: brightness(0.85);
+}
+
+.btn-blog { background-image: url('https://mobsp.qzz.io/assets/brand/ms-blog.JPEG'); }
+.btn-tools { background-image: url('https://mobsp.qzz.io/assets/brand/ms-tools.JPEG'); }
+.btn-music { background-image: url('https://mobsp.qzz.io/assets/brand/ms-music.JPEG'); }
+.btn-shorts { background-image: url('https://mobsp.qzz.io/assets/brand/ms-shorts.JPEG'); }
+.btn-wiki { background-image: url('https://mobsp.qzz.io/assets/brand/ms-wiki.JPEG'); }
+.btn-logo { background-image: url('https://mobsp.qzz.io/assets/brand/ms-logo.JPEG'); }
+
+.card-top-meta {
+    position: relative;
+    z-index: 3;
+    padding: 24px 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.card-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.btn-title {
+    color: #fff;
+    font-size: clamp(1.8rem, 8vw, 2.4rem);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.5);
+}
+
+/* 紫框優化：中央極簡發光字體外觀樣式 */
+.card-center-brand {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: 2px;
+    white-space: nowrap;
+    pointer-events: none;
+    background: linear-gradient(135deg, #ffd700 0%, #f5f5f7 60%, #b8860b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.8));
+    text-shadow: 0 0 20px rgba(255,215,0,0.25);
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 99px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 0.5px solid rgba(255,255,255,0.1);
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 99px;
+    background: var(--ios-green);
+    box-shadow: 0 0 10px var(--ios-green);
+}
+
+.status-dot.status-update { background: var(--ios-green); box-shadow: 0 0 10px var(--ios-green); }
+.status-dot.status-important { background: var(--ios-red); box-shadow: 0 0 10px var(--ios-red); }
+.status-dot.status-normal { background: var(--ios-blue); box-shadow: 0 0 10px var(--ios-blue); }
+
+.status-text {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.card-bottom-meta {
+    position: relative;
+    z-index: 3;
+    padding: 0 24px 28px;
+}
+
+.btn-subtitle {
+    margin-top: 0;
+    color: rgba(255,255,255,.76);
+    font-size: 13px;
+    line-height: 1.5;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+}
+
+.card-shortcuts {
+    margin-top: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.shortcut-link {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 0.5px solid rgba(255, 255, 255, 0.15);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background .2s, transform .2s;
+}
+
+.shortcut-link:active {
+    background: rgba(255, 255, 255, 0.25);
+    transform: scale(0.95);
+}
+
+.app-footer {
+    flex-shrink: 0;
+    padding: 8px 24px calc(14px + env(safe-area-inset-bottom));
+    text-align: center;
+    z-index: 10;
+}
+
+.copyright {
+    font-size: 11px;
+    color: rgba(235, 235, 245, 0.45);
+    line-height: 1.6;
+    letter-spacing: .5px;
+}
+
+.copyright strong {
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 600;
+}
+
+@media (min-width: 700px) {
+    .page-wrapper { max-width: 640px; }
+    .action-btn { flex-basis: 78%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .001ms !important;
+        transition-duration: .001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+</style>
+</head>
+
+<body>
+<div id="fake-splash" aria-hidden="true"></div>
+
+<div class="page-wrapper">
+    <header class="app-header">
+        <div class="header-glass ios-hardware-layer">
+            <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間</h1>
+            <nav class="marquee-row" aria-label="系統公告">
+                <span class="v-tag" id="v-tag">SYNCING</span>
+                <div class="mq-box">
+                    <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="app-main" id="app-main" aria-label="莫比空間服務入口">
+        
+        <a href="https://mobsp.qzz.io/blog/" class="action-btn btn-blog ios-hardware-layer" aria-label="前往部落格" rel="noopener noreferrer">
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">部落格</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-update"></span>
+                    <span class="status-text">已更新</span>
+                </div>
+            </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
+            <div class="card-bottom-meta">
+                <div class="btn-subtitle">文章、觀點、紀錄與莫比宇宙的文字艙。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/blog/tech" class="shortcut-link">技術觀點</a></object>
+                    <object><a href="https://mobsp.qzz.io/blog/life" class="shortcut-link">生活隨筆</a></object>
+                    <object><a href="https://mobsp.qzz.io/blog/archive" class="shortcut-link">所有存檔</a></object>
+                </div>
+            </div>
+        </a>
+
+        <a href="https://mobsp.qzz.io/tol/" class="action-btn btn-tools ios-hardware-layer" aria-label="前往工具庫" rel="noopener noreferrer">
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">工具庫</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-normal"></span>
+                    <span class="status-text">運作中</span>
+                </div>
+            </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
+            <div class="card-bottom-meta">
+                <div class="btn-subtitle">常用工具、線上功能與實驗型小裝置。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/tol/json" class="shortcut-link">JSON格式化</a></object>
+                    <object><a href="https://mobsp.qzz.io/tol/crypto" class="shortcut-link">加解密工具</a></object>
+                    <object><a href="https://mobsp.qzz.io/tol/regex" class="shortcut-link">正則測試</a></object>
+                </div>
+            </div>
+        </a>
+
+        <a href="https://mobsp.qzz.io/music/" class="action-btn btn-music ios-hardware-layer" aria-label="前往音樂頻道" rel="noopener noreferrer">
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">音樂頻道</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-normal"></span>
+                    <span class="status-text">線上</span>
+                </div>
+            </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
+            <div class="card-bottom-meta">
+                <div class="btn-subtitle">聲音收藏、播放入口與靈感節拍。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/music/lofi" class="shortcut-link">Lofi 節拍</a></object>
+                    <object><a href="https://mobsp.qzz.io/music/playlist" class="shortcut-link">精選歌單</a></object>
+                </div>
+            </div>
+        </a>
+
+        <a href="https://mobsp.qzz.io/shorts/" class="action-btn btn-shorts ios-hardware-layer" aria-label="前往 Shorts" rel="noopener noreferrer">
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">Shorts</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-update"></span>
+                    <span class="status-text">新片</span>
+                </div>
+            </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
+            <div class="card-bottom-meta">
+                <div class="btn-subtitle">短內容、片段記錄與快速瀏覽區。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/shorts/latest" class="shortcut-link">最新短片</a></object>
+                    <object><a href="https://mobsp.qzz.io/shorts/trend" class="shortcut-link">熱門排行</a></object>
+                </div>
+            </div>
+        </a>
+
+        <a href="https://mobsp.qzz.io/wiki/" class="action-btn btn-wiki ios-hardware-layer" aria-label="前往支援中心" rel="noopener noreferrer">
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">支援中心</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-normal"></span>
+                    <span class="status-text">指南</span>
+                </div>
+            </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
+            <div class="card-bottom-meta">
+                <div class="btn-subtitle">說明文件、導覽與常見問題入口。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/wiki/faq" class="shortcut-link">常見問題</a></object>
+                    <object><a href="https://mobsp.qzz.io/wiki/guide" class="shortcut-link">新手導覽</a></object>
+                </div>
+            </div>
+        </a>
+
+        <a href="https://mobsp.qzz.io/history/" class="action-btn btn-logo ios-hardware-layer" aria-label="查看歷史紀錄" rel="noopener noreferrer">
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">歷史紀錄</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-important"></span>
+                    <span class="status-text">維護</span>
+                </div>
+            </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
+            <div class="card-bottom-meta">
+                <div class="btn-subtitle">站點紀錄、版本脈絡與變更軌跡。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/history/v2" class="shortcut-link">v2.0 變更</a></object>
+                </div>
+            </div>
+        </a>
+
+        <a href="https://mobsp.qzz.io/setting" class="action-btn btn-logo ios-hardware-layer" aria-label="開啟設定" rel="noopener noreferrer">
+            <div class="card-top-meta">
+                <div class="card-title-group">
+                    <div class="btn-title">設定</div>
+                </div>
+                <div class="status-indicator">
+                    <span class="status-dot status-normal"></span>
+                    <span class="status-text">配置</span>
+                </div>
+            </div>
+            
+            <div class="card-center-brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</div>
+
+            <div class="card-bottom-meta">
+                <div class="btn-subtitle">偏好設定、系統選項與個人化控制。</div>
+                <div class="card-shortcuts" onclick="event.stopPropagation();">
+                    <object><a href="https://mobsp.qzz.io/setting/theme" class="shortcut-link">主題配色</a></object>
+                </div>
+            </div>
+        </a>
+    </main>
+
+    <footer class="app-footer">
+        <div class="copyright">
+            莫比空間 Ⓒ <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong> • 2026<br>
+            資源整合與數位服務入口網
+        </div>
+    </footer>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const splash = document.getElementById('fake-splash');
+
+    const hideSplash = () => {
+        setTimeout(() => {
+            if (splash) {
+                splash.classList.add('fade-out');
+                setTimeout(() => {
+                    if (splash.parentNode) splash.remove();
+                }, 800);
+            }
+        }, 1000);
+    };
+
+    window.addEventListener('load', hideSplash);
+    setTimeout(hideSplash, 3500);
+
+    initNoticeSystem();
+    preventDoubleTapZoom();
+});
+
+const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+
+async function initNoticeSystem() {
+    const cachedData = localStorage.getItem('mobsp_notices');
+
+    if (cachedData) {
+        try {
+            renderNotice(JSON.parse(cachedData), true);
+        } catch (err) {
+            localStorage.removeItem('mobsp_notices');
+        }
+    }
+
+    try {
+        if (typeof supabase === 'undefined') return;
+
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const { data, error } = await client
+            .from('notices')
+            .select('type, message')
+            .order('created_at', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+            localStorage.setItem('mobsp_notices', JSON.stringify(data));
+            renderNotice(data, false);
+        }
+    } catch (err) {
+        console.warn('公告更新受阻');
+    }
+}
+
+function renderNotice(data, isCached) {
+    const vTag = document.getElementById('v-tag');
+    const mqText = document.getElementById('mq-text');
+
+    if (!vTag || !mqText || !data.length) return;
+
+    const randomItem = data[Math.floor(Math.random() * data.length)];
+    const category = randomItem.type || 'NEWS';
+
+    vTag.classList.remove('tag-important', 'tag-update');
+
+    if (category.match(/重要|守則/)) {
+        vTag.classList.add('tag-important');
+    } else if (category.match(/更新|系統/)) {
+        vTag.classList.add('tag-update');
+    }
+
+    vTag.innerText = `${isCached ? 'OFFLINE' : 'v2.0'} | ${category}`;
+    mqText.innerText = randomItem.message || '';
+}
+
+function preventDoubleTapZoom() {
+    let lastTouchEnd = 0;
+
+    document.addEventListener('touchend', event => {
+        const now = Date.now();
+
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+
+        lastTouchEnd = now;
+    }, { passive: false });
+}
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').catch(() => {});
+    });
+}
+</script>
+</body>
+</html>
