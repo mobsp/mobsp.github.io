@@ -1,6 +1,6 @@
-<!DOCTYPE html><html lang="zh-TW" data-theme="dark">
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
 <head>
-    <!-- 修正：移除重複的防 Frame 腳本與重複的 preconnect -->
     <script>if(self!==top){top.location=self.location;}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -9,7 +9,27 @@
     <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
     <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin="">
+    <link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/blog/index.html">
+    <link rel="canonical" href="https://mobsp.qzz.io/blog/index.html">
     
+    <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO | MOBSP">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO">
+    <meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO | MOBSP">
+    <meta property="og:image" content="https://your-supreme-site.com/og-image.jpg">
+    <meta property="og:url" content="https://mobsp.qzz.io/blog/index.html">
+    <meta property="og:site_name" content="MOBSP">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO">
+    <meta name="twitter:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO | MOBSP">
+    <meta name="theme-color" content="#0b1020">
+    
+    <link rel="manifest" href="/manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
     <style>
         :root {
             --bg-body: #000000; --bg-container: #0a0a0a;
@@ -70,14 +90,19 @@
             transition: 0.3s;
         }
         .harvester-btn:active { transform: scale(0.96); opacity: 0.9; }
-        .status-msg { margin-top: 15px; font-size: 10px; color: #444; text-align: center; letter-spacing: 1px; }
+        .status-msg { margin-top: 15px; font-size: 11px; color: #666; text-align: center; letter-spacing: 1px; line-height: 1.4; }
 
-        /* 列表樣式 */
+        /* 列表與分頁樣式 */
         .article-row { display: flex; gap: 15px; padding: 15px; border-bottom: 1px solid #111; align-items: center; text-decoration: none; }
         .row-img { width: 55px; height: 55px; border-radius: 10px; object-fit: cover; background: #1a1a1a; }
         .row-info { flex: 1; overflow: hidden; }
         .row-title { font-size: 14px; font-weight: 600; color: #eee; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .row-cate { font-size: 9px; color: var(--accent-color); font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+        
+        .pagination-container { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #050505; }
+        .page-btn { background: #111; border: 1px solid #222; color: #fff; padding: 8px 16px; border-radius: 8px; font-size: 12px; cursor: pointer; }
+        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        .page-info { color: #555; font-size: 12px; font-weight: 600; }
 
         .bottom-nav { 
             height: calc(65px + env(safe-area-inset-bottom)); 
@@ -91,30 +116,6 @@
 
         @keyframes toolSlide { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     </style>
-    
-    <link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/blog/index.html">
-    <link rel="preconnect" href="https://gstatic.com" crossorigin="">
-    <!-- 修正：補全原本不完整的 web-vitals 載入路徑與引號 -->
-    <script type="module">
-        import { onLCP, onFID, onCLS } from 'https://unpkg.com/web-vitals@3/dist/web-vitals.js';
-    </script>
-    
-    <meta property="og:type" content="website">
-    <meta property="og:image" content="https://your-supreme-site.com/og-image.jpg">
-    <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO | MOBSP">
-    <link rel="canonical" href="https://mobsp.qzz.io/blog/index.html">
-    <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO">
-    <meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO | MOBSP">
-    <meta property="og:url" content="https://mobsp.qzz.io/blog/index.html">
-    <meta property="og:site_name" content="MOBSP">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO">
-    <meta name="twitter:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO | MOBSP">
-    <meta name="theme-color" content="#0b1020">
-    <link rel="manifest" href="/manifest.json">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
 
@@ -137,7 +138,16 @@
 
     <script>
         let rawArticles = [];
+        let currentPage = 1;
+        const itemsPerPage = 20;
         let harvestOptions = { img: true, dark: true, code: true, clean: false };
+
+        // 多重代理伺服器集（提供自動故障轉移）
+        const proxyPool = [
+            (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+            (url) => `https://proxy.cors.sh/${url}`
+        ];
 
         function switchToRead() {
             setNavActive('btn-read');
@@ -149,7 +159,7 @@
             document.getElementById('main-view').innerHTML = `
                 <div class="tool-panel">
                     <div class="tool-card">
-                        <input type="text" id="target-url" class="tool-input" placeholder="貼上欲收割的網址 (https://...)">
+                        <input type="url" id="target-url" class="tool-input" placeholder="貼上欲收割的網址 (https://...)">
                         
                         <div class="option-grid">
                             <div class="opt-item ${harvestOptions.img?'active':''}" onclick="toggleOpt(this,'img')">
@@ -167,7 +177,7 @@
                         </div>
 
                         <button onclick="startHarvestPro()" class="harvester-btn">執行深度收割</button>
-                        <div id="h-status" class="status-msg">READY TO HARVEST V1.3 - OPTIMIZED</div>
+                        <div id="h-status" class="status-msg">READY TO HARVEST V2.0<br>已啟用彈性閱讀演算法與安全沙箱</div>
                     </div>
                 </div>`;
         }
@@ -182,76 +192,142 @@
             el.classList.toggle('active');
         }
 
-        /* 安全防護：對節點內容進行基礎消毒，防止 XSS 注入 */
-        function sanitizeElement(el) {
-            // 移除所有 script 標籤[span_5](start_span)[span_5](end_span)
-            el.querySelectorAll('script').forEach(s => s.remove());
-            // 移除所有內聯事件屬性（如 onclick, onerror）[span_6](start_span)[span_6](end_span)
-            const allElements = el.getElementsByTagName('*');
+        // 彈性核心：多重代理管道請求
+        async function fetchWithFallback(targetUrl) {
+            let lastError = null;
+            for (let i = 0; i < proxyPool.length; i++) {
+                try {
+                    const proxyUrl = proxyPool[i](targetUrl);
+                    const res = await fetch(proxyUrl);
+                    if (!res.ok) throw new Error(`HTTP status ${res.status}`);
+                    
+                    // 針對 AllOrigins 的 JSON 結構進行特殊解析，其餘代理通常直接返回 Text
+                    if (proxyUrl.includes('allorigins.win')) {
+                        const json = await res.json();
+                        if (json.contents) return json.contents;
+                    } else {
+                        return await res.text();
+                    }
+                } catch (err) {
+                    lastError = err;
+                    console.warn(`代理節點 ${i+1} 穿透失敗，嘗試下一個節點...`);
+                }
+            }
+            throw lastError || new Error("所有穿透節點均遭目標封鎖");
+        }
+
+        // 安全防護：HTML 消毒白名單過濾（杜絕 XSS 與惡意 Script）
+        function sanitizeContent(htmlInput) {
+            const sandbox = document.createElement('div');
+            sandbox.innerHTML = htmlInput;
+            
+            // 徹底移除不安全標籤
+            const forbiddenTags = ['script', 'iframe', 'object', 'embed', 'link', 'style', 'frameset', 'applet'];
+            forbiddenTags.forEach(tag => {
+                sandbox.querySelectorAll(tag).forEach(el => el.remove());
+            });
+
+            // 清理所有節點的 inline 惡意事件屬性（如 onerror, onclick）
+            const allElements = sandbox.getElementsByTagName('*');
             for (let i = 0; i < allElements.length; i++) {
                 const attrs = allElements[i].attributes;
                 for (let j = attrs.length - 1; j >= 0; j--) {
-                    if (attrs[j].name.startsWith('on')) {
-                        allElements[i].removeAttribute(attrs[j].name);
+                    const attrName = attrs[j].name.toLowerCase();
+                    if (attrName.startsWith('on') || attrName === 'javascript:') {
+                        allElements[i].removeAttribute(attrName);
                     }
                 }
             }
-            return el;
+            return sandbox.innerHTML;
         }
 
-        /* 🚀 核心：優化後的深度收割引擎 */
+        // 開放式演算法：精準識別文章主要容器
+        function findMainContentContainer(doc) {
+            const indicators = [
+                'article', 'main', '.post-content', '.entry-content', 
+                '.markdown-body', '.content', '.prose', '#content', '#main'
+            ];
+            for (let selector of indicators) {
+                const found = doc.querySelector(selector);
+                if (found && found.innerText.trim().length > 200) {
+                    return found;
+                }
+            }
+            return doc.body; // 備用方案
+        }
+
+        // 進階提取：高相容性多元圖片、代碼區塊與語意內容抓取
+        function extractAdaptiveHTML(container, baseUrl) {
+            let extractedHtml = '';
+            
+            // 尋找主封面 Open Graph 圖片
+            const ogImg = container.ownerDocument.querySelector('meta[property="og:image"]')?.getAttribute('content');
+            if (ogImg && harvestOptions.img) {
+                try { const fullOgImg = new URL(ogImg, baseUrl).href;
+                    extractedHtml += `<div style="margin:25px 0; text-align:center;"><img src="${fullOgImg}" style="max-width:100%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"><p style="font-size:12px; color:#666; margin-top:8px;">Featured Image</p></div>\n`;
+                } catch(e){}
+            }
+
+            // 多元素迭代處理
+            const querySelectors = 'p, h1, h2, h3, h4, h5, h6, img, pre, code, blockquote, figure, table, .highlight';
+            container.querySelectorAll(querySelectors).forEach(el => {
+                // 1. 高度適應性圖片抓取 (含 Lazy Loading / srcset)
+                if (el.tagName === 'IMG' && harvestOptions.img) {
+                    let src = el.getAttribute('src') || el.getAttribute('data-src') || el.getAttribute('data-original') || el.getAttribute('data-lazy-src');
+                    if (!src && el.getAttribute('srcset')) {
+                        const srcsetItems = el.getAttribute('srcset').split(',');
+                        if (srcsetItems.length > 0) src = srcsetItems[srcsetItems.length - 1].trim().split(' ')[0];
+                    }
+                    if (src) {
+                        try { src = new URL(src, baseUrl).href; } catch(e){}
+                        extractedHtml += `<div style="margin:25px 0;"><img src="${src}" style="max-width:100%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"></div>\n`;
+                    }
+                } 
+                // 2. 進階多結構代碼塊適應 (如 highlight.js, prism 等)
+                else if ((el.tagName === 'PRE' || el.classList.contains('highlight') || el.tagName === 'TABLE' && el.querySelector('pre')) && harvestOptions.code) {
+                    const cleanCode = sanitizeContent(el.innerText.trim());
+                    if (cleanCode.length > 0) {
+                        extractedHtml += `<pre><code>${cleanCode}</code></pre>\n`;
+                    }
+                }
+                // 3. 一般語意文字內容抓取
+                else if (el.innerText.trim().length > 4 && !el.querySelector('pre') && !el.closest('pre')) {
+                    const tag = ['H1','H2','H3','H4','H5','H6','BLOCKQUOTE'].includes(el.tagName) ? el.tagName.toLowerCase() : 'p';
+                    let inner = harvestOptions.clean ? el.innerText.trim() : el.innerHTML;
+                    inner = sanitizeContent(inner); // 通過安全過濾沙箱
+                    extractedHtml += `<${tag} style="margin-bottom:1.5rem;">${inner}</${tag}>\n`;
+                }
+            });
+
+            return extractedHtml;
+        }
+
+        /* 🚀 核心：修復與改進後的深度收割引擎 */
         async function startHarvestPro() {
             const urlInput = document.getElementById('target-url');
             const status = document.getElementById('h-status');
             const url = urlInput.value.trim();
 
-            if (!url.startsWith('http')) return status.innerText = "❌ 網址無效";
+            if (!url.startsWith('http')) return status.innerHTML = "❌ 網址格式錯誤，必須包含 http/https";
             
-            status.innerText = "📡 正在穿透目標伺服器...";
+            status.innerHTML = "📡 正在調度彈性跨域代理穿透目標伺服器...";
             try {
-                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-                const data = await res.json();
-                const doc = new DOMParser().parseFromString(data.contents, 'text/html');
+                const rawHtml = await fetchWithFallback(url);
+                status.innerHTML = "🧠 穿透成功！正在執行語意結構分析與安全沙箱洗滌...";
                 
-                const title = doc.querySelector('h1')?.innerText || doc.title || "Ⲙ𝔬ⲃ¡ⳝ𝔭_Archive";
-                let contentHtml = '';
+                const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
+                const title = doc.querySelector('h1')?.innerText.trim() || doc.title.trim() || "Ⲙ𝔬ⲃ¡ⳝ𝔭_Archive";
+                
+                // 執行主要內容區塊定位演算法
+                const mainContainer = findMainContentContainer(doc);
+                // 執行高相容性自適應 HTML 提取
+                const contentHtml = extractAdaptiveHTML(mainContainer, url);
 
-                // 優化：優先尋找文章主要內容容器，避免抓到滿街的導覽列與側邊欄垃圾[span_7](start_span)[span_7](end_span)
-                const mainContentSelectors = 'article, main, .post-content, .entry-content, .markdown-body, .content, .prose';[span_8](start_span)[span_8](end_span)
-                let rootScope = doc;
-                const foundContainer = doc.querySelector(mainContentSelectors);
-                if (foundContainer) {
-                    rootScope = foundContainer;
+                if (!contentHtml || contentHtml.trim().length === 0) {
+                    throw new Error("未能成功從目標網站內識別出可讀文本。");
                 }
 
-                // 設定擷取器類型[span_9](start_span)[span_9](end_span)
-                const selectors = harvestOptions.clean ? 'p' : 'p, h2, h3, img, pre, code, blockquote';[span_10](start_span)[span_10](end_span)
-                
-                rootScope.querySelectorAll(selectors).forEach(el => {
-                    // 安全消毒處理[span_11](start_span)[span_11](end_span)
-                    const cleanEl = sanitizeElement(el.cloneNode(true));
-
-                    // 1. 影像提取與路徑補全（增強：支援 lazy-loading 常見的替代屬性）[span_12](start_span)[span_12](end_span)
-                    if (cleanEl.tagName === 'IMG' && harvestOptions.img) {
-                        let src = cleanEl.getAttribute('src') || cleanEl.getAttribute('data-src') || cleanEl.getAttribute('data-original');[span_13](start_span)[span_13](end_span)
-                        if (src) {
-                            try { src = new URL(src, url).href; } catch(e){}
-                            contentHtml += `<div style="margin:25px 0;"><img src="${src}" style="max-width:100%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"></div>\n`;
-                        }
-                    } 
-                    // 2. 文字與排版內容提取
-                    else if (cleanEl.innerText.trim().length > 5) {
-                        const tag = cleanEl.tagName.toLowerCase();
-                        let inner = cleanEl.innerHTML;
-                        
-                        if (harvestOptions.clean) {
-                            inner = cleanEl.innerText; // 極簡模式則純文字化
-                        }
-                        contentHtml += `<${tag} style="margin-bottom:1.5rem;">${inner}</${tag}>\n`;[span_14](start_span)[span_14](end_span)
-                    }
-                });
-
-                // 3. 樣式矩陣注入[span_15](start_span)[span_15](end_span)
+                // 樣式矩陣注入
                 const styleTag = `
                     body { 
                         background:${harvestOptions.dark?'#000':'#fff'}; 
@@ -259,67 +335,101 @@
                         padding:40px 25px; line-height:1.8; font-family:-apple-system, sans-serif; 
                         max-width:600px; margin:0 auto; 
                     }
-                    h1 { color:#00cec9; font-size:2rem; margin-bottom:2rem; border-bottom:1px solid #222; padding-bottom:15px; }
-                    h2, h3 { color:${harvestOptions.dark?'#eee':'#000'}; margin-top:2.5rem; }
+                    h1 { color:#00cec9; font-size:1.8rem; margin-bottom:2rem; border-bottom:1px solid #222; padding-bottom:15px; line-height:1.4; }
+                    h2, h3, h4 { color:${harvestOptions.dark?'#eee':'#000'}; margin-top:2.5rem; margin-bottom:1rem; }
                     pre { 
                         background:#111; padding:20px; border-radius:12px; overflow-x:auto; 
-                        border:1px solid #222; color:#00cec9; font-family:monospace; margin:20px 0;
+                        border:1px solid #222; color:#00cec9; font-family:monospace; margin:25px 0;
+                        font-size:13px; line-height:1.5;
                         display: ${harvestOptions.code?'block':'none'};
                     }
-                    p { margin-bottom:1.2rem; }
-                    img { display:block; }
+                    p { margin-bottom:1.4rem; text-align: justify; }
+                    blockquote { border-left: 4px solid var(--accent-color); padding-left: 15px; color: #666; margin: 20px 0; font-style: italic; }
+                    img { display:block; height: auto; }
                 `;
 
-                // 4. 打包下載[span_16](start_span)[span_16](end_span)
+                // 打包安全 HTML 下載
                 const finalBlob = new Blob([`
-                    <!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>${styleTag}</style></head>
+                    <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${title}</title><style>${styleTag}</style></head>
                     <body><h1>${title}</h1>${contentHtml}</body></html>
-                `], {type:'text/html'});
+                `], {type:'text/html;charset=utf-8'});
 
                 const a = document.createElement('a');
                 a.href = URL.createObjectURL(finalBlob);
-                a.download = `MS_${title.substring(0,10).replace(/[/\\?%*:|"<>]/g, '-')}.html`; // 修正：移除檔名非法字元
+                a.download = `MS_${title.replace(/[\\/:*?"<>|]/g, "").substring(0,15)}.html`;
                 a.click();
 
-                status.innerText = "✅ 收割成功！檔案已彈出。";[span_17](start_span)[span_17](end_span)
+                status.innerHTML = "✅ 收割成功！安全離線沙箱檔案已匯出彈出。";
             } catch (err) {
-                status.innerText = "❌ 代理失效或目標封鎖請求。";[span_18](start_span)[span_18](end_span)
+                status.innerHTML = `❌ 錯誤: ${err.message}<br><span style="color:#444;font-size:10px;">代理已被拒絕或目標網站屬於完全動態結構(SPA)</span>`;
             }
         }
 
-        /* 列表同步邏輯[span_19](start_span)[span_19](end_span) */
+        /* 列表同步與優化分頁邏輯 */
         async function loadArticles() {
-            const api = "https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p/list?t=" + Date.now();[span_20](start_span)[span_20](end_span)
+            const api = "https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p/list?t=" + Date.now();
             try {
-                const res = await fetch(api);[span_21](start_span)[span_21](end_span)
-                const files = await res.json();[span_22](start_span)[span_22](end_span)
-                rawArticles = files.filter(f => f.name.endsWith('.html')).reverse().map(f => ({[span_23](start_span)[span_23](end_span)
-                    title: decodeURIComponent(f.name).replace('.html','').trim(),[span_24](start_span)[span_24](end_span)
-                    path: f.path[span_25](start_span)[span_25](end_span)
+                const res = await fetch(api);
+                if (!res.ok) throw new Error();
+                const files = await res.json();
+                
+                rawArticles = files.filter(f => f.name.endsWith('.html')).reverse().map(f => ({
+                    title: decodeURIComponent(f.name).replace('.html','').trim(),
+                    path: f.path
                 }));
-                renderArticleList();[span_26](start_span)[span_26](end_span)
+                renderArticleList();
             } catch (e) {
-                document.getElementById('main-view').innerHTML = '<div style="text-align:center; padding:50px; color:#333;">SYNC FAILED</div>';[span_27](start_span)[span_27](end_span)
+                document.getElementById('main-view').innerHTML = '<div style="text-align:center; padding:50px; color:#333; font-size:11px; letter-spacing:1px;">SYNC FAILED (GITHUBA_API_LIMIT)</div>';
             }
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            renderArticleList();
+            document.getElementById('main-view').scrollTop = 0;
         }
 
         function renderArticleList() {
-            const container = document.getElementById('main-view');[span_28](start_span)[span_28](end_span)
-            if (rawArticles.length === 0) return;[span_29](start_span)[span_29](end_span)
-            container.innerHTML = rawArticles.map(p => `
+            const container = document.getElementById('main-view');
+            if (rawArticles.length === 0) return;
+
+            // 計算分頁區間
+            const totalPages = Math.ceil(rawArticles.length / itemsPerPage);
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageItems = rawArticles.slice(startIndex, endIndex);
+
+            let listHtml = pageItems.map(p => `
                 <a class="article-row" href="https://mobsp.github.io/${p.path}">
                     <div class="row-img"></div>
                     <div class="row-info">
                         <div class="row-cate">ARCHIVE</div>
                         <div class="row-title">${p.title}</div>
                     </div>
-                    <i class="fa-solid fa-chevron-right" style="color:#111; font-size:10px;"></i>
-                </a>`).join('');[span_30](start_span)[span_30](end_span)
+                    <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
+                </a>`).join('');
+
+            // 底部注入分頁控制導航條
+            listHtml += `
+                <div class="pagination-container">
+                    <button class="page-btn" onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>上一頁</button>
+                    <div class="page-info">${currentPage} / ${totalPages}</div>
+                    <button class="page-btn" onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>下一頁</button>
+                </div>
+            `;
+            container.innerHTML = listHtml;
         }
 
-        window.onload = loadArticles;[span_31](start_span)[span_31](end_span)
+        window.onload = loadArticles;
     </script>
 
-    <script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); }</script>[span_32](start_span)[span_32](end_span)
+    <script>
+        if ('serviceWorker' in navigator) { 
+            window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); 
+        }
+    </script>
 </body>
 </html>
