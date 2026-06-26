@@ -14,7 +14,7 @@ async function generateEssentialFiles() {
     const manifest = {
         "name": "Supreme Web App", "short_name": "Supreme", "start_url": "/", "display": "standalone",
         "background_color": "#000000", "theme_color": "#000000",
-        "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" }]
+        "icons": [{ "src": "/icons/icon-192.webp", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" }]
     };
     await fs.writeJson('manifest.json', manifest, { spaces: 2 });
 
@@ -57,7 +57,7 @@ const ULTIMATE_LOGIC = {
 
         // [轉換] 注入自動 Open Graph 分享預覽
         if (!$('meta[property="og:image"]').length) {
-            $('head').append(`<meta property="og:type" content="website"><meta property="og:image" content="${DOMAIN}/og-image.jpg">`);
+            $('head').append(`<meta property="og:type" content="website"><meta property="og:image" content="${DOMAIN}/og-image.webp">`);
         }
 
         // 遍歷所有連結加入安全屬性
