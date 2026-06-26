@@ -13,17 +13,17 @@
 
 <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
 
-<meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
+<meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器.">
 <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
 <meta property="og:image" content="https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG">
 <meta property="og:type" content="website">
-<meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
+<meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器.">
 <meta property="og:url" content="https://mobsp.qzz.io/">
 <meta property="og:site_name" content="MOBSP">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
-<meta name="twitter:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
+<meta name="twitter:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器.">
 
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -87,7 +87,6 @@ body {
     touch-action: manipulation;
 }
 
-/* 紅框優化：背景網格全面覆蓋安全區域，消除黑白死角 */
 body::before {
     content: "";
     position: fixed;
@@ -106,7 +105,6 @@ body::before {
     will-change: transform, opacity;
 }
 
-/* 藍框優化：移除過度濃烈的液態玻璃樣式，改為精緻微調透光 */
 .ios-liquid-glass {
     background: rgba(255, 255, 255, 0.05);
     backdrop-filter: blur(20px) saturate(140%);
@@ -176,7 +174,6 @@ body::before {
     border-radius: var(--ios-radius-xl);
 }
 
-/* 黃框優化：預留跑馬燈結構位置，現設定為隱藏，隨時可移除 display:none 恢復 */
 .marquee-row {
     display: none !important; 
     width: 100%;
@@ -241,7 +238,6 @@ body::before {
     display: none;
 }
 
-/* 藍框優化：移除初次進入與 active 時的多餘彈跳與放大縮小震盪特效，保持平滑與穩定度 */
 .action-btn {
     flex: 0 0 88%;
     max-width: 430px;
@@ -286,7 +282,6 @@ body::before {
 .btn-wiki { background-image: url('https://mobsp.qzz.io/assets/brand/ms-wiki.JPEG'); }
 .btn-logo { background-image: url('https://mobsp.qzz.io/assets/brand/ms-logo.JPEG'); }
 
-/* 綠框優化：結構大改版，標題與狀態點完全移至頂部配置 */
 .card-top-meta {
     position: relative;
     z-index: 3;
@@ -311,7 +306,6 @@ body::before {
     text-shadow: 0 4px 12px rgba(0,0,0,0.5);
 }
 
-/* 綠色多功能狀態色點設計：可擴充 status-update, status-important 等詞庫 */
 .status-indicator {
     display: inline-flex;
     align-items: center;
@@ -332,7 +326,6 @@ body::before {
     box-shadow: 0 0 10px var(--ios-green);
 }
 
-/* 色點狀態詞定義庫 */
 .status-dot.status-update { background: var(--ios-green); box-shadow: 0 0 10px var(--ios-green); }
 .status-dot.status-important { background: var(--ios-red); box-shadow: 0 0 10px var(--ios-red); }
 .status-dot.status-normal { background: var(--ios-blue); box-shadow: 0 0 10px var(--ios-blue); }
@@ -358,12 +351,14 @@ body::before {
     text-shadow: 0 2px 6px rgba(0,0,0,0.4);
 }
 
-/* 綠框全新設計：預留隨機 3-5 個子網頁快捷鍵入口區塊 */
+/* 結構優化：快捷鏈接底座容器與事件穿透隔離 */
 .card-shortcuts {
     margin-top: 14px;
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+    position: relative;
+    z-index: 5;
 }
 
 .shortcut-link {
@@ -377,7 +372,9 @@ body::before {
     font-size: 11px;
     font-weight: 500;
     text-decoration: none;
+    display: inline-block;
     transition: background .2s, transform .2s;
+    pointer-events: auto; /* 確保子連結可點擊 */
 }
 
 .shortcut-link:active {
@@ -385,7 +382,6 @@ body::before {
     transform: scale(0.95);
 }
 
-/* 藍框與紅框優化：移除原本懸浮的版權卡片，將版權文字移至頁面最底部安全區 */
 .app-footer {
     flex-shrink: 0;
     padding: 8px 24px calc(14px + env(safe-area-inset-bottom));
@@ -404,8 +400,6 @@ body::before {
     color: rgba(255, 255, 255, 0.65);
     font-weight: 600;
 }
-
-/* 橘框優化：已完全拔除舊有內部 home-indicator 線條條組件 */
 
 @media (min-width: 700px) {
     .page-wrapper { max-width: 640px; }
@@ -452,10 +446,10 @@ body::before {
             </div>
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">文章、觀點、紀錄與莫比宇宙的文字艙。</div>
-                <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.qzz.io/blog/tech" class="shortcut-link">技術觀點</a></object>
-                    <object><a href="https://mobsp.qzz.io/blog/life" class="shortcut-link">生活隨筆</a></object>
-                    <object><a href="https://mobsp.qzz.io/blog/archive" class="shortcut-link">所有存檔</a></object>
+                <div class="card-shortcuts" onclick="event.stopPropagation(); event.preventDefault();">
+                    <a href="https://mobsp.qzz.io/blog/tech" class="shortcut-link">技術觀點</a>
+                    <a href="https://mobsp.qzz.io/blog/life" class="shortcut-link">生活隨筆</a>
+                    <a href="https://mobsp.qzz.io/blog/archive" class="shortcut-link">所有存檔</a>
                 </div>
             </div>
         </a>
@@ -472,10 +466,10 @@ body::before {
             </div>
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">常用工具、線上功能與實驗型小裝置。</div>
-                <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.qzz.io/tol/json" class="shortcut-link">JSON格式化</a></object>
-                    <object><a href="https://mobsp.qzz.io/tol/crypto" class="shortcut-link">加解密工具</a></object>
-                    <object><a href="https://mobsp.qzz.io/tol/regex" class="shortcut-link">正則測試</a></object>
+                <div class="card-shortcuts" onclick="event.stopPropagation(); event.preventDefault();">
+                    <a href="https://mobsp.qzz.io/tol/json" class="shortcut-link">JSON格式化</a>
+                    <a href="https://mobsp.qzz.io/tol/crypto" class="shortcut-link">加解密工具</a>
+                    <a href="https://mobsp.qzz.io/tol/regex" class="shortcut-link">正則測試</a>
                 </div>
             </div>
         </a>
@@ -492,9 +486,9 @@ body::before {
             </div>
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">聲音收藏、播放入口與靈感節拍。</div>
-                <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.qzz.io/music/lofi" class="shortcut-link">Lofi 節拍</a></object>
-                    <object><a href="https://mobsp.qzz.io/music/playlist" class="shortcut-link">精選歌單</a></object>
+                <div class="card-shortcuts" onclick="event.stopPropagation(); event.preventDefault();">
+                    <a href="https://mobsp.qzz.io/music/lofi" class="shortcut-link">Lofi 節拍</a>
+                    <a href="https://mobsp.qzz.io/music/playlist" class="shortcut-link">精選歌單</a>
                 </div>
             </div>
         </a>
@@ -511,9 +505,9 @@ body::before {
             </div>
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">短內容、片段記錄與快速瀏覽區。</div>
-                <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.qzz.io/shorts/latest" class="shortcut-link">最新短片</a></object>
-                    <object><a href="https://mobsp.qzz.io/shorts/trend" class="shortcut-link">熱門排行</a></object>
+                <div class="card-shortcuts" onclick="event.stopPropagation(); event.preventDefault();">
+                    <a href="https://mobsp.qzz.io/shorts/latest" class="shortcut-link">最新短片</a>
+                    <a href="https://mobsp.qzz.io/shorts/trend" class="shortcut-link">熱門排行</a>
                 </div>
             </div>
         </a>
@@ -530,9 +524,9 @@ body::before {
             </div>
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">說明文件、導覽與常見問題入口。</div>
-                <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.qzz.io/wiki/faq" class="shortcut-link">常見問題</a></object>
-                    <object><a href="https://mobsp.qzz.io/wiki/guide" class="shortcut-link">新手導覽</a></object>
+                <div class="card-shortcuts" onclick="event.stopPropagation(); event.preventDefault();">
+                    <a href="https://mobsp.qzz.io/wiki/faq" class="shortcut-link">常見問題</a>
+                    <a href="https://mobsp.qzz.io/wiki/guide" class="shortcut-link">新手導覽</a>
                 </div>
             </div>
         </a>
@@ -549,8 +543,8 @@ body::before {
             </div>
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">站點紀錄、版本脈絡與變更軌跡。</div>
-                <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.qzz.io/history/v2" class="shortcut-link">v2.0 變更</a></object>
+                <div class="card-shortcuts" onclick="event.stopPropagation(); event.preventDefault();">
+                    <a href="https://mobsp.qzz.io/history/v2" class="shortcut-link">v2.0 變更</a>
                 </div>
             </div>
         </a>
@@ -567,8 +561,8 @@ body::before {
             </div>
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">偏好設定、系統選項與個人化控制。</div>
-                <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.qzz.io/setting/theme" class="shortcut-link">主題配色</a></object>
+                <div class="card-shortcuts" onclick="event.stopPropagation(); event.preventDefault();">
+                    <a href="https://mobsp.qzz.io/setting/theme" class="shortcut-link">主題配色</a>
                 </div>
             </div>
         </a>
@@ -604,6 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initNoticeSystem();
     preventDoubleTapZoom();
+    initShortcutLinks();
 });
 
 const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
@@ -671,6 +666,24 @@ function preventDoubleTapZoom() {
 
         lastTouchEnd = now;
     }, { passive: false });
+}
+
+/* 核心防突冲突跳轉引擎：綁定快捷欄點擊事件，強制獨立跳轉不受母卡片錨點干擾 */
+function initShortcutLinks() {
+    const links = document.querySelectorAll('.shortcut-link');
+    links.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            const url = link.getAttribute('href');
+            if (url) {
+                window.location.href = url;
+            }
+        });
+        link.addEventListener('touchend', (e) => {
+            e.stopPropagation();
+        });
+    });
 }
 
 if ('serviceWorker' in navigator) {
