@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+    <script>if(self!==top){top.location=self.location;}</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO</title>
+    
+    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin="">
+    
+    <!-- PWA / iOS 全螢幕沉浸式狀態欄特化 -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+
+    <style>
+        :root {
+            --ios-bg: #000000;
+            --ios-secondary-bg: #1c1c1e;
+            --ios-tertiary-bg: #2c2c2e;
+            --ios-label: #ffffff;
+            --ios-secondary-label: #8e8e93;
+            --ios-separator: #38383a;
+            --ios-tint: #00cec9; /* Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 標誌性青色 */
+            --ios-blur-bg: rgba(25, 25, 25, 0.72);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Compact", Helvetica, sans-serif; 
+            background-color: var(--ios-bg); 
+            color: var(--ios-label);
+            height: 100dvh; overflow: hidden; 
+        }
+
+        /* 模擬手機外殼（PC端居中，手機端全螢幕） */
+        #app-container { 
+            max-width: 500px; margin: 0 auto; 
+            background-color: var(--ios-bg); 
+            height: 100%; display: flex; flex-direction: column; 
+            position: relative;
+        }
+
+        /* iOS 標誌性動態毛玻璃頂欄 */
+        .ios-header { 
+            flex-shrink: 0;
+            position: sticky; top: 0; z-index: 100;
+            padding: calc(20px + env(safe-area-inset-top)) 16px 12px; 
+            background: var(--ios-blur-bg);
+            backdrop-filter: blur(20px) saturate(210%);
+            -webkit-backdrop-filter: blur(20px) saturate(210%);
+            border-bottom: 0.5px solid var(--ios-separator);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .ios-header h1 { font-size: 17px; font-weight: 600; letter-spacing: -0.5px; text-align: center; flex: 1; }
+        .brand-title-img { height: 26px; border-radius: 6px; cursor: pointer; transition: opacity 0.2s; }
+        .brand-title-img:active { opacity: 0.6; }
+
+        /* 主滾動視窗：繼承 iOS 原生彈性滾動阻尼感 */
+        #main-view { 
+            flex: 1; overflow-y: auto; 
+            background: var(--ios-bg); 
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 30px;
+        }
+
+        /* iOS 大標題風格樣式 */
+        .ios-large-title {
+            padding: 16px 16px 8px 16px;
+            font-size: 34px; font-weight: 700; letter-spacing: -1px;
+            color: var(--ios-label);
+        }
+
+        /* iOS 原生分段控制器 (Segmented Control) */
+        .ios-segmented-control {
+            margin: 12px 16px; background: #161618;
+            padding: 2px; border-radius: 9px; display: flex;
+        }
+        .segment-item {
+            flex: 1; text-align: center; padding: 6px 0; font-size: 13px; font-weight: 500;
+            color: var(--ios-label); border-radius: 7px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .segment-item.active {
+            background: var(--ios-tertiary-bg);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            font-weight: 600; color: var(--ios-tint);
+        }
+
+        /* iOS 群組式卡片列表 (Grouped List Layout) */
+        .ios-group-box {
+            margin: 16px; background: var(--ios-secondary-bg);
+            border-radius: 10px; overflow: hidden;
+        }
+        .ios-group-title {
+            margin: 0 32px 6px; font-size: 13px; text-transform: uppercase;
+            color: var(--ios-secondary-label); letter-spacing: 0.5px;
+        }
+
+        /* iOS 原生清單橫條列 (List Row) */
+        .ios-cell {
+            display: flex; align-items: center; padding: 12px 16px;
+            background: var(--ios-secondary-bg); text-decoration: none;
+            color: var(--ios-label); position: relative; transition: background-color 0.15s;
+        }
+        .ios-cell:not(:last-child)::after {
+            content: ''; position: absolute; left: 16px; right: 0; bottom: 0;
+            height: 0.5px; background: var(--ios-separator);
+        }
+        .ios-cell:active { background-color: var(--ios-tertiary-bg); }
+        
+        .ios-cell-icon { width: 28px; font-size: 18px; color: var(--ios-tint); text-align: center; margin-right: 12px; }
+        .ios-cell-label { flex: 1; font-size: 16px; font-weight: 400; letter-spacing: -0.3px; }
+        
+        /* iOS 開關與狀態控制項 */
+        .ios-cell-value { font-size: 15px; color: var(--ios-secondary-label); padding-right: 6px; }
+        .ios-chevron { color: #545456; font-size: 14px; margin-left: 4px; }
+
+        /* iOS 風格優雅輸入框 */
+        .ios-input-box { padding: 4px 16px; }
+        .ios-input {
+            width: 100%; background: var(--ios-secondary-bg); border: none;
+            padding: 12px 16px; border-radius: 10px; color: #fff; font-size: 16px;
+            outline: none; transition: 0.2s;
+        }
+        .ios-input:focus { box-shadow: 0 0 0 1px var(--ios-tint); }
+
+        /* iOS 原生操作按鈕 */
+        .ios-btn-box { padding: 16px; }
+        .ios-primary-btn {
+            width: 100%; background: var(--ios-tint); color: #000; padding: 14px;
+            border-radius: 12px; font-size: 17px; font-weight: 600; border: none; cursor: pointer;
+            transition: opacity 0.2s; text-align: center; display: block;
+        }
+        .ios-primary-btn:active { opacity: 0.7; }
+
+        /* 文章清單特化：更像 iOS 備忘錄與郵件風格 */
+        .article-row { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow: hidden; }
+        .article-title { font-size: 16px; font-weight: 500; color: var(--ios-label); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .article-meta { font-size: 13px; color: var(--ios-secondary-label); display: flex; gap: 8px; }
+
+        /* iOS 底部導航欄特化（含安全區留白） */
+        .ios-tab-bar { 
+            height: calc(52px + env(safe-area-inset-bottom)); 
+            background: var(--ios-blur-bg);
+            backdrop-filter: blur(20px) saturate(210%);
+            -webkit-backdrop-filter: blur(20px) saturate(210%);
+            border-top: 0.5px solid var(--ios-separator); 
+            display: flex; justify-content: space-around; align-items: center; 
+            padding-bottom: env(safe-area-inset-bottom);
+            flex-shrink: 0; z-index: 100;
+        }
+        .tab-item { display: flex; flex-direction: column; align-items: center; color: #8e8e93; text-decoration: none; font-size: 10px; font-weight: 500; gap: 3px; flex: 1; cursor: pointer; transition: color 0.2s; }
+        .tab-item i { font-size: 21px; }
+        .tab-item:active { opacity: 0.6; }
+        .tab-item.active { color: var(--ios-tint); }
+
+        /* 分頁按鈕 iOS 化 */
+        .ios-pagination { display: flex; justify-content: space-between; align-items: center; padding: 0 16px; margin-top: 8px; }
+        .ios-page-btn { background: var(--ios-secondary-bg); border: none; color: var(--ios-tint); padding: 8px 14px; border-radius: 6px; font-size: 14px; font-weight: 500; }
+        .ios-page-btn:disabled { color: var(--ios-secondary-label); opacity: 0.4; }
+
+        @keyframes toolSlide { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .ios-animate { animation: toolSlide 0.3s cubic-bezier(0.1, 0.8, 0.25, 1); }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <!-- iOS 頂置導航半透明列 -->
+        <header class="ios-header">
+            <img src="https://mobsp.github.io/assets/brand/ms-blog-title.JPEG" class="brand-title-img" onclick="location.reload()">
+            <h1 id="header-title">閱讀</h1>
+            <div style="width: 40px;"></div> <!-- 平衡佈局佈局塊 -->
+        </header>
+
+        <!-- 核心視窗內容 -->
+        <main id="main-view">
+            <div id="content-loader" style="text-align:center; padding:60px; color:var(--ios-secondary-label); font-size:13px; letter-spacing:1px;">正在同步儲存庫...</div>
+        </main>
+
+        <!-- iOS 標誌性原生分頁 TabBar -->
+        <nav class="ios-tab-bar">
+            <a href="https://mobsp.github.io/music/" class="tab-item" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i><span>音樂</span></a>
+            <div id="btn-read" class="tab-item active" onclick="switchToRead()"><i class="fa-solid fa-book-open"></i><span>閱讀</span></div>
+            <div id="btn-tool" class="tab-item" onclick="switchToTools()"><i class="fa-solid fa-microchip"></i><span>收割機</span></div>
+            <a href="https://mobsp.github.io/setting" class="tab-item" rel="noopener noreferrer"><i class="fa-solid fa-sliders"></i><span>設定</span></a>
+        </nav>
+    </div>
+
+    <script>
+        let rawArticles = [];
+        let currentPage = 1;
+        const itemsPerPage = 15;
+        let harvestOptions = { img: true, dark: true, code: true, clean: false };
+
+        const proxyPool = [
+            (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
+            (url) => `https://proxy.cors.sh/${url}`
+        ];
+
+        function switchToRead() {
+            setNavActive('btn-read', '閱讀');
+            renderArticleList();
+        }
+
+        function switchToTools() {
+            setNavActive('btn-tool', '收割 Pro');
+            document.getElementById('main-view').innerHTML = `
+                <div class="ios-animate">
+                    <div class="ios-large-title">收割機 PRO</div>
+                    
+                    <div class="ios-group-title">目標網址網址</div>
+                    <div class="ios-input-box">
+                        <input type="url" id="target-url" class="ios-input" placeholder="https://example.com/article">
+                    </div>
+                    
+                    <div class="ios-group-title">篩選核心配置</div>
+                    <div class="ios-group-box">
+                        <div class="ios-cell" onclick="toggleIosOpt(this, 'img')">
+                            <i class="fa-solid fa-image ios-cell-icon"></i>
+                            <span class="ios-cell-label">吸取影像資源</span>
+                            <span class="ios-cell-value">${harvestOptions.img?'開':'關'}</span>
+                            <i class="fa-solid fa-chevron-right ios-chevron"></i>
+                        </div>
+                        <div class="ios-cell" onclick="toggleIosOpt(this, 'dark')">
+                            <i class="fa-solid fa-moon ios-cell-icon"></i>
+                            <span class="ios-cell-label">OLED 極致純黑</span>
+                            <span class="ios-cell-value">${harvestOptions.dark?'開':'關'}</span>
+                            <i class="fa-solid fa-chevron-right ios-chevron"></i>
+                        </div>
+                        <div class="ios-cell" onclick="toggleIosOpt(this, 'code')">
+                            <i class="fa-solid fa-code ios-cell-icon"></i>
+                            <span class="ios-cell-label">自動代碼美化分析</span>
+                            <span class="ios-cell-value">${harvestOptions.code?'開':'關'}</span>
+                            <i class="fa-solid fa-chevron-right ios-chevron"></i>
+                        </div>
+                        <div class="ios-cell" onclick="toggleIosOpt(this, 'clean')">
+                            <i class="fa-solid fa-leaf ios-cell-icon"></i>
+                            <span class="ios-cell-label">極簡文本過濾模式</span>
+                            <span class="ios-cell-value">${harvestOptions.clean?'開':'關'}</span>
+                            <i class="fa-solid fa-chevron-right ios-chevron"></i>
+                        </div>
+                    </div>
+
+                    <div class="ios-btn-box">
+                        <button onclick="startHarvestPro()" class="ios-primary-btn">執行深度安全收割</button>
+                    </div>
+                    
+                    <div id="h-status" style="padding: 0 32px; font-size:13px; color:var(--ios-secondary-label); text-align:center; line-height:1.5;">
+                        READY TO HARVEST V2.2<br>整合沙箱洗滌技術與 iOS HIG 介面特化
+                    </div>
+                </div>`;
+        }
+
+        function setNavActive(id, title) {
+            document.querySelectorAll('.tab-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.getElementById('header-title').innerText = title;
+        }
+
+        function toggleIosOpt(el, key) {
+            harvestOptions[key] = !harvestOptions[key];
+            el.querySelector('.ios-cell-value').innerText = harvestOptions[key] ? '開' : '關';
+        }
+
+        // 網絡穿透與防禦模組
+        async function fetchWithFallback(targetUrl) {
+            let lastError = null;
+            for (let i = 0; i < proxyPool.length; i++) {
+                try {
+                    const proxyUrl = proxyPool[i](targetUrl);
+                    const res = await fetch(proxyUrl);
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    if (proxyUrl.includes('allorigins.win')) {
+                        const json = await res.json();
+                        if (json.contents) return json.contents;
+                    } else {
+                        return await res.text();
+                    }
+                } catch (err) {
+                    lastError = err;
+                }
+            }
+            throw lastError || new Error("所有核心代理節點穿透失敗");
+        }
+
+        function sanitizeContent(htmlInput) {
+            const sandbox = document.createElement('div');
+            sandbox.innerHTML = htmlInput;
+            const forbiddenTags = ['script', 'iframe', 'object', 'embed', 'link', 'style'];
+            forbiddenTags.forEach(tag => sandbox.querySelectorAll(tag).forEach(el => el.remove()));
+            
+            const allElements = sandbox.getElementsByTagName('*');
+            for (let i = 0; i < allElements.length; i++) {
+                const attrs = allElements[i].attributes;
+                for (let j = attrs.length - 1; j >= 0; j--) {
+                    const attrName = attrs[j].name.toLowerCase();
+                    if (attrName.startsWith('on') || attrName === 'javascript:') {
+                        allElements[i].removeAttribute(attrName);
+                    }
+                }
+            }
+            return sandbox.innerHTML;
+        }
+
+        function findMainContentContainer(doc) {
+            const indicators = ['article', 'main', '.post-content', '.entry-content', '.markdown-body', '.content', '.prose'];
+            for (let selector of indicators) {
+                const found = doc.querySelector(selector);
+                if (found && found.innerText.trim().length > 200) return found;
+            }
+            return doc.body;
+        }
+
+        function extractAdaptiveHTML(container, baseUrl) {
+            let extractedHtml = '';
+            const querySelectors = 'p, h1, h2, h3, h4, h5, h6, img, pre, code, blockquote, figure, table';
+            
+            container.querySelectorAll(querySelectors).forEach(el => {
+                if (el.tagName === 'IMG' && harvestOptions.img) {
+                    let src = el.getAttribute('src') || el.getAttribute('data-src') || el.getAttribute('data-lazy-src');
+                    if (src) {
+                        try { src = new URL(src, baseUrl).href; } catch(e){}
+                        extractedHtml += `<div style="margin:24px 0;"><img src="${src}" style="max-width:100%; border-radius:8px;"></div>\n`;
+                    }
+                } 
+                else if ((el.tagName === 'PRE' || el.querySelector('pre')) && harvestOptions.code) {
+                    extractedHtml += `<pre><code>${sanitizeContent(el.innerText.trim())}</code></pre>\n`;
+                }
+                else if (el.innerText.trim().length > 5 && !el.closest('pre')) {
+                    const tag = ['H1','H2','H3','H4','BLOCKQUOTE'].includes(el.tagName) ? el.tagName.toLowerCase() : 'p';
+                    let inner = harvestOptions.clean ? el.innerText.trim() : el.innerHTML;
+                    extractedHtml += `<${tag} style="margin-bottom:1.2rem;">${sanitizeContent(inner)}</${tag}>\n`;
+                }
+            });
+            return extractedHtml;
+        }
+
+        async function startHarvestPro() {
+            const urlInput = document.getElementById('target-url');
+            const status = document.getElementById('h-status');
+            const url = urlInput.value.trim();
+
+            if (!url.startsWith('http')) return status.innerHTML = "❌ 網址錯誤，須包含 http/https";
+            
+            status.innerHTML = "📡 正在調度多重 iOS 代理節點穿透目標...";
+            try {
+                const rawHtml = await fetchWithFallback(url);
+                status.innerHTML = "🧠 穿透成功！正執行 HIG 結構語意清洗...";
+                
+                const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
+                const title = doc.querySelector('h1')?.innerText.trim() || doc.title.trim() || "Ⲙ𝔬ⲃ¡ⳝ𝔭_Archive";
+                
+                const mainContainer = findMainContentContainer(doc);
+                const contentHtml = extractAdaptiveHTML(mainContainer, url);
+
+                if (!contentHtml) throw new Error("未能從目標中提取到有效文本段落");
+
+                const styleTag = `
+                    body { background:${harvestOptions.dark?'#000':'#fff'}; color:${harvestOptions.dark?'#eee':'#222'}; padding:40px 20px; line-height:1.6; font-family:-apple-system, sans-serif; max-width:600px; margin:0 auto; }
+                    h1 { font-size:1.6rem; margin-bottom:1.5rem; border-bottom:0.5px solid #333; padding-bottom:12px; }
+                    h2, h3 { margin-top:2rem; margin-bottom:0.8rem; color:${harvestOptions.dark?'#fff':'#000'}; }
+                    pre { background:#1c1c1e; padding:16px; border-radius:8px; overflow-x:auto; font-family:monospace; margin:20px 0; font-size:13px; color:#00cec9; }
+                    p { margin-bottom:1.2rem; text-align: justify; }
+                    img { display:block; height: auto; }
+                `;
+
+                const finalBlob = new Blob([`
+                    <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${title}</title><style>${styleTag}</style></head>
+                    <body><h1>${title}</h1>${contentHtml}</body></html>
+                `], {type:'text/html;charset=utf-8'});
+
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(finalBlob);
+                a.download = `MS_${title.replace(/[\\/:*?"<>|]/g, "").substring(0,12)}.html`;
+                a.click();
+                
+                setTimeout(() => URL.revokeObjectURL(a.href), 150); // 防範記憶體洩漏漏修復
+                status.innerHTML = "✅ 收割成功！安全離線網頁檔案已彈出。";
+            } catch (err) {
+                status.innerHTML = `❌ 錯誤: ${err.message}<br><span style="color:var(--ios-secondary-label);font-size:11px;">代理遭封鎖或目標網頁需登入</span>`;
+            }
+        }
+
+        async function loadArticles() {
+            const api = "https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p/list?t=" + Date.now();
+            try {
+                const res = await fetch(api);
+                if (!res.ok) throw new Error();
+                const files = await res.json();
+                
+                rawArticles = files.filter(f => f.name.endsWith('.html')).reverse().map(f => ({
+                    title: decodeURIComponent(f.name).replace('.html','').trim(),
+                    path: f.path
+                }));
+                renderArticleList();
+            } catch (e) {
+                document.getElementById('main-view').innerHTML = '<div style="text-align:center; padding:50px; color:var(--ios-secondary-label); font-size:13px;">同步失敗 (API 流量限制)</div>';
+            }
+        }
+
+        function changePage(direction) {
+            currentPage += direction;
+            renderArticleList();
+            document.getElementById('main-view').scrollTop = 0;
+        }
+
+        function renderArticleList() {
+            const container = document.getElementById('main-view');
+            if (rawArticles.length === 0) return;
+
+            const totalPages = Math.ceil(rawArticles.length / itemsPerPage);
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const pageItems = rawArticles.slice(startIndex, startIndex + itemsPerPage);
+
+            let listHtml = `
+                <div class="ios-animate">
+                    <div class="ios-large-title">閱讀列表</div>
+                    <div class="ios-group-title">精選封存封存檔 (${rawArticles.length})</div>
+                    <div class="ios-group-box">
+            `;
+
+            listHtml += pageItems.map(p => `
+                <a class="ios-cell" href="https://mobsp.github.io/${p.path}">
+                    <div class="article-row">
+                        <div class="article-title">${p.title}</div>
+                        <div class="article-meta">
+                            <span>MobiSpace Archive</span>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right ios-chevron"></i>
+                </a>
+            `).join('');
+
+            listHtml += `
+                    </div>
+                    <div class="ios-pagination">
+                        <button class="ios-page-btn" onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>上一頁</button>
+                        <span style="font-size:13px; color:var(--ios-secondary-label); font-weight:500;">${currentPage} / ${totalPages}</span>
+                        <button class="ios-page-btn" onclick="changePage(1)" ${currentPage === totalPages ? 'disabled' : ''}>下一頁</button>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = listHtml;
+        }
+
+        window.onload = loadArticles;
+    </script>
+</body>
+</html>
