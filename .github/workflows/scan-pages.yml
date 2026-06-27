@@ -1,0 +1,80 @@
+name: Auto Scan Pages for MobiSpace
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '*.html'
+      - '.github/workflows/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Execute Scanner Script
+        run: |
+          import os
+          import json
+          import re
+
+          pages = []
+          # 預設基礎卡片配置（如果掃描到的檔案在字典裡有對應，就用高精度的圖，否則用預設圖）
+          preset_meta = {
+              "blog.html": {"title": "部落格", "img": "https://mobsp.github.io/assets/brand/ms-blog.JPEG"},
+              "tol.html": {"title": "工具庫", "img": "https://mobsp.github.io/assets/brand/ms-tools.JPEG"},
+              "music.html": {"title": "音樂頻道", "img": "https://mobsp.github.io/assets/brand/ms-music.JPEG"},
+              "shorts.html": {"title": "Shorts", "img": "https://mobsp.github.io/assets/brand/ms-shorts.JPEG"},
+              "wiki.html": {"title": "支援中心", "img": "https://mobsp.github.io/assets/brand/ms-wiki.JPEG"},
+              "history.html": {"title": "歷史紀錄", "img": "https://mobsp.github.io/assets/brand/ms-logo.JPEG"},
+              "setting.html": {"title": "設定", "img": "https://mobsp.github.io/assets/brand/ms-logo.JPEG"}
+          }
+
+          for file in sorted(os.listdir('.')):
+              if file.endswith('.html') and file != 'index.html':
+                  path = f"https://mobsp.github.io/{file.replace('.html', '/')}"
+                  title = file.replace('.html', '').capitalize()
+                  img = "https://mobsp.github.io/assets/brand/ms-logo.JPEG"
+                  
+                  if file in preset_meta:
+                      title = preset_meta[file]["title"]
+                      img = preset_meta[file]["img"]
+                  
+                  # 嘗試從檔案內容動態抓取 og 標籤
+                  try:
+                      with open(file, 'r', encoding='utf-8') as f:
+                          content = f.read()
+                          title_match = re.search(r'<meta\s+property=["\']og:title["\']\s+content=["\'](.*?)["\']', content)
+                          img_match = re.search(r'<meta\s+property=["\']og:image["\']\s+content=["\'](.*?)["\']', content)
+                          if title_match: title = title_match.group(1).split('|')[0].strip()
+                          if img_match: img = img_match.group(1)
+                  except Exception as e:
+                      print(f"讀取 {file} 失敗，使用預設值: {e}")
+
+                  pages.append({
+                      "id": file.replace('.html', ''),
+                      "title": title,
+                      "url": path,
+                      "image": img
+                  })
+
+          with open('pages-config.json', 'w', encoding='utf-8') as f:
+              json.dump(pages, f, ensure_ascii=False, indent=2)
+          print("成功產生 pages-config.json")
+
+      - name: Commit and Push Changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add pages-config.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: 自動更新頁面索引配置 [skip ci]" && git push)
