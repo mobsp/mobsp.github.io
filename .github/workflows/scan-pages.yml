@@ -1,4 +1,4 @@
-name: Auto Scan Pages for MobiSpace
+name: Auto Scan Pages for MobiSpace 
 
 on:
   push:
