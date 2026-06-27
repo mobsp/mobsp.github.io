@@ -1,12 +1,8 @@
 name: Auto Scan Pages for MobiSpace
 
+# 將觸發條件改為手動執行
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - '*.html'
-      - '.github/workflows/**'
+  workflow_dispatch:
 
 # 授權此工作流有寫入儲存庫的權限
 permissions:
@@ -93,7 +89,6 @@ jobs:
           # 檢查是否有檔案變更，有變更才進行 commit 與 push
           if ! git diff --staged --quiet; then
             git commit -m "chore: 自動更新頁面索引配置 [skip ci]"
-            # 這裡使用你剛才設定好的 GH_TOKEN 進行安全的認證推送
             git push "https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/mobsp/mobsp.github.io.git" HEAD:main
           else
             print("配置無變更，跳過推送。")
