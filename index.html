@@ -1,4 +1,7 @@
-<!DOCTYPE html><html lang="zh-TW"><head><script>if(self!==top){top.location=self.location;}</script><script>if(self!==top){top.location=self.location;}</script>
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <script>if(self!==top){top.location=self.location;}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     
@@ -20,11 +23,34 @@
     <style>
         :root {
             --bg-color: #0b0b0c;          
-            --card-bg: rgba(25, 27, 31, 0.95); 
+            --card-bg: rgba(25, 27, 31, 0.85); 
             --text-main: #f1f2f6;         
             --primary-color: #00cec9;     
             --border-color: rgba(255, 255, 255, 0.1); 
-            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            
+            /* iOS 系統級動態指示燈顏色定義 */
+            --status-red: #ff453a;
+            --status-orange: #ff9f0a;
+            --status-yellow: #ffd60a;
+            --status-green: #30d158;
+            --status-blue: #0a84ff;
+            --indicator-color: var(--primary-color);
+            --mq-color: #f1f2f6;
+            --mq-duration: 45s;
+            --indicator-duration: 2s;
+        }
+
+        /* 串流流光主題定義 */
+        [data-theme="stream-cyan"] { --bg-color: #001219; --primary-color: #00e5ff; }
+        [data-theme="stream-purple"] { --bg-color: #140124; --primary-color: #bf5af2; }
+        [data-theme="stream-gold"] { --bg-color: #1a1100; --primary-color: #ffd60a; }
+        [data-theme="light"] {
+            --bg-color: #f2f2f7;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --text-main: #1c1c1e;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --mq-color: #1c1c1e;
         }
 
         #fake-splash {
@@ -45,6 +71,7 @@
             background-color: var(--bg-color); color: var(--text-main);
             font-family: 'PingFang TC', system-ui, -apple-system, sans-serif;
             touch-action: manipulation;
+            transition: background-color 0.5s ease;
         }
 
         .visually-hidden {
@@ -52,93 +79,174 @@
             overflow: hidden; clip: rect(0,0,0,0); border: 0;
         }
 
-        .page-wrapper { display: flex; flex-direction: column; height: 100dvh; max-width: 500px; margin: 0 auto; }
+        .page-wrapper { display: flex; flex-direction: column; height: 100dvh; max-width: 500px; margin: 0 auto; position: relative; }
 
         .app-header {
             flex-shrink: 0;
             padding: calc(20px + env(safe-area-inset-top)) 20px 10px; 
-            background: rgba(11, 11, 12, 0.85);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            background: rgba(11, 11, 12, 0.4);
+            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
             border-bottom: 1px solid var(--border-color);
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            z-index: 100; display: flex; flex-direction: column; align-items: center;
         }
 
         .marquee-row {
-            display: flex; align-items: center; background: rgba(255,255,255,0.05);
-            padding: 6px 12px; border-radius: 10px; margin-bottom: 15px; overflow: hidden;
+            display: flex; align-items: center; background: rgba(255,255,255,0.06);
+            padding: 6px 12px; border-radius: 12px; margin-bottom: 15px; overflow: hidden;
             min-height: 28px; width: 100%; box-sizing: border-box;
         }
 
-        /* 標題圖樣式：隨網頁寬度延展 */
         .brand-title-link {
-            display: block;
-            width: 100%; /* 寬度佔滿容器 */
-            transition: var(--transition);
-            margin-bottom: 5px;
-            box-sizing: border-box;
-            padding: 0 5px; /* 給左右留一點微小的呼吸空間 */
+            display: block; width: 100%; transition: var(--transition); margin-bottom: 5px; box-sizing: border-box; padding: 0 5px;
         }
         .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
-        .brand-title-img {
-            width: 100%; /* 圖片寬度延展 */
-            height: auto; /* 高度自動等比例 */
-            display: block;
-            border-radius: 8px; /* 增加一點點圓角感 */
-        }
+        .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
 
+        /* 動態可調類別指示燈 */
         .v-tag { 
-            background: var(--primary-color); color: #000; font-size: 9px; font-weight: 900; 
-            padding: 2px 6px; border-radius: 4px; margin-right: 10px; white-space: nowrap;
+            background: var(--indicator-color); color: #000; font-size: 9px; font-weight: 900; 
+            padding: 2px 6px; border-radius: 5px; margin-right: 10px; white-space: nowrap;
+            transition: background-color 0.3s ease;
+            animation: pulse-light var(--indicator-duration) infinite ease-in-out;
         }
-        .tag-important { background: #ff4d4d; color: #fff; }
-        .tag-update { background: #00ff88; color: #000; }
+        .v-tag.tag-disabled { animation: none !important; opacity: 0.6; }
+        @keyframes pulse-light { 0%, 100% { opacity: 1; filter: brightness(1); } 50% { opacity: 0.4; filter: brightness(1.3); } }
 
         .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
         .mq-text { 
-            display: inline-block; 
-            padding-left: 100%;
-            animation: mq 45s linear infinite;
-            font-size: 11px; opacity: 0.9; letter-spacing: 0.5px;
+            display: inline-block; padding-left: 100%;
+            animation: mq var(--mq-duration) linear infinite;
+            font-size: 11px; opacity: 0.9; letter-spacing: 0.5px; color: var(--mq-color);
         }
         @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
 
+        /* 動態版型核心容器 */
         .app-main {
-            flex: 1; display: flex; align-items: center; overflow-x: auto;
+            flex: 1; transition: var(--transition); overflow-y: auto; overflow-x: hidden; padding: 20px; box-sizing: border-box;
+        }
+
+        /* 模式一：滑塊模式（原版橫向滑動） */
+        .app-main.layout-slider {
+            display: flex; align-items: center; overflow-x: auto; overflow-y: hidden;
             scroll-snap-type: x mandatory; padding: 0 40px; gap: 25px; scrollbar-width: none;
         }
-        .app-main::-webkit-scrollbar { display: none; }
+        .app-main.layout-slider::-webkit-scrollbar { display: none; }
+        .app-main.layout-slider .action-btn { flex: 0 0 85%; height: 70%; scroll-snap-align: center; }
 
+        /* 模式二：3x3 圖像九宮格模式 */
+        .app-main.layout-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; align-content: start; padding-top: 10px;
+        }
+        .app-main.layout-grid .action-btn { aspect-ratio: 1; height: auto; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .app-main.layout-grid .btn-overlay { padding: 15px 10px 10px; }
+        .app-main.layout-grid .btn-title { font-size: 1rem; letter-spacing: 1px; text-align: center; width: 100%; }
+
+        /* 模式三：列表模式 */
+        .app-main.layout-list {
+            display: flex; flex-direction: column; gap: 10px; padding: 15px;
+        }
+        .app-main.layout-list .action-btn {
+            height: 60px; border-radius: 14px; background-image: none !important;
+            background-color: var(--card-bg) !important; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: none;
+        }
+        .app-main.layout-list .btn-overlay { position: static; padding: 0; background: none; display: flex; width: 100%; justify-content: space-between; align-items: center; }
+        .app-main.layout-list .btn-title { color: var(--text-main); font-size: 1.1rem; font-weight: 600; letter-spacing: 1px; }
+        .app-main.layout-list .btn-overlay::after { content: "〉"; font-size: 12px; opacity: 0.4; color: var(--text-main); }
+
+        /* 通用按鈕基礎 */
         .action-btn {
-            flex: 0 0 85%; height: 70%; scroll-snap-align: center; text-decoration: none;
-            border-radius: 40px; position: relative; overflow: hidden; border: 1px solid var(--border-color);
+            text-decoration: none; border-radius: 40px; position: relative; overflow: hidden; border: 1px solid var(--border-color);
             background-color: #1e272e; background-position: center; background-size: cover;
             box-shadow: 0 25px 50px rgba(0,0,0,0.5); transition: var(--transition);
         }
-        .action-btn:active { transform: scale(0.95); filter: brightness(0.8); }
-
-        .btn-blog { background-image: url('https://mobsp.github.io/assets/brand/ms-blog.JPEG'); }
-        .btn-tools { background-image: url('https://mobsp.github.io/assets/brand/ms-tools.JPEG'); }
-        .btn-music { background-image: url('https://mobsp.github.io/assets/brand/ms-music.JPEG'); }
-        .btn-shorts { background-image: url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG'); }
-        .btn-wiki { background-image: url('https://mobsp.github.io/assets/brand/ms-wiki.JPEG'); }
-        .btn-logo { background-image: url('https://mobsp.github.io/assets/brand/ms-logo.JPEG'); }
-
-        .btn-overlay { position: absolute; bottom: 0; width: 100%; padding: 50px 30px 40px; background: linear-gradient(transparent, rgba(0,0,0,0.95)); }
+        .action-btn:active { transform: scale(0.96); filter: brightness(0.8); }
+        .btn-overlay { position: absolute; bottom: 0; width: 100%; padding: 50px 30px 40px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); display: flex; box-sizing: border-box; }
         .btn-title { color: #fff; font-size: 1.85rem; font-weight: 800; letter-spacing: 3px; }
 
+        /* iOS 原生系統級通知彈窗 */
+        #ios-alert {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4);
+            z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        #ios-alert.active { opacity: 1; visibility: visible; }
+        .alert-box {
+            width: 270px; background: rgba(230, 230, 235, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-radius: 14px; text-align: center; animation: alertPop 0.3s cubic-bezier(0.1, 0.8, 0.25, 1); overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 0.5px solid rgba(255,255,255,0.2);
+        }
+        @keyframes alertPop { 0% { transform: scale(1.15); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+        .alert-content { padding: 20px 16px; color: #000; }
+        .alert-title { font-weight: 600; font-size: 17px; margin-bottom: 5px; }
+        .alert-desc { font-size: 13px; line-height: 1.4; color: #333; max-height: 150px; overflow-y: auto; }
+        .alert-btn {
+            border-top: 0.5px solid rgba(0,0,0,0.15); color: #007ff5; font-size: 17px; line-height: 44px; height: 44px; font-weight: 600; cursor: pointer;
+        }
+        .alert-btn:dark { color: #0a84ff; }
+
+        /* iOS Control Center 底部半屏抽屜式控制面板 */
+        #control-sheet {
+            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%);
+            width: 100%; max-width: 500px; height: 80dvh; background: rgba(28, 28, 30, 0.75);
+            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
+            border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 999;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.15);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column;
+        }
+        #control-sheet.active { transform: translateX(-50%) translateY(0); }
+        .sheet-handle { width: 36px; height: 5px; background: rgba(255,255,255,0.25); border-radius: 3px; margin: 10px auto 15px; flex-shrink: 0; cursor: pointer; }
+        .sheet-header { padding: 0 20px 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+        .sheet-title { font-size: 1.2rem; font-weight: 700; color: #fff; }
+        .sheet-close { font-size: 14px; color: var(--primary-color); font-weight: 600; cursor: pointer; }
+        
+        .sheet-body { flex: 1; overflow-y: auto; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
+        .setting-group { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px 16px; border: 0.5px solid rgba(255,255,255,0.05); }
+        .setting-label { font-size: 13px; font-weight: 600; opacity: 0.5; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; min-height: 40px; border-bottom: 0.5px solid rgba(255,255,255,0.05); }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-name { font-size: 15px; color: #fff; }
+        
+        /* iOS 原生控制組件樣式 */
+        .ios-switch { position: relative; display: inline-block; width: 51px; height: 31px; }
+        .ios-switch input { opacity: 0; width: 0; height: 0; }
+        .ios-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.15); transition: .4s; border-radius: 34px; }
+        .ios-slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
+        input:checked + .ios-slider { background-color: #30d158; }
+        input:checked + .ios-slider:before { transform: translateX(20px); }
+
+        .ios-select, .ios-input { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 14px; font-family: inherit; }
+        .ios-input { width: 100%; box-sizing: border-box; margin-top: 5px; }
+        .ios-range { -webkit-appearance: none; width: 120px; background: rgba(255,255,255,0.2); height: 4px; border-radius: 2px; }
+        .ios-range::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+
+        .ios-btn { background: var(--primary-color); color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; width: 100%; margin-top: 5px; transition: opacity 0.2s; }
+        .ios-btn:active { opacity: 0.8; }
+
         .app-footer {
-            flex-shrink: 0; padding: 15px 20px calc(20px + env(safe-area-inset-bottom));
-            background: rgba(11, 11, 12, 0.9); border-top: 1px solid var(--border-color); text-align: center;
+            flex-shrink: 0; padding: 15px 20px calc(15px + env(safe-area-inset-bottom));
+            background: rgba(11, 11, 12, 0.4); border-top: 1px solid var(--border-color); text-align: center; z-index: 10;
         }
         .copyright { font-size: 10px; opacity: 0.4; line-height: 1.6; letter-spacing: 1px; }
+        .trigger-btn { display: inline-block; font-size: 10px; color: var(--primary-color); opacity: 0.7; border: 1px solid var(--primary-color); padding: 2px 8px; border-radius: 20px; margin-top: 5px; text-decoration: none; font-weight: 600; }
     </style>
-<link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/index.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><link rel="canonical" href="https://mobsp.qzz.io/"><meta property="og:type" content="website"><meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。"><meta property="og:url" content="https://mobsp.qzz.io/"><meta property="og:site_name" content="MOBSP"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網"><meta name="twitter:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。"><meta name="mobile-web-app-capable" content="yes"></head>
+    <link rel="canonical" href="https://mobsp.qzz.io/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://mobsp.qzz.io/">
+    <meta property="og:site_name" content="MOBSP">
+</head>
 
 <body>
 <div id="fake-splash" aria-hidden="true"></div>
+
+<!-- iOS 級通知公告彈窗 -->
+<div id="ios-alert" aria-hidden="true">
+    <div class="alert-box">
+        <div class="alert-content">
+            <div class="alert-title" id="alert-title">系統公告</div>
+            <div class="alert-desc" id="alert-desc">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 莫比空間。</div>
+        </div>
+        <div class="alert-btn" id="alert-close-btn">好</div>
+    </div>
+</div>
 
 <div class="page-wrapper">
     <header class="app-header">
@@ -151,29 +259,176 @@
             </div>
         </nav>
 
-        <a href="https://mobsp.github.io" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" rel="noopener noreferrer">
+        <a href="https://mobsp.github.io" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
             <img src="assets/brand/ms-guide-title.JPEG" alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
         </a>
     </header>
 
-    <main class="app-main">
-        <a href="https://mobsp.github.io/blog/" class="action-btn btn-blog" aria-label="前往部落格" rel="noopener noreferrer"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
-        <a href="https://mobsp.github.io/tol/" class="action-btn btn-tools" aria-label="前往工具庫" rel="noopener noreferrer"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
-        <a href="https://mobsp.github.io/music/" class="action-btn btn-music" aria-label="前往音樂頻道" rel="noopener noreferrer"><div class="btn-overlay"><div class="btn-title">音樂頻道</div></div></a>
-        <a href="https://mobsp.github.io/shorts/" class="action-btn btn-shorts" aria-label="前往Shorts" rel="noopener noreferrer"><div class="btn-overlay"><div class="btn-title">Shorts</div></div></a>
-        <a href="https://mobsp.github.io/wiki/" class="action-btn btn-wiki" aria-label="前往支援中心" rel="noopener noreferrer"><div class="btn-overlay"><div class="btn-title">支援中心</div></div></a>
-        <a href="https://mobsp.github.io/history/" class="action-btn btn-logo" aria-label="查看歷史紀錄" rel="noopener noreferrer"><div class="btn-overlay"><div class="btn-title">歷史紀錄</div></div></a>
-        <a href="https://mobsp.github.io/setting" class="action-btn btn-logo" aria-label="開啟設定" rel="noopener noreferrer"><div class="btn-overlay"><div class="btn-title">設定</div></div></a>
+    <!-- 頁面卡片主容器：類名會被 JS 動態切換為 layout-slider, layout-grid 或 layout-list -->
+    <main class="app-main layout-slider" id="main-container">
+        <!-- 初始骨架屏備用卡片，會由 JS 動態解析配置注入 -->
+        <a href="https://mobsp.github.io/blog/" class="action-btn btn-blog"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
+        <a href="https://mobsp.github.io/tol/" class="action-btn btn-tools"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
     </main>
 
     <footer class="app-footer">
         <div class="copyright">© 2026 <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</strong><br>資源整合與數位服務入口網</div>
+        <a href="#" class="trigger-btn" id="open-control-btn">⚙︎ 莫比控制中心</a>
     </footer>
 </div>
 
+<!-- iOS 級 Bottom Sheet 控制中心面版 -->
+<div id="control-sheet">
+    <div class="sheet-handle" id="sheet-handle-close"></div>
+    <div class="sheet-header">
+        <div class="sheet-title">莫比控制中心</div>
+        <div class="sheet-close" id="sheet-header-close">完成</div>
+    </div>
+    <div class="sheet-body">
+        
+        <!-- 1. 公告彈窗自訂區 -->
+        <div class="setting-group">
+            <div class="setting-label">1. 公告彈窗設定</div>
+            <div class="setting-row">
+                <span class="setting-name">修改彈窗標題</span>
+                <input type="text" id="cfg-alert-title" class="ios-input" placeholder="系統公告">
+            </div>
+            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+                <span class="setting-name">修改彈窗內容</span>
+                <textarea id="cfg-alert-desc" class="ios-input" rows="2" style="width:100%; resize:none;" placeholder="輸入首頁彈窗公告文字..."></textarea>
+            </div>
+        </div>
+
+        <!-- 2. 排版與卡片排列區 -->
+        <div class="setting-group">
+            <div class="setting-label">2. 卡片排列與外觀</div>
+            <div class="setting-row">
+                <span class="setting-name">佈局排列樣式</span>
+                <select id="cfg-layout" class="ios-select">
+                    <option value="layout-slider">卡片滑塊 (預設)</option>
+                    <option value="layout-grid">3×3 圖像九宮格</option>
+                    <option value="layout-list">清單列表模式</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <span class="setting-name">介面風格主題</span>
+                <select id="cfg-theme" class="ios-select">
+                    <option value="dark">iOS 深色模式</option>
+                    <option value="light">iOS 淺色模式</option>
+                    <option value="stream-cyan">動態流光 - 青藍</option>
+                    <option value="stream-purple">動態流光 - 魅紫</option>
+                    <option value="stream-gold">動態流光 - 奢金</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 3. 跑馬燈極致自訂區 -->
+        <div class="setting-group">
+            <div class="setting-label">3. 跑馬燈與指示燈自訂</div>
+            <div class="setting-row">
+                <span class="setting-name">公告數據源切換</span>
+                <select id="cfg-mq-source" class="ios-select">
+                    <option value="supabase">外部 Supabase 雲端</option>
+                    <option value="custom">內部 本機自訂文字</option>
+                </select>
+            </div>
+            <div class="setting-row" id="custom-mq-row" style="display:none; flex-direction: column; align-items: flex-start; gap: 5px;">
+                <span class="setting-name">本機自訂跑馬燈文字</span>
+                <input type="text" id="cfg-mq-text" class="ios-input" placeholder="輸入自訂跑馬燈跑馬文字...">
+            </div>
+            <div class="setting-row">
+                <span class="setting-name">跑馬燈滾動速度</span>
+                <input type="range" id="cfg-mq-speed" class="ios-range" min="10" max="80" value="45">
+            </div>
+            <div class="setting-row">
+                <span class="setting-name">跑馬燈文字顏色</span>
+                <input type="color" id="cfg-mq-color" value="#f1f2f6" style="border:none; background:none; cursor:pointer;">
+            </div>
+            <div class="setting-row">
+                <span class="setting-name">指示燈動態開關</span>
+                <label class="ios-switch">
+                    <input type="checkbox" id="cfg-indicator-toggle" checked>
+                    <span class="ios-slider"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span class="setting-name">指示燈類別色系</span>
+                <select id="cfg-indicator-color" class="ios-select">
+                    <option value="var(--primary-color)">精靈青 (預設)</option>
+                    <option value="var(--status-red)">系統紅 (重要)</option>
+                    <option value="var(--status-orange)">警告橘 (注意)</option>
+                    <option value="var(--status-yellow)">提醒黃 (公告)</option>
+                    <option value="var(--status-green)">更新綠 (正常)</option>
+                    <option value="var(--status-blue)">科技藍 (資訊)</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <span class="setting-name">指示燈呼吸頻率</span>
+                <select id="cfg-indicator-speed" class="ios-select">
+                    <option value="1s">快速閃爍</option>
+                    <option value="2s">原生舒適 (預設)</option>
+                    <option value="3.5s">優雅慢調</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- 4. 混合雙模儲存庫同步設定 -->
+        <div class="setting-group">
+            <div class="setting-label">4. 儲存庫自動化掃描核心</div>
+            <div class="setting-row">
+                <span class="setting-name">雙模即時動態同步</span>
+                <label class="ios-switch">
+                    <input type="checkbox" id="cfg-hybrid-mode">
+                    <span class="ios-slider"></span>
+                </label>
+            </div>
+            <div class="setting-row" id="token-row" style="display:none; flex-direction: column; align-items: flex-start; gap: 5px;">
+                <span class="setting-name">個人開發憑證 (PAT Token)</span>
+                <input type="password" id="cfg-git-token" class="ios-input" placeholder="ghp_xxxxxxxx 僅存於本機">
+                <button type="button" id="btn-sync-now" class="ios-btn">🔄 立即手動動態掃描儲存庫</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
+<script type="module">
+// --- 核心架構模組封裝 ---
+const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+
+const MobiConfig = {
+    storageKey: 'mobsp_2026_settings',
+    defaults: {
+        alertTitle: '重要通知',
+        alertDesc: '歡迎造訪 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 第二階段全新升級版入口導航網。',
+        alertHasShown: false,
+        layout: 'layout-slider',
+        theme: 'dark',
+        mqSource: 'supabase',
+        customMqText: '此處為本機自訂實時跑馬燈串流文字數據...',
+        mqSpeed: 45,
+        mqColor: '#f1f2f6',
+        indicatorActive: true,
+        indicatorColor: 'var(--primary-color)',
+        indicatorSpeed: '2s',
+        hybridMode: false,
+        gitToken: ''
+    },
+
+    load() {
+        const local = localStorage.getItem(this.storageKey);
+        return local ? { ...this.defaults, ...JSON.parse(local) } : { ...this.defaults };
+    },
+
+    save(data) {
+        localStorage.setItem(this.storageKey, JSON.stringify(data));
+    }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
+    // 啟動 Splash 畫面移除常規機制
     const splash = document.getElementById('fake-splash');
     const hideSplash = () => {
         setTimeout(() => {
@@ -181,49 +436,283 @@ document.addEventListener('DOMContentLoaded', () => {
                 splash.classList.add('fade-out');
                 setTimeout(() => { if(splash.parentNode) splash.remove(); }, 800);
             }
-        }, 1000);
+        }, 800);
     };
     window.addEventListener('load', hideSplash);
-    setTimeout(hideSplash, 3500);
-    initNoticeSystem();
+    setTimeout(hideSplash, 3000);
+
+    // 核心初始化
+    initMobiSpace();
 });
 
-const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
-
-async function initNoticeSystem() {
-    const vTag = document.getElementById('v-tag');
-    const mqText = document.getElementById('mq-text');
-    const cachedData = localStorage.getItem('mobsp_notices');
-    if (cachedData) renderNotice(JSON.parse(cachedData), true);
-
-    try {
-        if (typeof supabase === 'undefined') return;
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
-        if (!error && data.length > 0) {
-            localStorage.setItem('mobsp_notices', JSON.stringify(data));
-            renderNotice(data, false);
-        }
-    } catch (err) {
-        console.warn('公告更新受阻');
-    }
-}
-
-function renderNotice(data, isCached) {
-    const vTag = document.getElementById('v-tag');
-    const mqText = document.getElementById('mq-text');
-    if (!vTag || !mqText || !data.length) return;
+async function initMobiSpace() {
+    const config = MobiConfig.load();
     
-    const randomItem = data[Math.floor(Math.random() * data.length)];
-    const category = randomItem.type || "NEWS";
-    vTag.classList.remove('tag-important', 'tag-update');
-    if (category.match(/重要|守則/)) vTag.classList.add('tag-important');
-    else if (category.match(/更新|系統/)) vTag.classList.add('tag-update');
-    vTag.innerText = `${isCached ? 'OFFLINE' : 'v2.0'} | ${category}`;
-    mqText.innerText = randomItem.message || "";
+    // --- 節點快取 ---
+    const mainContainer = document.getElementById('main-container');
+    const iosAlert = document.getElementById('ios-alert');
+    const alertTitle = document.getElementById('alert-title');
+    const alertDesc = document.getElementById('alert-desc');
+    const alertCloseBtn = document.getElementById('alert-close-btn');
+    const controlSheet = document.getElementById('control-sheet');
+    
+    // --- 介面外觀即時初始化渲染 ---
+    const applyRealtimeUI = (cfg) => {
+        document.body.setAttribute('data-theme', cfg.theme);
+        mainContainer.className = `app-main ${cfg.layout}`;
+        
+        // 跑馬燈自訂控制
+        document.documentElement.style.setProperty('--mq-duration', `${cfg.mqSpeed}s`);
+        document.documentElement.style.setProperty('--mq-color', cfg.mqColor);
+        document.documentElement.style.setProperty('--indicator-color', cfg.indicatorColor);
+        document.documentElement.style.setProperty('--indicator-duration', cfg.indicatorSpeed);
+        
+        const vTag = document.getElementById('v-tag');
+        if (!cfg.indicatorActive) {
+            vTag.classList.add('tag-disabled');
+        } else {
+            vTag.classList.remove('tag-disabled');
+        }
+    };
+    applyRealtimeUI(config);
+
+    // --- 渲染首頁卡片模組 (雙模核心邏輯) ---
+    const renderCards = (cardsArray) => {
+        if (!cardsArray || cardsArray.length === 0) return;
+        mainContainer.innerHTML = '';
+        cardsArray.forEach(card => {
+            const a = document.createElement('a');
+            a.href = card.url;
+            a.className = `action-btn btn-${card.id}`;
+            a.style.backgroundImage = `url('${card.image}')`;
+            a.setAttribute('aria-label', `前往${card.title}`);
+            
+            const overlay = document.createElement('div');
+            overlay.className = 'btn-overlay';
+            
+            const title = document.createElement('div');
+            title.className = 'btn-title';
+            title.innerText = card.title;
+            
+            overlay.appendChild(title);
+            a.appendChild(overlay);
+            mainContainer.appendChild(a);
+        });
+    };
+
+    // 載入卡片策略：優先抓取靜態配置 json，若雙模動態開啟則視情況 fetch
+    let cardsData = [];
+    try {
+        const res = await fetch('pages-config.json');
+        if (res.ok) cardsData = await res.json();
+    } catch(e) { console.warn("未發現本地快取 JSON，轉用原版備份結構"); }
+
+    if (config.hybridMode && config.gitToken) {
+        // 開啟雙模動態同步，且填寫了 token
+        console.log("雙模型態已激活：開發者本機模式運行");
+    }
+    
+    if (cardsData.length > 0) {
+        renderCards(cardsData);
+    }
+
+    // --- 彈窗處理邏輯 ---
+    if (!config.alertHasShown) {
+        alertTitle.innerText = config.alertTitle;
+        alertDesc.innerText = config.alertDesc;
+        setTimeout(() => iosAlert.classList.add('active'), 1200);
+    }
+    alertCloseBtn.addEventListener('click', () => {
+        iosAlert.classList.remove('active');
+        config.alertHasShown = true;
+        MobiConfig.save(config);
+    });
+
+    // --- 跑馬燈數據源系統處理 ---
+    const initNoticeLine = async () => {
+        const vTag = document.getElementById('v-tag');
+        const mqText = document.getElementById('mq-text');
+        
+        if (config.mqSource === 'custom') {
+            vTag.innerText = 'LOCAL | CUSTOM';
+            mqText.innerText = config.customMqText;
+            return;
+        }
+
+        // 預設走雲端 Supabase
+        try {
+            if (typeof supabase !== 'undefined') {
+                const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
+                if (!error && data.length > 0) {
+                    const randomItem = data[Math.floor(Math.random() * data.length)];
+                    const category = randomItem.type || "NEWS";
+                    vTag.innerText = `v2.5 | ${category}`;
+                    mqText.innerText = randomItem.message || "";
+                }
+            }
+        } catch(err) {
+            vTag.innerText = 'OFFLINE | STABLE';
+            mqText.innerText = '正在從本機快取提供安全環境安全防線常駐中...';
+        }
+    };
+    initNoticeLine();
+
+    // --- 控制中心抽屜開啟關閉機制交互 ---
+    const openBtn = document.getElementById('open-control-btn');
+    const closeBtnHeader = document.getElementById('sheet-header-close');
+    const closeBtnHandle = document.getElementById('sheet-handle-close');
+
+    const toggleSheet = (show) => {
+        if (show) {
+            // 開啟面板時，同步目前的儲存庫值至表單欄位
+            document.getElementById('cfg-alert-title').value = config.alertTitle;
+            document.getElementById('cfg-alert-desc').value = config.alertDesc;
+            document.getElementById('cfg-layout').value = config.layout;
+            document.getElementById('cfg-theme').value = config.theme;
+            document.getElementById('cfg-mq-source').value = config.mqSource;
+            document.getElementById('cfg-mq-text').value = config.customMqText;
+            document.getElementById('cfg-mq-speed').value = config.mqSpeed;
+            document.getElementById('cfg-mq-color').value = config.mqColor;
+            document.getElementById('cfg-indicator-toggle').checked = config.indicatorActive;
+            document.getElementById('cfg-indicator-color').value = config.indicatorColor;
+            document.getElementById('cfg-indicator-speed').value = config.indicatorSpeed;
+            document.getElementById('cfg-hybrid-mode').checked = config.hybridMode;
+            document.getElementById('cfg-git-token').value = config.gitToken;
+
+            document.getElementById('custom-mq-row').style.display = config.mqSource === 'custom' ? 'flex' : 'none';
+            document.getElementById('token-row').style.display = config.hybridMode ? 'flex' : 'none';
+
+            controlSheet.classList.add('active');
+        } else {
+            controlSheet.classList.remove('active');
+        }
+    };
+
+    openBtn.addEventListener('click', (e) => { e.preventDefault(); toggleSheet(true); });
+    closeBtnHeader.addEventListener('click', () => toggleSheet(false));
+    closeBtnHandle.addEventListener('click', () => toggleSheet(false));
+
+    // --- 控制中心元件動態監聽變更事件 ---
+    document.getElementById('cfg-alert-title').addEventListener('input', (e) => { config.alertTitle = e.target.value; MobiConfig.save(config); });
+    document.getElementById('cfg-alert-desc').addEventListener('input', (e) => { config.alertDesc = e.target.value; config.alertHasShown = false; MobiConfig.save(config); });
+    
+    document.getElementById('cfg-layout').addEventListener('change', (e) => {
+        config.layout = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-theme').addEventListener('change', (e) => {
+        config.theme = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-mq-source').addEventListener('change', (e) => {
+        config.mqSource = e.target.value;
+        document.getElementById('custom-mq-row').style.display = config.mqSource === 'custom' ? 'flex' : 'none';
+        MobiConfig.save(config);
+        initNoticeLine();
+    });
+
+    document.getElementById('cfg-mq-text').addEventListener('input', (e) => {
+        config.customMqText = e.target.value;
+        MobiConfig.save(config);
+        if(config.mqSource === 'custom') initNoticeLine();
+    });
+
+    document.getElementById('cfg-mq-speed').addEventListener('input', (e) => {
+        config.mqSpeed = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-mq-color').addEventListener('input', (e) => {
+        config.mqColor = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-indicator-toggle').addEventListener('change', (e) => {
+        config.indicatorActive = e.target.checked;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-indicator-color').addEventListener('change', (e) => {
+        config.indicatorColor = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-indicator-speed').addEventListener('change', (e) => {
+        config.indicatorSpeed = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-hybrid-mode').addEventListener('change', (e) => {
+        config.hybridMode = e.target.checked;
+        document.getElementById('token-row').style.display = config.hybridMode ? 'flex' : 'none';
+        MobiConfig.save(config);
+    });
+
+    document.getElementById('cfg-git-token').addEventListener('input', (e) => {
+        config.gitToken = e.target.value;
+        MobiConfig.save(config);
+    });
+
+    // --- 核心手動觸發功能：利用 GitHub API 對專案執行網頁端即時掃描渲染 ---
+    document.getElementById('btn-sync-now').addEventListener('click', async () => {
+        if (!config.gitToken) {
+            alert('請先輸入有效的 GitHub PAT 憑證！');
+            return;
+        }
+        const btn = document.getElementById('btn-sync-now');
+        btn.innerText = '正在動態掃描中...';
+        btn.disabled = true;
+
+        try {
+            // 呼叫 GitHub REST API 讀取儲存庫根目錄檔案清單
+            const response = await fetch('https://api.github.com/repos/mobsp/mobsp.github.io/contents/', {
+                headers: { 'Authorization': `token ${config.gitToken}` }
+            });
+            
+            if (response.ok) {
+                const files = await response.json();
+                const htmlFiles = files.filter(f => f.name.endsWith('.html') && f.name !== 'index.html');
+                
+                const presetMeta = {
+                    "blog.html": "部落格", "tol.html": "工具庫", "music.html": "音樂頻道",
+                    "shorts.html": "Shorts", "wiki.html": "支援中心", "history.html": "歷史紀錄", "setting.html": "設定"
+                };
+
+                const dynamicCards = htmlFiles.map(file => {
+                    const id = file.name.replace('.html', '');
+                    return {
+                        id: id,
+                        title: presetMeta[file.name] || id.toUpperCase(),
+                        url: `https://mobsp.github.io/${id}/`,
+                        image: `https://mobsp.github.io/assets/brand/ms-${id}.JPEG`
+                    };
+                });
+
+                renderCards(dynamicCards);
+                alert('手動即時動態掃描成功！網頁卡片配置已重新計算並渲染。');
+            } else {
+                alert(`同步失敗。錯誤代碼: ${response.status}，請檢查 Token 權限。`);
+            }
+        } catch (err) {
+            alert('網路異常，無法連接至 GitHub REST API');
+        } finally {
+            btn.innerText = '🔄 立即手動動態掃描儲存庫';
+            btn.disabled = false;
+        }
+    });
 }
 </script>
 
-
-<script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); }</script></body></html>
+<script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); }</script>
+</body>
+</html>
