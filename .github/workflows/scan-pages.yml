@@ -1,4 +1,4 @@
-name: Auto Scan Pages for MobiSpace 
+name: Auto Scan Pages for MobiSpace
 
 on:
   push:
@@ -7,6 +7,10 @@ on:
     paths:
       - '*.html'
       - '.github/workflows/**'
+
+# 授權此工作流有寫入儲存庫的權限
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -23,13 +27,16 @@ jobs:
           python-version: '3.x'
 
       - name: Execute Scanner Script
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
+          cat << 'EOF' > scan.py
           import os
           import json
           import re
 
           pages = []
-          # 預設基礎卡片配置（如果掃描到的檔案在字典裡有對應，就用高精度的圖，否則用預設圖）
+          # 預設基礎卡片配置
           preset_meta = {
               "blog.html": {"title": "部落格", "img": "https://mobsp.github.io/assets/brand/ms-blog.JPEG"},
               "tol.html": {"title": "工具庫", "img": "https://mobsp.github.io/assets/brand/ms-tools.JPEG"},
@@ -42,15 +49,16 @@ jobs:
 
           for file in sorted(os.listdir('.')):
               if file.endswith('.html') and file != 'index.html':
-                  path = f"https://mobsp.github.io/{file.replace('.html', '/')}"
-                  title = file.replace('.html', '').capitalize()
+                  id_name = file.replace('.html', '')
+                  path = f"https://mobsp.github.io/{id_name}/"
+                  title = id_name.capitalize()
                   img = "https://mobsp.github.io/assets/brand/ms-logo.JPEG"
                   
                   if file in preset_meta:
                       title = preset_meta[file]["title"]
                       img = preset_meta[file]["img"]
                   
-                  # 嘗試從檔案內容動態抓取 og 標籤
+                  # 嘗試從 HTML 內動態抓取 og 標籤
                   try:
                       with open(file, 'r', encoding='utf-8') as f:
                           content = f.read()
@@ -59,10 +67,10 @@ jobs:
                           if title_match: title = title_match.group(1).split('|')[0].strip()
                           if img_match: img = img_match.group(1)
                   except Exception as e:
-                      print(f"讀取 {file} 失敗，使用預設值: {e}")
+                      print(f"讀取 {file} 失敗: {e}")
 
                   pages.append({
-                      "id": file.replace('.html', ''),
+                      "id": id_name,
                       "title": title,
                       "url": path,
                       "image": img
@@ -71,10 +79,22 @@ jobs:
           with open('pages-config.json', 'w', encoding='utf-8') as f:
               json.dump(pages, f, ensure_ascii=False, indent=2)
           print("成功產生 pages-config.json")
+          EOF
+          python scan.py
 
-      - name: Commit and Push Changes 
+      - name: Commit and Push Changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add pages-config.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: 自動更新頁面索引配置 [skip ci]" && git push)
+          
+          # 檢查是否有檔案變更，有變更才進行 commit 與 push
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: 自動更新頁面索引配置 [skip ci]"
+            # 這裡使用你剛才設定好的 GH_TOKEN 進行安全的認證推送
+            git push "https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/mobsp/mobsp.github.io.git" HEAD:main
+          else
+            print("配置無變更，跳過推送。")
+          fi
