@@ -72,7 +72,7 @@ jobs:
               json.dump(pages, f, ensure_ascii=False, indent=2)
           print("成功產生 pages-config.json")
 
-      - name: Commit and Push Changes
+      - name: Commit and Push Changes 
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
