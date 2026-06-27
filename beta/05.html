@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+
+<title>iOS Settings Core v26.6</title>
+
+<style>
+/* =========================================================
+   行動版最佳化
+   Safari / iPhone / GitHub Pages
+   ========================================================= */
+
+html{
+    height:100%;
+    overscroll-behavior:none;
+    -webkit-text-size-adjust:100%;
+}
+
+body{
+    min-height:100svh;
+    min-height:100dvh;
+
+    padding-top:env(safe-area-inset-top);
+    padding-bottom:env(safe-area-inset-bottom);
+    padding-left:env(safe-area-inset-left);
+    padding-right:env(safe-area-inset-right);
+
+    touch-action:manipulation;
+}
+
+button,
+input,
+select,
+textarea{
+    font:inherit;
+}
+
+/* ==========================================================================
+iOS 26.6 Semantic Colors & Liquid Glass Engine
+========================================================================== */
+
+:root {
+    --ios-font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --spring-curve: cubic-bezier(0.25,1,0.5,1);
+    --fluid-animation: all .3s cubic-bezier(.16,1,.3,1);
+
+    --ios-bg-primary:#F2F2F7;
+    --ios-card-bg:#FFFFFF;
+    --ios-card-elevated:#FFFFFF;
+
+    --ios-text-primary:#000000;
+    --ios-text-secondary:#8E8E93;
+    --ios-text-tertiary:#C7C7CC;
+
+    --ios-separator: rgba(60,60,67,.29);
+
+    --ios-tint-blue:#007AFF;
+    --ios-tint-green:#34C759;
+    --ios-tint-red:#FF3B30;
+    --ios-tint-yellow:#FFCC00;
+
+    --ios-thick-material: rgba(255,255,255,.85);
+    --ios-vibrancy-blend: screen;
+
+    --safe-area-top:47px;
+    --safe-area-bottom:34px;
+    --safe-area-left:0px;
+    --safe-area-right:0px;
+}
+
+@media (prefers-color-scheme:dark){
+    :root{
+        --ios-bg-primary:#000000;
+        --ios-card-bg:#1C1C1E;
+        --ios-card-elevated:#2C2C2E;
+
+        --ios-text-primary:#FFFFFF;
+        --ios-text-secondary:#AEAEB2;
+        --ios-text-tertiary:#48484A;
+
+        --ios-separator: rgba(84,84,88,.6);
+        --ios-thick-material: rgba(28,28,30,.85);
+        --ios-vibrancy-blend: multiply;
+    }
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+
+    -webkit-tap-highlight-color:transparent;
+    user-select:none;
+}
+
+body{
+    font-family:var(--ios-font-family);
+    background-color: var(--ios-bg-primary);
+    color: var(--ios-text-primary);
+    overflow:hidden;
+    width:100vw;
+    height:100vh;
+}
+
+.ios-squircle{
+    border-radius:12px;
+    mask-image:paint(squircle);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+.liquid-glass{
+    background: var(--ios-thick-material);
+    backdrop-filter: blur(30px) saturation(190%);
+    -webkit-backdrop-filter: blur(30px) saturation(190%);
+}
+
+.ios-scroll-container{
+    width:100%;
+    height:calc(100% - var(--safe-area-top) - var(--safe-area-bottom));
+    overflow-y:scroll;
+    overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    padding:0 16px;
+}
+
+.ios-card-group{
+    background-color:var(--ios-card-bg);
+    margin-bottom:20px;
+    overflow:hidden;
+    border:.5px solid rgba(0,0,0,.05);
+    box-shadow: 0 1px 2px rgba(0,0,0,.02);
+    transition: var(--fluid-animation);
+}
+
+.ios-grouped-list-container{
+    margin-top:20px;
+    margin-bottom:24px;
+}
+
+.ios-nav-bar{
+    position:sticky;
+    top:0;
+    left:0;
+    width:100%;
+    height:96px;
+    z-index:999;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+    padding:12px 16px;
+    border-bottom: .5px solid var(--ios-separator);
+    transition: var(--fluid-animation);
+}
+
+.ios-switch{
+    position:relative;
+    width:51px;
+    height:31px;
+    border-radius:16px;
+    cursor:pointer;
+    transition: background-color .2s;
+}
+
+.ios-switch-thumb{
+    position:absolute;
+    width:27px;
+    height:27px;
+    left:2px;
+    top:2px;
+    background:#fff;
+    border-radius:50%;
+    box-shadow: 0 3px 8px rgba(0,0,0,.15);
+    transition: transform .2s, width .15s;
+}
+
+.ios-slider-input{
+    flex:1;
+    height:4px;
+    border-radius:2px;
+    accent-color: var(--ios-tint-blue);
+}
+
+.ios-storage-track{
+    width:100%;
+    height:12px;
+    background: var(--ios-text-tertiary);
+    border-radius:6px;
+    display:flex;
+    overflow:hidden;
+}
+
+.segment-apps{
+    width:0%;
+    height:100%;
+    background:#5856D6;
+    transition: width 1s ease-out;
+}
+
+.segment-system{
+    width:0%;
+    height:100%;
+    background:#8E8E93;
+    transition: width 1s ease-out .2s;
+}
+
+.segment-photos{
+    width:0%;
+    height:100%;
+    background:#FF2D55;
+    transition: width 1s ease-out .4s;
+}
+
+/* Action Sheet 額外樣式修正 */
+.ios-sheet-cancel {
+    width: calc(100% - 32px);
+    height: 56px;
+    margin: 16px auto;
+    border: none;
+    background: var(--ios-card-elevated);
+    border-radius: 12px;
+    color: var(--ios-tint-blue);
+    font-weight: 600;
+    font-size: 17px;
+    cursor: pointer;
+    display: block;
+}
+.ios-sheet-container {
+    width: 100%;
+    padding: 0 16px;
+    box-sizing: border-box;
+}
+.ios-sheet-header {
+    padding: 16px;
+    border-bottom: .5px solid var(--ios-separator);
+}
+.ios-sheet-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ios-text-secondary);
+}
+.ios-sheet-msg {
+    font-size: 13px;
+    color: var(--ios-text-secondary);
+    margin-top: 4px;
+}
+.ios-sheet-btn {
+    font-size: 20px;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- 原生 Apple 導覽與 Liquid Glass 頂部視窗系統 -->
+<ios-navigation-bar id="main-nav" title="設定"></ios-navigation-bar>
+
+<div class="ios-scroll-container" id="scroll-engine">
+    <ios-account-hero-row name="極客級獨立開發者" subtitle="MobiSpace 系統控制中心、iCloud"></ios-account-hero-row>
+
+    <ios-grouped-list>
+        <ios-card-group>
+            <ios-navigation-link-row icon-bg="#007AFF" icon="✈️" title="飛航模式" detail="關閉"></ios-navigation-link-row>
+            <ios-navigation-link-row icon-bg="#34C759" icon="📶" title="行動網路" detail="中華電信"></ios-navigation-link-row>
+            <ios-switch-row title="Wi-Fi 網路快照緩衝" checked></ios-switch-row>
+        </ios-card-group>
+
+        <ios-card-group>
+            <ios-navigation-link-row icon-bg="#8E8E93" icon="⚙️" title="一般" detail="iOS 26.6"></ios-navigation-link-row>
+            <ios-slider-row title="Liquid Glass 渲染亮度調校"></ios-slider-row>
+        </ios-card-group>
+
+        <ios-card-group>
+            <ios-storage-bar-chart></ios-storage-bar-chart>
+            <ios-navigation-link-row id="destructive-demo" icon-bg="#FF3B30" icon="⚠️" title="重設所有設定"></ios-navigation-link-row>
+        </ios-card-group>
+    </ios-grouped-list>
+</div>
+
+<ios-action-sheet id="global-action-sheet"></ios-action-sheet>
+
+<script>
+/* =====================================================
+   核心核心邏輯 JavaScript
+   ===================================================== */
+const iOSCore = {
+    isTouchLocked: false,
+    acquireTouchLock() {
+        if (this.isTouchLocked) return false;
+        this.isTouchLocked = true;
+        setTimeout(() => this.isTouchLocked = false, 400);
+        return true;
+    },
+    triggerHaptic(type = 'selection') {
+        if (!navigator.vibrate) return;
+        switch (type) {
+            case 'selection': navigator.vibrate(10); break;
+            case 'warning': navigator.vibrate([15, 30, 15]); break;
+            case 'success': navigator.vibrate(25); break;
+        }
+    }
+};
+
+/* =====================================================
+   Web Components 元件定義
+   ===================================================== */
+class IOSGroupedList extends HTMLElement {
+    constructor() {
+        super();
+        this.innerHTML = `<div class="ios-grouped-list-container"><slot></slot></div>`;
+    }
+}
+customElements.define('ios-grouped-list', IOSGroupedList);
+
+class IOSCardGroup extends HTMLElement {
+    connectedCallback() {
+        this.className = "ios-card-group ios-squircle";
+    }
+}
+customElements.define('ios-card-group', IOSCardGroup);
+
+class IOSNavigationBar extends HTMLElement {
+    connectedCallback() {
+        this.titleText = this.getAttribute('title') || '設定';
+        this.className = "ios-nav-bar liquid-glass";
+        this.render();
+    }
+    render() {
+        this.innerHTML = `
+            <div class="ios-nav-small-title" style="opacity:0; text-align:center; font-size:17px; font-weight:600; position:absolute; left:50%; transform:translateX(-50%); bottom:12px; transition:opacity .2s linear;">
+                ${this.titleText}
+            </div>
+            <div class="ios-nav-large-title" style="font-size:34px; font-weight:700; transform-origin:left bottom; transition: transform .1s linear, opacity .1s linear;">
+                ${this.titleText}
+            </div>
+        `;
+    }
+    updateInterpolation(scrollTop) {
+        const largeTitle = this.querySelector('.ios-nav-large-title');
+        const smallTitle = this.querySelector('.ios-nav-small-title');
+        let opacityLarge = 1 - (scrollTop / 50);
+        let scaleLarge = 1 - (scrollTop / 300);
+
+        if (opacityLarge < 0) opacityLarge = 0;
+        if (scaleLarge < 0.85) scaleLarge = 0.85;
+
+        if (scrollTop > 50) {
+            largeTitle.style.opacity = 0;
+            smallTitle.style.opacity = 1;
+            this.style.height = "44px";
+            this.style.background = "var(--ios-thick-material)";
+        } else {
+            largeTitle.style.opacity = opacityLarge;
+            largeTitle.style.transform = `scale(${scaleLarge})`;
+            smallTitle.style.opacity = 0;
+            this.style.height = `${96 - scrollTop}px`;
+        }
+    }
+}
+customElements.define('ios-navigation-bar', IOSNavigationBar);
+
+class IOSNavigationLinkRow extends HTMLElement {
+    connectedCallback() {
+        const iconBg = this.getAttribute('icon-bg') || '#007AFF';
+        const iconSymbol = this.getAttribute('icon') || '⚙️';
+        const title = this.getAttribute('title') || '未命名選項';
+        const detail = this.getAttribute('detail') || '';
+
+        this.style.cssText = `
+            display:flex; align-items:center; justify-content:space-between;
+            padding:12px 16px; border-bottom: .5px solid var(--ios-separator); cursor:pointer;
+        `;
+        this.innerHTML = `
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:29px; height:29px; background:${iconBg}; border-radius:7px; display:flex; align-items:center; justify-content:center; color:white; font-size:16px;">
+                    ${iconSymbol}
+                </div>
+                <span>${title}</span>
+            </div>
+            <div style="display:flex; gap:8px; align-items:center;">
+                <span style="color:var(--ios-text-secondary); font-size:15px;">${detail}</span>
+                <span style="color:var(--ios-text-tertiary); font-size:14px;">➔</span>
+            </div>
+        `;
+    }
+}
+customElements.define('ios-navigation-link-row', IOSNavigationLinkRow);
+
+class IOSSwitchRow extends HTMLElement {
+    connectedCallback() {
+        const title = this.getAttribute('title') || '未命名開關';
+        const checked = this.hasAttribute('checked');
+
+        this.style.cssText = `
+            display:flex; align-items:center; justify-content:space-between;
+            padding:12px 16px; border-bottom:.5px solid var(--ios-separator);
+        `;
+        this.innerHTML = `
+            <span>${title}</span>
+            <div class="ios-switch" style="background-color: ${checked ? 'var(--ios-tint-green)' : 'var(--ios-text-tertiary)'};">
+                <div class="ios-switch-thumb" style="transform: ${checked ? 'translateX(20px)' : 'translateX(0px)'};"></div>
+            </div>
+        `;
+
+        const switchBtn = this.querySelector('.ios-switch');
+        const thumb = this.querySelector('.ios-switch-thumb');
+        let isActive = checked;
+
+        switchBtn.addEventListener('click', () => {
+            isActive = !isActive;
+            iOSCore.triggerHaptic('selection');
+            switchBtn.style.backgroundColor = isActive ? 'var(--ios-tint-green)' : 'var(--ios-text-tertiary)';
+            thumb.style.transform = isActive ? 'translateX(20px)' : 'translateX(0px)';
+            thumb.style.width = '33px';
+            setTimeout(() => { thumb.style.width = '27px' }, 150);
+
+            this.dispatchEvent(new CustomEvent('switch-change', { detail: { value: isActive } }));
+        });
+    }
+}
+customElements.define('ios-switch-row', IOSSwitchRow);
+
+class IOSSliderRow extends HTMLElement {
+    connectedCallback() {
+        const title = this.getAttribute('title') || '亮度';
+        this.style.cssText = `
+            display:flex; flex-direction:column; padding:12px 16px; gap:8px; border-bottom: .5px solid var(--ios-separator);
+        `;
+        this.innerHTML = `
+            <span style="font-size:14px; color: var(--ios-text-secondary);">${title}</span>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <span>🔅</span>
+                <input type="range" class="ios-slider-input" min="0" max="100" value="50">
+                <span>🔆</span>
+            </div>
+        `;
+        const input = this.querySelector('.ios-slider-input');
+        input.addEventListener('input', e => {
+            if (e.target.value == 0 || e.target.value == 100) {
+                iOSCore.triggerHaptic('success');
+            }
+        });
+    }
+}
+customElements.define('ios-slider-row', IOSSliderRow);
+
+class IOSStorageBarChart extends HTMLElement {
+    connectedCallback() {
+        this.style.cssText = `
+            display:flex; flex-direction:column; padding:16px; gap:10px; background-color: var(--ios-card-bg);
+        `;
+        this.innerHTML = `
+            <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--ios-text-secondary);">
+                <span>iPhone 儲存空間</span>
+                <span style="font-weight:600; color:var(--ios-text-primary);">已使用 45 GB / 共 256 GB</span>
+            </div>
+            <div class="ios-storage-track">
+                <div class="segment-apps"></div>
+                <div class="segment-system"></div>
+                <div class="segment-photos"></div>
+            </div>
+        `;
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                this.querySelector('.segment-apps').style.width = '25%';
+                this.querySelector('.segment-system').style.width = '10%';
+                this.querySelector('.segment-photos').style.width = '15%';
+            }, 300);
+        });
+    }
+}
+customElements.define('ios-storage-bar-chart', IOSStorageBarChart);
+
+class IOSAccountHeroRow extends HTMLElement {
+    connectedCallback() {
+        const name = this.getAttribute('name') || 'Apple ID 用戶';
+        const subtitle = this.getAttribute('subtitle') || 'Apple ID、iCloud';
+        this.style.cssText = `
+            display:flex; align-items:center; justify-content:space-between; padding:16px;
+            background-color: var(--ios-card-bg); margin-bottom:20px; cursor:pointer;
+        `;
+        this.innerHTML = `
+            <div style="display:flex; align-items:center; gap:16px;">
+                <div style="width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, #8E8E93, #3A3A3C); display:flex; align-items:center; justify-content:center; color:white; font-size:24px;">
+                    👤
+                </div>
+                <div style="display:flex; flex-direction:column;">
+                    <span style="font-size:20px; font-weight:500;">${name}</span>
+                    <span style="font-size:13px; color:var(--ios-text-secondary);">${subtitle}</span>
+                </div>
+            </div>
+            <span style="color:var(--ios-text-tertiary); font-size:14px;">➔</span>
+        `;
+    }
+}
+customElements.define('ios-account-hero-row', IOSAccountHeroRow);
+
+class IOSActionSheet extends HTMLElement {
+    constructor() {
+        super();
+        this.style.cssText = `
+            position:fixed; bottom:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4);
+            z-index:9999; display:none; justify-content:flex-end; flex-direction:column; opacity:0;
+            transition: opacity .3s ease;
+        `;
+    }
+    show(title, msg, actions) {
+        this.style.display = 'flex';
+        requestAnimationFrame(() => this.style.opacity = '1');
+
+        let buttons = actions.map(a => `
+            <button class="ios-sheet-btn" id="${a.id}" style="width:100%; height:56px; border:none; background:transparent; border-bottom: .5px solid var(--ios-separator); color:${a.destructive ? 'var(--ios-tint-red)' : 'var(--ios-tint-blue)'}; font-weight:${a.bold ? '600' : '400'};">
+                ${a.text}
+            </button>
+        `).join('');
+
+        this.innerHTML = `
+            <div class="ios-sheet-container">
+                <div style="background:var(--ios-card-elevated); border-radius:12px; overflow:hidden;">
+                    <div class="ios-sheet-header">
+                        <div class="ios-sheet-title">${title}</div>
+                        <div class="ios-sheet-msg">${msg}</div>
+                    </div>
+                    ${buttons}
+                </div>
+                <button class="ios-sheet-cancel">取消</button>
+            </div>
+        `;
+
+        const container = this.querySelector('.ios-sheet-container');
+        container.style.transform = 'translateY(100%)';
+        container.style.transition = 'transform .3s cubic-bezier(.16,1,.3,1)';
+        requestAnimationFrame(() => container.style.transform = 'translateY(0%)');
+
+        this.querySelector('.ios-sheet-cancel').onclick = () => this.dismiss();
+
+        actions.forEach(a => {
+            this.querySelector(`#${a.id}`).onclick = () => {
+                a.handler();
+                this.dismiss();
+            };
+        });
+    }
+    dismiss() {
+        this.style.opacity = '0';
+        const container = this.querySelector('.ios-sheet-container');
+        if (container) container.style.transform = 'translateY(100%)';
+        setTimeout(() => this.style.display = 'none', 300);
+    }
+}
+customElements.define('ios-action-sheet', IOSActionSheet);
+
+/* =====================================================
+   App 載入初始化
+   ===================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollEngine = document.getElementById('scroll-engine');
+    const navBar = document.getElementById('main-nav');
+
+    scrollEngine.addEventListener('scroll', () => {
+        navBar.updateInterpolation(scrollEngine.scrollTop);
+    });
+
+    document.getElementById('destructive-demo').addEventListener('click', () => {
+        const sheet = document.getElementById('global-action-sheet');
+        sheet.show(
+            '這項操作將會清除所有系統暫存資訊。',
+            '您確定要執行這項破壞性操作嗎？系統將會重新校準晶片密鑰。',
+            [
+                {
+                    id: 'btn-reset',
+                    text: '重設所有設定',
+                    destructive: true,
+                    bold: true,
+                    handler: () => {
+                        console.warn('核心硬體安全重設指令已被執行。');
+                    }
+                }
+            ]
+        );
+    });
+});
+</script>
+
+</body>
+</html>
