@@ -89,6 +89,7 @@ body {
     touch-action: manipulation;
 }
 
+/* 第三版特有：高質感掃描線 */
 body::before {
     content: "";
     position: fixed;
@@ -106,6 +107,7 @@ body::before {
     will-change: transform, opacity;
 }
 
+/* 第三版靈魂：極致流體液態玻璃材質 */
 .ios-liquid-glass {
     background: rgba(255, 255, 255, 0.12);
     backdrop-filter: blur(35px) saturate(210%);
@@ -131,13 +133,12 @@ body::before {
 }
 
 #fake-splash::after {
-    content: "莫比空間";
+    content: "LOADING...";
     position: absolute;
     bottom: calc(42px + env(safe-area-inset-bottom));
-    color: rgba(255,255,255,.72);
-    font-size: 13px;
-    letter-spacing: 4px;
-    font-weight: 700;
+    color: rgba(255,255,255,.5);
+    font-size: 12px;
+    letter-spacing: 5px;
 }
 
 #fake-splash.fade-out {
@@ -175,7 +176,7 @@ body::before {
 
 .header-glass {
     padding: 12px;
-    border-radius: 0 0 var(--ios-radius-xl) var(--ios-radius-xl);
+    border-radius: var(--ios-radius-xl);
 }
 
 .marquee-row {
@@ -224,7 +225,7 @@ body::before {
 .mq-text {
     display: inline-block;
     padding-left: 100%;
-    animation: mq 120s linear infinite;
+    animation: mq 45s linear infinite;
     font-size: 12px;
     color: rgba(255,255,255,.88);
     letter-spacing: .3px;
@@ -253,7 +254,7 @@ body::before {
     display: none;
 }
 
-/* ==================== 整合修訂：保持第三版 3D 彈性物理回饋結構 ==================== */
+/* ==================== 第三版原生傲骨：3D立體物理下陷回彈卡片 ==================== */
 .action-btn {
     flex: 0 0 88%;
     max-width: 430px;
@@ -263,7 +264,7 @@ body::before {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* 頂底分離佈局 */
+    justify-content: space-between; /* 頂底分離，完美承載 Shortcuts */
     text-decoration: none;
     border-radius: var(--ios-radius-xl);
     border: 0.5px solid rgba(255, 255, 255, 0.22);
@@ -293,6 +294,7 @@ body::before {
     pointer-events: none;
 }
 
+/* 完美保持第三版頂級 3D 物理縮放反饋 */
 .action-btn:active {
     transform: scale(0.96) translateZ(0);
     filter: brightness(0.9);
@@ -306,7 +308,7 @@ body::before {
 .btn-wiki { background-image: url('https://mobsp.qzz.io/assets/brand/ms-wiki.JPEG'); }
 .btn-logo { background-image: url('https://mobsp.qzz.io/assets/brand/ms-logo.JPEG'); }
 
-/* ==================== 融合新元素：iOS 頂部元數據與呼吸狀態燈 ==================== */
+/* ==================== 融合進化：iOS 原生狀態呼吸指示燈 ==================== */
 .card-top-meta {
     position: relative;
     z-index: 3;
@@ -342,11 +344,11 @@ body::before {
     height: 6px;
     border-radius: 99px;
     background: var(--ios-green);
-    box-shadow: 0 0 10px var(--ios-green);
+    box-shadow: 0 0 8px var(--ios-green);
 }
-.status-dot.status-update { background: var(--ios-green); box-shadow: 0 0 10px var(--ios-green); }
-.status-dot.status-important { background: var(--ios-red); box-shadow: 0 0 10px var(--ios-red); }
-.status-dot.status-normal { background: var(--ios-blue); box-shadow: 0 0 10px var(--ios-blue); }
+.status-dot.status-update { background: var(--ios-green); box-shadow: 0 0 8px var(--ios-green); }
+.status-dot.status-important { background: var(--ios-red); box-shadow: 0 0 8px var(--ios-red); }
+.status-dot.status-normal { background: var(--ios-blue); box-shadow: 0 0 8px var(--ios-blue); }
 
 .status-text {
     color: rgba(255, 255, 255, 0.85);
@@ -355,7 +357,7 @@ body::before {
     letter-spacing: .5px;
 }
 
-/* ==================== 融合新元素：iOS 底部內容區與毛玻璃快捷連結 ==================== */
+/* ==================== 融合進化：第三版流體玻璃子連結（絕不衝突） ==================== */
 .btn-overlay {
     position: relative;
     z-index: 3;
@@ -388,7 +390,7 @@ body::before {
     gap: 8px;
 }
 
-/* 將第四版按鈕外觀升級為第三版特有的流體毛玻璃材質，達成美學最優解 */
+/* 融合第三版極致材質：快捷按鈕全面升級為流體毛玻璃，並內置獨立微縮放 */
 .shortcut-link {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(15px) saturate(180%);
@@ -406,7 +408,7 @@ body::before {
 
 .shortcut-link:active {
     background: rgba(255, 255, 255, 0.3);
-    transform: scale(0.94);
+    transform: scale(0.94); /* 獨立的微觀觸控反饋 */
 }
 
 /* ============================================================================== */
@@ -418,7 +420,7 @@ body::before {
 }
 
 .footer-glass {
-    border-radius: 24px;
+    border-radius: var(--ios-radius-xl);
     padding: 12px 14px 10px;
 }
 
@@ -442,16 +444,13 @@ body::before {
     .page-wrapper {
         max-width: 640px;
     }
-
     .action-btn {
         flex-basis: 78%;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    *, *::before, *::after {
         animation-duration: .001ms !important;
         transition-duration: .001ms !important;
         scroll-behavior: auto !important;
@@ -641,6 +640,7 @@ document.addEventListener('DOMContentLoaded', () => {
     preventDoubleTapZoom();
 });
 
+// 原封不動的安全 Token 與數據配置
 const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
@@ -694,16 +694,14 @@ function renderNotice(data, isCached) {
     mqText.innerText = randomItem.message || '';
 }
 
+// 第三版核心：極致防誤觸（防止行動端300ms點擊延遲與縮放）
 function preventDoubleTapZoom() {
     let lastTouchEnd = 0;
-
     document.addEventListener('touchend', event => {
         const now = Date.now();
-
         if (now - lastTouchEnd <= 300) {
             event.preventDefault();
         }
-
         lastTouchEnd = now;
     }, { passive: false });
 }
