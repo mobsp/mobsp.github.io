@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>MobiSpace UI - 媒體庫獨立系統</title>
+    <style>
+        /* ========================================== */
+        /* 一、 全域設計系統變數 (iOS 26.5 設計規範) */
+        /* ========================================== */
+        :root {
+            --ios-bg: #f5f5f7;
+            --ios-card: rgba(255, 255, 255, 0.85);
+            --ios-text-main: #1d1d1f;
+            --ios-text-sub: #86868b;
+            --ios-border: rgba(0, 0, 0, 0.08);
+            --ios-tint: #007aff;
+            --safe-top: env(safe-area-inset-top, 47px);
+            --safe-bottom: env(safe-area-inset-bottom, 34px);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --ios-bg: #000000;
+                --ios-card: rgba(28, 28, 30, 0.7);
+                --ios-text-main: #f5f5f7;
+                --ios-text-sub: #8e8e93;
+                --ios-border: rgba(255, 255, 255, 0.1);
+                --ios-tint: #0a84ff;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            background-color: var(--ios-bg);
+            color: var(--ios-text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
+            overflow: hidden;
+        }
+
+        /* ========================================== */
+        /* 二、 滿版獨立頁面佈局結構 (Full-Page Layout) */
+        /* ========================================== */
+        .ios-page-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+            max-width: 600px; /* 在桌機端自動收束為經典手機 App 寬度居中，手機端自動滿版 */
+            margin: 0 auto;
+            background-color: var(--ios-bg);
+            position: relative;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 頂部導覽控制列 - 完美綁定 iOS 高級毛玻璃 */
+        .ios-nav-bar {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding-top: calc(var(--safe-top) + 10px);
+            padding-left: 20px;
+            padding-right: 20px;
+            padding-bottom: 12px;
+            background-color: rgba(245, 245, 247, 0.85);
+            backdrop-filter: blur(20px) saturate(190%);
+            -webkit-backdrop-filter: blur(20px) saturate(190%);
+            border-bottom: 1px solid var(--ios-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .ios-nav-bar {
+                background-color: rgba(0, 0, 0, 0.75);
+            }
+        }
+
+        .back-router-btn {
+            font-size: 16px;
+            color: var(--ios-tint);
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .page-main-title {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .action-icon-btn {
+            font-size: 20px;
+            background: none;
+            border: none;
+            color: var(--ios-text-main);
+            cursor: pointer;
+        }
+
+        /* 獨立主滾動視窗 */
+        .ios-page-scroller {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px 20px calc(var(--safe-bottom) + 30px) 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            scrollbar-width: none;
+        }
+        .ios-page-scroller::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* ========================================== */
+        /* 三、 搜尋列與橫向膠囊元件 (Search & Pills) */
+        /* ========================================== */
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .ios-search-input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border-radius: 12px;
+            border: none;
+            background-color: var(--ios-border);
+            color: var(--ios-text-main);
+            font-size: 15px;
+            outline: none;
+            transition: background-color 0.2s;
+        }
+        
+        .ios-search-input:focus {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        @media (prefers-color-scheme: dark) {
+            .ios-search-input:focus { background-color: rgba(255, 255, 255, 0.15); }
+        }
+
+        .search-magnifier {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--ios-text-sub);
+            pointer-events: none;
+        }
+
+        /* 橫向膠囊排版 (Pills) */
+        .pills-scroller {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 4px 0;
+        }
+        .pills-scroller::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pills-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            background-color: var(--ios-border);
+            color: var(--ios-text-main);
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .pills-btn.active {
+            background-color: var(--ios-text-main);
+            color: var(--ios-bg);
+        }
+
+        /* ========================================== */
+        /* 四、 獨立卡片元件與樂觀 UI 側滑刪除動畫 */
+        /* ========================================== */
+        .cards-feed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .app-item-card {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            background-color: var(--ios-card);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 16px;
+            border: 1px solid var(--ios-border);
+            cursor: pointer;
+            transition: opacity 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                        transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+                        background-color 0.2s;
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.01);
+        }
+
+        .app-item-card:active {
+            background-color: var(--ios-border);
+        }
+
+        /* 樂觀 UI 的高級側滑淡出消失動畫 */
+        .app-item-card.optimistic-leaving {
+            opacity: 0;
+            transform: scale(0.9) translateX(-40px);
+        }
+
+        .card-leading-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background-color: var(--ios-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+
+        .card-center-block {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-main-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--ios-text-main);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-timestamp {
+            font-size: 12px;
+            color: var(--ios-text-sub);
+        }
+
+        .card-trailing-delete {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--ios-text-sub);
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s, background-color 0.2s;
+            margin-left: 8px;
+        }
+
+        .card-trailing-delete:hover {
+            color: #ff3b30;
+            background-color: rgba(255, 59, 48, 0.1);
+        }
+
+        /* 高性能動態載入指示器 */
+        .scroll-load-indicator {
+            text-align: center;
+            font-size: 12px;
+            color: var(--ios-text-sub);
+            padding: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 滿版獨立 App 級媒體庫頁面外殼 -->
+    <div class="ios-page-container">
+        
+        <!-- 頂部獨立導覽列 -->
+        <div class="ios-nav-bar">
+            <button class="back-router-btn" id="btnPageBack" onclick="handleRouterBack()">ㄑ 首頁</button>
+            <div class="page-main-title">媒體庫</div>
+            <button class="action-icon-btn">⋯</button>
+        </div>
+
+        <!-- 獨立主滾動視窗 -->
+        <div class="ios-page-scroller" id="pageScroller">
+            
+            <!-- 1. 獨立搜尋列 -->
+            <div class="search-wrapper">
+                <span class="search-magnifier">🔍</span>
+                <input type="text" class="ios-search-input" id="pageSearchInput" placeholder="搜尋您的歷史紀錄與媒體庫資產...">
+            </div>
+
+            <!-- 2. 分類膠囊 Pills -->
+            <div class="pills-scroller" id="pagePillsScroller">
+                <button class="pills-btn active" data-type="all">全部</button>
+                <button class="pills-btn" data-type="chat">💬 對話紀錄</button>
+                <button class="pills-btn" data-type="image">🖼️ 生成圖片</button>
+                <button class="pills-btn" data-type="doc">📄 深度文件</button>
+                <button class="pills-btn" data-type="code">💻 自動化代碼</button>
+            </div>
+
+            <!-- 3. 卡片串流資訊流 (Feed List) -->
+            <div class="cards-feed-list" id="cardsFeedList"></div>
+
+            <!-- 4. 網頁無限滾動監聽點 -->
+            <div class="scroll-load-indicator" id="scrollLoadIndicator">正在加載更多資產...</div>
+        </div>
+    </div>
+
+    <!-- ========================================== */
+    /* 五、 頁面獨立核心控制邏輯 (JS VM Architecture) */
+    /* ========================================== */ -->
+    <script>
+        // 工業級降維版核心資產數據集
+        const initialAssetDB = [
+            { id: "asset_01", title: "Python 金融量化交易自動化腳本", type: "code", date: "3 分鐘前", icon: "💻" },
+            { id: "asset_02", title: "MobiSpace 品牌高清向量 LOGO 資產包", type: "image", date: "42 分鐘前", icon: "🖼️" },
+            { id: "asset_03", title: "2026年第二季產品使用者體驗優化白皮書", type: "doc", date: "2 小時前", icon: "📄" },
+            { id: "asset_04", title: "關於自品牌架站平台商業化路徑的戰略討論", type: "chat", date: "昨天", icon: "💬" },
+            { id: "asset_05", title: "MySQL 叢集讀寫分離與索引優化日誌", type: "code", date: "3 天前", icon: "💻" },
+            { id: "asset_06", title: "首頁高擬真磨砂玻璃 Banner 設計資產", type: "image", date: "5 天前", icon: "🖼️" },
+            { id: "asset_07", title: "SaaS 全球雲端部署安全架構合規說明書", type: "doc", date: "1 週前", icon: "📄" },
+            { id: "asset_08", title: "智能客服多輪對話上下文權重調校紀錄", type: "chat", date: "2 週前", icon: "💬" }
+        ];
+
+        // 獨立路由與分頁核心狀態機
+        const runtimeState = {
+            activeTab: "all",
+            searchQuery: "",
+            currentPage: 1,
+            pageSize: 5, // 每頁 5 筆，便於在中高端網頁端測試無限滑動
+            isThrottled: false
+        };
+
+        // DOM 緩衝節點
+        const elements = {
+            feedList: document.getElementById("cardsFeedList"),
+            searchInput: document.getElementById("pageSearchInput"),
+            pillsBox: document.getElementById("pagePillsScroller"),
+            indicator: document.getElementById("scrollLoadIndicator"),
+            scroller: document.getElementById("pageScroller")
+        };
+
+        // 1. 模擬返回上一頁路由防狂點
+        window.handleRouterBack = function() {
+            if (runtimeState.isThrottled) return;
+            runtimeState.isThrottled = true;
+            alert("觸發路由：返回上一頁 (MobiSpace 主站點)");
+            setTimeout(() => { runtimeState.isThrottled = false; }, 350);
+        };
+
+        // 2. 資料過濾核心算法
+        function fetchFilteredAssets() {
+            return initialAssetDB.filter(item => {
+                const matchTab = (runtimeState.activeTab === "all" || item.type === runtimeState.activeTab);
+                const matchSearch = item.title.toLowerCase().includes(runtimeState.searchQuery.toLowerCase());
+                return matchTab && matchSearch;
+            });
+        }
+
+        // 3. 獨立頁面核心渲染引擎
+        function executeFeedRender(isAppend = false) {
+            if (!isAppend) elements.feedList.innerHTML = "";
+
+            const filteredSource = fetchFilteredAssets();
+            const startIndex = (runtimeState.currentPage - 1) * runtimeState.pageSize;
+            const endIndex = startIndex + runtimeState.pageSize;
+            const paginatedData = filteredSource.slice(0, endIndex);
+
+            if (paginatedData.length === 0) {
+                elements.feedList.innerHTML = `
+                    <div style="text-align:center; padding:80px 20px; color:var(--ios-text-sub); font-size:14px;">
+                        庫存中沒有找到任何媒體資產
+                    </div>`;
+                elements.indicator.style.display = "none";
+                return;
+            }
+
+            // 控制無限滾動條的隱現
+            elements.indicator.style.display = (endIndex >= filteredSource.length) ? "none" : "block";
+
+            const dataChunk = isAppend ? paginatedData.slice(startIndex, endIndex) : paginatedData;
+
+            // 1:1 還原 App 卡片元件與點擊事件
+            const cardHTML = dataChunk.map(item => `
+                <div class="app-item-card" data-id="${item.id}" onclick="alert('點擊路由：前往資產詳細頁 [${item.title}]')">
+                    <div class="card-leading-avatar">${item.icon}</div>
+                    <div class="card-center-block">
+                        <div class="card-main-title">${item.title}</div>
+                        <div class="card-timestamp">${item.date}</div>
+                    </div>
+                    <button class="card-trailing-delete" onclick="executeOptimisticCardDelete(event, '${item.id}')">✕</button>
+                </div>
+            `).join('');
+
+            elements.feedList.insertAdjacentHTML('beforeend', cardHTML);
+        }
+
+        // 4. 高級樂觀 UI 側滑刪除邏輯
+        window.executeOptimisticCardDelete = function(event, id) {
+            event.stopPropagation(); // 阻止事件冒泡，防止觸發卡片主頁跳轉
+
+            const targetCard = elements.feedList.querySelector(`[data-id="${id}"]`);
+            if (!targetCard) return;
+
+            // 步驟一：UI 先行，立刻啟動縮小滑出的 iOS 級物理動畫
+            targetCard.classList.add("optimistic-leaving");
+
+            // 步驟二：300ms 動態結束後，將其從 DOM tree 拔除，同步清洗內存數據庫
+            setTimeout(() => {
+                targetCard.remove();
+                const dbIndex = initialAssetDB.findIndex(asset => asset.id === id);
+                if (dbIndex !== -1) {
+                    initialAssetDB.splice(dbIndex, 1); // 背景數據同步摘除
+                }
+                // 如果當前視窗被刪空，重新刷出空白提示頁
+                if (elements.feedList.children.length === 0) {
+                    executeFeedRender();
+                }
+            }, 300);
+        };
+
+        // 5. 300ms 搜尋框輸入防抖節流 (Debounce)
+        let debounceTimer = null;
+        elements.searchInput.addEventListener("input", (e) => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                runtimeState.searchQuery = e.target.value;
+                runtimeState.currentPage = 1; // 重新初始化分頁
+                executeFeedRender();
+            }, 300);
+        });
+
+        // 6. 膠囊標籤切換器
+        elements.pillsBox.addEventListener("click", (e) => {
+            const currentPill = e.target.closest(".pills-btn");
+            if (!currentPill) return;
+
+            elements.pillsBox.querySelectorAll(".pills-btn").forEach(btn => btn.classList.remove("active"));
+            currentPill.classList.add("active");
+
+            runtimeState.activeTab = currentPill.dataset.type;
+            runtimeState.currentPage = 1; // 重新初始化分頁
+            executeFeedRender();
+        });
+
+        // 7. 高性能網頁滾動邊界監聽 (IntersectionObserver)
+        const scrollObserver = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                const totalFiltered = fetchFilteredAssets();
+                if (runtimeState.currentPage * runtimeState.pageSize < totalFiltered.length) {
+                    runtimeState.currentPage++;
+                    executeFeedRender(true); // 啟用追加渲染模式
+                }
+            }
+        }, { root: elements.scroller, threshold: 0.1 });
+
+        // 啟動監聽與初次渲染
+        scrollObserver.observe(elements.indicator);
+        executeFeedRender();
+    </script>
+</body>
+</html>
