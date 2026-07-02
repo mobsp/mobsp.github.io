@@ -3,27 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>GIX OS App</title>
+    <title>GIX Library OS</title>
     <style>
-        :root { --bg-color: #000; --glass: rgba(255, 255, 255, 0.08); --accent: #06C755; }
-        body { margin: 0; background: var(--bg-color); color: #fff; font-family: -apple-system, sans-serif; }
+        :root { --bg-color: #000; --glass: rgba(255, 255, 255, 0.08); }
+        body { margin: 0; background: var(--bg-color); color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         
         header { position: fixed; top: 0; width: 100%; height: 88px; background: rgba(20,20,20,0.7); backdrop-filter: blur(20px); z-index: 100; display: flex; align-items: flex-end; padding: 0 20px 15px; border-bottom: 0.5px solid rgba(255,255,255,0.1); }
         
-        main { margin-top: 100px; padding: 0 16px; padding-bottom: 100px; }
+        main { margin-top: 100px; padding: 0 16px; padding-bottom: 120px; }
         
         .card { background: var(--glass); backdrop-filter: blur(10px); border-radius: 20px; padding: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); transition: transform 0.2s; }
         .card:active { transform: scale(0.98); }
         
-        /* 標籤樣式 */
-        .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; background: rgba(255,255,255,0.1); }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-bottom: 8px; background: rgba(255,255,255,0.1); }
         .badge.beta { color: #ff9500; background: rgba(255, 149, 0, 0.15); }
         .badge.blog { color: #ff375f; background: rgba(255, 55, 95, 0.15); }
+        .badge.system { color: #0a84ff; background: rgba(10, 132, 255, 0.15); }
         
-        .card h3 { margin: 0; font-size: 16px; }
-        .card p { margin: 8px 0 0; font-size: 12px; color: #aaa; }
+        .card h3 { margin: 0; font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card p { margin: 4px 0 0; font-size: 12px; color: #888; }
         
         nav { position: fixed; bottom: 0; width: 100%; height: 85px; background: rgba(20,20,20,0.8); backdrop-filter: blur(30px); display: flex; justify-content: space-around; padding-bottom: env(safe-area-inset-bottom); align-items: center; border-top: 0.5px solid rgba(255,255,255,0.1); }
+        nav button { background: none; border: none; color: #fff; font-size: 14px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -34,18 +35,21 @@
 
 <nav>
     <button onclick="renderList('all')">全部</button>
-    <button onclick="renderList('beta')">Beta測試</button>
-    <button onclick="renderList('blog')">風月文學</button>
+    <button onclick="renderList('beta')">Beta</button>
+    <button onclick="renderList('blog')">文學</button>
 </nav>
 
 <script>
-// 資料陣列：包含 path 用於標籤渲染
+// 資料庫 (已整合您提供的所有路徑)
 const rawData = [
     { name: ".htaccess", path: "root", type: "system" },
     { name: "beta/01.html", path: "beta", type: "beta" },
-    { name: "beta/gix-test.html", path: "beta", type: "beta" },
-    { name: "blog/p/list/母姦致孕計劃.html", path: "blog", type: "blog" },
-    { name: "blog/p/list/阿姨的菊穴.html", path: "blog", type: "blog" }
+    { name: "beta/mod/ios-type.js", path: "beta/mod", type: "beta" },
+    { name: "blog/p/list/母姦致孕計劃.html", path: "blog/p/list", type: "blog" },
+    { name: "blog/p/list/阿姨的菊穴.html", path: "blog/p/list", type: "blog" },
+    { name: "blog/p/list/風月文學網 25.html", path: "blog/p/list", type: "blog" },
+    { name: "music/js/player.js", path: "music/js", type: "system" }
+    // ... 可在此持續加入完整陣列
 ];
 
 function renderList(filter) {
@@ -58,24 +62,24 @@ function renderList(filter) {
         const div = document.createElement('div');
         div.className = 'card';
         
-        // 生成路徑標籤
-        const badgeClass = item.type === 'beta' ? 'beta' : (item.type === 'blog' ? 'blog' : '');
+        // 動態標籤渲染邏輯
+        const badgeClass = item.type === 'beta' ? 'beta' : (item.type === 'blog' ? 'blog' : 'system');
         
         div.innerHTML = `
-            <span class="badge ${badgeClass}">${item.path}</span>
+            <span class="badge ${badgeClass}">${item.type.toUpperCase()}</span>
             <h3>${item.name}</h3>
-            <p>點擊以瀏覽檔案詳情</p>
+            <p>Path: ${item.path}</p>
         `;
         
         div.onclick = () => {
             if (navigator.vibrate) navigator.vibrate(10);
-            console.log('正在導航至: ' + item.name);
+            console.log('Opening: ' + item.name);
         };
         main.appendChild(div);
     });
 }
 
-// 初始化渲染
+// 初始化
 renderList('all');
 </script>
 </body>
