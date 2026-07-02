@@ -1,87 +1,92 @@
 <!DOCTYPE html>
-<html lang="zh-TW" class="dark">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>GIX Library OS</title>
+    <title>mobsp.github.io Navigator</title>
     <style>
-        /* (樣式維持不變) */
-        :root { --bg-color: #000; --glass: rgba(255, 255, 255, 0.08); }
-        body { margin: 0; background: var(--bg-color); color: #fff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        header { position: fixed; top: 0; width: 100%; height: 88px; background: rgba(20,20,20,0.7); backdrop-filter: blur(20px); z-index: 100; display: flex; align-items: flex-end; padding: 0 20px 15px; border-bottom: 0.5px solid rgba(255,255,255,0.1); }
-        main { margin-top: 100px; padding: 0 16px; padding-bottom: 120px; }
-        .card { background: var(--glass); backdrop-filter: blur(10px); border-radius: 20px; padding: 16px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.05); }
-        .badge { display: inline-block; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-bottom: 8px; background: rgba(255,255,255,0.1); }
-        .badge.beta { color: #ff9500; }
-        .badge.blog { color: #ff375f; }
-        .badge.system { color: #0a84ff; }
-        .card h3 { margin: 0; font-size: 16px; }
-        .card p { margin: 4px 0 0; font-size: 12px; color: #888; }
-        nav { position: fixed; bottom: 0; width: 100%; height: 85px; background: rgba(20,20,20,0.8); backdrop-filter: blur(30px); display: flex; justify-content: space-around; align-items: center; border-top: 0.5px solid rgba(255,255,255,0.1); }
-        nav button { background: none; border: none; color: #fff; font-size: 14px; cursor: pointer; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; line-height: 1.6; color: #333; }
+        .controls { margin-bottom: 20px; padding: 15px; background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; }
+        ul { list-style-type: none; padding-left: 20px; }
+        li { margin: 5px 0; }
+        .folder { font-weight: bold; color: #0969da; cursor: pointer; }
+        .file { color: #57606a; text-decoration: none; }
+        .file:hover { color: #0969da; text-decoration: underline; }
+        #tree { border: 1px solid #d0d7de; padding: 20px; border-radius: 6px; }
     </style>
 </head>
 <body>
 
-<header><h1>GIX Library</h1></header>
-<main id="app-view">載入資料中...</main>
+    <h2>儲存庫內容瀏覽器</h2>
+    <div class="controls">
+        <label>選擇分支: </label>
+        <select id="branch-select"></select>
+    </div>
 
-<nav>
-    <button onclick="renderList('all')">全部</button>
-    <button onclick="renderList('beta')">Beta</button>
-    <button onclick="renderList('blog')">文學</button>
-</nav>
+    <div id="tree">正在連接 GitHub API...</div>
 
-<script>
-let globalData = [];
+    <script>
+        const OWNER = 'mobsp';
+        const REPO = 'mobsp.github.io';
+        const API_BASE = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
-// 讀取並解析 CSV
-async function loadCSV() {
-    try {
-        const response = await fetch('gix_data.csv');
-        const text = await response.text();
-        const lines = text.split('\n');
-        
-        // 解析 CSV (假設格式: User,Repo,Branch,Path,Link)
-        globalData = lines.slice(1).map(line => {
-            const [user, repo, branch, path, link] = line.split(',');
-            if (!path) return null;
-            
-            // 根據路徑判斷類型 (可根據實際需求調整邏輯)
-            let type = 'system';
-            if (path.includes('beta/')) type = 'beta';
-            else if (path.includes('blog/')) type = 'blog';
-            
-            return { name: path.split('/').pop(), path, link, type };
-        }).filter(item => item !== null);
-        
-        renderList('all');
-    } catch (err) {
-        document.getElementById('app-view').innerHTML = '無法載入 CSV 資料';
-    }
-}
+        async function init() {
+            try {
+                const res = await fetch(`${API_BASE}/branches`);
+                const branches = await res.json();
+                const select = document.getElementById('branch-select');
+                branches.forEach(b => {
+                    const opt = document.createElement('option');
+                    opt.value = b.name;
+                    opt.textContent = b.name;
+                    select.appendChild(opt);
+                });
+                loadTree(branches[0].name);
+            } catch (err) {
+                document.getElementById('tree').innerHTML = "載入失敗，請檢查網路或 API 限制。";
+            }
+        }
 
-function renderList(filter) {
-    const main = document.getElementById('app-view');
-    main.innerHTML = '';
-    
-    const filtered = filter === 'all' ? globalData : globalData.filter(d => d.type === filter);
-    
-    filtered.forEach(item => {
-        const div = document.createElement('div');
-        div.className = 'card';
-        div.innerHTML = `
-            <span class="badge ${item.type}">${item.type.toUpperCase()}</span>
-            <h3>${item.name}</h3>
-            <p>${item.path}</p>
-        `;
-        div.onclick = () => window.open(item.link, '_blank');
-        main.appendChild(div);
-    });
-}
+        async function loadTree(branch) {
+            document.getElementById('tree').innerHTML = "讀取中...";
+            // 使用 recursive=1 獲取所有深層檔案
+            const res = await fetch(`${API_BASE}/git/trees/${branch}?recursive=1`);
+            const data = await res.json();
+            const root = { name: 'root', children: {} };
 
-// 執行載入
-loadCSV();
-</script>
+            data.tree.forEach(item => {
+                const parts = item.path.split('/');
+                let current = root;
+                parts.forEach((part, index) => {
+                    if (!current.children[part]) {
+                        current.children[part] = { name: part, children: {}, type: item.type, path: item.path };
+                    }
+                    current = current.children[part];
+                });
+            });
+
+            const container = document.getElementById('tree');
+            container.innerHTML = '';
+            renderUI(root, container);
+        }
+
+        function renderUI(node, container) {
+            const ul = document.createElement('ul');
+            for (let key in node.children) {
+                const child = node.children[key];
+                const li = document.createElement('li');
+                if (child.type === 'tree') {
+                    li.innerHTML = `<span>📁 <b>${child.name}</b></span>`;
+                    renderUI(child, li);
+                } else {
+                    li.innerHTML = `<a href="https://github.com/${OWNER}/${REPO}/blob/main/${child.path}" target="_blank" class="file">📄 ${child.name}</a>`;
+                }
+                ul.appendChild(li);
+            }
+            container.appendChild(ul);
+        }
+
+        document.getElementById('branch-select').addEventListener('change', (e) => loadTree(e.target.value));
+        init();
+    </script>
 </body>
 </html>
