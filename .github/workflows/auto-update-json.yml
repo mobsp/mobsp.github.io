@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - 'assets/icon/svg/**'  # 自動觸發：當 SVG 資料夾變動時
-  workflow_dispatch:          # ✨ 手動觸發：在 GitHub 網頁增加一個「執行」按鈕
+  workflow_dispatch:          # ✨手動觸發：在 GitHub 網頁增加一個「執行」按鈕
   
 jobs:
   build:
