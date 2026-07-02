@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-  <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ |工具庫展示牆</title>
+  <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆</title>
   
   <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
 
@@ -110,6 +110,7 @@
 
     .url-hint {
       font-size: 0.7rem; color: var(--muted); letter-spacing: 0.5px;
+      word-break: break-all;
     }
 
     footer {
@@ -145,7 +146,7 @@
   <div class="bg-overlay"></div>
 
   <header>
-    <h1>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ 工具庫</h1>
+    <h1>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ 工具庫</h1>
     <input id="search" type="search" placeholder="搜尋線上工具...">
   </header>
 
@@ -158,44 +159,88 @@
   </footer>
 
   <script>
-    /**
-     * 🛠️ 工具清單設定
-     */
-    const TOOLS = [
-      "json-formatter",
-      "color-palette",
-      "markdown-editor",
-      "base64-decoder",
-      "timestamp-converter",
-      "unit-converter"
-    ];
+    // 🛠️ GitHub 儲存庫配置（透過 API 自動遍歷）
+    const GH_USER = "mobsp";
+    const GH_REPO = "mobsp.github.io";
+    const TARGET_FOLDER = "tol";
 
-    // 基礎路徑統一修正為 mobsp.qzz.io
+    // 基礎路徑與預覽圖設定
     const BASE_URL = "https://mobsp.qzz.io/tol/";
     const PREVIEW_IMG = "https://mobsp.github.io/assets/brand/ms-logo1.JPEG";
 
     const grid = document.getElementById("grid");
     const searchInput = document.getElementById("search");
+    
+    // 全域工具儲存陣列
+    let allTools = [];
 
-    // 渲染工具卡片
+    /**
+     * 遞迴掃描 GitHub 資料夾內所有 HTML 檔案
+     */
+    async function scanRepository(path = TARGET_FOLDER) {
+      const apiUrl = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`;
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error(`讀取失敗: ${path}`);
+        const items = await response.json();
+
+        for (const item of items) {
+          if (item.type === "dir") {
+            // 進入深層資料夾遞迴掃描
+            await scanRepository(item.path);
+          } else if (item.type === "file" && item.name.endsWith(".html")) {
+            // 過濾掉展示牆首頁本身
+            if (item.path === `${TARGET_FOLDER}/index.html`) continue;
+
+            // 取得相對於 /tol/ 的相對路徑
+            const relativePath = item.path.substring(TARGET_FOLDER.length + 1);
+            
+            // 分析並產生展示名稱
+            let rawName = item.name.replace(".html", "");
+            if (rawName.toLowerCase() === "index") {
+              // 如果是深層目錄裡的 index.html，抓取它的父資料夾名稱
+              const pathParts = relativePath.split('/');
+              rawName = pathParts[pathParts.length - 2] || "index";
+            }
+
+            // 字首轉大寫美化處理 (如: json-formatter -> Json Formatter)
+            const displayName = rawName.split('-')
+              .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ');
+
+            allTools.push({
+              name: displayName,
+              url: `${BASE_URL}${relativePath}`,
+              hint: `/tol/${relativePath}`
+            });
+          }
+        }
+      } catch (error) {
+        console.error("掃描儲存庫發生錯誤:", error);
+      }
+    }
+
+    // 渲染工具卡片至畫面
     function render(list) {
       grid.innerHTML = ""; 
+      
+      if (list.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; color: var(--muted); text-align: center; padding: 2rem;">沒有找到相符的線上工具</div>`;
+        return;
+      }
 
-      list.forEach(toolPath => {
-        const fullUrl = `${BASE_URL}${toolPath}/`;
-        const displayName = toolPath.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-
+      list.forEach(tool => {
         const a = document.createElement("a");
-        a.href = fullUrl;                    
+        a.href = tool.url;                    
         a.className = "card";            
 
         a.innerHTML = `
           <div class="img-container">
-            <img src="${PREVIEW_IMG}" class="tool-img" alt="${displayName}" loading="lazy">
+            <img src="${PREVIEW_IMG}" class="tool-img" alt="${tool.name}" loading="lazy">
           </div>
           <div class="name-box">
-            <div class="name">${displayName}</div>
-            <div class="url-hint">/tol/${toolPath}</div>
+            <div class="name">${tool.name}</div>
+            <div class="url-hint">${tool.hint}</div>
           </div>
         `;
 
@@ -203,22 +248,27 @@
       });
     }
 
-    // 搜尋功能
+    // 關鍵字動態搜尋
     searchInput.addEventListener("input", () => {
       const keyword = searchInput.value.toLowerCase();
-      const filtered = TOOLS.filter(t => t.toLowerCase().includes(keyword));
+      const filtered = allTools.filter(t => 
+        t.name.toLowerCase().includes(keyword) || 
+        t.hint.toLowerCase().includes(keyword)
+      );
       render(filtered);
     });
 
-    // 初始化
-    render(TOOLS);
+    // 初始化自動掃描
+    (async () => {
+      grid.innerHTML = `<div style="grid-column: 1/-1; color: var(--accent); text-align: center; padding: 2rem;">🔍 正在掃描雲端儲存庫...</div>`;
+      await scanRepository();
+      render(allTools);
+    })();
   </script>
 
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        // 如果你的 sw.js 放在根目錄下，且想讓它管轄 /tol/ 目錄，
-        // 請確保伺服器回傳 sw.js 時帶有此 Header： Service-Worker-Allowed: /
         navigator.serviceWorker.register('/sw.js', { scope: '/' })
           .then(reg => console.log('Service Worker 註冊成功，作用域：', reg.scope))
           .catch(err => console.log('Service Worker 註冊失敗：', err));
