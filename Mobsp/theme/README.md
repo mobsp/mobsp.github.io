@@ -192,3 +192,41 @@ input:focus {
  1. **結構化佈局 (Content-Driven)：** 側邊欄內部強烈建議搭配 m-list.js (清單組件)，將側邊欄條目封裝為 <a> 標籤並包含 active 狀態處理。
  2. **滾動同步：** 在 m-sidebar.js 中實作一個 IntersectionObserver，當頁面滑動到某個章節時，自動點亮側邊欄對應的連結 (Nav-Sync)。
  3. **防抖動與過場：** 側邊欄的展開與摺疊必須使用 cubic-bezier(0.25, 0.1, 0.25, 1)，這是 iOS 轉場的核心曲線，能讓使用者感受到極致的「絲滑感」。
+
+
+<ms-card.js>
+**Mobispace** 系統中最核心的內容容器。為了符合 SSS 等級的要求，卡片模組必須具備 **「內容自適應 (Intrinsic Sizing)」**、**「環境感知渲染」** 以及 **「多維度互動狀態」**。
+我們將其封裝為 ms-card.js，這是一個具備高度可配置性的組織型元件。
+
+### 設計定義與交互邏輯 (Design Logic)
+ * **視覺層級 (Visual Hierarchy)：**
+   * **Level 1 (Flat):** 無陰影，僅靠毛玻璃質感與邊框分離背景。
+   * **Level 2 (Elevated):** 帶有輕微動態陰影 (--shadow-depth)，適合互動區域。
+ * **響應式行為 (Responsiveness)：**
+   * 卡片應具備 flex-grow 或 grid-column 的自適應能力。
+   * 內建 min-height 確保在內容極少時仍能保持結構穩定。
+ * **交互細節：**
+   * 當卡片作為連結使用時，全區塊觸發 (cursor: pointer)。
+   * 內建 overflow: hidden 防止圖片或其他內容溢出圓角。
+
+### 卡片變體定義表 (Variants & States)
+| 變體類型 | 屬性標記 | 視覺定義 | 應用場景 |
+|---|---|---|---|
+| **Standard** | 預設 | 實心背景，圓角，適中邊距 | 內容詳細說明、Wiki 頁面 |
+| **Glass** | glass | 毛玻璃底色，透視感 | 導覽頁 (/tol/)、側邊欄懸浮卡片 |
+| **Elevated** | elevated | 增加 Z 軸陰影 | 重要提示卡、首頁英雄區塊 |
+| **Interactive** | interactive | 滑鼠懸停浮起動畫 | 文章導覽列表、點擊進入頁面 |
+
+### 極致細節維運指南
+ 1. **結構化佈局 (Slots)：**
+   我們預留了 header, body, footer 三個插槽。這讓你在開發 CMS 時，可以將「標題」、「內容圖文」、「按鈕選單」分離處理：
+   ```html
+   <ms-card glass interactive>
+      <div slot="header">文章標題</div>
+      <p>這是卡片內容...</p>
+      <div slot="footer"><ms-button>閱讀更多</ms-button></div>
+   </ms-card>
+   
+   ```
+ 2. **安全性 (Security)：** 卡片內部的 overflow: hidden 對應我們之前定義的 var(--r-lg)，這保證了任何放在卡片內的圖片 (如圖片牆)，都不會因為未設定圓角而破壞視覺完整性。
+ 3. **效能最佳化：** 若你的卡片含有大量圖片，建議在卡片元件內加入 loading="lazy" 的屬性繼承機制，讓放入卡片內的 <img> 自動延遲載入。
