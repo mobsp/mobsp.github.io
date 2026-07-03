@@ -1,5 +1,5 @@
 /**
- * 模組名稱：m-button.js
+ * 模組名稱：ms-button.js
  * 功能用途：iOS 原生風格按鈕系統，支援變體與狀態管理。
  * 修改指南：若要調整按鈕全域圓角或點擊動畫，請修改內部 style。
  */
@@ -65,4 +65,4 @@ class MobButton extends HTMLElement {
   }
 }
 
-customElements.define('m-button', MobButton);
+customElements.define('ms-button', MobButton);
