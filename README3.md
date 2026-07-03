@@ -60,7 +60,6 @@
 | **index.html** | `blog/index.html` | 14 KB | [View](https://github.com/mobsp/mobsp.github.io/blob/main/blog/index.html) | [Visit](https://mobsp.qzz.io/blog/) |
 
 **📚 部落格文章庫 (blog/p/list/):**
-*(註：完整清單包含 35 篇文章，以下列舉主要條目)*
 | # | 標題 | 路徑 | 大小 |
 | :--- | :--- | :--- | :--- |
 | 1 | GitHub Pages 註冊與部署指南 | `blog/p/list/github-pages-註冊.html` | 21 KB |
