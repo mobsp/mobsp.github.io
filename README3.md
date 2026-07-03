@@ -35,7 +35,7 @@
 <summary>📂 展開查看 11 個根目錄核心檔案</summary>
 
 | 檔名 | 路徑 | 大小 | GitHub 連結 | 網站連結 | 說明 |
-|------|------|------|--------|------|------|
+| :--- | :--- | :--- | :--- | :--- | :--- |
 | **index.html** | `/index.html` | 11.5 KB | [View](https://github.com/mobsp/mobsp.github.io/blob/main/index.html) | [Visit](https://mobsp.qzz.io/) | ⭐ PWA 主入口 |
 | **README.md** | `/README.md` | 2.8 KB | [View](https://github.com/mobsp/mobsp.github.io/blob/main/README.md) | — | 專案說明文檔 |
 | **CNAME** | `/CNAME` | 12 B | [View](https://github.com/mobsp/mobsp.github.io/blob/main/CNAME) | — | 自訂域名配置 |
@@ -56,13 +56,13 @@
 <summary>📂 展開查看部落格系統檔案與文章列表</summary>
 
 | 檔名 | 路徑 | 大小 | GitHub 連結 | 網站連結 |
-|------|------|------|--------|------|
+| :--- | :--- | :--- | :--- | :--- |
 | **index.html** | `blog/index.html` | 14 KB | [View](https://github.com/mobsp/mobsp.github.io/blob/main/blog/index.html) | [Visit](https://mobsp.qzz.io/blog/) |
 
 **📚 部落格文章庫 (blog/p/list/):**
 *(註：完整清單包含 35 篇文章，以下列舉主要條目)*
 | # | 標題 | 路徑 | 大小 |
-|---|------|------|------|
+| :--- | :--- | :--- | :--- |
 | 1 | GitHub Pages 註冊與部署指南 | `blog/p/list/github-pages-註冊.html` | 21 KB |
 | 2 | Vue.js 組件化開發實踐 | `blog/p/list/vue-components.html` | 18 KB |
 | 3 | iOS 原生 UI 風格適配 | `blog/p/list/ios-ui-design.html` | 15 KB |
@@ -78,7 +78,7 @@
 <summary>📂 展開查看 13 個工具庫模組清單</summary>
 
 | 模組名稱 | 路徑 | GitHub 連結 | 網站連結 | 大小 |
-|------|------|--------|------|------|
+| :--- | :--- | :--- | :--- | :--- |
 | 工具庫首頁 | `tol/index.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/tol/index.html) | [Visit](https://mobsp.qzz.io/tol/) | 5.2 KB |
 | RSS 生成器 | `tol/rss-generator.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/tol/rss-generator.html) | [Visit](https://mobsp.qzz.io/tol/rss-generator.html) | 7.5 KB |
 | 編輯工具 | `tol/Editor/index.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/tol/Editor/index.html) | [Visit](https://mobsp.qzz.io/tol/Editor/) | 12 KB |
@@ -101,7 +101,7 @@
 <summary>📂 展開查看主要頁面連結</summary>
 
 | 路徑 | GitHub 連結 | 網站連結 | 大小 | 說明 |
-|------|--------|------|------|------|
+| :--- | :--- | :--- | :--- | :--- |
 | `app/index.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/app/index.html) | [Visit](https://mobsp.qzz.io/app/) | 9 KB | Nexus Sync 同步服務 |
 | `wiki/index.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/wiki/index.html) | [Visit](https://mobsp.qzz.io/wiki/) | 6 KB | 官方支援百科 |
 | `setting/index.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/setting/index.html) | [Visit](https://mobsp.qzz.io/setting/) | 6 KB | 設定中心 |
@@ -116,7 +116,7 @@
 <summary>📂 展開查看測試檔案與模組系統</summary>
 
 | 檔案 | 路徑 | GitHub 連結 | 網站連結 | 大小 |
-|------|------|--------|------|------|
+| :--- | :--- | :--- | :--- | :--- |
 | 主頁面 | `beta/index.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/beta/index.html) | [Visit](https://mobsp.qzz.io/beta/) | 2 KB |
 | 測試 1 | `beta/test.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/beta/test.html) | [Visit](https://mobsp.qzz.io/beta/test.html) | 16 KB |
 | 測試 2 | `beta/test1.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/beta/test1.html) | [Visit](https://mobsp.qzz.io/beta/test1.html) | 11 KB |
@@ -126,7 +126,7 @@
 
 **模組系統 (beta/mod/):**
 | 檔案 | 路徑 | GitHub 連結 | 大小 |
-|------|------|--------|------|
+| :--- | :--- | :--- | :--- |
 | splash-screen.js | `beta/mod/splash-screen.js` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/beta/mod/splash-screen.js) | 1.5 KB |
 | theme-engine.js | `beta/mod/theme-engine.js` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/beta/mod/theme-engine.js) | 767 B |
 | brand-layout.js | `beta/mod/brand-layout.js` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/beta/mod/brand-layout.js) | 1.2 KB |
@@ -142,7 +142,7 @@
 <summary>📂 展開查看配置檔案清單</summary>
 
 | 檔案 | 路徑 | GitHub 連結 | 大小 | 說明 |
-|------|------|--------|------|------|
+| :--- | :--- | :--- | :--- | :--- |
 | **config.json** | `data/config.json` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/data/config.json) | 103 KB | 系統核心參數 |
 | **svg.json** | `data/svg.json` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/data/svg.json) | 3 KB | SVG 分類映射表 |
 | **wiki-info.json** | `data/wiki-info.json` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/data/wiki-info.json) | 6 KB | Wiki 常見問題數據 |
@@ -158,7 +158,7 @@
 <summary>📂 展開查看所有 28 項品牌資源</summary>
 
 | ID | 檔名 | 路徑 | GitHub 連結 | 大小 |
-|----|------|------|--------|------|
+| :--- | :--- | :--- | :--- | :--- |
 | 1 | ms-logo1.JPEG | `assets/brand/ms-logo1.JPEG` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/assets/brand/ms-logo1.JPEG) | 11 KB |
 | 2 | ms-logo.JPEG | `assets/brand/ms-logo.JPEG` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/assets/brand/ms-logo.JPEG) | 86 KB |
 | 3 | mobsp-logo.png | `assets/brand/mobsp-logo.png` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/assets/brand/mobsp-logo.png) | 278 KB |
@@ -198,7 +198,7 @@
 **[完整圖示目錄：assets/icon/svg/](https://github.com/mobsp/mobsp.github.io/tree/main/assets/icon/svg)**
 
 | 分類 | 檔案數量 | 關鍵功能 |
-|------|------|---------|
+| :--- | :--- | :--- |
 | 系統控制 | 45 | settings, server, database, power, hard_drive |
 | 通訊模組 | 30 | mail, unread, chat_1, chat_2, phone, paperplane |
 | 媒體播放 | 25 | play_1, pause_1, stop_1, video_on, video_off |
@@ -213,7 +213,7 @@
 <summary>📂 展開查看 Jekyll 模板系統</summary>
 
 | 檔案 | 路徑 | GitHub 連結 | 大小 |
-|------|------|--------|------|
+| :--- | :--- | :--- | :--- |
 | Article Layout | `_layouts/mobi-space-article.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/_layouts/mobi-space-article.html) | 10.6 KB |
 | Default Layout | `_layouts/default.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/_layouts/default.html) | 8.5 KB |
 | Page Layout | `_layouts/page.html` | [View](https://github.com/mobsp/mobsp.github.io/blob/main/_layouts/page.html) | 7.2 KB |
@@ -226,7 +226,7 @@
 <summary>📂 展開查看 CI/CD 工作流</summary>
 
 | 工作流檔案 | 路徑 | 觸發條件 | 說明 |
-|-------|------|--------|--------|
+| :--- | :--- | :--- | :--- |
 | auto-sync.yml | `.github/workflows/auto-sync.yml` | Push | 自動同步 Git 狀態 |
 | auto-update-json.yml | `.github/workflows/auto-update-json.yml` | File Change | 更新 SVG 索引清單 |
 | beta-deploy.yml | `.github/workflows/beta-deploy.yml` | Branch 'beta' | 部署測試環境 |
@@ -238,7 +238,7 @@
 
 ## 📊 儲存庫統計
 | 指標 | 數值 |
-|------|------|
+| :--- | :--- |
 | **總檔案數** | 256 |
 | **HTML 頁面** | 24 |
 | **SVG 圖示** | 150+ |
