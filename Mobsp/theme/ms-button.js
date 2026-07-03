@@ -54,11 +54,11 @@ class MobButton extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  // 元件掛載後，根據屬性賦予樣式
+  / 元件掛載後，根據屬性賦予樣式
   connectedCallback() {
     const btn = this.shadowRoot.querySelector('.btn');
-    const variant = this.getAttribute('variant') || 'primary'; // 預設 primary
-    const shape = this.getAttribute('shape') || 'default';     // 預設直角
+    const variant = this.getAttribute('variant') || 'primary'; / 預設 primary
+    const shape = this.getAttribute('shape') || 'default';     / 預設直角
     
     btn.classList.add(`btn-${variant}`);
     if (shape === 'pill') btn.classList.add('pill');
