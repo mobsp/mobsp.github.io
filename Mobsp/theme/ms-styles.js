@@ -4,7 +4,7 @@
  * 修改指南：此檔案為系統基礎，如需更換色彩模式或調整基礎間距，請在此統一修改。
  */
 
-const style = document.createElement('style'); // 創建 style 標籤以注入全域 CSS
+const style = document.createElement('style'); / 創建 style 標籤以注入全域 CSS
 style.textContent = `
   :root {
     /* --- 1. 深度色彩系統 (Extended Color System) --- */
@@ -74,4 +74,4 @@ style.textContent = `
   }
 `;
 
-document.head.appendChild(style); // 執行注入
+document.head.appendChild(style); / 執行注入
