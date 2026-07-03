@@ -132,3 +132,37 @@ input:focus {
 
 ```
 
+
+導覽列 (Navbar) 是 **Mobispace** 的靈魂骨架，它必須在「極簡」與「極致功能」之間取得平衡。我們將其定義為一個具有 **「感知能力 (Awareness)」** 的元件，能自動適應捲動位置、裝置安全區與內容深度。
+### 1. 設計定義與交互邏輯 (Design Logic)
+ * **智能隱藏 (Smart Hide)：** 捲動時自動隱藏，向上滑動立即顯示。
+ * **毛玻璃層次 (Blur Hierarchy)：** 背景隨滾動深度動態調整模糊度，確保文字始終可讀。
+ * **安全區適配 (Safe Area)：** 利用 env(safe-area-inset-top) 處理 iOS 瀏海屏。
+ * **響應式行為 (Responsiveness)：**
+   * **Desktop:** 固定在頂部，水平展開選單。
+   * **Mobile:** 頂部導覽列 + 底部浮動導覽列 (TabBar) 雙重架構，防止大螢幕點擊困難
+
+
+###<ms-nav.js>
+導覽列變體與應用場景
+| 類型 | 屬性/邏輯 | 視覺定義 | 應用場景 |
+|---|---|---|---|
+| **Fixed Top** | position: fixed | 傳統頂部固定，適合 Wiki/CMS 內容 | 全域頁面架構 |
+| **Floating** | floating | 懸浮於內容之上，不佔寬度 | 工具箱 /tol/ 首頁，強調視覺呈現 |
+| **TabBar** | type="bottom" | 固定於底部，僅含圖示與連結 | iPhone 原生 App 體驗，移動端必備 |
+| **Transparency** | transparent | 無底色，隨背景圖變化 | 首頁封面圖模式 |
+
+### 極致細節維運指南
+ 1. **結構化佈局 (Slotting)：** 此模組使用了 <slot name="brand"> 與 <slot name="links">。這讓你可以在 HTML 中直接填入內容，例如：
+   ```html
+   <m-nav>
+     <span slot="brand">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</span>
+     <div slot="links">
+       <a href="/wiki">百科</a>
+       <a href="/tol">工具</a>
+     </div>
+   </m-nav>
+   
+   ```
+ 2. **響應式行為 (RWD Trigger)：** 針對你的 iOS 瀏覽器環境，導覽列底部需預留 padding-bottom: env(safe-area-inset-bottom)。請將此屬性定義在 m-ui-base.js 的 body 中，導覽列會自動繼承。
+ 3. **防抖動 (Debounce)：** initScrollLogic 內部的監聽器若需要更高效能，可加入 requestAnimationFrame 來減少重繪頻率。
