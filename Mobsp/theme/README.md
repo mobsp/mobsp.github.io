@@ -84,3 +84,51 @@
  * **自動化語義 (Semantic Automation)：** 建議在你的 CMS 後端對應時，將 API 返回的狀態欄位 (如 status: 'published') 自動轉換為對應的標籤屬性 (variant="success")。
  * **防誤觸 (Tap Target)：** 若標籤作為濾鏡使用（可點擊），應在 m-badge.js 的 connectedCallback 中偵測 onclick 事件，並自動增加 cursor: pointer 與 .interactive 樣式。
  * **動態縮放處理：** 標籤內的文字若過長，我們設定了 white-space: nowrap，建議在 m-ui-base.js 定義一個 @media 查詢，當螢幕極小時，將標籤內距自動縮減 (padding: 2px 6px)，以防止內容溢出。
+
+<核心原子元件 - 總結>
+為了確保這些核心原子元件在實際維運時能無縫運作，我已為「按鈕」、「輸入框」與「標籤」補強了完整的狀態邏輯定義。這些定義建議直接整合進對應模組的 Shadow DOM 樣式中，或透過 m-ui-base.js 統一管理。
+### 1. 原子元件狀態邏輯矩陣 (State Logic Matrix)
+| 元件 | Hover (懸停) | Active (按壓) | Disabled (禁用) | Loading (載入中) |
+|---|---|---|---|---|
+| **按鈕** | 亮度 +10% | scale(0.95) | opacity: 0.4, pointer-events: none | 隱藏文字 + 轉圈動畫 |
+| **輸入框** | 邊框色彩變深 | 邊框光圈強化 | bg: transparent, opacity: 0.5 | 顯示右側 Loading Spinner |
+| **標籤** | translateY(-1px) | scale(0.98) | grayscale(1) | 顯示閃爍效果 (Pulse) |
+
+### 2. 進階狀態實作細節 (Implementation Guide)
+為了達成 SSS 等級的體驗，請在你的 Shadow DOM 中加入以下標準化代碼：
+#### 按鈕的 Loading 狀態定義 (範例)
+```css
+/* 當按鈕為 loading 狀態時，文字隱藏，載入圖示顯示 */
+.btn.is-loading { pointer-events: none; }
+.btn.is-loading::after {
+  content: '';
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top: 2px solid #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+```
+#### 輸入框的 Focus/Error 狀態定義
+```css
+/* 焦點狀態下的 iOS 邊框光圈 */
+input:focus {
+  border-color: var(--accent-base);
+  box-shadow: 0 0 0 4px rgba(0, 122, 255, 0.15); /* 系統級透視光圈 */
+}
+
+/* 錯誤狀態：具備晃動動畫 (抖動提示) */
+.state-error input {
+  border-color: #FF3B30;
+  animation: shake 0.3s ease-in-out;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+```
+
