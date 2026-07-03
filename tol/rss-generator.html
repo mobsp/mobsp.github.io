@@ -89,7 +89,7 @@ function generateForgeCode() {
     const pages = document.getElementById('maxPages').value;
     const format = document.getElementById('outputFormat').value;
 
-    // 根據部長輸入生成的 Python 腳本
+    / 根據部長輸入生成的 Python 腳本
     const script = `import requests
 from bs4 import BeautifulSoup
 ${format === 'rss' ? 'from feedgen.feed import FeedGenerator' : 'import json'}

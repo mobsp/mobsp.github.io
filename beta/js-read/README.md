@@ -4,14 +4,14 @@
 
 **1. 引入邏輯與資料：**
 ```javascript
-// 在您的 main.js 或 HTML script 中
+/ 在您的 main.js 或 HTML script 中
 const myRenderer = new BrandChatRenderer({
-    container: document.getElementById('my-brand-chat-container'), // 指定您的 UI 容器
-    brandName: "MY_UNIQUE_BRAND_AI", // 改成您的品牌名
-    assets: assetsJson // 傳入匯出包中的 assets.json (如果有)
+    container: document.getElementById('my-brand-chat-container'), / 指定您的 UI 容器
+    brandName: "MY_UNIQUE_BRAND_AI", / 改成您的品牌名
+    assets: assetsJson / 傳入匯出包中的 assets.json (如果有)
 });
 
-// 執行渲染
+/ 執行渲染
 myRenderer.render(conversationsJson); 
 
 ```

@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://mobsp.github.io">
+  <a href="">
     <img src="assets/brand/mobsp-logo.png" alt="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間" width="100%">
   </a>
   <br>
@@ -12,7 +12,7 @@
 </p>
 
 <p align="center">
-  <a href="https://mobsp.github.io"><img src="https://img.shields.io/website?url=https%3A%2F%2Fmobsp.github.io&label=Live%20Status&style=for-the-badge&color=black" alt="Website Status"></a>
+  <a href=""><img src="https://img.shields.io/website?url=https%3A%2F%2F&label=Live%20Status&style=for-the-badge&color=black" alt="Website Status"></a>
   <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="License: MIT"></a>
 </p>
 
@@ -34,42 +34,42 @@
     </thead>
     <tbody>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io"><b>前往首頁 🏠</b></a></td>
+        <td nowrap><a href=""><b>前往首頁 🏠</b></a></td>
         <td nowrap>最新公告與品牌動態</td>
         <td nowrap><a href="./index.html"><code>./index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/blog/"><b>閱讀文章 📝</b></a></td>
+        <td nowrap><a href="/blog/"><b>閱讀文章 📝</b></a></td>
         <td nowrap>技術筆記與數位生活紀錄</td>
         <td nowrap><a href="./blog/index.html"><code>./blog/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/assets/icon/viewer/"><b>SVG 展示牆 🖥️</b></a></td>
+        <td nowrap><a href="/assets/icon/viewer/"><b>SVG 展示牆 🖥️</b></a></td>
         <td nowrap>圖示庫預覽與跳轉編輯</td>
         <td nowrap><a href="./assets/icon/viewer/index.html"><code>./assets/icon/viewer/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/svg-editor/"><b>SVG 編輯器 🚀</b></a></td>
+        <td nowrap><a href="/svg-editor/"><b>SVG 編輯器 🚀</b></a></td>
         <td nowrap>進階圖示加工與代碼生成器</td>
         <td nowrap><a href="./svg-editor/index.html"><code>./svg-editor/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/music/"><b>音樂頻道 🎵</b></a></td>
+        <td nowrap><a href="/music/"><b>音樂頻道 🎵</b></a></td>
         <td nowrap>沉浸式工作背景音律體驗</td>
         <td nowrap><a href="./music/index.html"><code>./music/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/shorts/"><b>短影音頻道 🎬</b></a></td>
+        <td nowrap><a href="/shorts/"><b>短影音頻道 🎬</b></a></td>
         <td nowrap>沈浸式多媒體內容體驗</td>
         <td nowrap><a href="./shorts/index.html"><code>./shorts/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/tol/"><b>工具箱 🛠️</b></a></td>
+        <td nowrap><a href="/tol/"><b>工具箱 🛠️</b></a></td>
         <td nowrap>動態驅動的實用開發工具</td>
         <td nowrap><a href="./tol/index.html"><code>./tol/index.html</code></a></td>
       </tr>
       <tr>
-        <td nowrap><a href="https://mobsp.github.io/wiki/"><b>查看指南 📚</b></a></td>
+        <td nowrap><a href="/wiki/"><b>查看指南 📚</b></a></td>
         <td nowrap>專案說明與使用者指南</td>
         <td nowrap><a href="./wiki/index.html"><code>./wiki/index.html</code></a></td>
       </tr>

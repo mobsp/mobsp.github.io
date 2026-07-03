@@ -333,7 +333,7 @@
     /* 五、 頁面獨立核心控制邏輯 (JS VM Architecture) */
     /* ========================================== */ -->
     <script>
-        // 工業級降維版核心資產數據集
+        / 工業級降維版核心資產數據集
         const initialAssetDB = [
             { id: "asset_01", title: "Python 金融量化交易自動化腳本", type: "code", date: "3 分鐘前", icon: "💻" },
             { id: "asset_02", title: "MobiSpace 品牌高清向量 LOGO 資產包", type: "image", date: "42 分鐘前", icon: "🖼️" },
@@ -345,16 +345,16 @@
             { id: "asset_08", title: "智能客服多輪對話上下文權重調校紀錄", type: "chat", date: "2 週前", icon: "💬" }
         ];
 
-        // 獨立路由與分頁核心狀態機
+        / 獨立路由與分頁核心狀態機
         const runtimeState = {
             activeTab: "all",
             searchQuery: "",
             currentPage: 1,
-            pageSize: 5, // 每頁 5 筆，便於在中高端網頁端測試無限滑動
+            pageSize: 5, / 每頁 5 筆，便於在中高端網頁端測試無限滑動
             isThrottled: false
         };
 
-        // DOM 緩衝節點
+        / DOM 緩衝節點
         const elements = {
             feedList: document.getElementById("cardsFeedList"),
             searchInput: document.getElementById("pageSearchInput"),
@@ -363,7 +363,7 @@
             scroller: document.getElementById("pageScroller")
         };
 
-        // 1. 模擬返回上一頁路由防狂點
+        / 1. 模擬返回上一頁路由防狂點
         window.handleRouterBack = function() {
             if (runtimeState.isThrottled) return;
             runtimeState.isThrottled = true;
@@ -371,7 +371,7 @@
             setTimeout(() => { runtimeState.isThrottled = false; }, 350);
         };
 
-        // 2. 資料過濾核心算法
+        / 2. 資料過濾核心算法
         function fetchFilteredAssets() {
             return initialAssetDB.filter(item => {
                 const matchTab = (runtimeState.activeTab === "all" || item.type === runtimeState.activeTab);
@@ -380,7 +380,7 @@
             });
         }
 
-        // 3. 獨立頁面核心渲染引擎
+        / 3. 獨立頁面核心渲染引擎
         function executeFeedRender(isAppend = false) {
             if (!isAppend) elements.feedList.innerHTML = "";
 
@@ -398,12 +398,12 @@
                 return;
             }
 
-            // 控制無限滾動條的隱現
+            / 控制無限滾動條的隱現
             elements.indicator.style.display = (endIndex >= filteredSource.length) ? "none" : "block";
 
             const dataChunk = isAppend ? paginatedData.slice(startIndex, endIndex) : paginatedData;
 
-            // 1:1 還原 App 卡片元件與點擊事件
+            / 1:1 還原 App 卡片元件與點擊事件
             const cardHTML = dataChunk.map(item => `
                 <div class="app-item-card" data-id="${item.id}" onclick="alert('點擊路由：前往資產詳細頁 [${item.title}]')">
                     <div class="card-leading-avatar">${item.icon}</div>
@@ -418,42 +418,42 @@
             elements.feedList.insertAdjacentHTML('beforeend', cardHTML);
         }
 
-        // 4. 高級樂觀 UI 側滑刪除邏輯
+        / 4. 高級樂觀 UI 側滑刪除邏輯
         window.executeOptimisticCardDelete = function(event, id) {
-            event.stopPropagation(); // 阻止事件冒泡，防止觸發卡片主頁跳轉
+            event.stopPropagation(); / 阻止事件冒泡，防止觸發卡片主頁跳轉
 
             const targetCard = elements.feedList.querySelector(`[data-id="${id}"]`);
             if (!targetCard) return;
 
-            // 步驟一：UI 先行，立刻啟動縮小滑出的 iOS 級物理動畫
+            / 步驟一：UI 先行，立刻啟動縮小滑出的 iOS 級物理動畫
             targetCard.classList.add("optimistic-leaving");
 
-            // 步驟二：300ms 動態結束後，將其從 DOM tree 拔除，同步清洗內存數據庫
+            / 步驟二：300ms 動態結束後，將其從 DOM tree 拔除，同步清洗內存數據庫
             setTimeout(() => {
                 targetCard.remove();
                 const dbIndex = initialAssetDB.findIndex(asset => asset.id === id);
                 if (dbIndex !== -1) {
-                    initialAssetDB.splice(dbIndex, 1); // 背景數據同步摘除
+                    initialAssetDB.splice(dbIndex, 1); / 背景數據同步摘除
                 }
-                // 如果當前視窗被刪空，重新刷出空白提示頁
+                / 如果當前視窗被刪空，重新刷出空白提示頁
                 if (elements.feedList.children.length === 0) {
                     executeFeedRender();
                 }
             }, 300);
         };
 
-        // 5. 300ms 搜尋框輸入防抖節流 (Debounce)
+        / 5. 300ms 搜尋框輸入防抖節流 (Debounce)
         let debounceTimer = null;
         elements.searchInput.addEventListener("input", (e) => {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 runtimeState.searchQuery = e.target.value;
-                runtimeState.currentPage = 1; // 重新初始化分頁
+                runtimeState.currentPage = 1; / 重新初始化分頁
                 executeFeedRender();
             }, 300);
         });
 
-        // 6. 膠囊標籤切換器
+        / 6. 膠囊標籤切換器
         elements.pillsBox.addEventListener("click", (e) => {
             const currentPill = e.target.closest(".pills-btn");
             if (!currentPill) return;
@@ -462,22 +462,22 @@
             currentPill.classList.add("active");
 
             runtimeState.activeTab = currentPill.dataset.type;
-            runtimeState.currentPage = 1; // 重新初始化分頁
+            runtimeState.currentPage = 1; / 重新初始化分頁
             executeFeedRender();
         });
 
-        // 7. 高性能網頁滾動邊界監聽 (IntersectionObserver)
+        / 7. 高性能網頁滾動邊界監聽 (IntersectionObserver)
         const scrollObserver = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
                 const totalFiltered = fetchFilteredAssets();
                 if (runtimeState.currentPage * runtimeState.pageSize < totalFiltered.length) {
                     runtimeState.currentPage++;
-                    executeFeedRender(true); // 啟用追加渲染模式
+                    executeFeedRender(true); / 啟用追加渲染模式
                 }
             }
         }, { root: elements.scroller, threshold: 0.1 });
 
-        // 啟動監聽與初次渲染
+        / 啟動監聽與初次渲染
         scrollObserver.observe(elements.indicator);
         executeFeedRender();
     </script>

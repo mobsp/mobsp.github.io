@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 收割機 PRO</title>
     
-    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
-    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
+    <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.JPEG">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://gstatic.com" crossorigin="">
     <link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/blog/index.html">
@@ -121,7 +121,7 @@
 
     <div id="app-container">
         <header class="app-header">
-            <img src="https://mobsp.github.io/assets/brand/ms-blog-title.JPEG" class="brand-title-img" onclick="location.reload()">
+            <img src="/assets/brand/ms-blog-title.JPEG" class="brand-title-img" onclick="location.reload()">
         </header>
 
         <main id="main-view">
@@ -129,10 +129,10 @@
         </main>
 
         <nav class="bottom-nav">
-            <a href="https://mobsp.github.io/music/" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i><span>音樂</span></a>
+            <a href="/music/" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i><span>音樂</span></a>
             <div id="btn-read" class="nav-item active" onclick="switchToRead()"><i class="fa-solid fa-book-open"></i><span>閱讀</span></div>
             <div id="btn-tool" class="nav-item" onclick="switchToTools()"><i class="fa-solid fa-microchip"></i><span>收割機</span></div>
-            <a href="https://mobsp.github.io/setting" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-sliders"></i><span>設定</span></a>
+            <a href="/setting" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-sliders"></i><span>設定</span></a>
         </nav>
     </div>
 
@@ -142,7 +142,7 @@
         const itemsPerPage = 20;
         let harvestOptions = { img: true, dark: true, code: true, clean: false };
 
-        // 多重代理伺服器集（提供自動故障轉移）
+        / 多重代理伺服器集（提供自動故障轉移）
         const proxyPool = [
             (url) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
             (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
@@ -192,7 +192,7 @@
             el.classList.toggle('active');
         }
 
-        // 彈性核心：多重代理管道請求
+        / 彈性核心：多重代理管道請求
         async function fetchWithFallback(targetUrl) {
             let lastError = null;
             for (let i = 0; i < proxyPool.length; i++) {
@@ -201,7 +201,7 @@
                     const res = await fetch(proxyUrl);
                     if (!res.ok) throw new Error(`HTTP status ${res.status}`);
                     
-                    // 針對 AllOrigins 的 JSON 結構進行特殊解析，其餘代理通常直接返回 Text
+                    / 針對 AllOrigins 的 JSON 結構進行特殊解析，其餘代理通常直接返回 Text
                     if (proxyUrl.includes('allorigins.win')) {
                         const json = await res.json();
                         if (json.contents) return json.contents;
@@ -216,18 +216,18 @@
             throw lastError || new Error("所有穿透節點均遭目標封鎖");
         }
 
-        // 安全防護：HTML 消毒白名單過濾（杜絕 XSS 與惡意 Script）
+        / 安全防護：HTML 消毒白名單過濾（杜絕 XSS 與惡意 Script）
         function sanitizeContent(htmlInput) {
             const sandbox = document.createElement('div');
             sandbox.innerHTML = htmlInput;
             
-            // 徹底移除不安全標籤
+            / 徹底移除不安全標籤
             const forbiddenTags = ['script', 'iframe', 'object', 'embed', 'link', 'style', 'frameset', 'applet'];
             forbiddenTags.forEach(tag => {
                 sandbox.querySelectorAll(tag).forEach(el => el.remove());
             });
 
-            // 清理所有節點的 inline 惡意事件屬性（如 onerror, onclick）
+            / 清理所有節點的 inline 惡意事件屬性（如 onerror, onclick）
             const allElements = sandbox.getElementsByTagName('*');
             for (let i = 0; i < allElements.length; i++) {
                 const attrs = allElements[i].attributes;
@@ -241,7 +241,7 @@
             return sandbox.innerHTML;
         }
 
-        // 開放式演算法：精準識別文章主要容器
+        / 開放式演算法：精準識別文章主要容器
         function findMainContentContainer(doc) {
             const indicators = [
                 'article', 'main', '.post-content', '.entry-content', 
@@ -253,14 +253,14 @@
                     return found;
                 }
             }
-            return doc.body; // 備用方案
+            return doc.body; / 備用方案
         }
 
-        // 進階提取：高相容性多元圖片、代碼區塊與語意內容抓取
+        / 進階提取：高相容性多元圖片、代碼區塊與語意內容抓取
         function extractAdaptiveHTML(container, baseUrl) {
             let extractedHtml = '';
             
-            // 尋找主封面 Open Graph 圖片
+            / 尋找主封面 Open Graph 圖片
             const ogImg = container.ownerDocument.querySelector('meta[property="og:image"]')?.getAttribute('content');
             if (ogImg && harvestOptions.img) {
                 try { const fullOgImg = new URL(ogImg, baseUrl).href;
@@ -268,10 +268,10 @@
                 } catch(e){}
             }
 
-            // 多元素迭代處理
+            / 多元素迭代處理
             const querySelectors = 'p, h1, h2, h3, h4, h5, h6, img, pre, code, blockquote, figure, table, .highlight';
             container.querySelectorAll(querySelectors).forEach(el => {
-                // 1. 高度適應性圖片抓取 (含 Lazy Loading / srcset)
+                / 1. 高度適應性圖片抓取 (含 Lazy Loading / srcset)
                 if (el.tagName === 'IMG' && harvestOptions.img) {
                     let src = el.getAttribute('src') || el.getAttribute('data-src') || el.getAttribute('data-original') || el.getAttribute('data-lazy-src');
                     if (!src && el.getAttribute('srcset')) {
@@ -283,18 +283,18 @@
                         extractedHtml += `<div style="margin:25px 0;"><img src="${src}" style="max-width:100%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"></div>\n`;
                     }
                 } 
-                // 2. 進階多結構代碼塊適應 (如 highlight.js, prism 等)
+                / 2. 進階多結構代碼塊適應 (如 highlight.js, prism 等)
                 else if ((el.tagName === 'PRE' || el.classList.contains('highlight') || el.tagName === 'TABLE' && el.querySelector('pre')) && harvestOptions.code) {
                     const cleanCode = sanitizeContent(el.innerText.trim());
                     if (cleanCode.length > 0) {
                         extractedHtml += `<pre><code>${cleanCode}</code></pre>\n`;
                     }
                 }
-                // 3. 一般語意文字內容抓取
+                / 3. 一般語意文字內容抓取
                 else if (el.innerText.trim().length > 4 && !el.querySelector('pre') && !el.closest('pre')) {
                     const tag = ['H1','H2','H3','H4','H5','H6','BLOCKQUOTE'].includes(el.tagName) ? el.tagName.toLowerCase() : 'p';
                     let inner = harvestOptions.clean ? el.innerText.trim() : el.innerHTML;
-                    inner = sanitizeContent(inner); // 通過安全過濾沙箱
+                    inner = sanitizeContent(inner); / 通過安全過濾沙箱
                     extractedHtml += `<${tag} style="margin-bottom:1.5rem;">${inner}</${tag}>\n`;
                 }
             });
@@ -318,16 +318,16 @@
                 const doc = new DOMParser().parseFromString(rawHtml, 'text/html');
                 const title = doc.querySelector('h1')?.innerText.trim() || doc.title.trim() || "Ⲙ𝔬ⲃ¡ⳝ𝔭_Archive";
                 
-                // 執行主要內容區塊定位演算法
+                / 執行主要內容區塊定位演算法
                 const mainContainer = findMainContentContainer(doc);
-                // 執行高相容性自適應 HTML 提取
+                / 執行高相容性自適應 HTML 提取
                 const contentHtml = extractAdaptiveHTML(mainContainer, url);
 
                 if (!contentHtml || contentHtml.trim().length === 0) {
                     throw new Error("未能成功從目標網站內識別出可讀文本。");
                 }
 
-                // 樣式矩陣注入
+                / 樣式矩陣注入
                 const styleTag = `
                     body { 
                         background:${harvestOptions.dark?'#000':'#fff'}; 
@@ -348,7 +348,7 @@
                     img { display:block; height: auto; }
                 `;
 
-                // 打包安全 HTML 下載
+                / 打包安全 HTML 下載
                 const finalBlob = new Blob([`
                     <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>${title}</title><style>${styleTag}</style></head>
                     <body><h1>${title}</h1>${contentHtml}</body></html>
@@ -367,7 +367,7 @@
 
         /* 列表同步與優化分頁邏輯 */
         async function loadArticles() {
-            const api = "https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p/list?t=" + Date.now();
+            const api = "https://api.github.com/repos/mobsp/contents/blog/p/list?t=" + Date.now();
             try {
                 const res = await fetch(api);
                 if (!res.ok) throw new Error();
@@ -393,7 +393,7 @@
             const container = document.getElementById('main-view');
             if (rawArticles.length === 0) return;
 
-            // 計算分頁區間
+            / 計算分頁區間
             const totalPages = Math.ceil(rawArticles.length / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages;
             if (currentPage < 1) currentPage = 1;
@@ -403,7 +403,7 @@
             const pageItems = rawArticles.slice(startIndex, endIndex);
 
             let listHtml = pageItems.map(p => `
-                <a class="article-row" href="https://mobsp.github.io/${p.path}">
+                <a class="article-row" href="/${p.path}">
                     <div class="row-img"></div>
                     <div class="row-info">
                         <div class="row-cate">ARCHIVE</div>
@@ -412,7 +412,7 @@
                     <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
                 </a>`).join('');
 
-            // 底部注入分頁控制導航條
+            / 底部注入分頁控制導航條
             listHtml += `
                 <div class="pagination-container">
                     <button class="page-btn" onclick="changePage(-1)" ${currentPage === 1 ? 'disabled' : ''}>上一頁</button>

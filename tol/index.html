@@ -4,7 +4,7 @@
 
   <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆</title>
   
-  <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+  <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
 
   <style>
     :root {
@@ -30,7 +30,7 @@
     /* 啟動畫面模擬背景 */
     .bg-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: url('https://mobsp.github.io/assets/brand/ms-tools.JPEG') center/cover no-repeat;
+      background: url('/assets/brand/ms-tools.JPEG') center/cover no-repeat;
       opacity: 0.15; z-index: -1;
     }
 
@@ -145,13 +145,13 @@
       "unit-converter"
     ];
 
-    const BASE_URL = "https://mobsp.github.io/tol/";
-    const PREVIEW_IMG = "https://mobsp.github.io/assets/brand/ms-logo1.JPEG";
+    const BASE_URL = "/tol/";
+    const PREVIEW_IMG = "/assets/brand/ms-logo1.JPEG";
 
     const grid = document.getElementById("grid");
     const searchInput = document.getElementById("search");
 
-    // 渲染工具卡片
+    / 渲染工具卡片
     function render(list) {
       grid.innerHTML = ""; 
 
@@ -177,14 +177,14 @@
       });
     }
 
-    // 搜尋功能
+    / 搜尋功能
     searchInput.addEventListener("input", () => {
       const keyword = searchInput.value.toLowerCase();
       const filtered = TOOLS.filter(t => t.toLowerCase().includes(keyword));
       render(filtered);
     });
 
-    // 初始化
+    / 初始化
     render(TOOLS);
   </script>
 

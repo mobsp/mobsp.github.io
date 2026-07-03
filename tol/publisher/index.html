@@ -64,7 +64,7 @@
         <header>
             <div style="display:flex; justify-content:space-between; align-items:center;">
                 <div style="font-size: 12px; font-weight: 900; color: var(--accent); letter-spacing: 2px;">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ AUTHORITY V7.0</div>
-                <a href="https://mobsp.github.io/blog/" class="btn btn-ghost" style="border-radius: 50px;" rel="noopener noreferrer"><i class="fa-solid fa-house"></i></a>
+                <a href="/blog/" class="btn btn-ghost" style="border-radius: 50px;" rel="noopener noreferrer"><i class="fa-solid fa-house"></i></a>
             </div>
         </header>
 
@@ -145,7 +145,7 @@
             const year = new Date().getFullYear();
             const markdownBody = marked.parse(content);
 
-            // 使用模板字串時，將內部的反引號轉義，避免 JS 報錯
+            / 使用模板字串時，將內部的反引號轉義，避免 JS 報錯
             return `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -196,7 +196,7 @@
 
         async function finalPublish() {
             const token = document.getElementById('gh-token').value;
-            const repo = "mobsp/mobsp.github.io";
+            const repo = "mobsp/";
             if(!token) return toast("請輸入 Token", "error");
 
             const items = document.querySelectorAll('.article-item');

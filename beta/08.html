@@ -2,16 +2,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     
-    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
-    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
+    <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.JPEG">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-startup-image" href="https://mobsp.github.io/assets/brand/ms-guide.JPEG">
+    <link rel="apple-touch-startup-image" href="/assets/brand/ms-guide.JPEG">
 
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
     <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
     
     <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
-    <meta property="og:image" content="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
+    <meta property="og:image" content="/assets/brand/ms-logo1.JPEG">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -44,7 +44,7 @@
 
         #fake-splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050508 url('https://mobsp.github.io/assets/brand/ms-guide.JPEG') center/cover no-repeat;
+            background: #050508 url('/assets/brand/ms-guide.JPEG') center/cover no-repeat;
             z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s;
         }
@@ -155,12 +155,12 @@
         .action-btn:active { filter: brightness(0.85); }
 
         /* 為了完美的視覺相容性，這裡智能對接第一版與第二版的圖片資源路徑 */
-        .btn-blog { background-image: url('https://mobsp.github.io/assets/brand/ms-blog.JPEG'); }
-        .btn-tools { background-image: url('https://mobsp.github.io/assets/brand/ms-tools.JPEG'); }
-        .btn-music { background-image: url('https://mobsp.github.io/assets/brand/ms-music.JPEG'); }
-        .btn-shorts { background-image: url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG'); }
-        .btn-wiki { background-image: url('https://mobsp.github.io/assets/brand/ms-wiki.JPEG'); }
-        .btn-logo { background-image: url('https://mobsp.github.io/assets/brand/ms-logo.JPEG'); }
+        .btn-blog { background-image: url('/assets/brand/ms-blog.JPEG'); }
+        .btn-tools { background-image: url('/assets/brand/ms-tools.JPEG'); }
+        .btn-music { background-image: url('/assets/brand/ms-music.JPEG'); }
+        .btn-shorts { background-image: url('/assets/brand/ms-shorts.JPEG'); }
+        .btn-wiki { background-image: url('/assets/brand/ms-wiki.JPEG'); }
+        .btn-logo { background-image: url('/assets/brand/ms-logo.JPEG'); }
 
         .card-top-meta {
             position: relative;
@@ -270,7 +270,7 @@
     <!-- 已完整用第二版滑塊系統替換第一版舊功能系統 -->
     <main class="app-main" id="app-main" aria-label="莫比空間服務入口">
         
-        <a href="https://mobsp.github.io/blog/" class="action-btn btn-blog ios-hardware-layer" aria-label="前往部落格" rel="noopener noreferrer">
+        <a href="/blog/" class="action-btn btn-blog ios-hardware-layer" aria-label="前往部落格" rel="noopener noreferrer">
             <div class="card-top-meta">
                 <div class="card-title-group">
                     <div class="btn-title">部落格</div>
@@ -283,14 +283,14 @@
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">文章、觀點、紀錄與莫比宇宙的文字艙。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.github.io/blog/tech" class="shortcut-link">技術觀點</a></object>
-                    <object><a href="https://mobsp.github.io/blog/life" class="shortcut-link">生活隨筆</a></object>
-                    <object><a href="https://mobsp.github.io/blog/archive" class="shortcut-link">所有存檔</a></object>
+                    <object><a href="/blog/tech" class="shortcut-link">技術觀點</a></object>
+                    <object><a href="/blog/life" class="shortcut-link">生活隨筆</a></object>
+                    <object><a href="/blog/archive" class="shortcut-link">所有存檔</a></object>
                 </div>
             </div>
         </a>
 
-        <a href="https://mobsp.github.io/tol/" class="action-btn btn-tools ios-hardware-layer" aria-label="前往工具庫" rel="noopener noreferrer">
+        <a href="/tol/" class="action-btn btn-tools ios-hardware-layer" aria-label="前往工具庫" rel="noopener noreferrer">
             <div class="card-top-meta">
                 <div class="card-title-group">
                     <div class="btn-title">工具庫</div>
@@ -303,14 +303,14 @@
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">常用工具、線上功能與實驗型小裝置。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.github.io/tol/json" class="shortcut-link">JSON格式化</a></object>
-                    <object><a href="https://mobsp.github.io/tol/crypto" class="shortcut-link">加解密工具</a></object>
-                    <object><a href="https://mobsp.github.io/tol/regex" class="shortcut-link">正則測試</a></object>
+                    <object><a href="/tol/json" class="shortcut-link">JSON格式化</a></object>
+                    <object><a href="/tol/crypto" class="shortcut-link">加解密工具</a></object>
+                    <object><a href="/tol/regex" class="shortcut-link">正則測試</a></object>
                 </div>
             </div>
         </a>
 
-        <a href="https://mobsp.github.io/music/" class="action-btn btn-music ios-hardware-layer" aria-label="前往音樂頻道" rel="noopener noreferrer">
+        <a href="/music/" class="action-btn btn-music ios-hardware-layer" aria-label="前往音樂頻道" rel="noopener noreferrer">
             <div class="card-top-meta">
                 <div class="card-title-group">
                     <div class="btn-title">音樂頻道</div>
@@ -323,13 +323,13 @@
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">聲音收藏、播放入口與靈感節拍。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.github.io/music/lofi" class="shortcut-link">Lofi 節拍</a></object>
-                    <object><a href="https://mobsp.github.io/music/playlist" class="shortcut-link">精選歌單</a></object>
+                    <object><a href="/music/lofi" class="shortcut-link">Lofi 節拍</a></object>
+                    <object><a href="/music/playlist" class="shortcut-link">精選歌單</a></object>
                 </div>
             </div>
         </a>
 
-        <a href="https://mobsp.github.io/shorts/" class="action-btn btn-shorts ios-hardware-layer" aria-label="前往 Shorts" rel="noopener noreferrer">
+        <a href="/shorts/" class="action-btn btn-shorts ios-hardware-layer" aria-label="前往 Shorts" rel="noopener noreferrer">
             <div class="card-top-meta">
                 <div class="card-title-group">
                     <div class="btn-title">Shorts</div>
@@ -342,13 +342,13 @@
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">短內容、片段記錄與快速瀏覽區。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.github.io/shorts/latest" class="shortcut-link">最新短片</a></object>
-                    <object><a href="https://mobsp.github.io/shorts/trend" class="shortcut-link">熱門排行</a></object>
+                    <object><a href="/shorts/latest" class="shortcut-link">最新短片</a></object>
+                    <object><a href="/shorts/trend" class="shortcut-link">熱門排行</a></object>
                 </div>
             </div>
         </a>
 
-        <a href="https://mobsp.github.io/wiki/" class="action-btn btn-wiki ios-hardware-layer" aria-label="前往支援中心" rel="noopener noreferrer">
+        <a href="/wiki/" class="action-btn btn-wiki ios-hardware-layer" aria-label="前往支援中心" rel="noopener noreferrer">
             <div class="card-top-meta">
                 <div class="card-title-group">
                     <div class="btn-title">支援中心</div>
@@ -361,13 +361,13 @@
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">說明文件、導覽與常見問題入口。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.github.io/wiki/faq" class="shortcut-link">常見問題</a></object>
-                    <object><a href="https://mobsp.github.io/wiki/guide" class="shortcut-link">新手導覽</a></object>
+                    <object><a href="/wiki/faq" class="shortcut-link">常見問題</a></object>
+                    <object><a href="/wiki/guide" class="shortcut-link">新手導覽</a></object>
                 </div>
             </div>
         </a>
 
-        <a href="https://mobsp.github.io/history/" class="action-btn btn-logo ios-hardware-layer" aria-label="查看歷史紀錄" rel="noopener noreferrer">
+        <a href="/history/" class="action-btn btn-logo ios-hardware-layer" aria-label="查看歷史紀錄" rel="noopener noreferrer">
             <div class="card-top-meta">
                 <div class="card-title-group">
                     <div class="btn-title">歷史紀錄</div>
@@ -380,12 +380,12 @@
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">站點紀錄、版本脈絡與變更軌跡。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.github.io/history/v2" class="shortcut-link">v2.0 變更</a></object>
+                    <object><a href="/history/v2" class="shortcut-link">v2.0 變更</a></object>
                 </div>
             </div>
         </a>
 
-        <a href="https://mobsp.github.io/setting" class="action-btn btn-logo ios-hardware-layer" aria-label="開啟設定" rel="noopener noreferrer">
+        <a href="/setting" class="action-btn btn-logo ios-hardware-layer" aria-label="開啟設定" rel="noopener noreferrer">
             <div class="card-top-meta">
                 <div class="card-title-group">
                     <div class="btn-title">設定</div>
@@ -398,7 +398,7 @@
             <div class="card-bottom-meta">
                 <div class="btn-subtitle">偏好設定、系統選項與個人化控制。</div>
                 <div class="card-shortcuts" onclick="event.stopPropagation();">
-                    <object><a href="https://mobsp.github.io/setting/theme" class="shortcut-link">主題配色</a></object>
+                    <object><a href="/setting/theme" class="shortcut-link">主題配色</a></object>
                 </div>
             </div>
         </a>

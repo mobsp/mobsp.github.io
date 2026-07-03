@@ -2,7 +2,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | Shorts</title>
-    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root { --accent-color: #00cec9; --icon-shadow: 0 2px 8px rgba(0,0,0,0.5); }
@@ -12,7 +12,7 @@
         body, html { margin: 0; padding: 0; font-family: -apple-system, sans-serif; height: 100%; background: #000; color: #fff; }
 
         /* 啟動畫面 */
-        #splash-screen { position: fixed; inset: 0; z-index: 10000; background: #000 url('https://mobsp.github.io/assets/brand/ms-shorts.JPEG') center/cover no-repeat; transition: opacity 0.5s; }
+        #splash-screen { position: fixed; inset: 0; z-index: 10000; background: #000 url('/assets/brand/ms-shorts.JPEG') center/cover no-repeat; transition: opacity 0.5s; }
         #splash-screen.hide { opacity: 0; pointer-events: none; }
 
         /* 主導航與標籤 */
@@ -70,12 +70,12 @@
 
     <div id="main-page">
         <div class="nav-bar">
-            <i class="fa-solid fa-chevron-left" onclick="location.href='https://mobsp.github.io/blog/'"></i>
+            <i class="fa-solid fa-chevron-left" onclick="location.href='/blog/'"></i>
             <span style="font-weight: bold;">莫比空間</span>
             <i class="fa-solid fa-ellipsis-vertical"></i>
         </div>
         <div class="profile-header">
-            <div class="profile-avatar"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"></div>
+            <div class="profile-avatar"><img src="/assets/brand/ms-logo.JPEG"></div>
             <button style="border:1px solid #444; background:transparent; color:#fff; padding:6px 30px; border-radius:6px; margin-top:10px; font-weight:bold;">追蹤中</button>
         </div>
         <div class="tabs">
@@ -109,20 +109,20 @@
             const wrapper = document.getElementById('shortsWrapper');
 
             videoSources.forEach((src, idx) => {
-                // 全部 (Feed)
+                / 全部 (Feed)
                 const fItem = document.createElement('div');
                 fItem.className = 'feed-item';
-                fItem.innerHTML = `<div style="padding:15px; font-weight:bold; font-size:14px"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG" style="width:30px; height:30px; border-radius:50%; vertical-align:middle; margin-right:10px; object-fit:cover">莫比空間</div><div class="video-preview" onclick="openPlayer(${idx})"><video src="${src}#t=0.1" muted playsinline preload="auto"></video></div>`;
+                fItem.innerHTML = `<div style="padding:15px; font-weight:bold; font-size:14px"><img src="/assets/brand/ms-logo.JPEG" style="width:30px; height:30px; border-radius:50%; vertical-align:middle; margin-right:10px; object-fit:cover">莫比空間</div><div class="video-preview" onclick="openPlayer(${idx})"><video src="${src}#t=0.1" muted playsinline preload="auto"></video></div>`;
                 feed.appendChild(fItem);
 
-                // 影片 (Grid)
+                / 影片 (Grid)
                 const gItem = document.createElement('div');
                 gItem.className = 'grid-item';
                 gItem.onclick = () => openPlayer(idx);
                 gItem.innerHTML = `<video src="${src}#t=0.1" muted playsinline preload="auto"></video><i class="fa-solid fa-play" style="position:absolute; top:8px; right:8px; font-size:10px; color:#fff"></i>`;
                 grid.appendChild(gItem);
 
-                // 全螢幕卡片 (帶載入進度)
+                / 全螢幕卡片 (帶載入進度)
                 const card = document.createElement('div');
                 card.className = 'short-card';
                 card.innerHTML = `
@@ -131,7 +131,7 @@
                         <div class="action-item" onclick="toggleMute(event)"><i class="fa-solid fa-volume-xmark mute-icon"></i><span>音量</span></div>
                         <div class="action-item" onclick="shareVideo(event)"><i class="fa-solid fa-share"></i><span>分享</span></div>
                         <div class="loader-box">
-                            <div class="music-disc"><img src="https://mobsp.github.io/assets/brand/ms-logo.JPEG"></div>
+                            <div class="music-disc"><img src="/assets/brand/ms-logo.JPEG"></div>
                             <div class="load-pct">0%</div>
                         </div>
                     </div>
@@ -143,7 +143,7 @@
             setupObserver();
         }
 
-        // 追蹤檔案載入進度邏輯
+        / 追蹤檔案載入進度邏輯
         function setupProgressTracking() {
             document.querySelectorAll('.short-card').forEach(card => {
                 const video = card.querySelector('video');

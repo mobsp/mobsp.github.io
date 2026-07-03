@@ -74,7 +74,7 @@
     "level": "旗艦",
     "name": "Haptic Vibrate API",
     "desc": "點擊成功時讓手機產生物理微震動",
-    "code": "<script>\n  function triggerHaptic() {\n    if (navigator.vibrate) {\n      // 模式：震動 10ms，間隔 50ms，震動 10ms\n      navigator.vibrate([10, 50, 10]);\n    }\n  }\n</script>\n<button onclick=\"triggerHaptic()\" style=\"padding: 15px; background: #06C755; border-radius: 12px;\">物理震動測試</button>"
+    "code": "<script>\n  function triggerHaptic() {\n    if (navigator.vibrate) {\n      / 模式：震動 10ms，間隔 50ms，震動 10ms\n      navigator.vibrate([10, 50, 10]);\n    }\n  }\n</script>\n<button onclick=\"triggerHaptic()\" style=\"padding: 15px; background: #06C755; border-radius: 12px;\">物理震動測試</button>"
   },
   {
     "id": "M12",
@@ -102,7 +102,7 @@
     "level": "超神",
     "name": "Sticky Footer Fix",
     "desc": "修正 iOS 鍵盤彈起時底部導航欄位移",
-    "code": "<script>\n  // 監聽視覺視窗縮放，動態隱藏導航\n  window.visualViewport.addEventListener('resize', () => {\n    const footer = document.querySelector('footer');\n    footer.style.display = window.visualViewport.height < window.innerHeight ? 'none' : 'block';\n  });\n</script>"
+    "code": "<script>\n  / 監聽視覺視窗縮放，動態隱藏導航\n  window.visualViewport.addEventListener('resize', () => {\n    const footer = document.querySelector('footer');\n    footer.style.display = window.visualViewport.height < window.innerHeight ? 'none' : 'block';\n  });\n</script>"
   },
   {
     "id": "M16",
@@ -165,7 +165,7 @@
     "level": "旗艦",
     "name": "Swipe Back Support",
     "desc": "支援從螢幕邊緣滑動返回上一頁 (邏輯提示)",
-    "code": "<script>\n  // 監聽觸摸起始位置\n  window.addEventListener('touchstart', (e) => {\n    if (e.touches[0].clientX < 30) {\n      console.log('邊緣左滑：觸發自訂返回邏輯');\n    }\n  });\n</script>\n<div style='border-left:4px solid #06C755; padding:10px;'>左側邊緣 30px 為感應區</div>"
+    "code": "<script>\n  / 監聽觸摸起始位置\n  window.addEventListener('touchstart', (e) => {\n    if (e.touches[0].clientX < 30) {\n      console.log('邊緣左滑：觸發自訂返回邏輯');\n    }\n  });\n</script>\n<div style='border-left:4px solid #06C755; padding:10px;'>左側邊緣 30px 為感應區</div>"
   },
   {
     "id": "M25",
@@ -214,7 +214,7 @@
     "level": "基本",
     "name": "Mobile Dialog Lock",
     "desc": "彈窗出現時背景禁止捲動",
-    "code": "<script>\n  function toggleModal(show) {\n    document.body.style.overflow = show ? 'hidden' : '';\n    // iOS 額外處理\n    document.body.style.position = show ? 'fixed' : '';\n    document.body.style.width = '100%';\n  }\n</script>\n<button onclick=\"toggleModal(true)\" style=\"background:#333; padding:10px; border-radius:8px;\">開啟彈窗並鎖定背景</button>"
+    "code": "<script>\n  function toggleModal(show) {\n    document.body.style.overflow = show ? 'hidden' : '';\n    / iOS 額外處理\n    document.body.style.position = show ? 'fixed' : '';\n    document.body.style.width = '100%';\n  }\n</script>\n<button onclick=\"toggleModal(true)\" style=\"background:#333; padding:10px; border-radius:8px;\">開啟彈窗並鎖定背景</button>"
   },
   {
     "id": "M32",
@@ -298,14 +298,14 @@
     "level": "超神",
     "name": "Custom URL Schemes",
     "desc": "讓網頁能被特定的協議(my-app://)喚醒",
-    "code": "<script>\n  // 註冊邏輯通常在原生 App 內，前端僅負責調用\n  function openMyApp() {\n    window.location.href = \"mobsys-lab://open?param=123\";\n    setTimeout(() => {\n      window.location.href = \"https://apps.apple.com/app/id123456\";\n    }, 2500);\n  }\n</script>\n<button onclick=\"openMyApp()\">嘗試喚醒 Ⲙ𝔬ⲃⳝ𝔭 App</button>"
+    "code": "<script>\n  / 註冊邏輯通常在原生 App 內，前端僅負責調用\n  function openMyApp() {\n    window.location.href = \"mobsys-lab://open?param=123\";\n    setTimeout(() => {\n      window.location.href = \"https://apps.apple.com/app/id123456\";\n    }, 2500);\n  }\n</script>\n<button onclick=\"openMyApp()\">嘗試喚醒 Ⲙ𝔬ⲃⳝ𝔭 App</button>"
   },
   {
     "id": "M44",
     "level": "超神",
     "name": "Biometric Support",
     "desc": "預留 WebAuthn 臉部或指紋識別接口",
-    "code": "<script>\n  async function testAuth() {\n    if (window.PublicKeyCredential) {\n      console.log('此裝置支援生物識別 API (WebAuthn)');\n      // 接下來呼叫 navigator.credentials.create()\n    } else {\n      alert('裝置不支援生物識別');\n    }\n  }\n</script>\n<button onclick=\"testAuth()\">檢測 FaceID/TouchID 支援</button>"
+    "code": "<script>\n  async function testAuth() {\n    if (window.PublicKeyCredential) {\n      console.log('此裝置支援生物識別 API (WebAuthn)');\n      / 接下來呼叫 navigator.credentials.create()\n    } else {\n      alert('裝置不支援生物識別');\n    }\n  }\n</script>\n<button onclick=\"testAuth()\">檢測 FaceID/TouchID 支援</button>"
   },
   {
     "id": "M45",
@@ -340,7 +340,7 @@
     "level": "旗艦",
     "name": "System Share Sheet",
     "desc": "呼叫 iOS 原生 AirDrop 與分享功能",
-    "code": "<script>\n  function nativeShare() {\n    navigator.share({ \n      title: 'Ⲙ𝔬ⲃⳝ𝔭', \n      files: [fileObj] // 支援分享檔案 (需在 HTTPS 下)\n    }).catch(console.error);\n  }\n</script>"
+    "code": "<script>\n  function nativeShare() {\n    navigator.share({ \n      title: 'Ⲙ𝔬ⲃⳝ𝔭', \n      files: [fileObj] / 支援分享檔案 (需在 HTTPS 下)\n    }).catch(console.error);\n  }\n</script>"
   },
   {
     "id": "M50",
@@ -626,7 +626,7 @@
     "id": "A40",
     "level": "超神",
     "name": "Auto To-Do Creator",
-    "desc": "根據代碼中的 //TODO 標註自動生成 Issue",
+    "desc": "根據代碼中的 /TODO 標註自動生成 Issue",
     "code": "- uses: al-chemi/todo-to-issue-action@v4.11"
   },
   {
@@ -823,7 +823,7 @@
     "level": "超神",
     "name": "Pull-to-Refresh",
     "desc": "具備手感的下拉刷新動畫組件 (邏輯控制)",
-    "code": "<script>\n  // 監聽 touchstart/touchmove/touchend\n  // 當 scrollY === 0 且向下滑動時，計算 pullDistance\n  // 達到閥值 (如 60px) 時觸發 Haptic + 旋轉動畫\n</script>\n<div style=\"color:#06C755; text-align:center;\">↓ 緩緩下拉</div>"
+    "code": "<script>\n  / 監聽 touchstart/touchmove/touchend\n  / 當 scrollY === 0 且向下滑動時，計算 pullDistance\n  / 達到閥值 (如 60px) 時觸發 Haptic + 旋轉動畫\n</script>\n<div style=\"color:#06C755; text-align:center;\">↓ 緩緩下拉</div>"
   },
   {
     "id": "U19",
@@ -1558,7 +1558,7 @@
     "level": "超神",
     "name": "Zero-Knowledge Proof",
     "desc": "零知識證明邏輯模組 (簡易概念實現)",
-    "code": "<script>\n  // 證明者在不告知密碼的情況下，證明自己擁有密碼\n  const prove = (x) => Math.pow(g, x) % p;\n</script>"
+    "code": "<script>\n  / 證明者在不告知密碼的情況下，證明自己擁有密碼\n  const prove = (x) => Math.pow(g, x) % p;\n</script>"
   },
   {
     "id": "D24",
@@ -1572,7 +1572,7 @@
     "level": "超神",
     "name": "Titi Data Shield",
     "desc": "動態混淆全局變數與數據結構，防止控制台掃描",
-    "code": "<script>\n  (function() {\n    const _secret = 'PRIVATE_KEY';\n    window.TitiVault = { lock: () => console.log('Shield Active') };\n    delete window.TitiVault.lock; // 僅限內部閉包調用\n  })();\n</script>"
+    "code": "<script>\n  (function() {\n    const _secret = 'PRIVATE_KEY';\n    window.TitiVault = { lock: () => console.log('Shield Active') };\n    delete window.TitiVault.lock; / 僅限內部閉包調用\n  })();\n</script>"
   },
   {
     "id": "D26",
@@ -1614,7 +1614,7 @@
     "level": "專業",
     "name": "Virtual Scroll List",
     "desc": "僅渲染可視區域的 DOM，流暢處理 10 萬筆數據",
-    "code": "<div id='vScroll' style='height:300px; overflow:auto;'>\n  <div id='content' style='height:500000px; position:relative;'></div>\n</div>\n<script>\n  // 監聽 scroll 事件，動態計算並更新 transform: translateY\n</script>"
+    "code": "<div id='vScroll' style='height:300px; overflow:auto;'>\n  <div id='content' style='height:500000px; position:relative;'></div>\n</div>\n<script>\n  / 監聽 scroll 事件，動態計算並更新 transform: translateY\n</script>"
   },
   {
     "id": "D32",
@@ -1656,7 +1656,7 @@
     "level": "超神",
     "name": "Steganography Tool",
     "desc": "數位浮水印：將敏感 ID 隱藏在 Canvas 圖像像素中",
-    "code": "<script>\n  // 利用像素點的 R 通道最低位 (LSB) 嵌入隱藏資訊\n  const embed = (pixel, bit) => (pixel & 0xFE) | bit;\n</script>"
+    "code": "<script>\n  / 利用像素點的 R 通道最低位 (LSB) 嵌入隱藏資訊\n  const embed = (pixel, bit) => (pixel & 0xFE) | bit;\n</script>"
   },
   {
     "id": "D38",
@@ -1705,14 +1705,14 @@
     "level": "超神",
     "name": "AI Trend Predictor",
     "desc": "基於線性回歸的簡單數據趨勢預測算法",
-    "code": "<script>\n  // y = mx + b 邏輯預測下一個數據點\n  const predict = (data) => { /* 最小平方法實現 */ return nextVal; };\n</script>"
+    "code": "<script>\n  / y = mx + b 邏輯預測下一個數據點\n  const predict = (data) => { /* 最小平方法實現 */ return nextVal; };\n</script>"
   },
   {
     "id": "D45",
     "level": "超神",
     "name": "Titi Data Visual",
     "desc": "數據全景視圖：自動將 JSON 轉化為多維度雷達圖",
-    "code": "<script>\n  // 繪製多邊形代表數據維度強度\n  ctx.beginPath(); points.forEach(p => ctx.lineTo(p.x, p.y)); ctx.fill();\n</script>"
+    "code": "<script>\n  / 繪製多邊形代表數據維度強度\n  ctx.beginPath(); points.forEach(p => ctx.lineTo(p.x, p.y)); ctx.fill();\n</script>"
   },
   {
     "id": "Z01",
@@ -1733,7 +1733,7 @@
     "level": "終極",
     "name": "Hot-Reload Module",
     "desc": "無需刷新頁面，動態替換並更新矩陣組件邏輯",
-    "code": "<script>\n  function updateModule(id, newCode) {\n    eval(newCode); // 受限環境下使用\n    console.log(`Module ${id} Hot-Swapped.`);\n  }\n</script>"
+    "code": "<script>\n  function updateModule(id, newCode) {\n    eval(newCode); / 受限環境下使用\n    console.log(`Module ${id} Hot-Swapped.`);\n  }\n</script>"
   },
   {
     "id": "Z04",

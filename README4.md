@@ -125,22 +125,22 @@
 
 | 🎯 | 🌐 資源名稱 | 📍 路徑 | 🔐 權限 | 📝 編輯 | 📄 RAW | ✅ 狀態 |
 |:---:|---|:---:|:---:|---|---|:---:|
-| 🟦 | [🏠 根目錄](https://mobsp.github.io) 📋 | `/` | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/index.html) 📋 | ✅ |
-| 🟦 | [📄 offline.html](https://mobsp.github.io/offline.html) 📋 | `/offline.html` | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/offline.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/offline.html) 📋 | ✅ |
-| 🟧 | [🎭 Layouts](https://github.com/mobsp/mobsp.github.io/tree/main/_layouts) 📋 | `/_layouts/` | 🟢 公開 | - | - | 📁 |
-| 🟦 | [📱 Nexus Sync](https://mobsp.github.io/app/) 📋 | `/app/` | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/app/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/app/index.html) 📋 | ✅ |
-| 🟦 | [🖼️ Icon Viewer](https://mobsp.github.io/assets/icon/viewer/) 📋 | `/assets/icon/viewer/` | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/assets/icon/viewer/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/assets/icon/viewer/index.html) 📋 | ✅ |
-| 🟦 | [🧪 Beta 測試](https://mobsp.github.io/beta/) 📋 | `/beta/` | 🟡 測試 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/beta/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/beta/index.html) 📋 | 🧪 |
-| 🟦 | [📖 部落格](https://mobsp.github.io/blog/) 📋 | `/blog/` | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/blog/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/blog/index.html) 📋 | ✅ |
-| 🟦 | [🌐 Browser](https://mobsp.github.io/browser/sf/) 📋 | `/browser/sf/` | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/browser/sf/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/browser/sf/index.html) 📋 | ✅ |
-| 🟦 | [📂 檔案清單](https://mobsp.github.io/file-list/) 📋 | `/file-list/` | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/file-list/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/file-list/index.html) 📋 | ✅ |
-| 🟧 | [💻 HackMD](https://mobsp.github.io/HackMD/) 📋 | `/HackMD/` | 🟢 公開 | - | - | 📁 |
-| 🟧 | [🎵 音樂播放器](https://mobsp.github.io/music/) 📋 | `/music/` | 🟢 公開 | - | - | 📁 |
-| 🟧 | [⚙️ 設定頁面](https://mobsp.github.io/setting/) 📋 | `/setting/` | 🟢 公開 | - | - | 📁 |
-| 🟧 | [🎥 短影音](https://mobsp.github.io/shorts/) 📋 | `/shorts/` | 🟢 公開 | - | - | 📁 |
-| 🟧 | [🎨 SVG 編輯器](https://mobsp.github.io/svg-editor/) 📋 | `/svg-editor/` | 🟢 公開 | - | - | 📁 |
-| 🟦 | [🛠️ 工具庫](https://mobsp.github.io/tol/) 📋 | `/tol/` | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/tol/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/tol/index.html) 📋 | ✅ |
-| 🟦 | [📚 Wiki](https://mobsp.github.io/wiki/) 📋 | `/wiki/` | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/wiki/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/wiki/index.html) 📋 | ✅ |
+| 🟦 | [🏠 根目錄]() 📋 | `/` | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/index.html) 📋 | ✅ |
+| 🟦 | [📄 offline.html](/offline.html) 📋 | `/offline.html` | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/offline.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/offline.html) 📋 | ✅ |
+| 🟧 | [🎭 Layouts](https://github.com/mobsp/tree/main/_layouts) 📋 | `/_layouts/` | 🟢 公開 | - | - | 📁 |
+| 🟦 | [📱 Nexus Sync](/app/) 📋 | `/app/` | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/app/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/app/index.html) 📋 | ✅ |
+| 🟦 | [🖼️ Icon Viewer](/assets/icon/viewer/) 📋 | `/assets/icon/viewer/` | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/assets/icon/viewer/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/assets/icon/viewer/index.html) 📋 | ✅ |
+| 🟦 | [🧪 Beta 測試](/beta/) 📋 | `/beta/` | 🟡 測試 | [編輯](https://github.com/mobsp/edit/main/beta/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/beta/index.html) 📋 | 🧪 |
+| 🟦 | [📖 部落格](/blog/) 📋 | `/blog/` | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/blog/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/blog/index.html) 📋 | ✅ |
+| 🟦 | [🌐 Browser](/browser/sf/) 📋 | `/browser/sf/` | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/browser/sf/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/browser/sf/index.html) 📋 | ✅ |
+| 🟦 | [📂 檔案清單](/file-list/) 📋 | `/file-list/` | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/file-list/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/file-list/index.html) 📋 | ✅ |
+| 🟧 | [💻 HackMD](/HackMD/) 📋 | `/HackMD/` | 🟢 公開 | - | - | 📁 |
+| 🟧 | [🎵 音樂播放器](/music/) 📋 | `/music/` | 🟢 公開 | - | - | 📁 |
+| 🟧 | [⚙️ 設定頁面](/setting/) 📋 | `/setting/` | 🟢 公開 | - | - | 📁 |
+| 🟧 | [🎥 短影音](/shorts/) 📋 | `/shorts/` | 🟢 公開 | - | - | 📁 |
+| 🟧 | [🎨 SVG 編輯器](/svg-editor/) 📋 | `/svg-editor/` | 🟢 公開 | - | - | 📁 |
+| 🟦 | [🛠️ 工具庫](/tol/) 📋 | `/tol/` | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/tol/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/tol/index.html) 📋 | ✅ |
+| 🟦 | [📚 Wiki](/wiki/) 📋 | `/wiki/` | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/wiki/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/wiki/index.html) 📋 | ✅ |
 
 **🔐 權限說明**：🟢 公開 = 任何人可訪問 | 🟡 測試 = Beta 功能 | 🔴 私密 = 限制訪問
 
@@ -161,21 +161,21 @@
 
 **🏠 根目錄**  
 核心入口  
-[進入](https://mobsp.github.io)
+[進入]()
 
 </td>
 <td style="padding: 15px; text-align: center; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; border-radius: 8px; margin: 5px;">
 
 **📖 部落格**  
 內容中心  
-[進入](https://mobsp.github.io/blog/)
+[進入](/blog/)
 
 </td>
 <td style="padding: 15px; text-align: center; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; border-radius: 8px; margin: 5px;">
 
 **🛠️ 工具庫**  
 功能應用  
-[進入](https://mobsp.github.io/tol/)
+[進入](/tol/)
 
 </td>
 </tr>
@@ -184,21 +184,21 @@
 
 **📚 Wiki**  
 知識庫  
-[進入](https://mobsp.github.io/wiki/)
+[進入](/wiki/)
 
 </td>
 <td style="padding: 15px; text-align: center; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white; border-radius: 8px; margin: 5px;">
 
 **🎨 設計工具**  
 編輯器  
-[進入](https://mobsp.github.io/svg-editor/)
+[進入](/svg-editor/)
 
 </td>
 <td style="padding: 15px; text-align: center; background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); color: white; border-radius: 8px; margin: 5px;">
 
 **📱 移動應用**  
 Nexus Sync  
-[進入](https://mobsp.github.io/app/)
+[進入](/app/)
 
 </td>
 </tr>
@@ -216,30 +216,30 @@ Nexus Sync
 ### 👨‍💻 **開發者工作流**
 | 🎯 目標 | 📌 推薦資源 | 📝 描述 | ⏱️ 預估時間 |
 |---|---|---|---|
-| 環境設置 | [本地開發指南](#-開始使用) + [README.md](https://github.com/mobsp/mobsp.github.io/blob/main/README.md) 📋 | 快速搭建本地環境 | 5-10分鐘 |
-| 工具開發 | [🛠️ 工具庫](#-tol-工具庫) + [編輯工具](https://mobsp.github.io/tol/Editor/) 📋 | 創建新工具模組 | 20-30分鐘 |
-| 部署管理 | [GitHub Actions](#) + [manifest.json](https://github.com/mobsp/mobsp.github.io/blob/main/manifest.json) 📋 | 自動化部署配置 | 15-20分鐘 |
+| 環境設置 | [本地開發指南](#-開始使用) + [README.md](https://github.com/mobsp/blob/main/README.md) 📋 | 快速搭建本地環境 | 5-10分鐘 |
+| 工具開發 | [🛠️ 工具庫](#-tol-工具庫) + [編輯工具](/tol/Editor/) 📋 | 創建新工具模組 | 20-30分鐘 |
+| 部署管理 | [GitHub Actions](#) + [manifest.json](https://github.com/mobsp/blob/main/manifest.json) 📋 | 自動化部署配置 | 15-20分鐘 |
 
 ### 📝 **內容創作流程**
 | 🎯 目標 | 📌 推薦資源 | 📝 描述 | ⏱️ 預估時間 |
 |---|---|---|---|
-| 發布文章 | [📖 部落格](#-blog-部落格系統) + [編輯工具](https://mobsp.github.io/tol/Editor/) 📋 | 創建新文章 | 30-45分鐘 |
-| 編輯工具 | [SVG 編輯器](https://mobsp.github.io/svg-editor/) 📋 + [Icon 查看器](https://mobsp.github.io/assets/icon/viewer/) 📋 | 設計與編輯 | 20-40分鐘 |
-| 內容管理 | [RSS 生成器](https://mobsp.github.io/tol/) 📋 + [檔案清單](https://mobsp.github.io/file-list/) 📋 | 組織與索引 | 10-15分鐘 |
+| 發布文章 | [📖 部落格](#-blog-部落格系統) + [編輯工具](/tol/Editor/) 📋 | 創建新文章 | 30-45分鐘 |
+| 編輯工具 | [SVG 編輯器](/svg-editor/) 📋 + [Icon 查看器](/assets/icon/viewer/) 📋 | 設計與編輯 | 20-40分鐘 |
+| 內容管理 | [RSS 生成器](/tol/) 📋 + [檔案清單](/file-list/) 📋 | 組織與索引 | 10-15分鐘 |
 
 ### 🎨 **設計師工具**
 | 🎯 目標 | 📌 推薦資源 | 📝 描述 | ⏱️ 預估時間 |
 |---|---|---|---|
-| 矢量編輯 | [SVG 編輯器](https://mobsp.github.io/svg-editor/) 📋 | 創建矢量圖形 | 15-25分鐘 |
-| 圖標管理 | [Icon 查看器](https://mobsp.github.io/assets/icon/viewer/) 📋 | 瀏覽與使用圖標 | 5-10分鐘 |
-| 資源庫 | [assets/](https://github.com/mobsp/mobsp.github.io/tree/main/assets) 📋 | 統一資源管理 | 10-15分鐘 |
+| 矢量編輯 | [SVG 編輯器](/svg-editor/) 📋 | 創建矢量圖形 | 15-25分鐘 |
+| 圖標管理 | [Icon 查看器](/assets/icon/viewer/) 📋 | 瀏覽與使用圖標 | 5-10分鐘 |
+| 資源庫 | [assets/](https://github.com/mobsp/tree/main/assets) 📋 | 統一資源管理 | 10-15分鐘 |
 
 ### 📱 **移動用戶**
 | 🎯 目標 | 📌 推薦資源 | 📝 描述 | ⏱️ 預估時間 |
 |---|---|---|---|
-| 在線訪問 | [Nexus Sync](https://mobsp.github.io/app/) 📋 | 跨設備同步服務 | 2-5分鐘 |
-| 媒體內容 | [短影音播放器](https://mobsp.github.io/shorts/) 📋 | 觀看短影片 | 即時 |
-| 個人設置 | [設定頁面](https://mobsp.github.io/setting/) 📋 | 自定義配置 | 5-10分鐘 |
+| 在線訪問 | [Nexus Sync](/app/) 📋 | 跨設備同步服務 | 2-5分鐘 |
+| 媒體內容 | [短影音播放器](/shorts/) 📋 | 觀看短影片 | 即時 |
+| 個人設置 | [設定頁面](/setting/) 📋 | 自定義配置 | 5-10分鐘 |
 
 </details>
 
@@ -262,19 +262,19 @@ Nexus Sync
 ### 📂 **按類別篩選**
 | 📂 類別 | ⭐ 推薦 | 🛠️ 工具 | 📝 說明 |
 |:---:|---|---|---|
-| 🛠️ 工具 | ⭐⭐⭐⭐⭐ | [RSS生成器](https://mobsp.github.io/tol/) 📋 / [Editor](https://mobsp.github.io/tol/Editor/) 📋 / [MobspOS](https://mobsp.github.io/tol/MobspOS/) 📋 | 功能應用 |
-| 📝 內容 | ⭐⭐⭐⭐ | [部落格](https://mobsp.github.io/blog/) 📋 / [Wiki](https://mobsp.github.io/wiki/) 📋 / [文章](https://mobsp.github.io/blog/p/list/) 📋 | 知識庫 |
-| ⚙️ 配置 | ⭐⭐⭐ | [manifest.json](https://github.com/mobsp/mobsp.github.io/blob/main/manifest.json) 📋 / [設定](https://mobsp.github.io/setting/) 📋 | 系統配置 |
-| 📚 文檔 | ⭐⭐⭐⭐ | [README.md](https://github.com/mobsp/mobsp.github.io/blob/main/README.md) 📋 / [Wiki](https://mobsp.github.io/wiki/) 📋 | 說明文件 |
+| 🛠️ 工具 | ⭐⭐⭐⭐⭐ | [RSS生成器](/tol/) 📋 / [Editor](/tol/Editor/) 📋 / [MobspOS](/tol/MobspOS/) 📋 | 功能應用 |
+| 📝 內容 | ⭐⭐⭐⭐ | [部落格](/blog/) 📋 / [Wiki](/wiki/) 📋 / [文章](/blog/p/list/) 📋 | 知識庫 |
+| ⚙️ 配置 | ⭐⭐⭐ | [manifest.json](https://github.com/mobsp/blob/main/manifest.json) 📋 / [設定](/setting/) 📋 | 系統配置 |
+| 📚 文檔 | ⭐⭐⭐⭐ | [README.md](https://github.com/mobsp/blob/main/README.md) 📋 / [Wiki](/wiki/) 📋 | 說明文件 |
 
 ### 🔥 **按熱度排序**
 | 🔥 熱度 | 📍 資源 | 🎯 用途 | 📈 訪問量 |
 |:---:|---|---|---:|
-| 🔥🔥🔥🔥🔥 | [🏠 首頁](https://mobsp.github.io) 📋 | 主入口 | ⬆️ 高 |
-| 🔥🔥🔥🔥 | [📖 部落格](https://mobsp.github.io/blog/) 📋 + [SVG編輯器](https://mobsp.github.io/svg-editor/) 📋 | 內容 + 工具 | ⬆️ 中高 |
-| 🔥🔥🔥 | [🛠️ 工具庫](https://mobsp.github.io/tol/) 📋 + [Wiki](https://mobsp.github.io/wiki/) 📋 | 工具 + 文檔 | ➡️ 中 |
-| 🔥🔥 | [Nexus Sync](https://mobsp.github.io/app/) 📋 / [Icon查看器](https://mobsp.github.io/assets/icon/viewer/) 📋 | 服務 + 資源 | ⬇️ 中低 |
-| 🔥 | [Beta測試](https://mobsp.github.io/beta/) 📋 / [短影音](https://mobsp.github.io/shorts/) 📋 | 新功能 + 媒體 | ⬇️ 低 |
+| 🔥🔥🔥🔥🔥 | [🏠 首頁]() 📋 | 主入口 | ⬆️ 高 |
+| 🔥🔥🔥🔥 | [📖 部落格](/blog/) 📋 + [SVG編輯器](/svg-editor/) 📋 | 內容 + 工具 | ⬆️ 中高 |
+| 🔥🔥🔥 | [🛠️ 工具庫](/tol/) 📋 + [Wiki](/wiki/) 📋 | 工具 + 文檔 | ➡️ 中 |
+| 🔥🔥 | [Nexus Sync](/app/) 📋 / [Icon查看器](/assets/icon/viewer/) 📋 | 服務 + 資源 | ⬇️ 中低 |
+| 🔥 | [Beta測試](/beta/) 📋 / [短影音](/shorts/) 📋 | 新功能 + 媒體 | ⬇️ 低 |
 
 </details>
 
@@ -345,11 +345,11 @@ Nexus Sync
 
 | 🎯 | 📄 檔案名稱 | 📍 檔案路徑 | 📋 類型 | 💾 大小 | 🔐 權限 | ✏️ 編輯 | 📄 RAW | ✅ 狀態 |
 |:---:|---|:---:|:---:|---:|:---:|---|---|:---:|
-| 🟦 | [index.html](https://mobsp.github.io) 📋 | `/index.html` | HTML | 25KB | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/index.html) 📋 | ✅ |
-| 🟩 | [README.md](https://github.com/mobsp/mobsp.github.io/blob/main/README.md) 📋 | `/README.md` | Markdown | 12KB | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/README.md) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/README.md) 📋 | ✅ |
-| 🟨 | [manifest.json](https://github.com/mobsp/mobsp.github.io/blob/main/manifest.json) 📋 | `/manifest.json` | JSON | 2KB | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/manifest.json) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/manifest.json) 📋 | ✅ |
-| 🟧 | [auto-index.py](https://github.com/mobsp/mobsp.github.io/blob/main/auto-index.py) 📋 | `/auto-index.py` | Python | 8KB | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/auto-index.py) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/auto-index.py) 📋 | ✅ |
-| 🟨 | [generate-index.js](https://github.com/mobsp/mobsp.github.io/blob/main/generate-index.js) 📋 | `/generate-index.js` | JavaScript | 15KB | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/generate-index.js) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/generate-index.js) 📋 | ✅ |
+| 🟦 | [index.html]() 📋 | `/index.html` | HTML | 25KB | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/index.html) 📋 | ✅ |
+| 🟩 | [README.md](https://github.com/mobsp/blob/main/README.md) 📋 | `/README.md` | Markdown | 12KB | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/README.md) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/README.md) 📋 | ✅ |
+| 🟨 | [manifest.json](https://github.com/mobsp/blob/main/manifest.json) 📋 | `/manifest.json` | JSON | 2KB | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/manifest.json) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/manifest.json) 📋 | ✅ |
+| 🟧 | [auto-index.py](https://github.com/mobsp/blob/main/auto-index.py) 📋 | `/auto-index.py` | Python | 8KB | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/auto-index.py) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/auto-index.py) 📋 | ✅ |
+| 🟨 | [generate-index.js](https://github.com/mobsp/blob/main/generate-index.js) 📋 | `/generate-index.js` | JavaScript | 15KB | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/generate-index.js) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/generate-index.js) 📋 | ✅ |
 
 </details>
 
@@ -360,9 +360,9 @@ Nexus Sync
 
 | 🎯 | 📰 文章標題 | 📍 檔案路徑 | 📋 類型 | 📊 文章數 | 🔐 權限 | ✏️ 編輯 | 📄 RAW | 📅 更新 |
 |:---:|---|:---:|:---:|---:|:---:|---|---|:---:|
-| 🟦 | [GitHub Pages 部署指南](https://mobsp.github.io/blog/p/list/) 📋 | `blog/p/list/` | HTML | 1 | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/blog/p/list/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/blog/p/list/index.html) 📋 | 5天前 |
-| 🟦 | [風月文學系列 (1-26)](https://mobsp.github.io/blog/p/list/) 📋 | `blog/p/list/` | HTML | 26 | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/blog/p/list/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/blog/p/list/index.html) 📋 | 3天前 |
-| 🟦 | [部落格首頁](https://mobsp.github.io/blog/) 📋 | `blog/index.html` | HTML | 全部 | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/blog/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/blog/index.html) 📋 | 7天前 |
+| 🟦 | [GitHub Pages 部署指南](/blog/p/list/) 📋 | `blog/p/list/` | HTML | 1 | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/blog/p/list/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/blog/p/list/index.html) 📋 | 5天前 |
+| 🟦 | [風月文學系列 (1-26)](/blog/p/list/) 📋 | `blog/p/list/` | HTML | 26 | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/blog/p/list/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/blog/p/list/index.html) 📋 | 3天前 |
+| 🟦 | [部落格首頁](/blog/) 📋 | `blog/index.html` | HTML | 全部 | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/blog/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/blog/index.html) 📋 | 7天前 |
 
 </details>
 
@@ -373,10 +373,10 @@ Nexus Sync
 
 | 🎯 | 🔧 模組名稱 | 📍 檔案路徑 | 📋 類型 | 🎯 功能 | 🔐 權限 | ✏️ 編輯 | 📄 RAW | 🔥 熱度 |
 |:---:|---|:---:|:---:|---|:---:|---|---|:---:|
-| 🟦 | [RSS 生成器](https://mobsp.github.io/tol/) 📋 | `tol/index.html` | HTML | 自動生成RSS源 | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/tol/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/tol/index.html) 📋 | 🔥🔥🔥 |
-| 🟦 | [編輯工具 (Editor)](https://mobsp.github.io/tol/Editor/) 📋 | `tol/Editor/` | HTML | 在線編輯內容 | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/tol/Editor/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/tol/Editor/index.html) 📋 | 🔥🔥🔥🔥 |
-| 🟦 | [GitHub 索引器](https://mobsp.github.io/tol/gh-idx/) 📋 | `tol/gh-idx/` | HTML | 自動索引倉庫 | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/tol/gh-idx/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/tol/gh-idx/index.html) 📋 | 🔥🔥🔥 |
-| 🟦 | [莫比操作系統 (MobspOS)](https://mobsp.github.io/tol/MobspOS/) 📋 | `tol/MobspOS/` | HTML | 虛擬操作系統 | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/tol/MobspOS/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/tol/MobspOS/index.html) 📋 | 🔥🔥🔥 |
+| 🟦 | [RSS 生成器](/tol/) 📋 | `tol/index.html` | HTML | 自動生成RSS源 | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/tol/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/tol/index.html) 📋 | 🔥🔥🔥 |
+| 🟦 | [編輯工具 (Editor)](/tol/Editor/) 📋 | `tol/Editor/` | HTML | 在線編輯內容 | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/tol/Editor/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/tol/Editor/index.html) 📋 | 🔥🔥🔥🔥 |
+| 🟦 | [GitHub 索引器](/tol/gh-idx/) 📋 | `tol/gh-idx/` | HTML | 自動索引倉庫 | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/tol/gh-idx/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/tol/gh-idx/index.html) 📋 | 🔥🔥🔥 |
+| 🟦 | [莫比操作系統 (MobspOS)](/tol/MobspOS/) 📋 | `tol/MobspOS/` | HTML | 虛擬操作系統 | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/tol/MobspOS/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/tol/MobspOS/index.html) 📋 | 🔥🔥🔥 |
 
 </details>
 
@@ -387,10 +387,10 @@ Nexus Sync
 
 | 🎯 | 🌐 頁面名稱 | 📍 檔案路徑 | 📝 說明 | 📋 類型 | 🔐 權限 | ✏️ 編輯 | 📄 RAW | ✅ 狀態 |
 |:---:|---|:---:|---|:---:|:---:|---|---|:---:|
-| 🟦 | [Nexus Sync](https://mobsp.github.io/app/) 📋 | `app/index.html` | 同步服務中樞 | HTML | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/app/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/app/index.html) 📋 | ✅ |
-| 🟦 | [莫比百科 Wiki](https://mobsp.github.io/wiki/) 📋 | `wiki/index.html` | 官方百科全書 | HTML | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/wiki/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/wiki/index.html) 📋 | ✅ |
-| 🟧 | [短影音播放器](https://mobsp.github.io/shorts/) 📋 | `shorts/index.html` | 短視頻播放系統 | HTML | 🟡 測試 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/shorts/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/shorts/index.html) 📋 | 🧪 |
-| 🟧 | [SVG 編輯器](https://mobsp.github.io/svg-editor/) 📋 | `svg-editor/index.html` | 矢量圖形編輯工具 | HTML | 🟢 公開 | [編輯](https://github.com/mobsp/mobsp.github.io/edit/main/svg-editor/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/mobsp.github.io/main/svg-editor/index.html) 📋 | ✅ |
+| 🟦 | [Nexus Sync](/app/) 📋 | `app/index.html` | 同步服務中樞 | HTML | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/app/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/app/index.html) 📋 | ✅ |
+| 🟦 | [莫比百科 Wiki](/wiki/) 📋 | `wiki/index.html` | 官方百科全書 | HTML | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/wiki/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/wiki/index.html) 📋 | ✅ |
+| 🟧 | [短影音播放器](/shorts/) 📋 | `shorts/index.html` | 短視頻播放系統 | HTML | 🟡 測試 | [編輯](https://github.com/mobsp/edit/main/shorts/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/shorts/index.html) 📋 | 🧪 |
+| 🟧 | [SVG 編輯器](/svg-editor/) 📋 | `svg-editor/index.html` | 矢量圖形編輯工具 | HTML | 🟢 公開 | [編輯](https://github.com/mobsp/edit/main/svg-editor/index.html) 📋 | [RAW](https://raw.githubusercontent.com/mobsp/main/svg-editor/index.html) 📋 | ✅ |
 
 </details>
 
@@ -406,11 +406,11 @@ Nexus Sync
 ```
 步驟  ➜ 工具                                         ➜ 說明
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-①   創建內容  ➜ [編輯工具](https://mobsp.github.io/tol/Editor/) 📋  ➜ 編寫或上傳文章
+①   創建內容  ➜ [編輯工具](/tol/Editor/) 📋  ➜ 編寫或上傳文章
 ②   本地預覽  ➜ [本地開發](#-開始使用)                      ➜ 在本地伺服器測試
 ③   檔案提交  ➜ [GitHub 提交](#)                           ➜ 提交至 blog/p/list/
 ④   自動部署  ➜ [GitHub Actions](#)                        ➜ 自動索引 + 發佈
-⑤   驗證發佈  ➜ [部落格首頁](https://mobsp.github.io/blog/) 📋 ➜ 確認文章上線
+⑤   驗證發佈  ➜ [部落格首頁](/blog/) 📋 ➜ 確認文章上線
 ```
 
 ### 2️⃣ **工具開發流程** 🔨
@@ -418,11 +418,11 @@ Nexus Sync
 ```
 步驟  ➜ 工具                                             ➜ 說明
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-①   設計工具  ➜ [SVG編輯器](https://mobsp.github.io/svg-editor/) 📋 ➜ 設計界面
-②   開發代碼  ➜ [編輯工具](https://mobsp.github.io/tol/Editor/) 📋  ➜ 編寫代碼
+①   設計工具  ➜ [SVG編輯器](/svg-editor/) 📋 ➜ 設計界面
+②   開發代碼  ➜ [編輯工具](/tol/Editor/) 📋  ➜ 編寫代碼
 ③   本地測試  ➜ [本地開發](#-開始使用)                      ➜ 在本地環境測試
-④   提交至庫  ➜ [工具庫 (tol/)](https://mobsp.github.io/tol/) 📋 ➜ 上傳至 tol/ 目錄
-⑤   文件更新  ➜ [README.md](https://github.com/mobsp/mobsp.github.io/blob/main/README.md) 📋 ➜ 更新說明文檔
+④   提交至庫  ➜ [工具庫 (tol/)](/tol/) 📋 ➜ 上傳至 tol/ 目錄
+⑤   文件更新  ➜ [README.md](https://github.com/mobsp/blob/main/README.md) 📋 ➜ 更新說明文檔
 ```
 
 ### 3️⃣ **設計資源更新流程** 🎨
@@ -430,11 +430,11 @@ Nexus Sync
 ```
 步驟  ➜ 工具                                                ➜ 說明
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-①   編輯圖形  ➜ [SVG編輯器](https://mobsp.github.io/svg-editor/) 📋 ➜ 建立或修改 SVG
-②   預覽效果  ➜ [Icon查看器](https://mobsp.github.io/assets/icon/viewer/) 📋 ➜ 檢視圖標效果
-③   上傳資源  ➜ [assets/ 目錄](https://github.com/mobsp/mobsp.github.io/tree/main/assets) 📋 ➜ 提交至 GitHub
-④   同步應用  ➜ [Nexus Sync](https://mobsp.github.io/app/) 📋 ➜ 跨設備同步
-⑤   文件索引  ➜ [自動索引](https://github.com/mobsp/mobsp.github.io/blob/main/auto-index.py) 📋 ➜ 自動建立索引
+①   編輯圖形  ➜ [SVG編輯器](/svg-editor/) 📋 ➜ 建立或修改 SVG
+②   預覽效果  ➜ [Icon查看器](/assets/icon/viewer/) 📋 ➜ 檢視圖標效果
+③   上傳資源  ➜ [assets/ 目錄](https://github.com/mobsp/tree/main/assets) 📋 ➜ 提交至 GitHub
+④   同步應用  ➜ [Nexus Sync](/app/) 📋 ➜ 跨設備同步
+⑤   文件索引  ➜ [自動索引](https://github.com/mobsp/blob/main/auto-index.py) 📋 ➜ 自動建立索引
 ```
 
 ### 4️⃣ **內容管理流程** 📊
@@ -442,11 +442,11 @@ Nexus Sync
 ```
 步驟  ➜ 工具                                              ➜ 說明
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-①   組織文件  ➜ [檔案清單](https://mobsp.github.io/file-list/) 📋  ➜ 查看全部檔案
-②   生成RSS   ➜ [RSS生成器](https://mobsp.github.io/tol/) 📋      ➜ 自動生成 RSS 源
-③   發佈索引  ➜ [自動索引](https://github.com/mobsp/mobsp.github.io/blob/main/auto-index.py) 📋 ➜ 更新檔案清單
-④   線上同步  ➜ [Nexus Sync](https://mobsp.github.io/app/) 📋     ➜ 同步到線上
-⑤   驗證發佈  ➜ [Wiki](https://mobsp.github.io/wiki/) 📋          ➜ 檢視最新內容
+①   組織文件  ➜ [檔案清單](/file-list/) 📋  ➜ 查看全部檔案
+②   生成RSS   ➜ [RSS生成器](/tol/) 📋      ➜ 自動生成 RSS 源
+③   發佈索引  ➜ [自動索引](https://github.com/mobsp/blob/main/auto-index.py) 📋 ➜ 更新檔案清單
+④   線上同步  ➜ [Nexus Sync](/app/) 📋     ➜ 同步到線上
+⑤   驗證發佈  ➜ [Wiki](/wiki/) 📋          ➜ 檢視最新內容
 ```
 
 </details>
@@ -465,8 +465,8 @@ Nexus Sync
 
 ```bash
 # 複製儲存庫
-git clone https://github.com/mobsp/mobsp.github.io.git
-cd mobsp.github.io
+git clone https://github.com/mobsp/.git
+cd 
 
 # 啟動本地伺服器
 python -m http.server 8000

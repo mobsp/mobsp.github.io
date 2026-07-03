@@ -227,7 +227,7 @@
     let currentBranch = "";
     let folderSet = new Set();
 
-    // 1. 開始全域掃描
+    / 1. 開始全域掃描
     async function startDeepScan() {
         const users = document.getElementById('userInput').value.split(',').map(s => s.trim());
         const status = document.getElementById('scanStatus');
@@ -266,7 +266,7 @@
         }
     }
 
-    // 2. 建立分支與資料夾 UI
+    / 2. 建立分支與資料夾 UI
     function buildUI() {
         const select = document.getElementById('folderSelect');
         select.innerHTML = '<option value="ALL">📂 顯示所有資料夾</option><option value="ROOT">📂 根目錄 (Root)</option>';
@@ -294,7 +294,7 @@
         updateView();
     }
 
-    // 3. 更新表格內容
+    / 3. 更新表格內容
     function updateView() {
         const folderVal = document.getElementById('folderSelect').value;
         const area = document.getElementById('displayTable');
@@ -321,7 +321,7 @@
         `;
     }
 
-    // 4. 檔案詳情彈窗
+    / 4. 檔案詳情彈窗
     function openFileDetails(path) {
         const f = allFiles.find(item => item.path === path && item.branch === currentBranch);
         document.getElementById('infoName').innerText = f.name;
@@ -349,7 +349,7 @@
         document.getElementById('infoModal').classList.add('active');
     }
 
-    // 5. 內建虛擬編輯器系統
+    / 5. 內建虛擬編輯器系統
     async function openEditor(rawUrl, fileName) {
         document.getElementById('editorModal').style.display = 'flex';
         document.getElementById('editFileName').value = fileName;
@@ -389,7 +389,7 @@
         document.body.removeChild(a);
     }
 
-    // 6. 匯出 CSV 報告
+    / 6. 匯出 CSV 報告
     function exportFullReport() {
         if(allFiles.length === 0) return alert("請先掃描資料");
         let csvContent = "User,Repo,Branch,Folder,Path,Link,RawURL\n";

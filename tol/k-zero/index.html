@@ -151,7 +151,7 @@
         const useSym = document.getElementById('sym').checked;
         const pool = useSym ? chars + syms : chars;
         
-        // 天才級隨機算法：直接使用 CSPRNG 映射，效能與安全兼具
+        / 天才級隨機算法：直接使用 CSPRNG 映射，效能與安全兼具
         const uint32 = new Uint32Array(length);
         window.crypto.getRandomValues(uint32);
         
@@ -162,9 +162,9 @@
 
         const out = document.getElementById('out');
         out.textContent = pw;
-        out.appendChild(document.getElementById('bar')); // 保持 bar 在裡面
+        out.appendChild(document.getElementById('bar')); / 保持 bar 在裡面
         
-        // 更新強度條
+        / 更新強度條
         const strength = (length / 64) * 100;
         const bar = document.getElementById('bar');
         bar.style.width = strength + "%";

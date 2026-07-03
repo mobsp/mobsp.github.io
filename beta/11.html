@@ -8,7 +8,7 @@
 
   <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆</title>
   
-  <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+  <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
 
   <style>
     :root {
@@ -34,7 +34,7 @@
     /* 啟動畫面模擬背景 */
     .bg-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: url('https://mobsp.github.io/assets/brand/ms-tools.JPEG') center/cover no-repeat;
+      background: url('/assets/brand/ms-tools.JPEG') center/cover no-repeat;
       opacity: 0.15; z-index: -1;
     }
 
@@ -128,7 +128,7 @@
   <meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆 | MOBSP">
   <meta property="og:url" content="https://mobsp.qzz.io/tol/index.html">
   <meta property="og:site_name" content="MOBSP">
-  <meta property="og:image" content="https://mobsp.github.io/assets/brand/ms-logo1.JPEG">
+  <meta property="og:image" content="/assets/brand/ms-logo1.JPEG">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆">
@@ -159,19 +159,19 @@
   </footer>
 
   <script>
-    // 🛠️ GitHub 儲存庫配置（透過 API 自動遍歷）
+    / 🛠️ GitHub 儲存庫配置（透過 API 自動遍歷）
     const GH_USER = "mobsp";
-    const GH_REPO = "mobsp.github.io";
+    const GH_REPO = "";
     const TARGET_FOLDER = "tol";
 
-    // 基礎路徑與預覽圖設定
+    / 基礎路徑與預覽圖設定
     const BASE_URL = "https://mobsp.qzz.io/tol/";
-    const PREVIEW_IMG = "https://mobsp.github.io/assets/brand/ms-logo1.JPEG";
+    const PREVIEW_IMG = "/assets/brand/ms-logo1.JPEG";
 
     const grid = document.getElementById("grid");
     const searchInput = document.getElementById("search");
     
-    // 全域工具儲存陣列
+    / 全域工具儲存陣列
     let allTools = [];
 
     /**
@@ -186,24 +186,24 @@
 
         for (const item of items) {
           if (item.type === "dir") {
-            // 進入深層資料夾遞迴掃描
+            / 進入深層資料夾遞迴掃描
             await scanRepository(item.path);
           } else if (item.type === "file" && item.name.endsWith(".html")) {
-            // 過濾掉展示牆首頁本身
+            / 過濾掉展示牆首頁本身
             if (item.path === `${TARGET_FOLDER}/index.html`) continue;
 
-            // 取得相對於 /tol/ 的相對路徑
+            / 取得相對於 /tol/ 的相對路徑
             const relativePath = item.path.substring(TARGET_FOLDER.length + 1);
             
-            // 分析並產生展示名稱
+            / 分析並產生展示名稱
             let rawName = item.name.replace(".html", "");
             if (rawName.toLowerCase() === "index") {
-              // 如果是深層目錄裡的 index.html，抓取它的父資料夾名稱
+              / 如果是深層目錄裡的 index.html，抓取它的父資料夾名稱
               const pathParts = relativePath.split('/');
               rawName = pathParts[pathParts.length - 2] || "index";
             }
 
-            // 字首轉大寫美化處理 (如: json-formatter -> Json Formatter)
+            / 字首轉大寫美化處理 (如: json-formatter -> Json Formatter)
             const displayName = rawName.split('-')
               .map(word => word.charAt(0).toUpperCase() + word.slice(1))
               .join(' ');
@@ -220,7 +220,7 @@
       }
     }
 
-    // 渲染工具卡片至畫面
+    / 渲染工具卡片至畫面
     function render(list) {
       grid.innerHTML = ""; 
       
@@ -248,7 +248,7 @@
       });
     }
 
-    // 關鍵字動態搜尋
+    / 關鍵字動態搜尋
     searchInput.addEventListener("input", () => {
       const keyword = searchInput.value.toLowerCase();
       const filtered = allTools.filter(t => 
@@ -258,7 +258,7 @@
       render(filtered);
     });
 
-    // 初始化自動掃描
+    / 初始化自動掃描
     (async () => {
       grid.innerHTML = `<div style="grid-column: 1/-1; color: var(--accent); text-align: center; padding: 2rem;">🔍 正在掃描雲端儲存庫...</div>`;
       await scanRepository();

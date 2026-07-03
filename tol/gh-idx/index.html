@@ -325,10 +325,10 @@
 
     function updateView() {
         const folderVal = document.getElementById('folderSelect').value;
-        const searchVal = document.getElementById('searchInput').value.toLowerCase(); // 取得搜尋關鍵字
+        const searchVal = document.getElementById('searchInput').value.toLowerCase(); / 取得搜尋關鍵字
         const area = document.getElementById('displayTable');
         
-        // 加入搜尋關鍵字過濾
+        / 加入搜尋關鍵字過濾
         const filtered = allFiles.filter(f => 
             f.branch === currentBranch && 
             (folderVal === 'ALL' || f.folder === folderVal) &&

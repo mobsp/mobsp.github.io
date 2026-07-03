@@ -80,13 +80,13 @@
     <script src="./theme-engine.js"></script>
 
     <script>
-        // 確保 DOM 載入後執行
+        / 確保 DOM 載入後執行
         window.addEventListener('load', () => {
-            // 初始化引擎
+            / 初始化引擎
             if(window.initTheme) window.initTheme();
             if(window.initSecurity) window.initSecurity();
             
-            // 初始渲染 iOS 組件
+            / 初始渲染 iOS 組件
             if(window.ios) {
                 window.ios._render();
             }
@@ -94,7 +94,7 @@
             document.getElementById('back').onclick = () => window.ios.pop();
         });
 
-        // 定義全域按鈕邏輯
+        / 定義全域按鈕邏輯
         function handleSync() {
             window.ios.loading(true);
             setTimeout(() => {
