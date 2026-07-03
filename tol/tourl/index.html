@@ -214,13 +214,13 @@
         const settingsPanel = document.getElementById('settings-panel');
         const accentPicker = document.getElementById('accent-picker');
 
-        // 1. 切換面板顯示狀態
+        / 1. 切換面板顯示狀態
         settingsTrigger.addEventListener('click', (e) => {
             e.stopPropagation();
             settingsPanel.classList.toggle('show');
         });
 
-        // 2. 點擊外部自動關閉選單
+        / 2. 點擊外部自動關閉選單
         window.onclick = (e) => {
             if (!settingsPanel.contains(e.target) && e.target !== settingsTrigger) {
                 settingsPanel.classList.remove('show');
@@ -231,14 +231,14 @@
             settingsPanel.classList.remove('show');
         }
 
-        // 3. 套用預設模式
+        / 3. 套用預設模式
         function applyTheme(themeName) {
             document.documentElement.style.removeProperty('--accent-color');
             document.documentElement.style.removeProperty('--glow-effect');
             document.body.setAttribute('data-theme', themeName);
         }
 
-        // 4. Color Picker 即時變動
+        / 4. Color Picker 即時變動
         accentPicker.addEventListener('input', (e) => {
             const pickedColor = e.target.value;
             document.documentElement.style.setProperty('--accent-color', pickedColor);

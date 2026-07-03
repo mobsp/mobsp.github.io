@@ -5,16 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     
-    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.webp" type="image/jpeg">
-    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.webp">
+    <link rel="icon" href="/assets/brand/ms-logo1.webp" type="image/jpeg">
+    <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.webp">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-startup-image" href="https://mobsp.github.io/assets/brand/ms-guide.webp">
+    <link rel="apple-touch-startup-image" href="/assets/brand/ms-guide.webp">
 
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
     <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
     
     <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
-    <meta property="og:image" content="https://mobsp.github.io/assets/brand/ms-logo1.webp">
+    <meta property="og:image" content="/assets/brand/ms-logo1.webp">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -55,7 +55,7 @@
 
         #fake-splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050508 url('https://mobsp.github.io/assets/brand/ms-guide.webp') center/cover no-repeat;
+            background: #050508 url('/assets/brand/ms-guide.webp') center/cover no-repeat;
             z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s;
         }
@@ -259,7 +259,7 @@
             </div>
         </nav>
 
-        <a href="https://mobsp.github.io" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
+        <a href="" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
             <img src="assets/brand/ms-guide-title.webp" alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
         </a>
     </header>
@@ -267,8 +267,8 @@
     <!-- 頁面卡片主容器：類名會被 JS 動態切換為 layout-slider, layout-grid 或 layout-list -->
     <main class="app-main layout-slider" id="main-container">
         <!-- 初始骨架屏備用卡片，會由 JS 動態解析配置注入 -->
-        <a href="https://mobsp.github.io/blog/" class="action-btn btn-blog"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
-        <a href="https://mobsp.github.io/tol/" class="action-btn btn-tools"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
+        <a href="/blog/" class="action-btn btn-blog"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
+        <a href="/tol/" class="action-btn btn-tools"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
     </main>
 
     <footer class="app-footer">
@@ -394,7 +394,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script type="module">
-// --- 核心架構模組封裝 ---
+/ --- 核心架構模組封裝 ---
 const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 
@@ -428,7 +428,7 @@ const MobiConfig = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 啟動 Splash 畫面移除常規機制
+    / 啟動 Splash 畫面移除常規機制
     const splash = document.getElementById('fake-splash');
     const hideSplash = () => {
         setTimeout(() => {
@@ -441,14 +441,14 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('load', hideSplash);
     setTimeout(hideSplash, 3000);
 
-    // 核心初始化
+    / 核心初始化
     initMobiSpace();
 });
 
 async function initMobiSpace() {
     const config = MobiConfig.load();
     
-    // --- 節點快取 ---
+    / --- 節點快取 ---
     const mainContainer = document.getElementById('main-container');
     const iosAlert = document.getElementById('ios-alert');
     const alertTitle = document.getElementById('alert-title');
@@ -456,12 +456,12 @@ async function initMobiSpace() {
     const alertCloseBtn = document.getElementById('alert-close-btn');
     const controlSheet = document.getElementById('control-sheet');
     
-    // --- 介面外觀即時初始化渲染 ---
+    / --- 介面外觀即時初始化渲染 ---
     const applyRealtimeUI = (cfg) => {
         document.body.setAttribute('data-theme', cfg.theme);
         mainContainer.className = `app-main ${cfg.layout}`;
         
-        // 跑馬燈自訂控制
+        / 跑馬燈自訂控制
         document.documentElement.style.setProperty('--mq-duration', `${cfg.mqSpeed}s`);
         document.documentElement.style.setProperty('--mq-color', cfg.mqColor);
         document.documentElement.style.setProperty('--indicator-color', cfg.indicatorColor);
@@ -476,7 +476,7 @@ async function initMobiSpace() {
     };
     applyRealtimeUI(config);
 
-    // --- 渲染首頁卡片模組 (雙模核心邏輯) ---
+    / --- 渲染首頁卡片模組 (雙模核心邏輯) ---
     const renderCards = (cardsArray) => {
         if (!cardsArray || cardsArray.length === 0) return;
         mainContainer.innerHTML = '';
@@ -500,7 +500,7 @@ async function initMobiSpace() {
         });
     };
 
-    // 載入卡片策略：優先抓取靜態配置 json，若雙模動態開啟則視情況 fetch
+    / 載入卡片策略：優先抓取靜態配置 json，若雙模動態開啟則視情況 fetch
     let cardsData = [];
     try {
         const res = await fetch('pages-config.json');
@@ -508,7 +508,7 @@ async function initMobiSpace() {
     } catch(e) { console.warn("未發現本地快取 JSON，轉用原版備份結構"); }
 
     if (config.hybridMode && config.gitToken) {
-        // 開啟雙模動態同步，且填寫了 token
+        / 開啟雙模動態同步，且填寫了 token
         console.log("雙模型態已激活：開發者本機模式運行");
     }
     
@@ -516,7 +516,7 @@ async function initMobiSpace() {
         renderCards(cardsData);
     }
 
-    // --- 彈窗處理邏輯 ---
+    / --- 彈窗處理邏輯 ---
     if (!config.alertHasShown) {
         alertTitle.innerText = config.alertTitle;
         alertDesc.innerText = config.alertDesc;
@@ -528,7 +528,7 @@ async function initMobiSpace() {
         MobiConfig.save(config);
     });
 
-    // --- 跑馬燈數據源系統處理 ---
+    / --- 跑馬燈數據源系統處理 ---
     const initNoticeLine = async () => {
         const vTag = document.getElementById('v-tag');
         const mqText = document.getElementById('mq-text');
@@ -539,7 +539,7 @@ async function initMobiSpace() {
             return;
         }
 
-        // 預設走雲端 Supabase
+        / 預設走雲端 Supabase
         try {
             if (typeof supabase !== 'undefined') {
                 const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -558,14 +558,14 @@ async function initMobiSpace() {
     };
     initNoticeLine();
 
-    // --- 控制中心抽屜開啟關閉機制交互 ---
+    / --- 控制中心抽屜開啟關閉機制交互 ---
     const openBtn = document.getElementById('open-control-btn');
     const closeBtnHeader = document.getElementById('sheet-header-close');
     const closeBtnHandle = document.getElementById('sheet-handle-close');
 
     const toggleSheet = (show) => {
         if (show) {
-            // 開啟面板時，同步目前的儲存庫值至表單欄位
+            / 開啟面板時，同步目前的儲存庫值至表單欄位
             document.getElementById('cfg-alert-title').value = config.alertTitle;
             document.getElementById('cfg-alert-desc').value = config.alertDesc;
             document.getElementById('cfg-layout').value = config.layout;
@@ -593,7 +593,7 @@ async function initMobiSpace() {
     closeBtnHeader.addEventListener('click', () => toggleSheet(false));
     closeBtnHandle.addEventListener('click', () => toggleSheet(false));
 
-    // --- 控制中心元件動態監聽變更事件 ---
+    / --- 控制中心元件動態監聽變更事件 ---
     document.getElementById('cfg-alert-title').addEventListener('input', (e) => { config.alertTitle = e.target.value; MobiConfig.save(config); });
     document.getElementById('cfg-alert-desc').addEventListener('input', (e) => { config.alertDesc = e.target.value; config.alertHasShown = false; MobiConfig.save(config); });
     
@@ -663,7 +663,7 @@ async function initMobiSpace() {
         MobiConfig.save(config);
     });
 
-    // --- 核心手動觸發功能：利用 GitHub API 對專案執行網頁端即時掃描渲染 ---
+    / --- 核心手動觸發功能：利用 GitHub API 對專案執行網頁端即時掃描渲染 ---
     document.getElementById('btn-sync-now').addEventListener('click', async () => {
         if (!config.gitToken) {
             alert('請先輸入有效的 GitHub PAT 憑證！');
@@ -674,8 +674,8 @@ async function initMobiSpace() {
         btn.disabled = true;
 
         try {
-            // 呼叫 GitHub REST API 讀取儲存庫根目錄檔案清單
-            const response = await fetch('https://api.github.com/repos/mobsp/mobsp.github.io/contents/', {
+            / 呼叫 GitHub REST API 讀取儲存庫根目錄檔案清單
+            const response = await fetch('https://api.github.com/repos/mobsp/contents/', {
                 headers: { 'Authorization': `token ${config.gitToken}` }
             });
             
@@ -693,8 +693,8 @@ async function initMobiSpace() {
                     return {
                         id: id,
                         title: presetMeta[file.name] || id.toUpperCase(),
-                        url: `https://mobsp.github.io/${id}/`,
-                        image: `https://mobsp.github.io/assets/brand/ms-${id}.webp`
+                        url: `/${id}/`,
+                        image: `/assets/brand/ms-${id}.webp`
                     };
                 });
 

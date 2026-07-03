@@ -1,6 +1,6 @@
 const DATA_URL = './data/files.json';
 const REPO_OWNER = 'mobsp';
-const REPO_NAME = 'mobsp.github.io';
+const REPO_NAME = '';
 const REPO_BRANCH = 'main';
 
 const IMAGE_EXTENSIONS = new Set(['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'ico', 'icon', 'avif', 'tif', 'tiff']);

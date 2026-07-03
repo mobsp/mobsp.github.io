@@ -176,7 +176,7 @@
                 <div class="action-item">🔗 分享</div>
             </div>
             <a href="https://social-plugins.line.me/lineit/share?url={{ site.url }}{{ page.url }}" target="_blank" rel="noopener noreferrer">
-                <img src="https://github.com/mobsp/mobsp.github.io/raw/main/assets/icon/svg/line.svg" style="width:24px; height:24px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/124/124034.webp'">
+                <img src="https://github.com/mobsp/raw/main/assets/icon/svg/line.svg" style="width:24px; height:24px;" onerror="this.src='https://cdn-icons-png.flaticon.com/512/124/124034.webp'">
             </a>
         </footer>
     </div>
@@ -185,7 +185,7 @@
         const btn = document.getElementById('themeBtn');
         const html = document.documentElement;
         
-        // 初始檢測
+        / 初始檢測
         if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             html.setAttribute('data-theme', 'dark');
         }

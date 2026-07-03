@@ -147,30 +147,30 @@ const status = document.getElementById('status');
 const runBtn = document.getElementById('run');
 const pauseBtn = document.getElementById('pause');
 
-// ------------------------------------------------------------
-// 運行模式：隱藏編輯器 → 顯示 iframe
-// ------------------------------------------------------------
+/ ------------------------------------------------------------
+/ 運行模式：隱藏編輯器 → 顯示 iframe
+/ ------------------------------------------------------------
 runBtn.addEventListener('click', () => {
   console.log('[Editor] Run clicked');
 
   const code = editor.value;
 
-  preview.srcdoc = code;          // 將原始碼送入 sandbox iframe
-  editor.style.display = 'none';  // 隱藏編輯區
-  preview.style.display = 'block';// 顯示預覽
+  preview.srcdoc = code;          / 將原始碼送入 sandbox iframe
+  editor.style.display = 'none';  / 隱藏編輯區
+  preview.style.display = 'block';/ 顯示預覽
 
   status.textContent = '運行中（Preview Mode）';
 });
 
-// ------------------------------------------------------------
-// 暫停模式：停止顯示 iframe → 回到編輯
-// ------------------------------------------------------------
+/ ------------------------------------------------------------
+/ 暫停模式：停止顯示 iframe → 回到編輯
+/ ------------------------------------------------------------
 pauseBtn.addEventListener('click', () => {
   console.log('[Editor] Pause clicked');
 
-  preview.srcdoc = '';             // 清空 iframe（停止執行）
-  preview.style.display = 'none';  // 隱藏預覽
-  editor.style.display = 'block';  // 顯示編輯器
+  preview.srcdoc = '';             / 清空 iframe（停止執行）
+  preview.style.display = 'none';  / 隱藏預覽
+  editor.style.display = 'block';  / 顯示編輯器
 
   status.textContent = '編輯模式';
 });

@@ -22,7 +22,7 @@
     <main><div id="grid">載入中...</div></main>
 
     <script>
-        const BASE_URL = "https://mobsp.github.io/assets/icon/svg/";
+        const BASE_URL = "/assets/icon/svg/";
         const DATA_PATH = "../../../data/svg.json"; 
         let fullData = {};
 
@@ -50,7 +50,7 @@
                     filtered.forEach(name => {
                         const a = document.createElement("a");
                         a.className = "card";
-                        // ✨ 跳轉到根目錄的編輯器
+                        / ✨ 跳轉到根目錄的編輯器
                         a.href = `../../../svg-editor/index.html?icon=${name}`;
                         a.innerHTML = `
                             <div class="icon-wrapper"><img class="icon" src="${BASE_URL+name}"></div>

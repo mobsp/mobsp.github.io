@@ -108,12 +108,12 @@
 const Nexus = {
     env: {
         owner: "mobsp",
-        repo: "mobsp.github.io",
+        repo: "",
         domain: "mobsp.qzz.io",
-        raw: "https://raw.githubusercontent.com/mobsp/mobsp.github.io/main"
+        raw: "https://raw.githubusercontent.com/mobsp/main"
     },
 
-    // 定義 11-24 所有的讀取邏輯
+    / 定義 11-24 所有的讀取邏輯
     sections: [
         { id: '11', title: '根目錄 HTML 清單', path: '', filter: f => f.name.endsWith('.html') },
         { id: '17', title: 'SVG 圖示資產', path: 'assets/icon/svg', filter: f => f.name.endsWith('.svg') },
@@ -143,7 +143,7 @@ const Nexus = {
                 const res = await fetch(`https://api.github.com/repos/${this.env.owner}/${this.env.repo}/contents/${sec.path}`);
                 let items = await res.json();
                 
-                // 強大讀取邏輯：過濾檔案並確保是 HTML 或指定類型
+                / 強大讀取邏輯：過濾檔案並確保是 HTML 或指定類型
                 if (sec.filter) items = items.filter(sec.filter);
                 
                 this.renderItems(sec.id, items);

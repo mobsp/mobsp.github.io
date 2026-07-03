@@ -1,23 +1,23 @@
 
 /* [Zenith-Ultimate-Applied-v3] */
-// A. 頂級數據緩存 (Stale-While-Revalidate 邏輯預備)
+/ A. 頂級數據緩存 (Stale-While-Revalidate 邏輯預備)
 const cacheFirst = async (req) => {
     const cache = await caches.open('v1');
     const cached = await cache.match(req);
     return cached || fetch(req).then(res => { cache.put(req, res.clone()); return res; });
 };
 
-// B. 抗干擾/防爬蟲保護 (限制 Console 偵錯)
+/ B. 抗干擾/防爬蟲保護 (限制 Console 偵錯)
 if (process.env.NODE_ENV === 'production') {
     setInterval(() => { debugger; }, 1000); 
 }
 
-// C. 自動化錯誤回傳 (Sentry-like 簡易實作)
+/ C. 自動化錯誤回傳 (Sentry-like 簡易實作)
 window.onerror = (m, u, l) => { fetch('/log', {method:'POST', body: JSON.stringify({m,u,l})}); };
 
-// D. 指數退避重試
+/ D. 指數退避重試
 const fetchWithRetry = (u,o,r=3) => fetch(u,o).catch(e => r>0 ? fetchWithRetry(u,o,r-1) : Promise.reject(e));
-// 4號：固定底部導覽列系統封裝
+/ 4號：固定底部導覽列系統封裝
 export function initBottomNav() {
     const style = document.createElement('style');
     style.textContent = `
@@ -40,9 +40,9 @@ export function initBottomNav() {
     nav.className = 'bottom-nav';
     nav.innerHTML = `
         <a href="#" class="nav-item active"><i class="fa-solid fa-house"></i><span>首頁</span></a>
-        <a href="https://mobsp.github.io/music/" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
-        <a href="https://mobsp.github.io/shorts/" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
-        <a href="https://mobsp.github.io/setting" class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></a>
+        <a href="/music/" class="nav-item"><i class="fa-solid fa-music"></i><span>音樂</span></a>
+        <a href="/shorts/" class="nav-item"><i class="fa-brands fa-youtube"></i><span>Shorts</span></a>
+        <a href="/setting" class="nav-item"><i class="fa-solid fa-gear"></i><span>設定</span></a>
     `;
     document.body.appendChild(nav);
 }

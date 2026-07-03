@@ -191,7 +191,7 @@
         const switchBtn = document.getElementById('themeSwitch');
         const html = document.documentElement;
 
-        // 切換按鈕邏輯
+        / 切換按鈕邏輯
         switchBtn.addEventListener('click', () => {
             const isDark = html.getAttribute('data-theme') === 'dark';
             const target = isDark ? 'light' : 'dark';
@@ -200,7 +200,7 @@
             localStorage.setItem('mobi-theme', target);
         });
 
-        // 初始化檢查
+        / 初始化檢查
         const savedTheme = localStorage.getItem('mobi-theme');
         if (savedTheme) {
             html.setAttribute('data-theme', savedTheme);

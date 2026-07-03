@@ -233,10 +233,10 @@ class MobSpaceServiceGrid extends HTMLElement {
     const setModal = (isOpen) => {
       if (isOpen) {
         modalOverlay.classList.add('active');
-        document.body.style.overflow = 'hidden'; // 防止背景捲動
+        document.body.style.overflow = 'hidden'; / 防止背景捲動
       } else {
         modalOverlay.classList.remove('active');
-        document.body.style.overflow = ''; // 恢復捲動
+        document.body.style.overflow = ''; / 恢復捲動
       }
     };
 

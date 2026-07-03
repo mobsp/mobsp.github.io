@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// ============ 配置 ============
+/ ============ 配置 ============
 const SVG_DIR = './assets/icon/svg';
 const JSON_OUTPUT_PATH = './data/svg.json';
 
@@ -33,14 +33,14 @@ const CATEGORY_MAP = {
  * 自動掃描並分類SVG檔案
  */
 function autoUpdate() {
-  // 驗證來源目錄存在
+  / 驗證來源目錄存在
   if (!fs.existsSync(SVG_DIR)) {
     console.error(`❌ 錯誤: SVG目錄不存在 (${SVG_DIR})`);
     return;
   }
 
   try {
-    // 讀取SVG檔案列表
+    / 讀取SVG檔案列表
     const files = fs.readdirSync(SVG_DIR).filter(f => f.toLowerCase().endsWith('.svg'));
     
     if (files.length === 0) {
@@ -48,14 +48,14 @@ function autoUpdate() {
       return;
     }
 
-    // 初始化分類容器
+    / 初始化分類容器
     const categorized = {};
 
-    // 分類每個SVG檔案
+    / 分類每個SVG檔案
     files.forEach(file => {
       let assigned = false;
 
-      // 按優先順序匹配分類
+      / 按優先順序匹配分類
       for (const [category, regex] of Object.entries(CATEGORY_MAP)) {
         if (regex.test(file)) {
           if (!categorized[category]) {
@@ -63,11 +63,11 @@ function autoUpdate() {
           }
           categorized[category].push(file);
           assigned = true;
-          break;  // 只分配一個分類
+          break;  / 只分配一個分類
         }
       }
 
-      // 未分類的檔案放入"未分類"
+      / 未分類的檔案放入"未分類"
       if (!assigned) {
         if (!categorized["未分類"]) {
           categorized["未分類"] = [];
@@ -76,20 +76,20 @@ function autoUpdate() {
       }
     });
 
-    // 建立輸出目錄
+    / 建立輸出目錄
     const outputDir = path.dirname(JSON_OUTPUT_PATH);
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
 
-    // 寫入JSON檔案
+    / 寫入JSON檔案
     fs.writeFileSync(
       JSON_OUTPUT_PATH,
       JSON.stringify(categorized, null, 2),
       'utf-8'
     );
 
-    // 統計信息
+    / 統計信息
     const totalFiles = files.length;
     const categoriesCount = Object.keys(categorized).length;
     console.log(`✅ SVG分類完成`);
@@ -103,7 +103,7 @@ function autoUpdate() {
   }
 }
 
-// ============ 主程序 ============
+/ ============ 主程序 ============
 if (require.main === module) {
   autoUpdate();
 }

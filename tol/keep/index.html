@@ -88,8 +88,8 @@ const ta=textArea, prev=preview, titleEl=titleInput;
 
 /* 每次輸入即同步儲存內容與標題 */
 ta.oninput = titleEl.oninput = ()=>{
-  prev.innerHTML = marked.parse(ta.value); // Markdown → HTML 預覽
-  save(); // 同步保存資料
+  prev.innerHTML = marked.parse(ta.value); / Markdown → HTML 預覽
+  save(); / 同步保存資料
 };
 
 /* 儲存資料：id + title + content */
@@ -124,7 +124,7 @@ function renderTabs(){
 /* 匯入檔案邏輯 */
 importFile.onchange=async ()=>{
   for(const file of importFile.files){
-    const text = await file.text(); // 所有文字格式 fallback 皆可讀取
+    const text = await file.text(); / 所有文字格式 fallback 皆可讀取
     const id = tabs.length+1;
     tabs.push(id);
     db.transaction(STORE,"readwrite").objectStore(STORE)

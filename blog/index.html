@@ -3,8 +3,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
     
-    <link rel="icon" href="https://mobsp.github.io/assets/brand/ms-logo1.webp" type="image/jpeg">
-    <link rel="apple-touch-icon" href="https://mobsp.github.io/assets/brand/ms-logo1.webp">
+    <link rel="icon" href="/assets/brand/ms-logo1.webp" type="image/jpeg">
+    <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.webp">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
 <style>
@@ -560,7 +560,7 @@ transform:none;
 
     <div id="app-container">
         <header class="app-header">
-            <img src="https://mobsp.github.io/assets/brand/ms-blog-title.webp" class="brand-title-img" onclick="location.reload()">
+            <img src="/assets/brand/ms-blog-title.webp" class="brand-title-img" onclick="location.reload()">
         </header>
 
         <main id="main-view">
@@ -568,10 +568,10 @@ transform:none;
         </main>
 
         <nav class="bottom-nav">
-            <a href="https://mobsp.github.io/music/" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i><span>音樂</span></a>
+            <a href="/music/" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i><span>音樂</span></a>
             <div id="btn-read" class="nav-item active" onclick="switchToRead()"><i class="fa-solid fa-book-open"></i><span>閱讀</span></div>
             <div id="btn-tool" class="nav-item" onclick="switchToTools()"><i class="fa-solid fa-microchip"></i><span>收割機</span></div>
-            <a href="https://mobsp.github.io/setting" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-sliders"></i><span>設定</span></a>
+            <a href="/setting" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-sliders"></i><span>設定</span></a>
         </nav>
     </div>
 
@@ -633,7 +633,7 @@ transform:none;
             
             status.innerText = "📡 正在穿透目標伺服器...";
             try {
-                // 使用跨域代理獲取源碼
+                / 使用跨域代理獲取源碼
                 const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
                 const data = await res.json();
                 const doc = new DOMParser().parseFromString(data.contents, 'text/html');
@@ -641,28 +641,28 @@ transform:none;
                 const title = doc.querySelector('h1')?.innerText || doc.title || "Ⲙ𝔬ⲃ¡ⳝ𝔭_Archive";
                 let contentHtml = '';
 
-                // 精確提取邏輯
+                / 精確提取邏輯
                 const selectors = harvestOptions.clean ? 'p' : 'p, h2, h3, img, pre, code, blockquote';
                 doc.querySelectorAll(selectors).forEach(el => {
-                    // 1. 影像提取與路徑補全
+                    / 1. 影像提取與路徑補全
                     if (el.tagName === 'IMG' && harvestOptions.img) {
                         let src = el.getAttribute('src');
                         if (src) {
-                            try { src = new URL(src, url).href; } catch(e){} // 補全相對路徑
+                            try { src = new URL(src, url).href; } catch(e){} / 補全相對路徑
                             contentHtml += `<div style="margin:25px 0;"><img src="${src}" style="max-width:100%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"></div>\n`;
                         }
                     } 
-                    // 2. 文字內容提取
+                    / 2. 文字內容提取
                     else if (el.innerText.trim().length > 5) {
                         const tag = el.tagName.toLowerCase();
                         let inner = el.innerHTML;
-                        // 如果是極簡模式，移除內嵌連結
+                        / 如果是極簡模式，移除內嵌連結
                         if (harvestOptions.clean) inner = el.innerText; 
                         contentHtml += `<${tag} style="margin-bottom:1.5rem;">${inner}</${tag}>\n`;
                     }
                 });
 
-                // 3. 樣式矩陣注入
+                / 3. 樣式矩陣注入
                 const styleTag = `
                     body { 
                         background:${harvestOptions.dark?'#000':'#fff'}; 
@@ -681,7 +681,7 @@ transform:none;
                     img { display:block; }
                 `;
 
-                // 4. 打包下載
+                / 4. 打包下載
                 const finalBlob = new Blob([`
                     <!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>${styleTag}</style></head>
                     <body><h1>${title}</h1>${contentHtml}</body></html>
@@ -700,7 +700,7 @@ transform:none;
 
         /* 列表同步邏輯 */
         async function loadArticles() {
-            const api = "https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p/list?t=" + Date.now();
+            const api = "https://api.github.com/repos/mobsp/contents/blog/p/list?t=" + Date.now();
             try {
                 const res = await fetch(api);
                 const files = await res.json();
@@ -718,7 +718,7 @@ transform:none;
             const container = document.getElementById('main-view');
             if (rawArticles.length === 0) return;
             container.innerHTML = rawArticles.map(p => `
-                <a class="article-row" href="https://mobsp.github.io/${p.path}">
+                <a class="article-row" href="/${p.path}">
                     <div class="row-img"></div>
                     <div class="row-info">
                         <div class="row-cate">ARCHIVE</div>

@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>mobsp.github.io Navigator</title>
+    <title> Navigator</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; padding: 20px; line-height: 1.6; color: #333; }
         .controls { margin-bottom: 20px; padding: 15px; background: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; }
@@ -26,7 +26,7 @@
 
     <script>
         const OWNER = 'mobsp';
-        const REPO = 'mobsp.github.io';
+        const REPO = '';
         const API_BASE = `https://api.github.com/repos/${OWNER}/${REPO}`;
 
         async function init() {
@@ -48,7 +48,7 @@
 
         async function loadTree(branch) {
             document.getElementById('tree').innerHTML = "讀取中...";
-            // 使用 recursive=1 獲取所有深層檔案
+            / 使用 recursive=1 獲取所有深層檔案
             const res = await fetch(`${API_BASE}/git/trees/${branch}?recursive=1`);
             const data = await res.json();
             const root = { name: 'root', children: {} };
