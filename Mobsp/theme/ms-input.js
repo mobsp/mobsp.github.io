@@ -70,7 +70,7 @@ class MobInput extends HTMLElement {
     this.shadowRoot.querySelector('#label').textContent = this.getAttribute('label') || '';
     this.shadowRoot.querySelector('#field').placeholder = this.getAttribute('placeholder') || '';
     
-    // 設定變體
+    / 設定變體
     if (this.hasAttribute('glass')) this.shadowRoot.querySelector('.input-wrapper').classList.add('variant-glass');
     if (this.hasAttribute('error')) this.shadowRoot.querySelector('.input-wrapper').classList.add('state-error');
   }
