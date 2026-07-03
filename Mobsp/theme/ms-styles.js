@@ -4,7 +4,7 @@
  * 修改指南：此檔案為系統基礎，如需更換色彩模式或調整基礎間距，請在此統一修改。
  */
 
-const style = document.createElement('style'); // 創建 style 標籤以注入全域 CSS
+const style = document.createElement('style'); / 創建 style 標籤以注入全域 CSS
 style.textContent = `
   :root {
     /* --- 1. 色彩系統 (Semantic Colors) --- */
@@ -69,7 +69,7 @@ style.textContent = `
   }
 `;
 
-// 將定義好的樣式表掛載到頁面 <head> 中
+/ 將定義好的樣式表掛載到頁面 <head> 中
 document.head.appendChild(style);
 
-// 備註：此模組初始化後，後續元件可直接使用 CSS 變數（如 var(--accent-base)）進行設計
+/ 備註：此模組初始化後，後續元件可直接使用 CSS 變數（如 var(--accent-base)）進行設計
