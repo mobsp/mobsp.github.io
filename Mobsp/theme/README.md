@@ -33,7 +33,7 @@
 
 
 
-### 1. <ms-input> 
+### 1.<ms-input> 
 
 核心設計定義 (Design Specifications)
 輸入框的「極致 SSS 等級」體現在以下維度：
