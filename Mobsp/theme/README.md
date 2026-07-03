@@ -166,3 +166,29 @@ input:focus {
    ```
  2. **響應式行為 (RWD Trigger)：** 針對你的 iOS 瀏覽器環境，導覽列底部需預留 padding-bottom: env(safe-area-inset-bottom)。請將此屬性定義在 m-ui-base.js 的 body 中，導覽列會自動繼承。
  3. **防抖動 (Debounce)：** initScrollLogic 內部的監聽器若需要更高效能，可加入 requestAnimationFrame 來減少重繪頻率。
+
+
+### <ms-sidebar.js>
+側邊欄 (Sidebar) 是資訊密度最高的結構化組件。在 **Mobispace** 的系統架構中，側邊欄不僅是導覽工具，更是實現「沉浸式管理」與「多工處理」的核心邏輯，特別是針對你的 **Serverless CMS** 後台開發，側邊欄必須具備極高的適應性。
+
+### 設計定義與交互邏輯 (Design Logic)
+ * **空間感知 (Spatial Awareness)：** 側邊欄在桌機版常駐，但在手機版必須自動轉換為「抽屜 (Drawer)」。
+ * **視覺深度 (Z-Axis Depth)：** 側邊欄必須高於導覽列，且背景玻璃霧化強度 (Blur) 應高於主內容區域，以建立視覺層次。
+ * **動態狀態管理：**
+   * **Collapsed (摺疊)：** 僅顯示圖示 (用於節省空間)。
+   * **Expanded (展開)：** 顯示完整文字清單。
+   * **Active (激活)：** 當前頁面索引的高亮邏輯。
+ * **手勢適配 (Gesture Compatibility)：** 在行動裝置上支援「邊緣滑入 (Edge-swipe)」展開抽屜。
+
+### 側邊欄變體定義表 (Variants)
+| 類型 | 屬性 | 視覺定義 | 應用場景 |
+|---|---|---|---|
+| **Standard** | 預設 | 展開狀態，適合桌機 CMS 管理 | 文件目錄、控制面板 |
+| **Collapsed** | collapsed | 僅顯示圖示，自動縮小寬度 | 習慣使用快捷鍵的進階用戶 |
+| **Drawer** | 響應式自動轉換 | 懸浮於內容上層，具有遮罩 | 行動裝置、平板 |
+| **Floating** | floating | 四邊圓角，不與視窗邊緣貼合 | 現代化 UI 設計風格 (如 iOS 小工具) |
+
+###極致細節維運指南
+ 1. **結構化佈局 (Content-Driven)：** 側邊欄內部強烈建議搭配 m-list.js (清單組件)，將側邊欄條目封裝為 <a> 標籤並包含 active 狀態處理。
+ 2. **滾動同步：** 在 m-sidebar.js 中實作一個 IntersectionObserver，當頁面滑動到某個章節時，自動點亮側邊欄對應的連結 (Nav-Sync)。
+ 3. **防抖動與過場：** 側邊欄的展開與摺疊必須使用 cubic-bezier(0.25, 0.1, 0.25, 1)，這是 iOS 轉場的核心曲線，能讓使用者感受到極致的「絲滑感」。
