@@ -1,0 +1,59 @@
+name: Auto Link Corrector & Cleanup
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  fix-links:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 必須賦予寫入權限才能提交修改
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Cleanup & Correction Script
+        run: |
+          python3 -c "
+          import os, re
+          # 定義需要移除的舊網域名稱
+          OLD_DOMAIN = 'mobsp.github.io'
+          
+          # 檔案處理列表
+          extensions = ('.html', '.js', '.css', '.json', '.md', '.xml')
+          
+          for root, dirs, files in os.walk('.'):
+              if '.git' in root or '.github' in root: continue
+              for file in files:
+                  if file.endswith(extensions):
+                      path = os.path.join(root, file)
+                      with open(path, 'r', encoding='utf-8') as f:
+                          content = f.read()
+                      
+                      # 1. 移除舊域名及其完整協議頭
+                      new_content = content.replace('https://' + OLD_DOMAIN, '')
+                      new_content = new_content.replace('http://' + OLD_DOMAIN, '')
+                      new_content = new_content.replace(OLD_DOMAIN, '')
+                      
+                      # 2. 清理因刪除舊域名而產生的多餘斜線 (將 // 轉為 /)
+                      # 確保不會把通訊協定 https:// 誤傷
+                      new_content = re.sub(r'(?<!:)/{2,}', '/', new_content)
+                      
+                      if content != new_content:
+                          with open(path, 'w', encoding='utf-8') as f:
+                              f.write(new_content)
+                          print(f'Cleaned: {path}')
+          "
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          if ! git diff --cached --quiet; then
+            git commit -m 'chore: remove hardcoded domain traces and clean paths'
+            git push
+          else
+            echo 'No traces found.'
+          fi
