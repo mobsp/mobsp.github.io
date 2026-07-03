@@ -58,3 +58,29 @@
  1. **自動聚焦邏輯 (Auto-focusing)：** 在 JS 中加入 this.shadowRoot.querySelector('input').focus()，當彈窗出現時自動觸發，增加順滑感。
  2. **防誤觸偵測 (Anti-mis-tap)：** 若使用者在輸入框外快速滑動，加入 blur() 監聽器，強制隱藏軟鍵盤，這會讓網頁體驗更像原生 App。
  3. **邊框變色系統：** 在 ms-styles.js 定義變數 --state-error 與 --state-success，並在此模組中呼叫，這樣當全站主題變更時，警告訊息的紅顏色也會自動跟著調整，不需要手動去每個模組找顏色碼。
+
+
+<ms-badge.js>
+
+標籤（Badge）在 iOS 系統中不僅是資訊的「載體」，更是視覺導引的核心。為了達到 SSS 等級，我們將標籤系統設計為一個**動態語義系統**。
+
+### 設計定義與邏輯 (Design Specification)
+我們將標籤分為兩大陣營：**「狀態型標籤 (Status Badge)」** 與 **「分類型標籤 (Category Tag)」**。
+ * **物理行為：** 標籤應具備輕微的 transition，在選取時應有細微的縮放 (scale) 回饋。
+ * **字體與排版：** 使用嚴格的 SF Pro 粗體 (Semibold)，配合極小的字間距 (letter-spacing: 0.02em) 以維持高階感。
+ * **語義變體：** 必須包含：預設、成功、警告、錯誤、強調、透明。
+
+### 標籤類型詳細定義表 (Badge Variants)
+| 類型 | 屬性標記 | 視覺定義 | 應用場景 |
+|---|---|---|---|
+| **Neutral** | variant="neutral" | 淺灰背景，暗灰文字 | 顯示資訊次要類別 |
+| **Accent** | variant="accent" | 品牌色底，白字 | 頁面主要標籤、新功能標示 |
+| **Glass** | variant="glass" | 半透明毛玻璃底，高階質感 | 懸浮於圖片上的標籤 |
+| **Success** | variant="success" | 系統綠色底 | 完成狀態、已發布、已完成 |
+| **Warning** | variant="warning" | 系統橘色底 | 審核中、待處理、過期提醒 |
+| **Error** | variant="error" | 系統紅色底 | 錯誤通知、失敗狀態、禁權 |
+
+### 進階維運邏輯與細節說明
+ * **自動化語義 (Semantic Automation)：** 建議在你的 CMS 後端對應時，將 API 返回的狀態欄位 (如 status: 'published') 自動轉換為對應的標籤屬性 (variant="success")。
+ * **防誤觸 (Tap Target)：** 若標籤作為濾鏡使用（可點擊），應在 m-badge.js 的 connectedCallback 中偵測 onclick 事件，並自動增加 cursor: pointer 與 .interactive 樣式。
+ * **動態縮放處理：** 標籤內的文字若過長，我們設定了 white-space: nowrap，建議在 m-ui-base.js 定義一個 @media 查詢，當螢幕極小時，將標籤內距自動縮減 (padding: 2px 6px)，以防止內容溢出。
