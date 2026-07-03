@@ -1,4 +1,3 @@
-
 <div align="center">
 
 # 🌌 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ • 莫比空間
@@ -21,8 +20,8 @@
 ---
 
 ## 📁 完整檔案結構及路徑連結
-
-### 🏠 根目錄 (Root) 檔案
+<details>
+<summary>### 🏠 根目錄 (Root) 檔案</summary>
 
 | 檔名 | 路徑 | 大小 | GitHub | 網站 | 說明 |
 |------|------|------|--------|------|------|
@@ -37,7 +36,7 @@
 | **generate-index.js** | `/generate-index.js` | 1.8 KB | [View](https://github.com/mobsp/mobsp.github.io/blob/main/generate-index.js) | — | JS 生成 |
 | **sync_scanner.py** | `/sync_scanner.py` | 2.4 KB | [View](https://github.com/mobsp/mobsp.github.io/blob/main/sync_scanner.py) | — | 全量掃描器 |
 | **update_icons.js** | `/update_icons.js` | 1.5 KB | [View](https://github.com/mobsp/mobsp.github.io/blob/main/update_icons.js) | — | SVG 自動化 |
-
+</details>
 ---
 
 ### 🎨 blog/ 部落格系統
