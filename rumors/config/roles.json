@@ -1,0 +1,36 @@
+{
+    "roles": {
+        "owner": {
+            "level": 99,
+            "name": "System Owner",
+            "inherits": ["admin"]
+        },
+        "admin": {
+            "level": 80,
+            "name": "Administrator",
+            "inherits": ["editor"]
+        },
+        "editor": {
+            "level": 50,
+            "name": "Content Editor",
+            "inherits": ["user"]
+        },
+        "user": {
+            "level": 10,
+            "name": "Registered User",
+            "inherits": ["guest"]
+        },
+        "guest": {
+            "level": 0,
+            "name": "Anonymous Guest",
+            "inherits": []
+        }
+    },
+    "membership_tiers": {
+        "free": { "max_articles_read": 5, "can_comment": false },
+        "basic": { "max_articles_read": 50, "can_comment": true },
+        "advanced": { "max_articles_read": -1, "can_comment": true, "no_ads": true },
+        "premium": { "max_articles_read": -1, "can_comment": true, "no_ads": true, "early_access": true },
+        "ultimate": { "max_articles_read": -1, "can_comment": true, "no_ads": true, "early_access": true, "exclusive_chat": true }
+    }
+}

@@ -7,7 +7,7 @@
     "mode_configuration": {
         "mode_a_github": {
             "description": "GitHub Native Edition (Static JSON, Public Data Only)",
-            "api_endpoint": "https://mobsp.github.io/rumors/data/",
+            "api_endpoint": "/rumors/data/",
             "auth_provider": "simulation",
             "features": {
                 "realtime_chat": false,
@@ -28,7 +28,7 @@
         },
         "mode_c_hybrid": {
             "description": "Hybrid Fusion Edition (GitHub Static + Server APIs)",
-            "api_endpoint_public": "https://mobsp.github.io/rumors/data/",
+            "api_endpoint_public": "/rumors/data/",
             "api_endpoint_private": "https://api.rumors-platform.com/v1",
             "graphql_endpoint": "https://api.rumors-platform.com/graphql",
             "auth_provider": "hybrid_token",
