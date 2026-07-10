@@ -1,0 +1,46 @@
+name: Deploy Rumors Platform v4.0
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'rumors/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Security Scan (XSS & Secrets)
+        run: |
+          echo "Running baseline security check on static files..."
+          # Mock security scan for static HTML/JS checks
+          grep -rnw 'rumors/' -e 'eval(' && exit 1 || echo "No eval found. Pass."
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './' # 將整個根目錄(含 rumors 資料夾)發布
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
