@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <title>目前離線 - Rumors</title>
+    <style>
+        :root {
+            --bg-color: #F2F2F7;
+            --text-color: #000000;
+            --secondary-text: #8E8E93;
+            --primary-color: #007AFF;
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #000000;
+                --text-color: #FFFFFF;
+                --secondary-text: #8E8E93;
+            }
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            padding: 20px;
+        }
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 24px;
+            color: var(--secondary-text);
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+        p {
+            font-size: 16px;
+            color: var(--secondary-text);
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 28px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        button:active {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3 14.25h6.249c.636 0 1.256.253 1.715.703l1.048 1.026a2.25 2.25 0 001.58.662h2.816a2.25 2.25 0 001.58-.662l1.048-1.026c.459-.45.1079-.703 1.715-.703H21m-18 0l.75-10.5h16.5l.75 10.5m-18 0v4.5a2.25 2.25 0 002.25 2.25h13.5a2.25 2.25 0 002.25-2.25v-4.5" />
+    </svg>
+    <h1>沒有網際網路連線</h1>
+    <p>Rumors 無法連線至伺服器。<br>請檢查您的網路設定後再試一次。</p>
+    <button onclick="window.location.reload()">重新整理</button>
+</body>
+</html>
