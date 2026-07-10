@@ -1,0 +1,72 @@
+:root {
+    /* iOS System Colors - Light Theme */
+    --color-bg-base: #F2F2F7;
+    --color-bg-surface: #FFFFFF;
+    --color-bg-surface-elevated: #FFFFFF;
+    
+    --color-text-primary: #000000;
+    --color-text-secondary: #8E8E93;
+    --color-text-tertiary: #C7C7CC;
+    
+    --color-primary: #007AFF;
+    --color-success: #34C759;
+    --color-warning: #FF9500;
+    --color-danger: #FF3B30;
+    
+    --color-border: rgba(60, 60, 67, 0.18);
+    --color-divider: rgba(60, 60, 67, 0.12);
+    
+    /* Liquid Glass Variables */
+    --glass-bg: rgba(255, 255, 255, 0.75);
+    --glass-border: rgba(255, 255, 255, 0.3);
+    --glass-blur: blur(20px);
+    --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+    
+    /* Spacing System */
+    --space-xs: 4px;
+    --space-sm: 8px;
+    --space-md: 16px;
+    --space-lg: 24px;
+    --space-xl: 32px;
+    
+    /* Border Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-pill: 9999px;
+    
+    /* Animation Timing */
+    --transition-fast: 0.15s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-spring: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    /* Safe Areas for iOS Notches & Home Indicators */
+    --safe-top: env(safe-area-inset-top, 44px);
+    --safe-bottom: env(safe-area-inset-bottom, 34px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* iOS System Colors - Dark Theme */
+        --color-bg-base: #000000;
+        --color-bg-surface: #1C1C1E;
+        --color-bg-surface-elevated: #2C2C2E;
+        
+        --color-text-primary: #FFFFFF;
+        --color-text-secondary: #EBEBF5;
+        --color-text-tertiary: #48484A;
+        
+        --color-primary: #0A84FF;
+        --color-success: #30D158;
+        --color-warning: #FF9F0A;
+        --color-danger: #FF453A;
+        
+        --color-border: rgba(84, 84, 88, 0.65);
+        --color-divider: rgba(84, 84, 88, 0.4);
+        
+        --glass-bg: rgba(28, 28, 30, 0.75);
+        --glass-border: rgba(255, 255, 255, 0.1);
+        --glass-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    }
+}
