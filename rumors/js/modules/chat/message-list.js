@@ -8,7 +8,7 @@ export default class ChatMessageList {
     }
 
     async render() {
-        // LINE/iOS iMessage Style UI
+        / LINE/iOS iMessage Style UI
         this.container.innerHTML = `
             <div id="chat-messages" style="flex: 1; padding: var(--space-md); overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-bottom: 80px;">
                 <div style="text-align: center; margin-bottom: 16px;">
@@ -47,15 +47,15 @@ export default class ChatMessageList {
 
     mount() {
         const messagesArea = this.container.querySelector('#chat-messages');
-        messagesArea.scrollTop = messagesArea.scrollHeight; // 自動滾動到底部
+        messagesArea.scrollTop = messagesArea.scrollHeight; / 自動滾動到底部
         
-        // 隱藏全域 Tab Bar 讓出空間給輸入框
+        / 隱藏全域 Tab Bar 讓出空間給輸入框
         const tabBar = document.querySelector('.tab-bar');
         if (tabBar) tabBar.style.display = 'none';
     }
 
     destroy() {
-        // 恢復全域 Tab Bar
+        / 恢復全域 Tab Bar
         const tabBar = document.querySelector('.tab-bar');
         if (tabBar) tabBar.style.display = 'flex';
         console.log('[ChatMessageList] Destroyed');
