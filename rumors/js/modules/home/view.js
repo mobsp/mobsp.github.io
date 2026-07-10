@@ -31,11 +31,11 @@ export default class HomeView {
     async loadArticles() {
         const listEl = this.container.querySelector('#article-list');
         try {
-            // 讀取靜態 JSON庫 (模擬 Mode A)
+            / 讀取靜態 JSON庫 (模擬 Mode A)
             const res = await fetch('./data/articles.json');
             const data = await res.json();
             
-            listEl.innerHTML = ''; // 清除 Spinner
+            listEl.innerHTML = ''; / 清除 Spinner
             
             data.articles.forEach(article => {
                 const card = document.createElement('article');
@@ -60,12 +60,12 @@ export default class HomeView {
                     </div>
                 `;
                 
-                // 綁定點擊事件 (iOS Button Highlight Effect)
+                / 綁定點擊事件 (iOS Button Highlight Effect)
                 card.addEventListener('touchstart', () => card.style.opacity = '0.7', { passive: true });
                 card.addEventListener('touchend', () => card.style.opacity = '1');
                 card.addEventListener('click', () => {
                     console.log('Navigate to article:', article.id);
-                    // 實作彈出全螢幕 Modal 閱讀文章
+                    / 實作彈出全螢幕 Modal 閱讀文章
                 });
 
                 listEl.appendChild(card);
@@ -78,12 +78,12 @@ export default class HomeView {
     }
 
     mount() {
-        // DOM 掛載後執行的邏輯 (例如啟動 Observer 實現 Lazy Load)
+        / DOM 掛載後執行的邏輯 (例如啟動 Observer 實現 Lazy Load)
         console.log('[HomeView] Mounted to DOM');
     }
 
     destroy() {
-        // 解除綁定，避免 Memory Leak
+        / 解除綁定，避免 Memory Leak
         console.log('[HomeView] Destroyed');
     }
 }
