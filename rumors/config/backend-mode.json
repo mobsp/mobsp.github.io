@@ -1,0 +1,38 @@
+{
+    "version": "4.0.0",
+    "architecture": {
+        "active_mode": "mode_c_hybrid",
+        "supported_modes": ["mode_a_github", "mode_b_backend", "mode_c_hybrid"]
+    },
+    "mode_configuration": {
+        "mode_a_github": {
+            "description": "GitHub Native Edition (Static JSON, Public Data Only)",
+            "api_endpoint": "https://mobsp.github.io/rumors/data/",
+            "auth_provider": "simulation",
+            "features": {
+                "realtime_chat": false,
+                "private_cms": false,
+                "dynamic_rbac": false
+            }
+        },
+        "mode_b_backend": {
+            "description": "Backend Supported Edition (Full Server, Private DB)",
+            "api_endpoint": "https://api.rumors-platform.com/v1",
+            "graphql_endpoint": "https://api.rumors-platform.com/graphql",
+            "auth_provider": "jwt_oauth",
+            "features": {
+                "realtime_chat": true,
+                "private_cms": true,
+                "dynamic_rbac": true
+            }
+        },
+        "mode_c_hybrid": {
+            "description": "Hybrid Fusion Edition (GitHub Static + Server APIs)",
+            "api_endpoint_public": "https://mobsp.github.io/rumors/data/",
+            "api_endpoint_private": "https://api.rumors-platform.com/v1",
+            "graphql_endpoint": "https://api.rumors-platform.com/graphql",
+            "auth_provider": "hybrid_token",
+            "sync_strategy": "cache_first_background_sync"
+        }
+    }
+}
