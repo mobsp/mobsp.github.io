@@ -31,7 +31,7 @@ Next-Generation Hybrid Web Application, designed with strict iOS & LINE App UI/U
 ## 🚀 部署指南 (Deployment Guide)
 
 ### 準備作業
-1. 將本專案存放於 `mobsp.github.io` 儲存庫。
+1. 將本專案存放於 `` 儲存庫。
 2. 確保資料夾路徑位於 `/rumors/` 底下。
 
 ### GitHub Actions 自動部署
@@ -39,7 +39,7 @@ Next-Generation Hybrid Web Application, designed with strict iOS & LINE App UI/U
 當程式碼推送到 `main` 分支時：
 - CI 會自動進行基礎安全掃描 (XSS Guard)。
 - 將資料夾打包，透過 GitHub Pages 進行發布。
-- 最終網址：`https://mobsp.github.io/rumors/`
+- 最終網址：`/rumors/`
 
 ### 模式切換
 修改 `config/backend-mode.json` 中的 `active_mode` 即可瞬間切換系統運作架構。
@@ -257,7 +257,7 @@ Rumors Platform 採用 Modular Architecture（模組化架構），所有功能�
 
 每個資料夾皆具有單一職責，可獨立維護、擴充與測試。
 
-mobsp.github.io/
+/
 └── rumors/
     ├── config/
     ├── assets/
@@ -581,15 +581,15 @@ Dashboard
 
 Clone Repository：
 
-git clone https://github.com/mobsp/mobsp.github.io.git
+git clone https://github.com/mobsp/.git
 
 進入專案：
 
-cd mobsp.github.io
+cd 
 
 Rumors 專案位置：
 
-mobsp.github.io/
+/
 └── rumors/
 
 ⸻
