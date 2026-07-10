@@ -19,7 +19,7 @@ export default class Router {
             return;
         }
 
-        // 更新 History API
+        / 更新 History API
         history.pushState({ path }, '', `#${path}`);
         await this.renderView(path);
     }
@@ -32,14 +32,14 @@ export default class Router {
     async renderView(path) {
         const viewContainer = document.getElementById('main-view');
         
-        // 淡出動畫
+        / 淡出動畫
         viewContainer.style.opacity = '0.5';
         viewContainer.style.transition = 'opacity 0.2s ease-in-out';
 
         try {
             let ViewClass;
             
-            // 動態載入 ES Module，實作 Code Splitting
+            / 動態載入 ES Module，實作 Code Splitting
             if (this.viewCache.has(path)) {
                 ViewClass = this.viewCache.get(path);
             } else {
@@ -48,12 +48,12 @@ export default class Router {
                 this.viewCache.set(path, ViewClass);
             }
 
-            // 銷毀舊視圖實例
+            / 銷毀舊視圖實例
             if (this.currentView && typeof this.currentView.destroy === 'function') {
                 this.currentView.destroy();
             }
 
-            // 建立並渲染新視圖
+            / 建立並渲染新視圖
             this.currentView = new ViewClass();
             const content = await this.currentView.render();
             
@@ -64,7 +64,7 @@ export default class Router {
                 this.currentView.mount();
             }
 
-            // 淡入動畫
+            / 淡入動畫
             requestAnimationFrame(() => {
                 viewContainer.style.opacity = '1';
             });
