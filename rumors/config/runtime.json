@@ -1,0 +1,19 @@
+{
+    "app_info": {
+        "name": "Rumors Platform",
+        "version": "4.0.0",
+        "build_number": "2024052001",
+        "author": "Full Stack System Designer"
+    },
+    "feature_flags": {
+        "enable_haptic_feedback": true,
+        "enable_pwa_install_prompt": false,
+        "enable_debug_logger": true,
+        "enable_offline_mode": true
+    },
+    "ui_preferences": {
+        "default_theme": "system",
+        "animation_speed": "normal",
+        "glass_blur_radius": 20
+    }
+}

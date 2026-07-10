@@ -12,14 +12,14 @@ export default class XSSGuard {
         };
     }
 
-    // 基礎 HTML 跳脫
+    / 基礎 HTML 跳脫
     escapeHTML(string) {
         if (!string) return '';
         const reg = /[&<>"'/`=]/ig;
         return String(string).replace(reg, (match) => (this.escapeMap[match]));
     }
 
-    // 反跳脫 (用於安全環境下的渲染)
+    / 反跳脫 (用於安全環境下的渲染)
     unescapeHTML(string) {
         if (!string) return '';
         return String(string)
@@ -33,7 +33,7 @@ export default class XSSGuard {
             .replace(/&#x3D;/g, '=');
     }
 
-    // 驗證 URL 是否為安全協定 (防止 javascript: 攻擊)
+    / 驗證 URL 是否為安全協定 (防止 javascript: 攻擊)
     isSafeURL(url) {
         const safePattern = /^(https?:\/\/|\/|\.\/|\.\.\/)/i;
         return safePattern.test(url);
