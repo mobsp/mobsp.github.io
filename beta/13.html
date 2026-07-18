@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <script>if(self!==top){top.location=self.location;}</script> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
+
+  <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆</title>
+  <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+
+  <style>
+    /* iOS 100% 系統原生與深淺色色彩矩陣 (LINE iOS 完美對齊) */
+    :root {
+      --bg-system: #f1f2f6;
+      --bg-grouped: #ffffff;
+      --cell-bg: #ffffff;
+      --text-main: #111111;
+      --text-muted: #8e8e93;
+      --nav-bg: rgba(247, 247, 247, 0.88);
+      --border-color: rgba(0, 0, 0, 0.1);
+      --hairline: 0.5px;
+      --accent: #06c755; /* LINE 原生綠 */
+      --tab-inactive: #a6a6a6;
+      --search-bg: #e9e9eb;
+      --mask-bg: rgba(0, 0, 0, 0.2);
+      --spring-curve: cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-system: #0b0b0c;
+        --bg-grouped: #191b1f;
+        --cell-bg: #1e2024;
+        --text-main: #f1f2f6;
+        --text-muted: #9aa3b2;
+        --nav-bg: rgba(25, 27, 31, 0.85);
+        --border-color: rgba(255, 255, 255, 0.08);
+        --accent: #00cec9; /* 莫比空間主色調藍綠 */
+        --tab-inactive: #727272;
+        --search-bg: #2c2c2e;
+        --mask-bg: rgba(0, 0, 0, 0.5);
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent; /* 拔除網頁討厭的預設高光 */
+      outline: none;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg-system);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang TC', sans-serif;
+      padding-bottom: calc(83px + env(safe-area-inset-bottom)); /* 預留底部 Tab 空間 */
+      overflow-x: hidden;
+    }
+
+    /* 模擬 iOS 啟動與透光背景 */
+    .bg-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: url('/assets/brand/ms-tools.JPEG') center/cover no-repeat;
+      opacity: 0.06; z-index: -2;
+      pointer-events: none;
+    }
+
+    /* ==========================================================================
+       1. 頂部 iOS 毛玻璃導覽列 (Large Title Mechanism)
+       ========================================================================== */
+    .ios-navigation-bar {
+      position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: var(--hairline) solid var(--border-color);
+      padding-top: env(safe-area-inset-top);
+      transition: background 0.3s;
+    }
+
+    .nav-compact-content {
+      height: 44px; display: flex; align-items: center; justify-content: center;
+      position: relative; width: 100%;
+    }
+
+    .nav-small-title {
+      font-size: 17px; font-weight: 600; color: var(--text-main);
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.25s var(--spring-curve), transform 0.25s var(--spring-curve);
+    }
+
+    /* 滾動時由 JS 控制啟動的狀態 */
+    .ios-navigation-bar.scrolled .nav-small-title {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* 大標題區域 */
+    .ios-large-title-container {
+      padding: 12px 16px 4px 16px;
+      margin-top: calc(44px + env(safe-area-inset-top));
+      transition: transform 0.2s linear, opacity 0.2s linear;
+    }
+
+    .ios-large-title {
+      font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin: 0;
+    }
+
+    /* ==========================================================================
+       2. iOS 搜尋欄位與 Spotlight 景深聚焦設計
+       ========================================================================== */
+    .search-section {
+      padding: 8px 16px; display: flex; align-items: center; width: 100%;
+      background: transparent; position: relative; z-index: 101;
+    }
+
+    .search-wrapper {
+      position: relative; flex: 1; display: flex; align-items: center;
+    }
+
+    .search-input {
+      width: 100%; height: 36px; border-radius: 10px; border: none;
+      background: var(--search-bg); color: var(--text-main);
+      padding: 0 12px 0 32px; font-size: 16px;
+      transition: all 0.3s var(--spring-curve);
+    }
+
+    .search-icon {
+      position: absolute; left: 10px; width: 14px; height: 14px;
+      border: 2px solid var(--text-muted); border-radius: 50%;
+      transition: all 0.3s var(--spring-curve);
+    }
+    .search-icon::after {
+      content: ''; position: absolute; width: 6px; height: 2px;
+      background: var(--text-muted); bottom: -3px; right: -3px; transform: rotate(45deg);
+    }
+
+    .search-cancel-btn {
+      font-size: 16px; color: var(--accent); background: none; border: none;
+      padding: 0; margin-left: 0; width: 0; opacity: 0; overflow: hidden;
+      white-space: nowrap; cursor: pointer; transition: all 0.3s var(--spring-curve);
+    }
+
+    /* Focus 狀態時的聯動樣式 */
+    body.search-focused .search-cancel-btn {
+      width: 44px; opacity: 1; margin-left: 12px;
+    }
+
+    /* Spotlight 全視窗變暗遮罩 */
+    .spotlight-mask {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--mask-bg); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
+      z-index: 90; opacity: 0; pointer-events: none;
+      transition: opacity 0.35s var(--spring-curve), backdrop-filter 0.35s var(--spring-curve);
+    }
+    body.search-focused .spotlight-mask {
+      opacity: 1; pointer-events: auto; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    }
+
+    /* ==========================================================================
+       3. LINE iOS 原生主頁佈局 (Banner 與 分類 Segmented Control)
+       ========================================================================== */
+    .ios-banner-container {
+      padding: 8px 16px;
+    }
+    .ios-banner {
+      width: 100%; height: 90px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--accent), #0b1020);
+      display: flex; align-items: center; padding: 16px; position: relative; overflow: hidden;
+    }
+    .banner-text h3 { margin: 0 0 4px 0; font-size: 16px; color: #ffffff; }
+    .banner-text p { margin: 0; font-size: 12px; color: rgba(255,255,255,0.75); }
+
+    /* Segmented Control 標籤分類滑塊 */
+    .segmented-control {
+      margin: 8px 16px 16px 16px; background: var(--search-bg);
+      border-radius: 8px; padding: 2px; display: flex; position: relative;
+    }
+    .segment-item {
+      flex: 1; text-align: center; font-size: 13px; font-weight: 500;
+      padding: 6px 0; position: relative; z-index: 2; cursor: pointer;
+      color: var(--text-main); transition: color 0.2s;
+    }
+    .segment-item.active { font-weight: 600; }
+    .segment-slider {
+      position: absolute; top: 2px; bottom: 2px; left: 2px;
+      width: calc(50% - 2px); background: var(--cell-bg);
+      border-radius: 7px; z-index: 1;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      transition: transform 0.3s var(--spring-curve);
+    }
+
+    /* ==========================================================================
+       4. LINE iOS 列表組件與物理回饋卡片
+       ========================================================================== */
+    main { padding: 0 16px; }
+
+    /* LINE iOS 核心：Grouped Table List 樣式 */
+    .ios-list-group {
+      background: var(--cell-bg); border-radius: 12px;
+      border: var(--hairline) solid var(--border-color);
+      overflow: hidden; margin-bottom: 24px;
+    }
+
+    .ios-cell {
+      display: flex; align-items: center; padding: 12px 16px;
+      text-decoration: none; color: inherit;
+      position: relative; background: var(--cell-bg);
+      transition: background-color 0.1s linear; /* 壓下瞬間的消散曲線 */
+    }
+
+    /* 每一個 Cell 底部的 0.5px 原生 Hairline 分隔線 */
+    .ios-cell:not(:last-child)::after {
+      content: ''; position: absolute; bottom: 0; left: 64px; right: 0;
+      height: var(--hairline); background: var(--border-color);
+    }
+
+    /* iOS 物理壓下縮放動態機制 */
+    .ios-cell.ios-active {
+      background-color: rgba(0, 0, 0, 0.08) !important;
+      transform: scale(0.97);
+    }
+    @media (prefers-color-scheme: dark) {
+      .ios-cell.ios-active { background-color: rgba(255, 255, 255, 0.08) !important; }
+    }
+
+    .cell-avatar-container {
+      width: 44px; height: 44px; border-radius: 10px; margin-right: 12px;
+      overflow: hidden; background: #1e272e; flex-shrink: 0;
+    }
+    .cell-img { width: 100%; height: 100%; object-fit: cover; }
+
+    .cell-info { flex: 1; min-width: 0; }
+    .cell-title { font-size: 16px; font-weight: 500; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .cell-subtitle { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .cell-chevron {
+      width: 8px; height: 8px; border-top: 2px solid var(--text-muted);
+      border-right: 2px solid var(--text-muted); transform: rotate(45deg);
+      margin-left: 8px; flex-shrink: 0; opacity: 0.6;
+    }
+
+    /* ==========================================================================
+       5. 底部 100% 擬真 iOS 原生 Tab Bar
+       ========================================================================== */
+    .ios-tab-bar {
+      position: fixed; bottom: 0; left: 0; width: 100%; z-index: 200;
+      background: var(--nav-bg);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-top: var(--hairline) solid var(--border-color);
+      padding-bottom: env(safe-area-inset-bottom);
+      display: flex; height: calc(49px + env(safe-area-inset-bottom));
+    }
+
+    .tab-item {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding-top: 6px; cursor: pointer; color: var(--tab-inactive);
+    }
+
+    .tab-item.active { color: var(--accent); }
+
+    .tab-icon { font-size: 20px; margin-bottom: 2px; }
+    .tab-label { font-size: 10px; font-weight: 500; }
+
+    footer { text-align: center; padding: 16px 0; font-size: 12px; color: var(--text-muted); opacity: 0.5; }
+  </style>
+
+  <!-- 精準 SEO 與 PWA 組件配置 -->
+  <link rel="alternate" hreflang="x-default" href="https://mobsp.qzz.io/tol/index.html">
+  <link rel="preconnect" href="https://gstatic.com" crossorigin="">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="/assets/brand/ms-logo1.JPEG">
+  <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆 | MOBSP">
+  <link rel="canonical" href="https://mobsp.qzz.io/tol/index.html">
+  <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆">
+  <meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆 | MOBSP">
+  <meta property="og:url" content="https://mobsp.qzz.io/tol/index.html">
+  <meta property="og:site_name" content="MOBSP">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#0b1020">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="/icons/icon-192.png">
+</head>
+
+<body>
+  <div class="bg-overlay"></div>
+  <div class="spotlight-mask" id="spotlightMask"></div>
+
+  <!-- 頂部高階毛玻璃導覽（小標題隱藏，滾動時浮現） -->
+  <nav class="ios-navigation-bar" id="navBar">
+    <div class="nav-compact-content">
+      <div class="nav-small-title">主頁</div>
+    </div>
+  </nav>
+
+  <!-- 大標題容器 -->
+  <div class="ios-large-title-container" id="largeTitleArea">
+    <h1 class="ios-large-title">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+  </div>
+
+  <!-- iOS Spotlight 搜索區域 -->
+  <section class="search-section">
+    <div class="search-wrapper">
+      <div class="search-icon"></div>
+      <input id="search" class="search-input" type="search" placeholder="搜尋線上工具或標籤...">
+    </div>
+    <button class="search-cancel-btn" id="searchCancel">取消</button>
+  </section>
+
+  <!-- 模擬 LINE 原生頂部廣宣橫幅 -->
+  <div class="ios-banner-container">
+    <div class="ios-banner">
+      <div class="banner-text">
+        <h3>Mobispace 雲端自動化已就緒</h3>
+        <p>優化極致原生工藝 99.9999% 高仿核心</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINE 分類滑動控制組件 (Segmented Control) -->
+  <div class="segmented-control">
+    <div class="segment-item active" data-filter="all">全部工具</div>
+    <div class="segment-item" data-filter="featured">精選推薦</div>
+    <div class="segment-slider" id="segmentSlider"></div>
+  </div>
+
+  <!-- 工具列表（採用 iOS Grouped 表格樣式） -->
+  <main>
+    <section class="ios-list-group" id="grid" role="list"></section>
+    <footer>
+      © 2026 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ｜資源整合與數位服務
+    </footer>
+  </main>
+
+  <!-- 底部 5 顆 iOS 原生系統級 Tab Bar 導覽列 -->
+  <div class="ios-tab-bar">
+    <div class="tab-item active">
+      <div class="tab-icon">🏠</div>
+      <div class="tab-label">主頁</div>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon">💬</div>
+      <div class="tab-label">聊天</div>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon">🧭</div>
+      <div class="tab-label">貼文串</div>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon">👜</div>
+      <div class="tab-label">錢包</div>
+    </div>
+    <div class="tab-item">
+      <div class="tab-icon">⣿</div>
+      <div class="tab-label">TODAY</div>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * ⚙️ 核心超規數據庫結構 (帶有完整 Metadata)
+     */
+    const TOOLS = [
+      { id: "json-formatter", name: "JSON Formatter", desc: "精緻化的 JSON 格式化校正與縮排工具", tags: ["json", "format", "dev"], featured: true },
+      { id: "color-palette", name: "Color Palette", desc: "高階 iOS 磨砂玻璃透光調色盤系統", tags: ["color", "design", "ui"], featured: true },
+      { id: "markdown-editor", name: "Markdown Editor", desc: "即時渲染、無框架模組化文字編輯器", tags: ["markdown", "editor", "text"], featured: false },
+      { id: "base64-decoder", name: "Base64 Decoder", tags: ["base64", "decode", "security"], desc: "極速安全編解碼器", featured: false },
+      { id: "timestamp-converter", name: "Timestamp Converter", tags: ["time", "date", "utils"], desc: "時間戳與標準時間雙向調頻轉換", featured: false },
+      { id: "unit-converter", name: "Unit Converter", tags: ["unit", "math", "utils"], desc: "工程與日常多維度計量單位調用器", featured: false }
+    ];
+
+    const BASE_URL = "/tol/";
+    const PREVIEW_IMG = "/assets/brand/ms-logo1.JPEG";
+
+    const grid = document.getElementById("grid");
+    const searchInput = document.getElementById("search");
+    const searchCancel = document.getElementById("searchCancel");
+    const navBar = document.getElementById("navBar");
+    const segmentSlider = document.getElementById("segmentSlider");
+    let currentCategory = "all";
+
+    /**
+     * 1. 頂部 iOS 大標題平滑滾動過渡機制
+     */
+    window.addEventListener("scroll", () => {
+      const scrollTop = window.scrollY;
+      if (scrollTop > 44) {
+        navBar.classList.add("scrolled");
+      } else {
+        navBar.classList.remove("scrolled");
+      }
+    });
+
+    /**
+     * 2. 注入極致 iOS 觸控物理壓下阻尼動態監聽
+     */
+    function attachIOSPhysics(element) {
+      let touchTimeout;
+      
+      element.addEventListener("touchstart", () => {
+        // 50ms 克制的物理蓄力延遲，防止滑動誤觸
+        touchTimeout = setTimeout(() => {
+          element.classList.add("ios-active");
+        }, 50);
+      }, { passive: true });
+
+      const releaseTouch = () => {
+        clearTimeout(touchTimeout);
+        element.classList.remove("ios-active");
+      };
+
+      element.addEventListener("touchend", releaseTouch, { passive: true });
+      element.addEventListener("touchmove", releaseTouch, { passive: true });
+      element.addEventListener("touchcancel", releaseTouch, { passive: true });
+    }
+
+    /**
+     * 3. 模組化高效渲染引擎 (利用 DocumentFragment)
+     */
+    function render(list) {
+      grid.innerHTML = "";
+
+      if (list.length === 0) {
+        grid.innerHTML = `<div style="text-align:center; padding:48px 16px; color:var(--text-muted); font-size:14px;">無符合的工具項目</div>`;
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+
+      list.forEach(tool => {
+        const fullUrl = `${BASE_URL}${tool.id}/`;
+        const a = document.createElement("a");
+        a.href = fullUrl;
+        a.className = "ios-cell";
+        a.setAttribute("role", "listitem");
+
+        a.innerHTML = `
+          <div class="cell-avatar-container">
+            <img src="${PREVIEW_IMG}" class="cell-img" alt="${tool.name}" loading="lazy">
+          </div>
+          <div class="cell-info">
+            <div class="cell-title">${tool.name}</div>
+            <div class="cell-subtitle">${tool.desc || '/tol/' + tool.id}</div>
+          </div>
+          <div class="cell-chevron"></div>
+        `;
+
+        // 綁定極致物理按壓動態
+        attachIOSPhysics(a);
+        fragment.appendChild(a);
+      });
+
+      grid.appendChild(fragment);
+    }
+
+    /**
+     * 4. 輕量化高感度搜尋防抖 (Debounce) 機制
+     */
+    function debounce(func, delay = 150) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => func.apply(this, args), delay);
+      };
+    }
+
+    const performSearch = () => {
+      const keyword = searchInput.value.toLowerCase().trim();
+      const filtered = TOOLS.filter(t => {
+        const matchesKeyword = t.name.toLowerCase().includes(keyword) || 
+                              t.id.toLowerCase().includes(keyword) ||
+                              t.tags.some(tag => tag.includes(keyword));
+        
+        if (currentCategory === "featured") {
+          return matchesKeyword && t.featured;
+        }
+        return matchesKeyword;
+      });
+      render(filtered);
+    };
+
+    const handleSearchInput = debounce(performSearch);
+    searchInput.addEventListener("input", handleSearchInput);
+
+    /**
+     * 5. iOS Spotlight 景深聚焦聯動切換控制
+     */
+    searchInput.addEventListener("focus", () => {
+      document.body.classList.add("search-focused");
+    });
+
+    const exitSearchFocus = () => {
+      document.body.classList.remove("search-focused");
+      searchInput.value = "";
+      searchInput.blur();
+      performSearch();
+    };
+
+    searchCancel.addEventListener("click", exitSearchFocus);
+    document.getElementById("spotlightMask").addEventListener("click", exitSearchFocus);
+
+    // 鍵盤操作優化：ESC 直接退出搜尋
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && document.body.classList.contains("search-focused")) {
+        exitSearchFocus();
+      }
+    });
+
+    /**
+     * 6. Segmented Control 分類滑塊切換邏輯
+     */
+    document.querySelectorAll(".segment-item").forEach((item, index) => {
+      item.addEventListener("click", () => {
+        document.querySelector(".segment-item.active").classList.remove("active");
+        item.classList.add("active");
+        
+        // 移動 iOS 實體白色背景滑塊
+        segmentSlider.style.transform = `translateX(${index * 100}%)`;
+        
+        currentCategory = item.getAttribute("data-filter");
+        performSearch();
+      });
+    });
+
+    // 首次載入初始化
+    render(TOOLS);
+  </script>
+
+  <!-- Service Worker 除錯日誌最佳化 -->
+  <script>
+    if ('serviceWorker' in navigator) { 
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .catch((err) => { console.error('LINE Core SW 核心啟動失敗:', err); }); 
+      }); 
+    }
+  </script>
+</body>
+</html>
