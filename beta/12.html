@@ -5,16 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     
-    <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
-    <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.JPEG">
+    <link rel="icon" href="/assets/brand/ms-logo1.webp" type="image/jpeg">
+    <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.webp">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-startup-image" href="/assets/brand/ms-guide.JPEG">
+    <link rel="apple-touch-startup-image" href="/assets/brand/ms-guide.webp">
 
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
     <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
     
     <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
-    <meta property="og:image" content="/assets/brand/ms-logo1.JPEG">
+    <meta property="og:image" content="/assets/brand/ms-logo1.webp">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -58,7 +58,7 @@
 
         #fake-splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050508 url('/assets/brand/ms-guide.JPEG') center/cover no-repeat;
+            background: #050508 url('/assets/brand/ms-guide.webp') center/cover no-repeat;
             z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s;
         }
@@ -279,7 +279,7 @@
         </nav>
 
         <a href="" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
-            <img src="assets/brand/ms-guide-title.JPEG" alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
+            <img src="assets/brand/ms-guide-title.webp" alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
         </a>
     </header>
 
@@ -381,7 +381,7 @@
                 <span class="setting-name">預設卡片降級備援圖</span>
                 <select id="cfg-card-fallback" class="ios-select">
                     <option value="gradient">CSS 絢麗漸層流光</option>
-                    <option value="default-img">系統預設 ms-default.jpg</option>
+                    <option value="default-img">系統預設 ms-default.webp</option>
                 </select>
             </div>
         </div>
@@ -712,8 +712,8 @@ async function initMobiSpace() {
     } catch(e) { 
         console.warn("未發現 /data/pages-config.json 本地快取，使用記憶體預載備份卡片結構[span_20](start_span)[span_20](end_span)[span_21](start_span)[span_21](end_span)");
         cardsData = [
-            { id: "blog", title: "部落格", url: "/blog/", image: "/assets/brand/ms-blog.JPEG" },
-            { id: "tools", title: "工具庫", url: "/tol/", image: "/assets/brand/ms-tools.JPEG" }
+            { id: "blog", title: "部落格", url: "/blog/", image: "/assets/brand/ms-blog.webp" },
+            { id: "tools", title: "工具庫", url: "/tol/", image: "/assets/brand/ms-tools.webp" }
         ];
     }
     renderCards(cardsData);
@@ -1011,7 +1011,7 @@ async function initMobiSpace() {
                     id: folderId,
                     title: presetMeta[folderPureName] || folderPureName.toUpperCase(),
                     url: `/${pathParts.join('/')}/`,
-                    image: `/assets/brand/ms-${folderPureName}.JPEG`
+                    image: `/assets/brand/ms-${folderPureName}.webp`
                 };
             });
 
