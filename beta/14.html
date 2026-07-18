@@ -215,7 +215,6 @@
       overflow: hidden; background: linear-gradient(135deg, #1e272e, #2c3e50);
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
-    .cell-img { width: 100%; height: 100%; object-fit: cover; }
     .cell-fallback-icon { font-size: 22px; }
 
     .cell-info { flex: 1; min-width: 0; }
@@ -279,7 +278,7 @@
 
   <!-- 大標題 -->
   <div class="ios-large-title-container" id="largeTitleArea">
-    <h1 class="ios-large-title" id="iosLargeTitle">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
+    <h1 class="ios-large-title" id="iosLargeTitle">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ</h1>
   </div>
 
   <!-- iOS Spotlight 搜索區域 -->
@@ -397,15 +396,81 @@
     };
 
     /**
-     * 2. 資料庫陣列全面升級（2. 優化：新增獨立專屬 icon、fallback 機制）
+     * ⚙️ 核心數據庫結構 (🔴 格式完美對齊：此區塊將被 scripts/tol_update.py 自動覆寫與同步)
      */
     const TOOLS = [
-      { id: "json-formatter", name: "JSON Formatter", desc: "精緻化的 JSON 格式化校正與縮排工具", tags: ["json", "format", "dev"], featured: true, icon: "🛠️" },
-      { id: "color-palette", name: "Color Palette", desc: "高階 iOS 磨砂玻璃透光調色盤系統", tags: ["color", "design", "ui"], featured: true, icon: "🎨" },
-      { id: "markdown-editor", name: "Markdown Editor", desc: "即時渲染、無框架模組化文字編輯器", tags: ["markdown", "editor", "text"], featured: false, icon: "📝" },
-      { id: "base64-decoder", name: "Base64 Decoder", tags: ["base64", "decode", "security"], desc: "極速安全編解碼器", featured: false, icon: "🔒" },
-      { id: "timestamp-converter", name: "Timestamp Converter", tags: ["time", "date", "utils"], desc: "時間戳與標準時間雙向調頻轉換", featured: false, icon: "⏱️" },
-      { id: "unit-converter", name: "Unit Converter", tags: ["unit", "math", "utils"], desc: "工程與日常多維度計量單位調用器", featured: false, icon: "" } // 留空測試 fallback
+      {
+            "id": "base64-decoder",
+            "name": "Base64 Decoder",
+            "desc": "極速安全編解碼器",
+            "tags": [
+                  "base64",
+                  "decode",
+                  "security"
+            ],
+            "featured": false,
+            "icon": "🔒"
+      },
+      {
+            "id": "color-palette",
+            "name": "Color Palette",
+            "desc": "高階 iOS 磨砂玻璃透光調色盤系統",
+            "tags": [
+                  "color",
+                  "design",
+                  "ui"
+            ],
+            "featured": true,
+            "icon": "🎨"
+      },
+      {
+            "id": "json-formatter",
+            "name": "JSON Formatter",
+            "desc": "精緻化的 JSON 格式化校正與縮排工具",
+            "tags": [
+                  "json",
+                  "format",
+                  "dev"
+            ],
+            "featured": true,
+            "icon": "🛠️"
+      },
+      {
+            "id": "markdown-editor",
+            "name": "Markdown Editor",
+            "desc": "即時渲染、無框架模組化文字編輯器",
+            "tags": [
+                  "markdown",
+                  "editor",
+                  "text"
+            ],
+            "featured": false,
+            "icon": "📝"
+          },
+          {
+                "id": "timestamp-converter",
+                "name": "Timestamp Converter",
+                "desc": "時間戳與標準時間雙向調頻轉換",
+                "tags": [
+                      "time",
+                      "date",
+                      "utils"
+                ],
+                "featured": false,
+                "icon": "⏱️"
+          },
+          {
+                "id": "unit-converter",
+                "name": "Unit Converter",
+                "desc": "工程與日常多維度計量單位調用器",
+                "tags": [
+                      "unit",
+                      "math",
+                      "utils"
+                ],
+                "featured": false,
+                "icon": "⚙️"
+          }
     ];
 
     const BASE_URL = "/tol/";
@@ -495,21 +560,14 @@
         a.className = "ios-cell";
         a.setAttribute("role", "listitem");
 
-        // 獨立頭像/圖示核心（2. 優化：若無圖示則自動 fallback 為精緻漸層 icon）
+        // 獨立頭像/圖示核心（2. 優化：若無圖示則自動 fallback 為精緻通用 icon）
         const avatarBox = document.createElement("div");
         avatarBox.className = "cell-avatar-container";
         
-        if (tool.icon) {
-          const iconSpan = document.createElement("span");
-          iconSpan.className = "cell-fallback-icon";
-          iconSpan.textContent = tool.icon;
-          avatarBox.appendChild(iconSpan);
-        } else {
-          const fallbackSpan = document.createElement("span");
-          fallbackSpan.className = "cell-fallback-icon";
-          fallbackSpan.textContent = "⚙️"; // 預設通用圖示
-          avatarBox.appendChild(fallbackSpan);
-        }
+        const iconSpan = document.createElement("span");
+        iconSpan.className = "cell-fallback-icon";
+        iconSpan.textContent = tool.icon || "⚙️";
+        avatarBox.appendChild(iconSpan);
 
         // 文字資訊區塊（100% 使用 textContent 以確保防範 XSS 攻擊）
         const info = document.createElement("div");
@@ -546,7 +604,6 @@
     async function fetchGitHubLogs() {
       const logGroup = document.getElementById("cms-log-group");
       try {
-        // 純前端免密鑰調用公共代碼庫變動數據
         const res = await fetch("https://api.github.com/repos/mobsp/mobsp.github.io/commits?per_page=5");
         if (!res.ok) throw new Error();
         const data = await res.json();
@@ -576,7 +633,6 @@
           card.appendChild(msg);
           card.appendChild(meta);
           
-          // 加一條細線
           card.style.borderBottom = "var(--hairline) solid var(--border-color)";
           frag.appendChild(card);
         });
@@ -661,8 +717,7 @@
       currentLang = lang;
       const dict = I18N[lang];
       
-      // 動態更新核心文字
-      iosLargeTitle.textContent = activeTab === "home" ? "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" : dict[getTabKey(activeTab)];
+      iosLargeTitle.textContent = activeTab === "home" ? "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ" : dict[getTabKey(activeTab)];
       navSmallTitle.textContent = dict[getTabKey(activeTab)];
       searchInput.placeholder = dict.search;
       
@@ -681,7 +736,6 @@
       document.getElementById("titleCms").textContent = dict.tCms;
       document.getElementById("titleLang").textContent = dict.tLang;
 
-      // 勾選框樣式連動
       document.getElementById("check-zh").style.display = lang === "zh" ? "block" : "none";
       document.getElementById("check-en").style.display = lang === "en" ? "block" : "none";
       document.getElementById("check-ja").style.display = lang === "ja" ? "block" : "none";
@@ -700,7 +754,7 @@
     document.getElementById("btn-lang-ja").addEventListener("click", () => updateLanguageUI("ja"));
 
     /**
-     * 7. 修正版：底部 5 個工具配置專用 Tab Bar 原生切換核心 (6. 功能修正)
+     * 7. 底部 5 個工具配置專用 Tab Bar 原生切換核心
      */
     function switchTab(targetId, titleText) {
       activeTab = targetId;
@@ -708,7 +762,6 @@
       const activeBtn = document.querySelector(`.tab-item[data-target="${targetId}"]`);
       if (activeBtn) activeBtn.classList.add("active");
 
-      // 視窗切換
       document.querySelectorAll(".app-view").forEach(v => v.classList.remove("view-active"));
       const searchSec = document.getElementById("searchSection");
       
@@ -718,7 +771,7 @@
         searchSec.style.display = "flex";
       }
 
-      iosLargeTitle.textContent = targetId === "home" ? "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" : I18N[currentLang][getTabKey(targetId)];
+      iosLargeTitle.textContent = targetId === "home" ? "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲉ" : I18N[currentLang][getTabKey(targetId)];
       navSmallTitle.textContent = I18N[currentLang][getTabKey(targetId)];
 
       if (targetId === "home") {
