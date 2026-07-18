@@ -23,10 +23,10 @@
     <style>
         :root {
             --bg-color: #0b0b0c;          
-            --card-bg: rgba(25, 27, 31, 0.85); 
+            --card-bg: rgba(28, 30, 34, 0.85); 
             --text-main: #f1f2f6;         
             --primary-color: #00cec9;     
-            --border-color: rgba(255, 255, 255, 0.1); 
+            --border-color: rgba(255, 255, 255, 0.08); 
             --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             
             /* iOS 系統級動態指示燈顏色定義 */
@@ -45,14 +45,14 @@
         }
 
         /* 串流流光主題定義 */
-        [data-theme="stream-cyan"] { --bg-color: #001219; --primary-color: #00e5ff; --card-bg: rgba(0, 229, 255, 0.15); }
-        [data-theme="stream-purple"] { --bg-color: #140124; --primary-color: #bf5af2; --card-bg: rgba(191, 90, 242, 0.15); }
-        [data-theme="stream-gold"] { --bg-color: #1a1100; --primary-color: #ffd60a; --card-bg: rgba(255, 214, 10, 0.15); }
+        [data-theme="stream-cyan"] { --bg-color: #001219; --primary-color: #00e5ff; --card-bg: rgba(0, 229, 255, 0.12); }
+        [data-theme="stream-purple"] { --bg-color: #140124; --primary-color: #bf5af2; --card-bg: rgba(191, 90, 242, 0.12); }
+        [data-theme="stream-gold"] { --bg-color: #1a1100; --primary-color: #ffd60a; --card-bg: rgba(255, 214, 10, 0.12); }
         [data-theme="light"] {
             --bg-color: #f2f2f7;
             --card-bg: rgba(255, 255, 255, 0.85);
             --text-main: #1c1c1e;
-            --border-color: rgba(0, 0, 0, 0.1);
+            --border-color: rgba(0, 0, 0, 0.08);
             --mq-color: #1c1c1e;
         }
 
@@ -93,24 +93,19 @@
 
         .app-header {
             flex-shrink: 0;
-            padding: calc(20px + env(safe-area-inset-top)) 20px 10px; 
-            background: rgba(11, 11, 12, 0.4);
+            /* 調整 Header 內襯：移除舊版標題圖後，優化頂部跑馬燈的安全邊距 */
+            padding: calc(15px + env(safe-area-inset-top)) 20px 12px; 
+            background: rgba(11, 11, 12, 0.3);
             backdrop-filter: blur(var(--glass-blur)); -webkit-backdrop-filter: blur(var(--glass-blur));
             border-bottom: 1px solid var(--border-color);
             z-index: 100; display: flex; flex-direction: column; align-items: center;
         }
 
         .marquee-row {
-            display: flex; align-items: center; background: rgba(255,255,255,0.06);
-            padding: 6px 12px; border-radius: 12px; margin-bottom: 15px; overflow: hidden;
-            min-height: 28px; width: 100%; box-sizing: border-box;
+            display: flex; align-items: center; background: rgba(255,255,255,0.05);
+            padding: 6px 12px; border-radius: 12px; overflow: hidden;
+            min-height: 28px; width: 100%; box-sizing: border-box; margin-bottom: 0;
         }
-
-        .brand-title-link {
-            display: block; width: 100%; transition: var(--transition); margin-bottom: 5px; box-sizing: border-box; padding: 0 5px;
-        }
-        .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
-        .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
 
         .v-tag { 
             background: var(--indicator-color); color: #000; font-size: 9px; font-weight: 900; 
@@ -133,20 +128,21 @@
             flex: 1; transition: var(--transition); overflow-y: auto; overflow-x: hidden; padding: 20px; box-sizing: border-box;
         }
 
-        /* 模式一：滑塊模式 */
+        /* 模式一：滑塊模式（優化重塑附圖 2 的高挑卡片排版結構） */
         .app-main.layout-slider {
             display: flex; align-items: center; overflow-x: auto; overflow-y: hidden;
-            scroll-snap-type: x mandatory; padding: 0 40px; gap: 25px; scrollbar-width: none;
+            scroll-snap-type: x mandatory; padding: 0 45px; gap: 24px; scrollbar-width: none;
         }
         .app-main.layout-slider::-webkit-scrollbar { display: none; }
-        .app-main.layout-slider .action-btn { flex: 0 0 85%; height: 70%; scroll-snap-align: center; }
+        /* 增高卡片高度：高度由原先的 70% 擴展至 76%，寬度略縮至 82% 營造極致縱向高挑視覺 */
+        .app-main.layout-slider .action-btn { flex: 0 0 82%; height: 76%; scroll-snap-align: center; border-radius: 36px; }
 
         /* 模式二：九宮格模式 */
         .app-main.layout-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; align-content: start; padding-top: 10px;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; align-content: start; padding-top: 15px;
         }
-        .app-main.layout-grid .action-btn { aspect-ratio: 1; height: auto; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
-        .app-main.layout-grid .btn-overlay { padding: 10px; }
+        .app-main.layout-grid .action-btn { aspect-ratio: 1; height: auto; border-radius: 22px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); }
+        .app-main.layout-grid .btn-overlay { padding: 12px; align-items: center; justify-content: center; }
         .app-main.layout-grid .btn-title { font-size: 0.95rem; letter-spacing: 0.5px; text-align: center; width: 100%; }
 
         /* 模式三：列表模式 */
@@ -157,24 +153,29 @@
             height: 60px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: none;
         }
         .app-main.layout-list .btn-overlay { position: static; padding: 0; background: none; display: flex; width: 100%; justify-content: space-between; align-items: center; }
-        .app-main.layout-list .btn-title { color: var(--text-main); font-size: 1.1rem; font-weight: 600; letter-spacing: 1px; }
+        .app-main.layout-list .btn-title { color: var(--text-main); font-size: 1.05rem; font-weight: 600; letter-spacing: 1px; }
         .app-main.layout-list .btn-overlay::after { content: "〉"; font-size: 12px; opacity: 0.4; color: var(--text-main); }
 
-        /* 重構按鈕基礎：移除任何背景圖相關屬性，注入 iOS 經典毛玻璃半透純色質感 */
+        /* 基礎按鈕架構：完全移除非法標題圖，改採 iOS 烤漆玻璃質感純色方塊 */
         .action-btn {
-            text-decoration: none; border-radius: 30px; position: relative; overflow: hidden; border: 1px solid var(--border-color);
+            text-decoration: none; position: relative; overflow: hidden; border: 1px solid var(--border-color);
             background-image: none !important; background-color: var(--card-bg);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2); transition: var(--transition);
-            display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 20px 45px rgba(0,0,0,0.25); transition: var(--transition);
+            display: flex; flex-direction: column;
         }
         .action-btn:active { transform: scale(0.96); filter: brightness(0.85); }
         
-        /* 讓覆蓋層在純色模式下保持全寬高居中，並去除由深變透的漸層遮罩 */
-        .btn-overlay { position: static; width: 100%; height: 100%; padding: 20px; background: none !important; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
-        .btn-title { color: var(--text-main); font-size: 1.6rem; font-weight: 700; letter-spacing: 2px; text-shadow: none !important; text-align: center; }
+        /* 覆蓋層定位調校：完美重現附圖 2 中「文字靠左下方」的原生卡片排版樣式 */
+        .btn-overlay { 
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; 
+            padding: 35px 28px; background: none !important; 
+            display: flex; align-items: flex-end; justify-content: flex-start; 
+            box-sizing: border-box; 
+        }
+        /* 字體外觀：大字重合附圖 2 風格，移除文字陰影保持洗鍊乾淨 */
+        .btn-title { color: var(--text-main); font-size: 1.75rem; font-weight: 700; letter-spacing: 1px; text-shadow: none !important; text-align: left; }
 
-        /* 為通用焦點提供 Accessibility 樣式支援 */
         .action-btn:focus-visible, .ios-btn:focus-visible, .trigger-btn:focus-visible {
             outline: 3px solid var(--primary-color); outline-offset: 2px;
         }
@@ -197,7 +198,6 @@
             border-top: 0.5px solid rgba(0,0,0,0.15); color: #007ff5; font-size: 17px; line-height: 44px; height: 44px; font-weight: 600; cursor: pointer;
         }
 
-        /* 新增控制中心開啟時的背景動態遮罩與防滾動阻斷 */
         #sheet-backdrop {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3);
             z-index: 998; opacity: 0; visibility: hidden; transition: all 0.4s ease;
@@ -281,14 +281,11 @@
                 <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
             </div>
         </nav>
-
-        <a href="" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ">
-            <img src="assets/brand/ms-guide-title.JPEG" alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" class="brand-title-img">
-        </a>
     </header>
 
+    <!-- 頁面卡片主容器：增高比例、智慧容納掃描後的所有新卡片 -->
     <main class="app-main layout-slider" id="main-container">
-        <!-- 初始骨架屏備用卡片，會由 JS 動態解析配置並注入純色塊結構 -->
+        <!-- 初始骨架色塊卡片，開啟後即刻由 JS 計算配置 -->
         <a href="/blog/" class="action-btn btn-blog" aria-label="前往部落格"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
         <a href="/tol/" class="action-btn btn-tools" aria-label="前往工具庫"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
     </main>
@@ -345,7 +342,7 @@
             <div class="setting-row">
                 <span class="setting-name">介面風格主題</span>
                 <select id="cfg-theme" class="ios-select">
-                    <!-- 色彩主題由 JS 智慧擴充注入 -->
+                    <!-- 色彩主題庫由 JS 動態生成注入 -->
                 </select>
             </div>
         </div>
@@ -369,7 +366,7 @@
             </div>
         </div>
 
-        <!-- 區塊 4：卡片管理與校驗 -->
+        <!-- 區塊 4：卡片防護管理 -->
         <div class="setting-group">
             <div class="setting-label">4. 卡片管理與安全防護</div>
             <div class="setting-row">
@@ -378,9 +375,6 @@
                     <input type="checkbox" id="cfg-card-verify" checked>
                     <span class="ios-slider"></span>
                 </label>
-            </div>
-            <div class="setting-row" style="flex-direction: column; align-items: flex-start;">
-                <span style="font-size: 11px; opacity: 0.5; line-height: 1.4;">💡 系統已全面剔除圖片加載邏輯，卡片改採高質感 iOS 烤漆玻璃風格純色塊，以獲取最頂級的介面流暢度。</span>
             </div>
         </div>
 
@@ -439,15 +433,7 @@
             <div class="setting-label">6. GITHUB 儲存庫自動化同步</div>
             <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 4px;">
                 <span style="font-size:12px; color:var(--status-green); font-weight:bold;">⚡️ 已激活 Git Trees 全庫深度解析引擎 (免金鑰)</span>
-                <span style="font-size:11px; opacity:0.6;">系統將自動漫遊遍歷所有深淺層資料夾中的 index.html，不抓取圖片、不寫入 PAT，直接動態生成對應卡片。</span>
-            </div>
-            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 5px; width: 100%;">
-                <span class="setting-name">索引核心範圍</span>
-                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 5px; width: 100%;">
-                    <label style="font-size:12px; color:#fff;"><input type="checkbox" id="scan-ext-html" checked disabled> html (核心)</label>
-                    <label style="font-size:12px; color:#fff;"><input type="checkbox" id="scan-ext-json" checked> json</label>
-                    <label style="font-size:12px; color:#fff;"><input type="checkbox" id="scan-ext-md" checked> md</label>
-                </div>
+                <span style="font-size:11px; opacity:0.6;">系統將自動漫遊遍歷所有深淺層資料夾中的 index.html，剔除背景圖片，直接生成對應高挑純色色塊卡片[span_3](start_span)[span_3](end_span)。</span>
             </div>
             <div class="setting-row">
                 <button type="button" id="btn-sync-trees" class="ios-btn">🔄 發動 Git Trees 免 Token 全庫同步掃描</button>
@@ -499,8 +485,8 @@
 </div>
 
 <script type="module">
-/ 全面使用合法標準之 JavaScript 註解語法[span_0](start_span)[span_0](end_span)[span_1](start_span)[span_1](end_span)
-/ 徹底移除前端危險的 service_role 密鑰漏洞[span_2](start_span)[span_2](end_span)[span_3](start_span)[span_3](end_span)
+// 全面使用合法標準之 JavaScript 註解語法[span_4](start_span)[span_4](end_span)
+// 徹底移除前端危險的 service_role 密鑰漏洞[span_5](start_span)[span_5](end_span)
 
 const MobiConfig = {
     storageKey: 'mobsp_2026_settings',
@@ -558,7 +544,7 @@ const MobiConfig = {
     }
 };
 
-/ 敏感 Token 僅存放於記憶體（Session Memory）中，分頁關閉即自動消逝[span_4](start_span)[span_4](end_span)[span_5](start_span)[span_5](end_span)
+// 敏感 Token 僅存放於記憶體（Session Memory）中[span_6](start_span)[span_6](end_span)
 let sessionGitToken = '';
 
 const themePalette = {
@@ -633,7 +619,7 @@ async function initMobiSpace() {
     applyRealtimeUI(config);
     MobiConfig.updateCacheDisplay();
 
-    / ⚡️ 重構核心：徹底移除任何標題圖片加載與 fallback 機制，改為 iOS 純色塊 Frosted Glass 體驗
+    // ⚡️ 完美卡片渲染機制：完全不帶標題圖，文字依舊靠左下排列，且無縫容納動態掃描卡片[span_7](start_span)[span_7](end_span)
     const renderCards = (cardsArray) => {
         if (!cardsArray || !Array.isArray(cardsArray)) return;
         mainContainer.innerHTML = '';
@@ -651,29 +637,16 @@ async function initMobiSpace() {
             a.setAttribute('aria-label', `前往功能模組：${card.title}`);
             a.className = `action-btn btn-${card.id || 'dynamic'}`;
             
-            / 強制抹除標題圖片，套用純色
+            // 抹除底圖，全自動適應縱向高挑色塊[span_8](start_span)[span_8](end_span)
             a.style.backgroundImage = 'none';
             a.style.backgroundColor = 'var(--card-bg)';
-            a.style.display = 'flex';
-            a.style.alignItems = 'center';
-            a.style.justifyContent = 'center';
             
             const overlay = document.createElement('div');
             overlay.className = 'btn-overlay';
-            overlay.style.position = 'static';
-            overlay.style.padding = '20px';
-            overlay.style.background = 'none';
-            overlay.style.width = '100%';
-            overlay.style.height = '100%';
-            overlay.style.display = 'flex';
-            overlay.style.alignItems = 'center';
-            overlay.style.justifyContent = 'center';
             
             const title = document.createElement('div');
             title.className = 'btn-title';
             title.innerText = card.title;
-            title.style.textShadow = 'none'; / 移除文字陰影，視覺更洗鍊乾淨
-            title.style.color = 'var(--text-main)'; 
             
             overlay.appendChild(title);
             a.appendChild(overlay);
@@ -681,7 +654,7 @@ async function initMobiSpace() {
         });
     };
 
-    / 載入卡片策略
+    // 載入初始備用卡片配置
     let cardsData = [];
     try {
         const res = await fetch('/data/pages-config.json');
@@ -691,7 +664,7 @@ async function initMobiSpace() {
             throw new Error(`HTTP 異常代碼: ${res.status}`);
         }
     } catch(e) { 
-        console.warn("未發現本地配置快取 JSON，套用記憶體降級預載結構[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)");
+        console.warn("未發現本地配置快取 JSON，套用記憶體降級預載結構");
         cardsData = [
             { id: "blog", title: "部落格", url: "/blog/" },
             { id: "tools", title: "工具庫", url: "/tol/" }
@@ -699,7 +672,7 @@ async function initMobiSpace() {
     }
     renderCards(cardsData);
 
-    / 彈窗處理
+    // 彈窗處理
     if (!config.alertHasShown || config.alertMode === 'always') {
         alertTitle.innerText = config.alertTitle;
         alertDesc.innerText = config.alertDesc;
@@ -719,7 +692,7 @@ async function initMobiSpace() {
     alertCloseBtn.addEventListener('click', dismissAlert);
     alertCloseBtn.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') dismissAlert(); });
 
-    / 跑馬燈數據源調度
+    // 跑馬燈數據源調度
     const initNoticeLine = async () => {
         const vTag = document.getElementById('v-tag');
         const mqText = document.getElementById('mq-text');
@@ -737,7 +710,7 @@ async function initMobiSpace() {
     initNoticeLine();
     setInterval(initNoticeLine, 60000);
 
-    / 控制中心抽屜與 PointerEvent 拖曳關閉手勢
+    // 控制中心抽屜與 PointerEvent 拖曳關閉手勢
     const openBtn = document.getElementById('open-control-btn');
     const closeBtnHeader = document.getElementById('sheet-header-close');
     const closeBtnHandle = document.getElementById('sheet-handle-close');
@@ -816,7 +789,7 @@ async function initMobiSpace() {
     document.addEventListener('pointermove', handleMove);
     document.addEventListener('pointerup', handleEnd);
 
-    / 元件變更事件監聽
+    // 元件變更事件監聽
     document.getElementById('cfg-alert-title').addEventListener('input', (e) => { config.alertTitle = e.target.value; MobiConfig.save(config); });
     document.getElementById('cfg-alert-desc').addEventListener('input', (e) => { config.alertDesc = e.target.value; MobiConfig.save(config); });
     document.getElementById('cfg-alert-mode').addEventListener('change', (e) => { config.alertMode = e.target.value; MobiConfig.save(config); });
@@ -842,7 +815,7 @@ async function initMobiSpace() {
         config.theme = e.target.value;
         MobiConfig.save(config);
         applyRealtimeUI(config);
-        renderCards(cardsData); / 主題變更時一併重繪色塊背景底色
+        renderCards(cardsData); 
     });
 
     document.getElementById('cfg-nav-sandbox').addEventListener('change', (e) => {
@@ -924,7 +897,7 @@ async function initMobiSpace() {
         }
     });
 
-    / ⚡️ 免 Token 全庫 Git Trees 遞迴遍歷自動卡片生成引擎[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
+    // ⚡️ 免 Token 全庫 Git Trees 遞迴遍歷智慧掃描引擎（掃描後無縫附加連結卡片並維持附圖 2 風格）[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)
     document.getElementById('btn-sync-trees').addEventListener('click', async () => {
         const btn = document.getElementById('btn-sync-trees');
         const oldText = btn.innerText;
@@ -932,7 +905,7 @@ async function initMobiSpace() {
         btn.disabled = true;
 
         try {
-            const apiUrl = 'https://api.github.com/repos/mobsp/git/trees/main?recursive=1';
+            const apiUrl = 'https://api.github.com/repos/mobsp/mobsp.github.io/git/trees/main?recursive=1';
             
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 12000);
@@ -950,7 +923,7 @@ async function initMobiSpace() {
             const data = await response.json();
             if (!data.tree || !Array.isArray(data.tree)) throw new Error("無效的樹狀結構數據");
 
-            / 深度篩選各級資料夾下的 index.html（排除根目錄、資產目錄與依賴庫）[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
+            // 深度遍歷所有層級目錄下的 index.html（排除無關資料夾）[span_11](start_span)[span_11](end_span)
             const indexHtmlFiles = data.tree.filter(f => 
                 f.path.endsWith('index.html') && 
                 f.path !== 'index.html' && 
@@ -966,7 +939,7 @@ async function initMobiSpace() {
                 "wiki": "支援中心"
             };
 
-            / 映射組裝卡片（完全排除圖片屬性，保持純色一致風格）
+            // 生成結構（全面抹除背景圖、完美繼承高挑縱向色塊與靠左下置文字）[span_12](start_span)[span_12](end_span)
             const dynamicCards = indexHtmlFiles.map(file => {
                 const pathParts = file.path.split('/');
                 pathParts.pop(); 
@@ -985,15 +958,15 @@ async function initMobiSpace() {
             } else {
                 cardsData = dynamicCards;
                 renderCards(cardsData);
-                alert(`🎉 恭喜！免 Token Git Trees 全庫深度同步成功！\n共自動漫遊並為 ${dynamicCards.length} 個子目錄模組建立了純色極簡卡片。`);
+                alert(`🎉 免 Token Git Trees 深度同步成功！\n共掃描到 ${dynamicCards.length} 個子目錄頁面，已無縫長出對應的極簡滑塊卡片。`);
             }
 
         } catch (err) {
             console.error(err);
             if(err.name === 'AbortError') {
-                alert("同步失敗：連線逾時，GitHub API 響應過慢。");
+                alert("同步失敗：連線逾時，遠端響應過慢。");
             } else {
-                alert(`自動化同步失敗: ${err.message}\n提示：若遇到 API Rate Limit 限制，可於控制中心下方開啟開發者模式輸入 PAT 繞過。`);
+                alert(`自動化同步失敗: ${err.message}`);
             }
         } finally {
             btn.innerText = oldText;
@@ -1001,7 +974,7 @@ async function initMobiSpace() {
         }
     });
 
-    / SW 快取核心感測除錯器
+    // SW 快取感測除錯器
     const swStatusTxt = document.getElementById('txt-sw-status');
     const updateSWStatus = () => {
         if (!swStatusTxt) return;
@@ -1020,7 +993,7 @@ async function initMobiSpace() {
                     swStatusTxt.style.color = "var(--status-blue)";
                 }
             }).catch(() => {
-                swStatusTxt.innerText = "檢測失敗 (無權限)";
+                swStatusTxt.innerText = "檢測失敗";
                 swStatusTxt.style.color = "var(--status-red)";
             });
         } else {
@@ -1036,7 +1009,7 @@ async function initMobiSpace() {
                 if (reg) {
                     reg.unregister().then(success => {
                         if (success) {
-                            alert("Service Worker 快取控制權註銷成功，網頁即將刷新。");
+                            alert("控制權註銷成功，網頁即將刷新。");
                             window.location.reload();
                         }
                     });
@@ -1053,8 +1026,8 @@ async function initMobiSpace() {
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js')
-            .then(reg => { console.log('MobiSpace PWA 核心註冊成功，範圍: ', reg.scope); })
-            .catch(err => { console.error('MobiSpace PWA 核心註冊失敗: ', err); });
+            .then(reg => { console.log('MobiSpace PWA 註冊成功: ', reg.scope); })
+            .catch(err => { console.error('MobiSpace PWA 註冊失敗: ', err); });
     });
 }
 </script>
