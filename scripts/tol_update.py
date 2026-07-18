@@ -2,23 +2,23 @@ import os
 import re
 import json
 
-# 🔴 已客製化調整：因為腳本在 scripts/ 內，必須向上一層 (../) 定位核心目錄
+# 🔴 精準定位外層目錄
 TOL_DIR = "../tol"
 INDEX_FILE = "../index.html"
 
 def parse_tool_folder(folder_name, folder_path):
     """
-    最頂配解析核心：
-    優先權 1: config.json (精準讀取多語系、Icon、精選狀態與標籤)
-    優先權 2: README.md (智慧正則解析大標題與描述段落)
-    優先權 3: 資料夾名稱 Fallback 原生轉換
+    工程級深度解析核心：
+    優先權 1: config.json (包含精選狀態、專屬 Icon 與多語系)
+    優先權 2: README.md (智慧正則解析大標題與段落)
+    優先權 3: Fallback 結構還原
     """
     display_name = " ".join([w.capitalize() for w in folder_name.split("-")])
     tool_data = {
         "id": folder_name,
         "name": display_name,
-        "desc": f"Online {display_name} Web Tool Center",
-        "tags": [folder_name.split("-")[0], "utils"],
+        "desc": f"Online {display_name} System Center",
+        "tags": [folder_name.split('-')[0], "utils"],
         "featured": False,
         "icon": "🔧"
     }
@@ -37,35 +37,33 @@ def parse_tool_folder(folder_name, folder_path):
                 tool_data["tags"] = cfg.get("tags", tool_data["tags"])
                 tool_data["featured"] = cfg.get("featured", tool_data["featured"])
                 tool_data["icon"] = cfg.get("icon", tool_data["icon"])
-                print(f"📖 [JSON 讀取成功] 工具: {folder_name}")
+                print(f"📖 [JSON] 成功收割工具: {folder_name}")
                 return tool_data
         except Exception:
-            print(f"⚠️ [JSON 格式毀損] 將下放至 README 備援模式: {folder_name}")
+            print(f"⚠️ [JSON 損毀] 下放至 README 備援: {folder_name}")
 
-    # 2. 次要優先級：智慧解析 README.md
+    # 2. 次要優先級：智慧解析 README.md (🔴 採用 Python 正規的字串處理)
     target_readme = readme_path if os.path.exists(readme_path) else (readme_path_lc if os.path.exists(readme_path_lc) else None)
     if target_readme:
         try:
             with open(target_readme, "r", encoding="utf-8") as f:
                 lines = [l.strip() for l in f.readlines() if l.strip()]
                 
-                # 正則抓取第一個 # 標題
                 for line in lines:
                     if line.startswith("# "):
                         tool_data["name"] = line.replace("# ", "").strip()
                         break
                 
-                # 排除標題，抓取第一個純文字段落作為描述
                 desc_candidates = [l for l in lines if not l.startswith("#") and not l.startswith("-") and not l.startswith("!")]
                 if desc_candidates:
                     tool_data["desc"] = desc_candidates[0]
                     
-            print(f"📝 [README 解析成功] 工具: {folder_name}")
+            print(f"📝 [README] 成功收割工具: {folder_name}")
             return tool_data
         except Exception:
             pass
 
-    print(f"⚙️ [預設結構還原] 工具: {folder_name}")
+    print(f"⚙️ [Fallback] 預設還原工具: {folder_name}")
     return tool_data
 
 def main():
@@ -92,7 +90,7 @@ def main():
     # 精準正則切入點：比對 const TOOLS = [...]; 區塊
     pattern = r"(const\s+TOOLS\s*=\s*\[)(.*?)(\];)"
     
-    # 序列化輸出
+    # 序列化格式化 JSON 字串，關閉轉碼，完美支援多語系與 Emoji
     serialized_json = json.dumps(tools_matrix, ensure_ascii=False, indent=6)
     json_inner = serialized_json.strip().lstrip("[").rstrip("]")
     
@@ -101,7 +99,7 @@ def main():
     with open(INDEX_FILE, "w", encoding="utf-8") as f:
         f.write(updated_content)
         
-    print(f"🚀 [終極同步完工] 共計 {len(tools_matrix)} 款實體工具之 Metadata 已成功寫入 UI Shell。")
+    print(f"🚀 [完全體同步完工] 共計 {len(tools_matrix)} 款工具之實體 Metadata 已安全寫入 index.html。")
 
 if __name__ == "__main__":
     main()
