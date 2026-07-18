@@ -1,0 +1,45 @@
+name: 🔄 自動巡檢並修復 JS 語法錯誤
+
+on:
+  push:
+    branches:
+      - main  # 當推送到 main 分支時觸發
+  workflow_dispatch: # 允許在 GitHub 網頁上手動點擊執行
+
+jobs:
+  inspect-and-fix:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. 檢出儲存庫代碼
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # 2. 設定 Python 環境
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    # 3. 執行你提供的這一個 Python 腳本
+    # (假設你的腳本命名為 fix_slashes.py)
+    - name: Run Fix Slash Script
+      run: python fix_slashes.py
+
+    # 4. 自動偵測變更並推回儲存庫
+    - name: Commit and Push if changed
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action Bot"
+        
+        # 檢查是否有檔案被修改
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "📝 偵測到程式碼修正，正在自動提交變更..."
+          git add .
+          git commit -m "style: 🤖 自動修復因腳本錯誤導致的單斜槓註解錯誤 [skip ci]"
+          git push origin HEAD:main
+        else
+          echo "✅ 檔案一切正常，無需修改。"
+        fi
