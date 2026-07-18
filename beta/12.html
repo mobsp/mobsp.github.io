@@ -5,16 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     
-    <link rel="icon" href="/assets/brand/ms-logo1.webp" type="image/jpeg">
-    <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.webp">
+    <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.JPEG">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-startup-image" href="/assets/brand/ms-guide.webp">
+    <link rel="apple-touch-startup-image" href="/assets/brand/ms-guide.JPEG">
 
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
     <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
     
     <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ | 莫比空間 - 資源整合與數位服務入口網">
-    <meta property="og:image" content="/assets/brand/ms-logo1.webp">
+    <meta property="og:image" content="/assets/brand/ms-logo1.JPEG">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -56,7 +56,7 @@
 
         #fake-splash {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #050508 url('/assets/brand/ms-guide.webp') center/cover no-repeat;
+            background: #050508 url('/assets/brand/ms-guide.JPEG') center/cover no-repeat;
             z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s;
         }
@@ -429,7 +429,7 @@
 </div>
 
 <script type="module">
-/ 徹底排除前端外洩金鑰，全部修復 JS 合法註解格式[span_3](start_span)[span_3](end_span)
+// 徹底排除前端外洩金鑰，全部修復 JS 合法註解格式[span_3](start_span)[span_3](end_span)
 
 const MobiConfig = {
     storageKey: 'mobsp_2026_settings',
@@ -484,7 +484,7 @@ const MobiConfig = {
     }
 };
 
-/ 安全防線：PAT Token 僅短期留存在記憶體 Session 當中，關閉分頁即自毀[span_4](start_span)[span_4](end_span)
+// 安全防線：PAT Token 僅短期留存在記憶體 Session 當中，關閉分頁即自毀[span_4](start_span)[span_4](end_span)
 let sessionGitToken = '';
 
 const themePalette = {
@@ -552,7 +552,7 @@ async function initMobiSpace() {
     applyRealtimeUI(config);
     MobiConfig.updateCacheDisplay();
 
-    / ⚡️ 重建卡片渲染：完全移除背景標題圖，文字依舊置於左下方，無縫加載[span_5](start_span)[span_5](end_span)
+    // ⚡️ 重建卡片渲染：完全移除背景標題圖，文字依舊置於左下方，無縫加載[span_5](start_span)[span_5](end_span)
     const renderCards = (cardsArray) => {
         if (!cardsArray || !Array.isArray(cardsArray)) return;
         mainContainer.innerHTML = '';
@@ -581,7 +581,7 @@ async function initMobiSpace() {
         });
     };
 
-    / 載入卡片：一律優先讀取儲存庫最源頭的靜態 JSON 配置檔[span_6](start_span)[span_6](end_span)
+    // 載入卡片：一律優先讀取儲存庫最源頭的靜態 JSON 配置檔[span_6](start_span)[span_6](end_span)
     let cardsData = [];
     try {
         const res = await fetch('/data/pages-config.json');
@@ -591,7 +591,7 @@ async function initMobiSpace() {
             throw new Error();
         }
     } catch(e) { 
-        / 降級備援
+        // 降級備援
         cardsData = [
             { id: "blog", title: "部落格", url: "/blog/" },
             { id: "tools", title: "工具庫", url: "/tol/" }
@@ -599,7 +599,7 @@ async function initMobiSpace() {
     }
     renderCards(cardsData);
 
-    / 彈窗處理
+    // 彈窗處理
     if (!config.alertHasShown || config.alertMode === 'always') {
         alertTitle.innerText = config.alertTitle;
         alertDesc.innerText = config.alertDesc;
@@ -607,7 +607,7 @@ async function initMobiSpace() {
     }
     alertCloseBtn.addEventListener('click', () => iosAlert.classList.remove('active'));
 
-    / 跑馬燈調度
+    // 跑馬燈調度
     const initNoticeLine = async () => {
         const vTag = document.getElementById('v-tag');
         const mqText = document.getElementById('mq-text');
@@ -623,7 +623,7 @@ async function initMobiSpace() {
     };
     initNoticeLine();
 
-    / 控制中心抽屜與拖曳手勢
+    // 控制中心抽屜與拖曳手勢
     const openBtn = document.getElementById('open-control-btn');
     const closeBtnHeader = document.getElementById('sheet-header-close');
     const closeBtnHandle = document.getElementById('sheet-handle-close');
@@ -681,7 +681,7 @@ async function initMobiSpace() {
         currentTranslateY = 0;
     });
 
-    / 監聽基本變更
+    // 監聽基本變更
     document.getElementById('cfg-alert-title').addEventListener('input', (e) => { config.alertTitle = e.target.value; MobiConfig.save(config); });
     document.getElementById('cfg-alert-desc').addEventListener('input', (e) => { config.alertDesc = e.target.value; MobiConfig.save(config); });
     document.getElementById('cfg-alert-mode').addEventListener('change', (e) => { config.alertMode = e.target.value; MobiConfig.save(config); });
@@ -710,18 +710,18 @@ async function initMobiSpace() {
         }
     });
 
-    / ⚡️ 核心機制：Git Trees 免 Token 全域深度遍歷掃描 + 開發者自動回寫儲存庫雙向引擎[span_7](start_span)[span_7](end_span)
+    // ⚡️ 核心機制：Git Trees 免 Token 全域深度遍歷掃描 + 開發者自動回寫儲存庫雙向引擎[span_7](start_span)[span_7](end_span)
     document.getElementById('btn-sync-trees').addEventListener('click', async () => {
         const btn = document.getElementById('btn-sync-trees');
         btn.innerText = '⚡️ 漫遊掃描並正在儲存中...';
         btn.disabled = true;
 
         const owner = "mobsp";
-        const repo = "";
+        const repo = "mobsp.github.io";
         const filePath = "data/pages-config.json";
 
         try {
-            / Step 1: 利用公開免 Token 渠道，全庫遞迴解析最新資料夾結構[span_8](start_span)[span_8](end_span)
+            // Step 1: 利用公開免 Token 渠道，全庫遞迴解析最新資料夾結構[span_8](start_span)[span_8](end_span)
             const scanUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/main?recursive=1`;
             const scanRes = await fetch(scanUrl);
             if (!scanRes.ok) throw new Error("掃描全庫結構失敗，GitHub 遠端拒絕請求。");
@@ -754,17 +754,17 @@ async function initMobiSpace() {
                 return;
             }
 
-            / 即時在主介面渲染呈現新配置[span_9](start_span)[span_9](end_span)
+            // 即時在主介面渲染呈現新配置[span_9](start_span)[span_9](end_span)
             cardsData = dynamicCards;
             renderCards(cardsData);
 
-            / Step 2: 智慧判斷是否回寫儲存庫持久化[span_10](start_span)[span_10](end_span)
+            // Step 2: 智慧判斷是否回寫儲存庫持久化[span_10](start_span)[span_10](end_span)
             if (config.devMode && sessionGitToken) {
-                / 已開啟高級模式並備有 PAT Token，發動 API 回傳 Commit[span_11](start_span)[span_11](end_span)
+                // 已開啟高級模式並備有 PAT Token，發動 API 回傳 Commit[span_11](start_span)[span_11](end_span)
                 const fileApiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`;
                 let sha = null;
 
-                / 獲取原設定檔的 SHA 雜湊值以供覆蓋
+                // 獲取原設定檔的 SHA 雜湊值以供覆蓋
                 const getFileRes = await fetch(fileApiUrl, {
                     headers: { 'Authorization': `token ${sessionGitToken}` }
                 });
@@ -773,12 +773,12 @@ async function initMobiSpace() {
                     sha = fileData.sha;
                 }
 
-                / 將成果序列化並轉換成 Base64 編碼
+                // 將成果序列化並轉換成 Base64 編碼
                 const jsonContent = JSON.stringify(dynamicCards, null, 2);
                 const utf8Bytes = new TextEncoder().encode(jsonContent);
                 const base64Content = btoa(String.fromCharCode(...utf8Bytes));
 
-                / 向 GitHub 送出 Commit 更新
+                // 向 GitHub 送出 Commit 更新
                 const commitBody = {
                     message: "📌 auto-cms: 莫比控制中心自動化更新頁面資料夾滑塊索引",
                     content: base64Content,
@@ -802,7 +802,7 @@ async function initMobiSpace() {
                     alert(`⚠️ 掃描渲染成功，但回寫儲存庫失敗：${errData.message || putResponse.status}\n請檢驗您的 PAT 密鑰權限是否包含 repo 寫入特權。`);
                 }
             } else {
-                / 一般使用者情境，僅單次渲染不回寫[span_12](start_span)[span_12](end_span)
+                // 一般使用者情境，僅單次渲染不回寫[span_12](start_span)[span_12](end_span)
                 alert(`💡 已為您即時漫遊並渲染了 ${dynamicCards.length} 個子目錄卡片！\n提示：因為目前未提供開發者密鑰，此配置僅當前有效。若想寫入靜態儲存庫，請在控制中心底部解鎖「高級開發者模式」！`);
             }
 
@@ -815,7 +815,7 @@ async function initMobiSpace() {
         }
     });
 
-    / SW 快取
+    // SW 快取
     const swStatusTxt = document.getElementById('txt-sw-status');
     if ('serviceWorker' in navigator && swStatusTxt) {
         navigator.serviceWorker.getRegistration().then(reg => {
