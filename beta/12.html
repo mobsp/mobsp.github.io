@@ -485,8 +485,8 @@
 </div>
 
 <script type="module">
-// 全面使用合法標準之 JavaScript 註解語法[span_4](start_span)[span_4](end_span)
-// 徹底移除前端危險的 service_role 密鑰漏洞[span_5](start_span)[span_5](end_span)
+/ 全面使用合法標準之 JavaScript 註解語法[span_4](start_span)[span_4](end_span)
+/ 徹底移除前端危險的 service_role 密鑰漏洞[span_5](start_span)[span_5](end_span)
 
 const MobiConfig = {
     storageKey: 'mobsp_2026_settings',
@@ -544,7 +544,7 @@ const MobiConfig = {
     }
 };
 
-// 敏感 Token 僅存放於記憶體（Session Memory）中[span_6](start_span)[span_6](end_span)
+/ 敏感 Token 僅存放於記憶體（Session Memory）中[span_6](start_span)[span_6](end_span)
 let sessionGitToken = '';
 
 const themePalette = {
@@ -619,7 +619,7 @@ async function initMobiSpace() {
     applyRealtimeUI(config);
     MobiConfig.updateCacheDisplay();
 
-    // ⚡️ 完美卡片渲染機制：完全不帶標題圖，文字依舊靠左下排列，且無縫容納動態掃描卡片[span_7](start_span)[span_7](end_span)
+    / ⚡️ 完美卡片渲染機制：完全不帶標題圖，文字依舊靠左下排列，且無縫容納動態掃描卡片[span_7](start_span)[span_7](end_span)
     const renderCards = (cardsArray) => {
         if (!cardsArray || !Array.isArray(cardsArray)) return;
         mainContainer.innerHTML = '';
@@ -637,7 +637,7 @@ async function initMobiSpace() {
             a.setAttribute('aria-label', `前往功能模組：${card.title}`);
             a.className = `action-btn btn-${card.id || 'dynamic'}`;
             
-            // 抹除底圖，全自動適應縱向高挑色塊[span_8](start_span)[span_8](end_span)
+            / 抹除底圖，全自動適應縱向高挑色塊[span_8](start_span)[span_8](end_span)
             a.style.backgroundImage = 'none';
             a.style.backgroundColor = 'var(--card-bg)';
             
@@ -654,7 +654,7 @@ async function initMobiSpace() {
         });
     };
 
-    // 載入初始備用卡片配置
+    / 載入初始備用卡片配置
     let cardsData = [];
     try {
         const res = await fetch('/data/pages-config.json');
@@ -672,7 +672,7 @@ async function initMobiSpace() {
     }
     renderCards(cardsData);
 
-    // 彈窗處理
+    / 彈窗處理
     if (!config.alertHasShown || config.alertMode === 'always') {
         alertTitle.innerText = config.alertTitle;
         alertDesc.innerText = config.alertDesc;
@@ -692,7 +692,7 @@ async function initMobiSpace() {
     alertCloseBtn.addEventListener('click', dismissAlert);
     alertCloseBtn.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') dismissAlert(); });
 
-    // 跑馬燈數據源調度
+    / 跑馬燈數據源調度
     const initNoticeLine = async () => {
         const vTag = document.getElementById('v-tag');
         const mqText = document.getElementById('mq-text');
@@ -710,7 +710,7 @@ async function initMobiSpace() {
     initNoticeLine();
     setInterval(initNoticeLine, 60000);
 
-    // 控制中心抽屜與 PointerEvent 拖曳關閉手勢
+    / 控制中心抽屜與 PointerEvent 拖曳關閉手勢
     const openBtn = document.getElementById('open-control-btn');
     const closeBtnHeader = document.getElementById('sheet-header-close');
     const closeBtnHandle = document.getElementById('sheet-handle-close');
@@ -789,7 +789,7 @@ async function initMobiSpace() {
     document.addEventListener('pointermove', handleMove);
     document.addEventListener('pointerup', handleEnd);
 
-    // 元件變更事件監聽
+    / 元件變更事件監聽
     document.getElementById('cfg-alert-title').addEventListener('input', (e) => { config.alertTitle = e.target.value; MobiConfig.save(config); });
     document.getElementById('cfg-alert-desc').addEventListener('input', (e) => { config.alertDesc = e.target.value; MobiConfig.save(config); });
     document.getElementById('cfg-alert-mode').addEventListener('change', (e) => { config.alertMode = e.target.value; MobiConfig.save(config); });
@@ -897,7 +897,7 @@ async function initMobiSpace() {
         }
     });
 
-    // ⚡️ 免 Token 全庫 Git Trees 遞迴遍歷智慧掃描引擎（掃描後無縫附加連結卡片並維持附圖 2 風格）[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)
+    / ⚡️ 免 Token 全庫 Git Trees 遞迴遍歷智慧掃描引擎（掃描後無縫附加連結卡片並維持附圖 2 風格）[span_9](start_span)[span_9](end_span)[span_10](start_span)[span_10](end_span)
     document.getElementById('btn-sync-trees').addEventListener('click', async () => {
         const btn = document.getElementById('btn-sync-trees');
         const oldText = btn.innerText;
@@ -905,7 +905,7 @@ async function initMobiSpace() {
         btn.disabled = true;
 
         try {
-            const apiUrl = 'https://api.github.com/repos/mobsp/mobsp.github.io/git/trees/main?recursive=1';
+            const apiUrl = 'https://api.github.com/repos/mobsp/git/trees/main?recursive=1';
             
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 12000);
@@ -923,7 +923,7 @@ async function initMobiSpace() {
             const data = await response.json();
             if (!data.tree || !Array.isArray(data.tree)) throw new Error("無效的樹狀結構數據");
 
-            // 深度遍歷所有層級目錄下的 index.html（排除無關資料夾）[span_11](start_span)[span_11](end_span)
+            / 深度遍歷所有層級目錄下的 index.html（排除無關資料夾）[span_11](start_span)[span_11](end_span)
             const indexHtmlFiles = data.tree.filter(f => 
                 f.path.endsWith('index.html') && 
                 f.path !== 'index.html' && 
@@ -939,7 +939,7 @@ async function initMobiSpace() {
                 "wiki": "支援中心"
             };
 
-            // 生成結構（全面抹除背景圖、完美繼承高挑縱向色塊與靠左下置文字）[span_12](start_span)[span_12](end_span)
+            / 生成結構（全面抹除背景圖、完美繼承高挑縱向色塊與靠左下置文字）[span_12](start_span)[span_12](end_span)
             const dynamicCards = indexHtmlFiles.map(file => {
                 const pathParts = file.path.split('/');
                 pathParts.pop(); 
@@ -974,7 +974,7 @@ async function initMobiSpace() {
         }
     });
 
-    // SW 快取感測除錯器
+    / SW 快取感測除錯器
     const swStatusTxt = document.getElementById('txt-sw-status');
     const updateSWStatus = () => {
         if (!swStatusTxt) return;
