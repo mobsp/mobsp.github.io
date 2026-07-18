@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'tol/**'
-      - 'scripts/tol_update.py'  # 🔴 變更監聽：當指令碼本身在 scripts/ 內被修改時也會觸發
+      - 'scripts/tol_update.py'
 
 permissions:
   contents: write
@@ -24,7 +24,6 @@ jobs:
       with:
         python-version: '3.11'
 
-    # 🔴 核心修正：先切換進 scripts 資料夾，再發動自動化引擎，確保相對路徑 100% 精準
     - name: 🚀 Execute Engine Synchronization
       run: |
         cd scripts
@@ -38,6 +37,6 @@ jobs:
         if git diff --cached --quiet; then
           echo "No layout variance detected. Skipping commit."
         else
-          git commit -m "chore(auto): update tools configuration matrix via scripts"
+          git commit -m "chore(auto): fix javascript metrics and compilation matrix"
           git push
         fi
