@@ -61,13 +61,11 @@
     .bg-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: url('/assets/brand/ms-tools.JPEG') center/cover no-repeat;
-      opacity: 0.06; z-index: -2;
+      opacity: 0.04; z-index: -2;
       pointer-events: none;
     }
 
-    /* ==========================================================================
-       1. 頂部 iOS 毛玻璃導覽列 (Large Title Mechanism)
-       ========================================================================== */
+    /* 頂部 iOS 毛玻璃導覽列 */
     .ios-navigation-bar {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
       background: var(--nav-bg);
@@ -95,16 +93,13 @@
     .ios-large-title-container {
       padding: 12px 16px 4px 16px;
       margin-top: calc(44px + env(safe-area-inset-top));
-      transition: transform 0.2s linear, opacity 0.2s linear;
     }
 
     .ios-large-title {
       font-size: 34px; font-weight: 700; letter-spacing: -0.5px; margin: 0;
     }
 
-    /* ==========================================================================
-       2. iOS 搜尋欄位與 Spotlight 景深聚焦設計
-       ========================================================================== */
+    /* iOS 搜尋欄位與 Spotlight 景深 */
     .search-section {
       padding: 8px 16px; display: flex; align-items: center; width: 100%;
       background: transparent; position: relative; z-index: 101;
@@ -124,7 +119,6 @@
     .search-icon {
       position: absolute; left: 10px; width: 14px; height: 14px;
       border: 2px solid var(--text-muted); border-radius: 50%;
-      transition: all 0.3s var(--spring-curve);
     }
     .search-icon::after {
       content: ''; position: absolute; width: 6px; height: 2px;
@@ -145,18 +139,14 @@
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: var(--mask-bg); backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px);
       z-index: 90; opacity: 0; pointer-events: none;
-      transition: opacity 0.35s var(--spring-curve), backdrop-filter 0.35s var(--spring-curve);
+      transition: opacity 0.35s var(--spring-curve);
     }
     body.search-focused .spotlight-mask {
       opacity: 1; pointer-events: auto; backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
     }
 
-    /* ==========================================================================
-       3. LINE iOS 原生主頁佈局 (Banner 與 分類 Segmented Control)
-       ========================================================================== */
-    .ios-banner-container {
-      padding: 8px 16px;
-    }
+    /* Banner 與 Segmented Control */
+    .ios-banner-container { padding: 8px 16px; }
     .ios-banner {
       width: 100%; height: 90px; border-radius: 12px;
       background: linear-gradient(135deg, var(--accent), #0b1020);
@@ -172,7 +162,7 @@
     .segment-item {
       flex: 1; text-align: center; font-size: 13px; font-weight: 500;
       padding: 6px 0; position: relative; z-index: 2; cursor: pointer;
-      color: var(--text-main); transition: color 0.2s;
+      color: var(--text-main);
     }
     .segment-item.active { font-weight: 600; }
     .segment-slider {
@@ -183,110 +173,96 @@
       transition: transform 0.3s var(--spring-curve);
     }
 
-    /* ==========================================================================
-       4. LINE iOS 列表組件與物理回饋卡片
-       ========================================================================== */
+    /* iOS 視窗框架管理 */
     main { padding: 0 16px; }
-
-    /* 原生多視窗分頁框架容器 */
-    .app-view {
-      display: none;
-    }
-    .app-view.view-active {
-      display: block;
-      animation: ios-fade-in 0.25s var(--spring-curve);
-    }
-
-    @keyframes ios-fade-in {
-      from { opacity: 0; transform: translateY(6px); }
+    .app-view { display: none; }
+    .app-view.view-active { display: block; animation: ios-view-slide 0.25s var(--spring-curve); }
+    
+    @keyframes ios-view-slide {
+      from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
+    /* LINE iOS Grouped Table Style */
     .ios-list-group {
       background: var(--cell-bg); border-radius: 12px;
       border: var(--hairline) solid var(--border-color);
       overflow: hidden; margin-bottom: 24px;
     }
+    .ios-group-title {
+      padding: 0 16px 8px 8px; font-size: 13px; color: var(--text-muted);
+      text-transform: uppercase; font-weight: 500; letter-spacing: 0.5px;
+    }
 
     .ios-cell {
       display: flex; align-items: center; padding: 12px 16px;
-      text-decoration: none; color: inherit;
-      position: relative; background: var(--cell-bg);
-      transition: background-color 0.1s linear;
+      text-decoration: none; color: inherit; position: relative;
+      background: var(--cell-bg); transition: background-color 0.1s linear, transform 0.1s linear;
     }
-
     .ios-cell:not(:last-child)::after {
       content: ''; position: absolute; bottom: 0; left: 64px; right: 0;
       height: var(--hairline); background: var(--border-color);
     }
-
     .ios-cell.ios-active {
-      background-color: rgba(0, 0, 0, 0.08) !important;
-      transform: scale(0.97);
+      background-color: rgba(0, 0, 0, 0.06) !important; transform: scale(0.98);
     }
     @media (prefers-color-scheme: dark) {
-      .ios-cell.ios-active { background-color: rgba(255, 255, 255, 0.08) !important; }
+      .ios-cell.ios-active { background-color: rgba(255, 255, 255, 0.06) !important; }
     }
 
     .cell-avatar-container {
       width: 44px; height: 44px; border-radius: 10px; margin-right: 12px;
-      overflow: hidden; background: #1e272e; flex-shrink: 0;
+      overflow: hidden; background: linear-gradient(135deg, #1e272e, #2c3e50);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
     }
     .cell-img { width: 100%; height: 100%; object-fit: cover; }
+    .cell-fallback-icon { font-size: 22px; }
 
     .cell-info { flex: 1; min-width: 0; }
     .cell-title { font-size: 16px; font-weight: 500; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .cell-subtitle { font-size: 13px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
     .cell-chevron {
       width: 8px; height: 8px; border-top: 2px solid var(--text-muted);
       border-right: 2px solid var(--text-muted); transform: rotate(45deg);
-      margin-left: 8px; flex-shrink: 0; opacity: 0.6;
+      margin-left: 8px; flex-shrink: 0; opacity: 0.5;
     }
 
-    /* ==========================================================================
-       5. 底部 100% 擬真 iOS 原生 Tab Bar (配置功能優化修正)
-       ========================================================================== */
+    /* 底部 iOS 擬真 Tab Bar */
     .ios-tab-bar {
       position: fixed; bottom: 0; left: 0; width: 100%; z-index: 200;
-      background: var(--nav-bg);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: var(--nav-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-top: var(--hairline) solid var(--border-color);
       padding-bottom: env(safe-area-inset-bottom);
       display: flex; height: calc(49px + env(safe-area-inset-bottom));
     }
-
     .tab-item {
       flex: 1; display: flex; flex-direction: column; align-items: center;
       justify-content: center; padding-top: 6px; cursor: pointer; color: var(--tab-inactive);
-      transition: color 0.2s var(--spring-curve);
     }
-
     .tab-item.active { color: var(--accent); }
-
-    .tab-icon { font-size: 22px; margin-bottom: 2px; font-family: system-ui; }
+    .tab-icon { font-size: 20px; margin-bottom: 2px; }
     .tab-label { font-size: 10px; font-weight: 500; }
 
-    footer { text-align: center; padding: 16px 0; font-size: 12px; color: var(--text-muted); opacity: 0.5; }
+    footer { text-align: center; padding: 24px 0; font-size: 12px; color: var(--text-muted); opacity: 0.5; }
+
+    /* CMS Dashboard 樣式卡片 */
+    .cms-card { padding: 16px; background: var(--cell-bg); }
+    .cms-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; background: var(--search-bg); color: var(--accent); margin-bottom: 8px; }
+    .commit-msg { font-size: 14px; font-weight: 500; margin-bottom: 4px; color: var(--text-main); }
+    .commit-meta { font-size: 12px; color: var(--text-muted); }
   </style>
 
-  <!-- 精準 SEO 與 PWA 組件配置 -->
+  <!-- 精準 SEO 與 PWA 配置 -->
   <link rel="alternate" hreflang="x-default" href="https://mobsp.qzz.io/tol/index.html">
   <link rel="preconnect" href="https://gstatic.com" crossorigin="">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="/assets/brand/ms-logo1.JPEG">
   <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆 | MOBSP">
   <link rel="canonical" href="https://mobsp.qzz.io/tol/index.html">
   <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆">
-  <meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆 | MOBSP">
-  <meta property="og:url" content="https://mobsp.qzz.io/tol/index.html">
-  <meta property="og:site_name" content="MOBSP">
-  <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#0b1020">
   <link rel="manifest" href="/manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="apple-touch-icon" href="/icons/icon-192.png">
 </head>
 
@@ -294,14 +270,14 @@
   <div class="bg-overlay"></div>
   <div class="spotlight-mask" id="spotlightMask"></div>
 
-  <!-- 頂部高階毛玻璃導覽（小標題隱藏，滾動時浮現） -->
+  <!-- 頂部高階導覽列 -->
   <nav class="ios-navigation-bar" id="navBar">
     <div class="nav-compact-content">
       <div class="nav-small-title" id="navSmallTitle">主頁</div>
     </div>
   </nav>
 
-  <!-- 大標題容器 -->
+  <!-- 大標題 -->
   <div class="ios-large-title-container" id="largeTitleArea">
     <h1 class="ios-large-title" id="iosLargeTitle">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</h1>
   </div>
@@ -315,50 +291,66 @@
     <button class="search-cancel-btn" id="searchCancel">取消</button>
   </section>
 
-  <!-- 主體內容分頁視窗框架 -->
+  <!-- 主體多視窗分頁 -->
   <main>
-    <!-- 視窗 1：主頁展示牆 -->
+    <!-- View 1: 主頁全部工具 -->
     <div id="view-home" class="app-view view-active">
-      <!-- 模擬 LINE 原生頂部廣宣橫幅 -->
       <div class="ios-banner-container">
         <div class="ios-banner">
           <div class="banner-text">
-            <h3>Mobispace 雲端自動化已就緒</h3>
-            <p>優化極致原生工藝 99.9999% 高仿核心</p>
+            <h3 id="bannerTitle">Mobispace 雲端自動化已就緒</h3>
+            <p id="bannerDesc">優化極致原生工藝 99.9999% 高仿核心</p>
           </div>
         </div>
       </div>
 
-      <!-- LINE 分類滑動控制組件 (Segmented Control) -->
       <div class="segmented-control">
-        <div class="segment-item active" data-filter="all">全部工具</div>
-        <div class="segment-item" data-filter="featured">精選推薦</div>
+        <div class="segment-item active" data-filter="all" id="segAll">全部工具</div>
+        <div class="segment-item" data-filter="featured" id="segFeatured">精選推薦</div>
         <div class="segment-slider" id="segmentSlider"></div>
       </div>
 
       <section class="ios-list-group" id="grid" role="list"></section>
     </div>
 
-    <!-- 視窗 2：分類標籤庫 -->
+    <!-- View 2: 分類標籤庫 -->
     <div id="view-tags" class="app-view">
-      <div style="padding: 16px 0 8px 0; font-size: 14px; color: var(--text-muted); font-weight: 600;">熱門快捷標籤</div>
+      <div class="ios-group-title" id="titleTags">熱門分類快捷檢索</div>
       <section class="ios-list-group" id="tag-list-group"></section>
     </div>
 
-    <!-- 視窗 3：系統設定 -->
+    <!-- View 3: GitHub Rest API CMS 後台 -->
+    <div id="view-cms" class="app-view">
+      <div class="ios-group-title" id="titleCms">GitHub Actions 動態部署發布日誌</div>
+      <section class="ios-list-group" id="cms-log-group">
+        <div class="ios-cell"><div class="cell-info"><div class="cell-title">Loading API Data...</div></div></div>
+      </section>
+    </div>
+
+    <!-- View 4: 系統設定與多語系切換 -->
     <div id="view-settings" class="app-view">
-      <div style="padding: 16px 0 8px 0; font-size: 14px; color: var(--text-muted); font-weight: 600;">系統資訊與偏好</div>
+      <div class="ios-group-title" id="titleLang">環境語言偏好設定 (Language)</div>
+      <section class="ios-list-group">
+        <div class="ios-cell" style="cursor:pointer;" id="btn-lang-zh">
+          <div class="cell-info"><div class="cell-title">繁體中文 (臺灣)</div></div>
+          <div id="check-zh" style="color:var(--accent); font-weight:bold;">✓</div>
+        </div>
+        <div class="ios-cell" style="cursor:pointer;" id="btn-lang-en">
+          <div class="cell-info"><div class="cell-title">English (US)</div></div>
+          <div id="check-en" style="color:var(--accent); font-weight:bold; display:none;">✓</div>
+        </div>
+        <div class="ios-cell" style="cursor:pointer;" id="btn-lang-ja">
+          <div class="cell-info"><div class="cell-title">日本語 (日本)</div></div>
+          <div id="check-ja" style="color:var(--accent); font-weight:bold; display:none;">✓</div>
+        </div>
+      </section>
+
+      <div class="ios-group-title">核心系統規格</div>
       <section class="ios-list-group">
         <div class="ios-cell">
           <div class="cell-info">
-            <div class="cell-title">當前版本</div>
-            <div class="cell-subtitle">v2.0.0 (LINE UI Shell Hybrid)</div>
-          </div>
-        </div>
-        <div class="ios-cell">
-          <div class="cell-info">
-            <div class="cell-title">全自動化架構</div>
-            <div class="cell-subtitle">GitHub Actions & PWA Powered</div>
+            <div class="cell-title">核心架構</div>
+            <div class="cell-subtitle">Vanilla Dynamic 3-in-1 Engine</div>
           </div>
         </div>
       </section>
@@ -369,41 +361,54 @@
     </footer>
   </main>
 
-  <!-- 底部 4 顆修正配置、可完全正常運作切換的 iOS 原生系統級 Tab Bar -->
+  <!-- 工具展示專用五大 Tab 導覽列 -->
   <div class="ios-tab-bar" id="iosTabBar">
     <div class="tab-item active" data-target="home" data-title="主頁">
-      <div class="tab-icon">🎛️</div>
-      <div class="tab-label">全部工具</div>
+      <div class="tab-icon">🔧</div>
+      <div class="tab-label" id="tabHome">工具</div>
     </div>
     <div class="tab-item" data-target="featured" data-title="精選推薦">
       <div class="tab-icon">⭐</div>
-      <div class="tab-label">精選推薦</div>
+      <div class="tab-label" id="tabFeatured">精選</div>
     </div>
     <div class="tab-item" data-target="tags" data-title="分類標籤">
       <div class="tab-icon">🏷️</div>
-      <div class="tab-label">分類標籤</div>
+      <div class="tab-label" id="tabTags">標籤</div>
+    </div>
+    <div class="tab-item" data-target="cms" data-title="發布日誌">
+      <div class="tab-icon">📊</div>
+      <div class="tab-label" id="tabCms">後台</div>
     </div>
     <div class="tab-item" data-target="settings" data-title="系統設定">
       <div class="tab-icon">⚙️</div>
-      <div class="tab-label">設定</div>
+      <div class="tab-label" id="tabSettings">設定</div>
     </div>
   </div>
 
   <script>
     /**
-     * ⚙️ 核心數據庫結構 (帶有完整 Metadata)
+     * 1. 多語系數據字典（5. 進階：支援三國語系平滑本地化）
+     */
+    let currentLang = "zh";
+    const I18N = {
+      zh: { title: "工具庫", search: "搜尋線上工具或標籤...", bannerT: "Mobispace 自動化就緒", bannerD: "優化極致原生工藝 99.9999% 高仿核心", all: "全部工具", feat: "精選推薦", tabH: "工具", tabF: "精選", tabT: "標籤", tabC: "後台", tabS: "設定", tTags: "熱門分類快捷檢索", tCms: "GitHub Actions 動態部署日誌", tLang: "環境語言偏好設定 (Language)" },
+      en: { title: "Tools Hub", search: "Search tools or tags...", bannerT: "Mobispace Automation Ready", bannerD: "Highly optimized 99.9999% iOS UI Shell System", all: "All Tools", feat: "Featured", tabH: "Tools", tabF: "Featured", tabT: "Tags", tabC: "CMS", tabS: "Settings", tTags: "Popular Category Index", tCms: "GitHub Actions Deployment Logs", tLang: "Language Preferences" },
+      ja: { title: "ツール壁", search: "ツールやタグを検索...", bannerT: "自動化システム稼働中", bannerD: "極限まで洗練された iOS UI シェル設計", all: "全ツール", feat: "おすすめ", tabH: "ツール", tabF: "おすすめ", tabT: "タグ", tabC: "ダッシュ", tabS: "設定", tTags: "人気カテゴリインデックス", tCms: "GitHub Actions デプロイログ", tLang: "言語設定 (Language)" }
+    };
+
+    /**
+     * 2. 資料庫陣列全面升級（2. 優化：新增獨立專屬 icon、fallback 機制）
      */
     const TOOLS = [
-      { id: "json-formatter", name: "JSON Formatter", desc: "精緻化的 JSON 格式化校正與縮排工具", tags: ["json", "format", "dev"], featured: true },
-      { id: "color-palette", name: "Color Palette", desc: "高階 iOS 磨砂玻璃透光調色盤系統", tags: ["color", "design", "ui"], featured: true },
-      { id: "markdown-editor", name: "Markdown Editor", desc: "即時渲染、無框架模組化文字編輯器", tags: ["markdown", "editor", "text"], featured: false },
-      { id: "base64-decoder", name: "Base64 Decoder", tags: ["base64", "decode", "security"], desc: "極速安全編解碼器", featured: false },
-      { id: "timestamp-converter", name: "Timestamp Converter", tags: ["time", "date", "utils"], desc: "時間戳與標準時間雙向調頻轉換", featured: false },
-      { id: "unit-converter", name: "Unit Converter", tags: ["unit", "math", "utils"], desc: "工程與日常多維度計量單位調用器", featured: false }
+      { id: "json-formatter", name: "JSON Formatter", desc: "精緻化的 JSON 格式化校正與縮排工具", tags: ["json", "format", "dev"], featured: true, icon: "🛠️" },
+      { id: "color-palette", name: "Color Palette", desc: "高階 iOS 磨砂玻璃透光調色盤系統", tags: ["color", "design", "ui"], featured: true, icon: "🎨" },
+      { id: "markdown-editor", name: "Markdown Editor", desc: "即時渲染、無框架模組化文字編輯器", tags: ["markdown", "editor", "text"], featured: false, icon: "📝" },
+      { id: "base64-decoder", name: "Base64 Decoder", tags: ["base64", "decode", "security"], desc: "極速安全編解碼器", featured: false, icon: "🔒" },
+      { id: "timestamp-converter", name: "Timestamp Converter", tags: ["time", "date", "utils"], desc: "時間戳與標準時間雙向調頻轉換", featured: false, icon: "⏱️" },
+      { id: "unit-converter", name: "Unit Converter", tags: ["unit", "math", "utils"], desc: "工程與日常多維度計量單位調用器", featured: false, icon: "" } // 留空測試 fallback
     ];
 
     const BASE_URL = "/tol/";
-    const PREVIEW_IMG = "/assets/brand/ms-logo1.JPEG";
 
     const grid = document.getElementById("grid");
     const searchInput = document.getElementById("search");
@@ -413,101 +418,121 @@
     const iosLargeTitle = document.getElementById("iosLargeTitle");
     const segmentSlider = document.getElementById("segmentSlider");
     
-    let currentCategory = "all";   // 'all' | 'featured'
-    let activeTab = "home";         // 'home' | 'featured' | 'tags' | 'settings'
+    let currentCategory = "all";
+    let activeTab = "home";
 
-    /**
-     * 1. 頂部 iOS 大標題平滑滾動過渡機制
-     */
+    // 頂部大標題滾動回饋
     window.addEventListener("scroll", () => {
-      const scrollTop = window.scrollY;
-      if (scrollTop > 44) {
-        navBar.classList.add("scrolled");
-      } else {
-        navBar.classList.remove("scrolled");
-      }
+      if (window.scrollY > 44) navBar.classList.add("scrolled");
+      else navBar.classList.remove("scrolled");
     });
 
-    /**
-     * 2. 注入極致 iOS 觸控物理壓下阻尼動態監聽
-     */
+    // iOS 觸控阻尼回饋監聽
     function attachIOSPhysics(element) {
       let touchTimeout;
-      
       element.addEventListener("touchstart", () => {
-        touchTimeout = setTimeout(() => {
-          element.classList.add("ios-active");
-        }, 50);
+        touchTimeout = setTimeout(() => element.classList.add("ios-active"), 50);
       }, { passive: true });
-
-      const releaseTouch = () => {
-        clearTimeout(touchTimeout);
-        element.classList.remove("ios-active");
-      };
-
-      element.addEventListener("touchend", releaseTouch, { passive: true });
-      element.addEventListener("touchmove", releaseTouch, { passive: true });
-      element.addEventListener("touchcancel", releaseTouch, { passive: true });
+      const release = () => { clearTimeout(touchTimeout); element.classList.remove("ios-active"); };
+      element.addEventListener("touchend", release, { passive: true });
+      element.addEventListener("touchmove", release, { passive: true });
+      element.addEventListener("touchcancel", release, { passive: true });
     }
 
     /**
-     * 3. 模組化高效安全渲染引擎 (100% 採用 DOM API 阻斷 XSS 漏洞 SEC-004)
+     * 3. 內建輕量化文字權重模糊搜尋檢索演算法（3. 升級：自建快搜索引，免 Fuse.js 外掛）
      */
-    function render(list) {
+    function fuzzySearch(list, query) {
+      if (!query) return list.map(item => ({ item, score: 1 }));
+      
+      const q = query.toLowerCase().trim();
+      const results = [];
+
+      list.forEach(item => {
+        let score = 0;
+        const name = item.name.toLowerCase();
+        const id = item.id.toLowerCase();
+        const desc = item.desc ? item.desc.toLowerCase() : "";
+
+        if (name === q || id === q) score += 100; // 完全相符最高分
+        else if (name.startsWith(q)) score += 50;
+        else if (name.includes(q)) score += 30;
+        else if (desc.includes(q)) score += 10;
+
+        // 標籤權重匹配
+        item.tags.forEach(tag => {
+          if (tag.toLowerCase() === q) score += 40;
+          else if (tag.toLowerCase().includes(q)) score += 15;
+        });
+
+        if (score > 0) results.push({ item, score });
+      });
+
+      return results.sort((a, b) => b.score - a.score);
+    }
+
+    /**
+     * 4. 100% 安全 DOM 渲染引擎（1. 必修：徹底防堵 XSS 安全漏洞）
+     */
+    function render(scoredList) {
       grid.innerHTML = "";
 
-      if (list.length === 0) {
-        const emptyDiv = document.createElement("div");
-        emptyDiv.style.cssText = "text-align:center; padding:48px 16px; color:var(--text-muted); font-size:14px;";
-        emptyDiv.textContent = "無符合的工具項目";
-        grid.appendChild(emptyDiv);
+      if (scoredList.length === 0) {
+        const empty = document.createElement("div");
+        empty.style.cssText = "text-align:center; padding:48px 16px; color:var(--text-muted); font-size:14px;";
+        empty.textContent = "無符合的工具項目 / No items found";
+        grid.appendChild(empty);
         return;
       }
 
       const fragment = document.createDocumentFragment();
 
-      list.forEach(tool => {
+      scoredList.forEach(pack => {
+        const tool = pack.item;
         const fullUrl = `${BASE_URL}${tool.id}/`;
         const a = document.createElement("a");
         a.href = fullUrl;
         a.className = "ios-cell";
         a.setAttribute("role", "listitem");
 
-        // 頭像區塊
-        const avatarContainer = document.createElement("div");
-        avatarContainer.className = "cell-avatar-container";
-        const img = document.createElement("img");
-        img.src = PREVIEW_IMG;
-        img.className = "cell-img";
-        img.alt = tool.name;
-        img.loading = "lazy";
-        avatarContainer.appendChild(img);
+        // 獨立頭像/圖示核心（2. 優化：若無圖示則自動 fallback 為精緻漸層 icon）
+        const avatarBox = document.createElement("div");
+        avatarBox.className = "cell-avatar-container";
+        
+        if (tool.icon) {
+          const iconSpan = document.createElement("span");
+          iconSpan.className = "cell-fallback-icon";
+          iconSpan.textContent = tool.icon;
+          avatarBox.appendChild(iconSpan);
+        } else {
+          const fallbackSpan = document.createElement("span");
+          fallbackSpan.className = "cell-fallback-icon";
+          fallbackSpan.textContent = "⚙️"; // 預設通用圖示
+          avatarBox.appendChild(fallbackSpan);
+        }
 
-        // 文字資訊區塊 (全面使用 textContent 確保 XSS 安全防護)
-        const cellInfo = document.createElement("div");
-        cellInfo.className = "cell-info";
-        
-        const titleDiv = document.createElement("div");
-        titleDiv.className = "cell-title";
-        titleDiv.textContent = tool.name;
-        
-        const subtitleDiv = document.createElement("div");
-        subtitleDiv.className = "cell-subtitle";
-        subtitleDiv.textContent = tool.desc || `/tol/${tool.id}`;
-        
-        cellInfo.appendChild(titleDiv);
-        cellInfo.appendChild(subtitleDiv);
+        // 文字資訊區塊（100% 使用 textContent 以確保防範 XSS 攻擊）
+        const info = document.createElement("div");
+        info.className = "cell-info";
 
-        // 箭頭
+        const title = document.createElement("div");
+        title.className = "cell-title";
+        title.textContent = tool.name;
+
+        const subtitle = document.createElement("div");
+        subtitle.className = "cell-subtitle";
+        subtitle.textContent = tool.desc || `/tol/${tool.id}`;
+
+        info.appendChild(title);
+        info.appendChild(subtitle);
+
         const chevron = document.createElement("div");
         chevron.className = "cell-chevron";
 
-        // 組裝節點
-        a.appendChild(avatarContainer);
-        a.appendChild(cellInfo);
+        a.appendChild(avatarBox);
+        a.appendChild(info);
         a.appendChild(chevron);
 
-        // 綁定極致物理按壓動態
         attachIOSPhysics(a);
         fragment.appendChild(a);
       });
@@ -516,146 +541,189 @@
     }
 
     /**
-     * 4. 渲染獨立標籤庫視窗
+     * 5. 異步免密鑰 GitHub API CMS 後台驅動（4. 升級：自動抓取發布日誌）
      */
+    async function fetchGitHubLogs() {
+      const logGroup = document.getElementById("cms-log-group");
+      try {
+        // 純前端免密鑰調用公共代碼庫變動數據
+        const res = await fetch("https://api.github.com/repos/mobsp/mobsp.github.io/commits?per_page=5");
+        if (!res.ok) throw new Error();
+        const data = await res.json();
+        
+        logGroup.innerHTML = "";
+        const frag = document.createDocumentFragment();
+        
+        data.forEach(commit => {
+          const card = document.createElement("div");
+          card.className = "cms-card";
+          card.style.position = "relative";
+          
+          const badge = document.createElement("div");
+          badge.className = "cms-badge";
+          badge.textContent = "DEPLOYED SUCCESS";
+
+          const msg = document.createElement("div");
+          msg.className = "commit-msg";
+          msg.textContent = commit.commit.message;
+
+          const meta = document.createElement("div");
+          meta.className = "commit-meta";
+          const date = new Date(commit.commit.author.date).toLocaleString();
+          meta.textContent = `Author: ${commit.commit.author.name} | ${date}`;
+
+          card.appendChild(badge);
+          card.appendChild(msg);
+          card.appendChild(meta);
+          
+          // 加一條細線
+          card.style.borderBottom = "var(--hairline) solid var(--border-color)";
+          frag.appendChild(card);
+        });
+        logGroup.appendChild(frag);
+      } catch (err) {
+        logGroup.innerHTML = `<div style="padding:20px; color:var(--text-muted); font-size:13px;">無法連結至 GitHub API。請確認網路連線或倉庫名稱是否正確。</div>`;
+      }
+    }
+
+    // 分類快速標籤抽屜渲染
     function renderTagsView() {
-      const tagListGroup = document.getElementById("tag-list-group");
-      tagListGroup.innerHTML = "";
+      const tagGroup = document.getElementById("tag-list-group");
+      tagGroup.innerHTML = "";
+      const uniqueTags = Array.from(new Set(TOOLS.flatMap(t => t.tags)));
+      const frag = document.createDocumentFragment();
 
-      // 提取資料庫中所有的 Unique Tags
-      const allTags = Array.from(new Set(TOOLS.flatMap(t => t.tags)));
-
-      const fragment = document.createDocumentFragment();
-      allTags.forEach(tag => {
-        const div = document.createElement("div");
-        div.className = "ios-cell";
-        div.style.cursor = "pointer";
-
-        const cellInfo = document.createElement("div");
-        cellInfo.className = "cell-info";
-
-        const titleDiv = document.createElement("div");
-        titleDiv.className = "cell-title";
-        titleDiv.textContent = `# ${tag}`;
-
-        const count = TOOLS.filter(t => t.tags.includes(tag)).length;
-        const subtitleDiv = document.createElement("div");
-        subtitleDiv.className = "cell-subtitle";
-        subtitleDiv.textContent = `包含 ${count} 個關聯線上工具`;
-
-        cellInfo.appendChild(titleDiv);
-        cellInfo.appendChild(subtitleDiv);
-        div.appendChild(cellInfo);
-
-        // 點擊標籤切換回主頁並自動搜尋該標籤
-        div.addEventListener("click", () => {
-          switchTab("home", "主頁");
+      uniqueTags.forEach(tag => {
+        const cell = document.createElement("div");
+        cell.className = "ios-cell";
+        cell.style.cursor = "pointer";
+        const info = document.createElement("div");
+        info.className = "cell-info";
+        const t = document.createElement("div");
+        t.className = "cell-title";
+        t.textContent = `# ${tag}`;
+        info.appendChild(t);
+        cell.appendChild(info);
+        
+        cell.addEventListener("click", () => {
+          switchTab("home", I18N[currentLang].title);
           searchInput.value = tag;
           performSearch();
         });
-
-        attachIOSPhysics(div);
-        fragment.appendChild(div);
+        attachIOSPhysics(cell);
+        frag.appendChild(cell);
       });
-
-      tagListGroup.appendChild(fragment);
+      tagGroup.appendChild(frag);
     }
 
-    /**
-     * 5. 輕量化高感度搜尋防抖 (Debounce) 機制
-     */
+    // 搜尋與防抖
     function debounce(func, delay = 150) {
       let timer;
-      return (...args) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => func.apply(this, args), delay);
-      };
+      return (...args) => { clearTimeout(timer); timer = setTimeout(() => func.apply(this, args), delay); };
     }
 
     const performSearch = () => {
-      const keyword = searchInput.value.toLowerCase().trim();
-      const filtered = TOOLS.filter(t => {
-        const matchesKeyword = t.name.toLowerCase().includes(keyword) || 
-                              t.id.toLowerCase().includes(keyword) ||
-                              t.tags.some(tag => tag.includes(keyword));
-        
-        if (currentCategory === "featured" || activeTab === "featured") {
-          return matchesKeyword && t.featured;
-        }
-        return matchesKeyword;
-      });
-      render(filtered);
-    };
-
-    const handleSearchInput = debounce(performSearch);
-    searchInput.addEventListener("input", handleSearchInput);
-
-    /**
-     * 6. iOS Spotlight 景深聚焦聯動切換控制
-     */
-    searchInput.addEventListener("focus", () => {
-      document.body.classList.add("search-focused");
-    });
-
-    const exitSearchFocus = () => {
-      document.body.classList.remove("search-focused");
-      searchInput.value = "";
-      searchInput.blur();
-      performSearch();
-    };
-
-    searchCancel.addEventListener("click", exitSearchFocus);
-    document.getElementById("spotlightMask").addEventListener("click", exitSearchFocus);
-
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && document.body.classList.contains("search-focused")) {
-        exitSearchFocus();
+      const query = searchInput.value;
+      let dataset = TOOLS;
+      if (currentCategory === "featured" || activeTab === "featured") {
+        dataset = TOOLS.filter(t => t.featured);
       }
-    });
+      const searchResults = fuzzySearch(dataset, query);
+      render(searchResults);
+    };
 
-    /**
-     * 7. Segmented Control 分類滑塊切換邏輯 (主頁分頁內控制)
-     */
-    document.querySelectorAll(".segment-item").forEach((item, index) => {
+    searchInput.addEventListener("input", debounce(performSearch));
+
+    // Spotlight 景深控制
+    searchInput.addEventListener("focus", () => document.body.classList.add("search-focused"));
+    const exitSearch = () => {
+      document.body.classList.remove("search-focused");
+      searchInput.value = ""; searchInput.blur(); performSearch();
+    };
+    searchCancel.addEventListener("click", exitSearch);
+    document.getElementById("spotlightMask").addEventListener("click", exitSearch);
+
+    // Segmented Control 滑塊
+    document.querySelectorAll(".segment-item").forEach((item, idx) => {
       item.addEventListener("click", () => {
         document.querySelector(".segment-item.active").classList.remove("active");
         item.classList.add("active");
-        segmentSlider.style.transform = `translateX(${index * 100}%)`;
+        segmentSlider.style.transform = `translateX(${idx * 100}%)`;
         currentCategory = item.getAttribute("data-filter");
         performSearch();
       });
     });
 
     /**
-     * 8. 修正版：底部 Tab Bar 動態控制核心導覽引擎
+     * 6. 多語系動態重新整合轉譯模組 (5. 進階功能)
+     */
+    function updateLanguageUI(lang) {
+      currentLang = lang;
+      const dict = I18N[lang];
+      
+      // 動態更新核心文字
+      iosLargeTitle.textContent = activeTab === "home" ? "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" : dict[getTabKey(activeTab)];
+      navSmallTitle.textContent = dict[getTabKey(activeTab)];
+      searchInput.placeholder = dict.search;
+      
+      document.getElementById("bannerTitle").textContent = dict.bannerT;
+      document.getElementById("bannerDesc").textContent = dict.bannerD;
+      document.getElementById("segAll").textContent = dict.all;
+      document.getElementById("segFeatured").textContent = dict.feat;
+      
+      document.getElementById("tabHome").textContent = dict.tabH;
+      document.getElementById("tabFeatured").textContent = dict.tabF;
+      document.getElementById("tabTags").textContent = dict.tabT;
+      document.getElementById("tabCms").textContent = dict.tabC;
+      document.getElementById("tabSettings").textContent = dict.tabS;
+
+      document.getElementById("titleTags").textContent = dict.tTags;
+      document.getElementById("titleCms").textContent = dict.tCms;
+      document.getElementById("titleLang").textContent = dict.tLang;
+
+      // 勾選框樣式連動
+      document.getElementById("check-zh").style.display = lang === "zh" ? "block" : "none";
+      document.getElementById("check-en").style.display = lang === "en" ? "block" : "none";
+      document.getElementById("check-ja").style.display = lang === "ja" ? "block" : "none";
+    }
+
+    function getTabKey(tab) {
+      if (tab === "home") return "tabH";
+      if (tab === "featured") return "tabF";
+      if (tab === "tags") return "tabT";
+      if (tab === "cms") return "tabC";
+      return "tabS";
+    }
+
+    document.getElementById("btn-lang-zh").addEventListener("click", () => updateLanguageUI("zh"));
+    document.getElementById("btn-lang-en").addEventListener("click", () => updateLanguageUI("en"));
+    document.getElementById("btn-lang-ja").addEventListener("click", () => updateLanguageUI("ja"));
+
+    /**
+     * 7. 修正版：底部 5 個工具配置專用 Tab Bar 原生切換核心 (6. 功能修正)
      */
     function switchTab(targetId, titleText) {
       activeTab = targetId;
-      
-      // 更新 Tab 啟動高亮狀態
-      document.querySelectorAll(".tab-item").classList?.remove("active");
-      const currentTabBtn = document.querySelector(`.tab-item[data-target="${targetId}"]`);
-      if (currentTabBtn) currentTabBtn.classList.add("active");
+      document.querySelectorAll(".tab-item").forEach(t => t.classList.remove("active"));
+      const activeBtn = document.querySelector(`.tab-item[data-target="${targetId}"]`);
+      if (activeBtn) activeBtn.classList.add("active");
 
-      // 擬真動態更新 iOS 導覽標題
-      iosLargeTitle.textContent = titleText;
-      navSmallTitle.textContent = titleText;
-
-      // 隱藏全部視窗，顯示目標視窗
-      document.querySelectorAll(".app-view").forEach(view => view.classList.remove("view-active"));
+      // 視窗切換
+      document.querySelectorAll(".app-view").forEach(v => v.classList.remove("view-active"));
+      const searchSec = document.getElementById("searchSection");
       
-      // 控制搜尋列在「設定頁」與「標籤頁」的隱現邏輯
-      const searchSection = document.getElementById("searchSection");
-      if (targetId === "settings" || targetId === "tags") {
-        searchSection.style.display = "none";
+      if (targetId === "settings" || targetId === "tags" || targetId === "cms") {
+        searchSec.style.display = "none";
       } else {
-        searchSection.style.display = "flex";
+        searchSec.style.display = "flex";
       }
+
+      iosLargeTitle.textContent = targetId === "home" ? "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ" : I18N[currentLang][getTabKey(targetId)];
+      navSmallTitle.textContent = I18N[currentLang][getTabKey(targetId)];
 
       if (targetId === "home") {
         document.getElementById("view-home").classList.add("view-active");
         currentCategory = "all";
-        // 重置 Segmented Slider 歸零
         document.querySelector(".segment-item.active").classList.remove("active");
         document.querySelector('.segment-item[data-filter="all"]').classList.add("active");
         segmentSlider.style.transform = `translateX(0%)`;
@@ -663,7 +731,6 @@
       } else if (targetId === "featured") {
         document.getElementById("view-home").classList.add("view-active");
         currentCategory = "featured";
-        // 強制移位 Segmented Slider 到精選
         document.querySelector(".segment-item.active").classList.remove("active");
         document.querySelector('.segment-item[data-filter="featured"]').classList.add("active");
         segmentSlider.style.transform = `translateX(100%)`;
@@ -671,34 +738,24 @@
       } else if (targetId === "tags") {
         document.getElementById("view-tags").classList.add("view-active");
         renderTagsView();
+      } else if (targetId === "cms") {
+        document.getElementById("view-cms").classList.add("view-active");
+        fetchGitHubLogs();
       } else if (targetId === "settings") {
         document.getElementById("view-settings").classList.add("view-active");
       }
 
-      // 切換分頁時自動滾回頂部，維護 iOS 原生流暢體驗
       window.scrollTo({ top: 0 });
     }
 
-    // 綁定底部導覽列點擊事件
-    document.querySelectorAll(".tab-item").forEach(tab => {
+    document.querySelectorAll(".ios-tab-bar .tab-item").forEach(tab => {
       tab.addEventListener("click", () => {
-        const target = tab.getAttribute("data-target");
-        const title = tab.getAttribute("data-title");
-        switchTab(target, title);
+        switchTab(tab.getAttribute("data-target"), tab.getAttribute("data-title"));
       });
     });
 
-    // 首次載入初始化主頁渲染
-    render(TOOLS);
-  </script>
-
-  <script>
-    if ('serviceWorker' in navigator) { 
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .catch((err) => { console.error('LINE Core SW 核心啟動失敗:', err); }); 
-      }); 
-    }
+    // 初始化載入
+    performSearch();
   </script>
 </body>
 </html>
