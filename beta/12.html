@@ -504,12 +504,12 @@
 </div>
 
 <script type="module">
-// 修正 1：全面使用合法標準之 JavaScript 註解語法，拒絕瀏覽器拋出 SyntaxError[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
-// 安全漏洞修正 2：徹底移除並廢棄硬編碼於前端之最高權限 service_role Key，確保資料庫防線安全[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
+/ 修正 1：全面使用合法標準之 JavaScript 註解語法，拒絕瀏覽器拋出 SyntaxError[span_6](start_span)[span_6](end_span)[span_7](start_span)[span_7](end_span)
+/ 安全漏洞修正 2：徹底移除並廢棄硬編碼於前端之最高權限 service_role Key，確保資料庫防線安全[span_8](start_span)[span_8](end_span)[span_9](start_span)[span_9](end_span)
 
 const MobiConfig = {
     storageKey: 'mobsp_2026_settings',
-    // 修正 7：增加 LocalStorage 配置版號管理機制，確保舊資料平滑過渡
+    / 修正 7：增加 LocalStorage 配置版號管理機制，確保舊資料平滑過渡
     version: 2,
     defaults: {
         version: 2,
@@ -537,7 +537,7 @@ const MobiConfig = {
         if (!local) return { ...this.defaults };
         try {
             const parsed = JSON.parse(local);
-            // 智慧 Migration 控制
+            / 智慧 Migration 控制
             if (!parsed.version || parsed.version < this.version) {
                 console.log("偵測到舊版設定檔結構，正在執行系統 Migration 轉移清空作業...");
                 localStorage.removeItem(this.storageKey);
@@ -550,7 +550,7 @@ const MobiConfig = {
     },
 
     save(data) {
-        // 修正 22：加入簡易防抖 (Debounce) 機制，減少高頻頻繁寫入 localStorage 之效能損耗
+        / 修正 22：加入簡易防抖 (Debounce) 機制，減少高頻頻繁寫入 localStorage 之效能損耗
         if (this._saveTimer) clearTimeout(this._saveTimer);
         this._saveTimer = setTimeout(() => {
             localStorage.setItem(this.storageKey, JSON.stringify(data));
@@ -562,15 +562,15 @@ const MobiConfig = {
         const txt = document.getElementById('txt-cache-size');
         if (!txt) return;
         const local = localStorage.getItem(this.storageKey) || '';
-        const sizeKB = (local.length * 2) / 1024; // 估算 UTF-16 雙字節體積
+        const sizeKB = (local.length * 2) / 1024; / 估算 UTF-16 雙字節體積
         txt.innerText = `${sizeKB.toFixed(2)} KB`;
     }
 };
 
-// 修正 2：高危險性之 PAT Token 僅長期留存在記憶體 Session 當中，使用完或關閉分頁即自毀[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
+/ 修正 2：高危險性之 PAT Token 僅長期留存在記憶體 Session 當中，使用完或關閉分頁即自毀[span_10](start_span)[span_10](end_span)[span_11](start_span)[span_11](end_span)
 let sessionGitToken = '';
 
-// 內建主題庫字典（修正 24）
+/ 內建主題庫字典（修正 24）
 const themePalette = {
     "dark": "iOS 深色模式",
     "light": "iOS 淺色模式",
@@ -580,7 +580,7 @@ const themePalette = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 修正 8：建構高穩定度防重複執行之快顯 Splash Screen 移除旗標常規機制[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)
+    / 修正 8：建構高穩定度防重複執行之快顯 Splash Screen 移除旗標常規機制[span_12](start_span)[span_12](end_span)[span_13](start_span)[span_13](end_span)
     let isSplashHidden = false;
     const splash = document.getElementById('fake-splash');
     const hideSplash = () => {
@@ -594,7 +594,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 500);
     };
     window.addEventListener('load', hideSplash);
-    setTimeout(hideSplash, 2500); // 確保不因元件載入遲緩而被卡死
+    setTimeout(hideSplash, 2500); / 確保不因元件載入遲緩而被卡死
 
     initMobiSpace();
 });
@@ -602,7 +602,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function initMobiSpace() {
     const config = MobiConfig.load();
     
-    // 節點快取
+    / 節點快取
     const mainContainer = document.getElementById('main-container');
     const iosAlert = document.getElementById('ios-alert');
     const alertTitle = document.getElementById('alert-title');
@@ -611,7 +611,7 @@ async function initMobiSpace() {
     const controlSheet = document.getElementById('control-sheet');
     const backdrop = document.getElementById('sheet-backdrop');
     
-    // 初始化動態生成主題 Select 選單（修正 24）
+    / 初始化動態生成主題 Select 選單（修正 24）
     const themeSelect = document.getElementById('cfg-theme');
     if (themeSelect) {
         themeSelect.innerHTML = '';
@@ -623,12 +623,12 @@ async function initMobiSpace() {
         });
     }
 
-    // 修正 16：建立統一的 UI 刷新控制中心渲染，擺脫各自獨立為政的修改困境
+    / 修正 16：建立統一的 UI 刷新控制中心渲染，擺脫各自獨立為政的修改困境
     const applyRealtimeUI = (cfg) => {
-        // 修正 6：將 data-theme 風格樣式掛載移轉至 <html> 根節點，使全域 CSS 階層皆能完美穿透[span_14](start_span)[span_14](end_span)[span_15](start_span)[span_15](end_span)
+        / 修正 6：將 data-theme 風格樣式掛載移轉至 <html> 根節點，使全域 CSS 階層皆能完美穿透[span_14](start_span)[span_14](end_span)[span_15](start_span)[span_15](end_span)
         document.documentElement.setAttribute('data-theme', cfg.theme);
         
-        // 修正 5：改用 classList.add/remove 來切換佈局樣式，保護未來可能附加的狀態類名[span_16](start_span)[span_16](end_span)[span_17](start_span)[span_17](end_span)
+        / 修正 5：改用 classList.add/remove 來切換佈局樣式，保護未來可能附加的狀態類名[span_16](start_span)[span_16](end_span)[span_17](start_span)[span_17](end_span)
         mainContainer.classList.remove('layout-slider', 'layout-grid', 'layout-list');
         mainContainer.classList.add(cfg.layout);
         
@@ -649,13 +649,13 @@ async function initMobiSpace() {
     applyRealtimeUI(config);
     MobiConfig.updateCacheDisplay();
 
-    // 修正 21：卡片資料完整性校驗與核心渲染
+    / 修正 21：卡片資料完整性校驗與核心渲染
     const renderCards = (cardsArray) => {
         if (!cardsArray || !Array.isArray(cardsArray)) return;
         mainContainer.innerHTML = '';
         
         cardsArray.forEach(card => {
-            // 修正 21 檢驗開關
+            / 修正 21 檢驗開關
             if (config.cardVerify) {
                 if (!card.title || !card.url) {
                     console.warn("略過不完整之卡片資產結構資料: ", card);
@@ -665,18 +665,18 @@ async function initMobiSpace() {
 
             const a = document.createElement('a');
             a.href = card.url;
-            // 修正 18：無障礙可及性（Accessibility）ARIA 標籤補齊
+            / 修正 18：無障礙可及性（Accessibility）ARIA 標籤補齊
             a.setAttribute('aria-label', `前往功能模組：${card.title}`);
             a.className = `action-btn btn-${card.id || 'dynamic'}`;
             
-            // 修正 4：智慧處理圖片加載失敗或空白 404 情境的優雅降級 fallback
+            / 修正 4：智慧處理圖片加載失敗或空白 404 情境的優雅降級 fallback
             if (config.cardFallback === 'gradient' || !card.image) {
                 a.style.backgroundImage = `linear-gradient(135deg, rgba(25,27,31,0.9), rgba(0,206,201,0.15)), url('${card.image || ''}')`;
             } else {
                 a.style.backgroundImage = `url('${card.image}')`;
             }
 
-            // 監聽加載失敗事件
+            / 監聽加載失敗事件
             if (card.image) {
                 const imgTester = new Image();
                 imgTester.src = card.image;
@@ -698,15 +698,15 @@ async function initMobiSpace() {
         });
     };
 
-    // 載入卡片策略
+    / 載入卡片策略
     let cardsData = [];
     try {
-        // 修正 3：配置路徑升級為 /data/ 絕對根路徑定位，杜絕子目錄多級相對路徑跳轉失敗Bug[span_18](start_span)[span_18](end_span)[span_19](start_span)[span_19](end_span)
+        / 修正 3：配置路徑升級為 /data/ 絕對根路徑定位，杜絕子目錄多級相對路徑跳轉失敗Bug[span_18](start_span)[span_18](end_span)[span_19](start_span)[span_19](end_span)
         const res = await fetch('/data/pages-config.json');
         if (res.ok) {
             cardsData = await res.json();
         } else {
-            // 修正 17：全面增強 Fetch 錯誤分類捕獲，避免靜默失敗
+            / 修正 17：全面增強 Fetch 錯誤分類捕獲，避免靜默失敗
             throw new Error(`HTTP 異常代碼: ${res.status}`);
         }
     } catch(e) { 
@@ -718,7 +718,7 @@ async function initMobiSpace() {
     }
     renderCards(cardsData);
 
-    // 彈窗處理
+    / 彈窗處理
     if (!config.alertHasShown || config.alertMode === 'always') {
         alertTitle.innerText = config.alertTitle;
         alertDesc.innerText = config.alertDesc;
@@ -738,7 +738,7 @@ async function initMobiSpace() {
     alertCloseBtn.addEventListener('click', dismissAlert);
     alertCloseBtn.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') dismissAlert(); });
 
-    // 修正 15：跑馬燈更新與雲端整合模擬機制 (不再一輩子只載入一次)
+    / 修正 15：跑馬燈更新與雲端整合模擬機制 (不再一輩子只載入一次)
     const initNoticeLine = async () => {
         const vTag = document.getElementById('v-tag');
         const mqText = document.getElementById('mq-text');
@@ -750,15 +750,15 @@ async function initMobiSpace() {
             return;
         }
 
-        // 雲端整合模擬調度 (修正 2 安全性替換)[span_22](start_span)[span_22](end_span)[span_23](start_span)[span_23](end_span)
+        / 雲端整合模擬調度 (修正 2 安全性替換)[span_22](start_span)[span_22](end_span)[span_23](start_span)[span_23](end_span)
         vTag.innerText = 'v2.0 | CLOUD';
         mqText.innerText = '正在串流分析 2026 莫比空間全庫核心拓撲資產節點網路...';
     };
     initNoticeLine();
-    // 每隔 60 秒定時刷新跑馬燈內容（修正 15）
+    / 每隔 60 秒定時刷新跑馬燈內容（修正 15）
     setInterval(initNoticeLine, 60000);
 
-    // 控制中心交互與修正 9：iOS 原生拖曳（PointerEvent）關閉手勢
+    / 控制中心交互與修正 9：iOS 原生拖曳（PointerEvent）關閉手勢
     const openBtn = document.getElementById('open-control-btn');
     const closeBtnHeader = document.getElementById('sheet-header-close');
     const closeBtnHandle = document.getElementById('sheet-handle-close');
@@ -769,7 +769,7 @@ async function initMobiSpace() {
 
     const toggleSheet = (show) => {
         if (show) {
-            // 修正 16：每次開啟都執行設定值同步分發
+            / 修正 16：每次開啟都執行設定值同步分發
             document.getElementById('cfg-alert-title').value = config.alertTitle;
             document.getElementById('cfg-alert-desc').value = config.alertDesc;
             document.getElementById('cfg-alert-mode').value = config.alertMode;
@@ -791,8 +791,8 @@ async function initMobiSpace() {
             document.getElementById('custom-mq-row').style.display = config.mqSource === 'custom' ? 'flex' : 'none';
             document.getElementById('dev-tools-panel').style.display = config.devMode ? 'flex' : 'none';
 
-            document.body.classList.add('sheet-open'); // 修正 19
-            backdrop.classList.add('active'); // 修正 19
+            document.body.classList.add('sheet-open'); / 修正 19
+            backdrop.classList.add('active'); / 修正 19
             controlSheet.style.transform = 'translateX(-50%) translateY(0)';
             controlSheet.classList.add('active');
         } else {
@@ -807,7 +807,7 @@ async function initMobiSpace() {
     closeBtnHeader.addEventListener('click', () => toggleSheet(false));
     backdrop.addEventListener('click', () => toggleSheet(false));
 
-    // 修正 9：加入 PointerEvent 拖曳手勢控制
+    / 修正 9：加入 PointerEvent 拖曳手勢控制
     const handleStart = (e) => {
         startY = e.clientY || e.touches[0].clientY;
         isDragging = true;
@@ -828,7 +828,7 @@ async function initMobiSpace() {
         if (!isDragging) return;
         isDragging = false;
         controlSheet.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
-        // 速度或高度閾值 Snap 判斷
+        / 速度或高度閾值 Snap 判斷
         if (currentTranslateY > 150) {
             toggleSheet(false);
         } else {
@@ -841,7 +841,7 @@ async function initMobiSpace() {
     document.addEventListener('pointermove', handleMove);
     document.addEventListener('pointerup', handleEnd);
 
-    // 監聽元件變更事件與即時響應
+    / 監聽元件變更事件與即時響應
     document.getElementById('cfg-alert-title').addEventListener('input', (e) => { config.alertTitle = e.target.value; MobiConfig.save(config); });
     document.getElementById('cfg-alert-desc').addEventListener('input', (e) => { config.alertDesc = e.target.value; MobiConfig.save(config); });
     document.getElementById('cfg-alert-mode').addEventListener('change', (e) => { config.alertMode = e.target.value; MobiConfig.save(config); });
@@ -954,7 +954,7 @@ async function initMobiSpace() {
         }
     });
 
-    // 修正 10 & 11 & 13：極致升級全庫遞迴掃描引擎 (免 Token 運作機制)[span_24](start_span)[span_24](end_span)[span_25](start_span)[span_25](end_span)
+    / 修正 10 & 11 & 13：極致升級全庫遞迴掃描引擎 (免 Token 運作機制)[span_24](start_span)[span_24](end_span)[span_25](start_span)[span_25](end_span)
     document.getElementById('btn-sync-trees').addEventListener('click', async () => {
         const btn = document.getElementById('btn-sync-trees');
         const oldText = btn.innerText;
@@ -962,10 +962,10 @@ async function initMobiSpace() {
         btn.disabled = true;
 
         try {
-            // 建構免憑證之 GitHub REST Git Trees 智慧遞迴解析端點[span_26](start_span)[span_26](end_span)[span_27](start_span)[span_27](end_span)
-            const apiUrl = 'https://api.github.com/repos/mobsp/mobsp.github.io/git/trees/main?recursive=1';
+            / 建構免憑證之 GitHub REST Git Trees 智慧遞迴解析端點[span_26](start_span)[span_26](end_span)[span_27](start_span)[span_27](end_span)
+            const apiUrl = 'https://api.github.com/repos/mobsp/git/trees/main?recursive=1';
             
-            // 修正 17：加入多層級超時 Timeout 防線機制
+            / 修正 17：加入多層級超時 Timeout 防線機制
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 12000);
 
@@ -982,7 +982,7 @@ async function initMobiSpace() {
             const data = await response.json();
             if (!data.tree || !Array.isArray(data.tree)) throw new Error("無效的樹狀結構數據");
 
-            // 修正 10 & 11：完美遍歷深淺所有子資料夾，捕捉結尾為 index.html 之檔案[span_28](start_span)[span_28](end_span)[span_29](start_span)[span_29](end_span)
+            / 修正 10 & 11：完美遍歷深淺所有子資料夾，捕捉結尾為 index.html 之檔案[span_28](start_span)[span_28](end_span)[span_29](start_span)[span_29](end_span)
             const indexHtmlFiles = data.tree.filter(f => 
                 f.path.endsWith('index.html') && 
                 f.path !== 'index.html' && 
@@ -990,7 +990,7 @@ async function initMobiSpace() {
                 !f.path.includes('assets')
             );
 
-            // 智慧輔助資產對應字典（修正 12：非同步索引能力）
+            / 智慧輔助資產對應字典（修正 12：非同步索引能力）
             const presetMeta = {
                 "blog": "莫比部落格",
                 "tol": "實用工具庫",
@@ -999,12 +999,12 @@ async function initMobiSpace() {
                 "wiki": "支援中心中心"
             };
 
-            // 轉換映射為卡片結構
+            / 轉換映射為卡片結構
             const dynamicCards = indexHtmlFiles.map(file => {
-                // 從路徑中精確解析各級子目錄名稱（ID識別碼）
+                / 從路徑中精確解析各級子目錄名稱（ID識別碼）
                 const pathParts = file.path.split('/');
-                pathParts.pop(); // 剃除 index.html
-                const folderId = pathParts.join('-'); // 組合深層級
+                pathParts.pop(); / 剃除 index.html
+                const folderId = pathParts.join('-'); / 組合深層級
                 const folderPureName = pathParts[pathParts.length - 1];
 
                 return {
@@ -1024,7 +1024,7 @@ async function initMobiSpace() {
             }
 
         } catch (err) {
-            // 修正 17：Fetch 的異常細緻化提示
+            / 修正 17：Fetch 的異常細緻化提示
             console.error(err);
             if(err.name === 'AbortError') {
                 alert("同步失敗：連線逾時，GitHub API 響應過慢。");
@@ -1037,7 +1037,7 @@ async function initMobiSpace() {
         }
     });
 
-    // 修正 20：Service Worker 運作狀態精緻化感知除錯器
+    / 修正 20：Service Worker 運作狀態精緻化感知除錯器
     const swStatusTxt = document.getElementById('txt-sw-status');
     const updateSWStatus = () => {
         if (!swStatusTxt) return;
