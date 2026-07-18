@@ -1,4 +1,4 @@
-name: 🔄 自動巡檢並修復 JS 語法錯誤
+name: 自動巡檢並修復 JS 語法錯誤
 
 on:
   push:
@@ -36,10 +36,10 @@ jobs:
         
         # 檢查是否有檔案被修改
         if [ -n "$(git status --porcelain)" ]; then
-          echo "📝 偵測到程式碼修正，正在自動提交變更..."
+          echo "偵測到程式碼修正，正在自動提交變更..."
           git add .
-          git commit -m "style: 🤖 自動修復因腳本錯誤導致的單斜槓註解錯誤 [skip ci]"
+          git commit -m "style: 自動修復因腳本錯誤導致的單斜槓註解錯誤 [skip ci]"
           git push origin HEAD:main
         else
-          echo "✅ 檔案一切正常，無需修改。"
+          echo "檔案一切正常，無需修改。"
         fi
