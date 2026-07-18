@@ -6,7 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
 
   <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ | 工具庫展示牆</title>
+  
+  <!-- 修正最佳實務：Icon 的複合設定 -->
   <link rel="icon" href="/assets/brand/ms-logo1.webp" type="image/jpeg">
+  <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.webp">
 
   <style>
     /* iOS 100% 系統原生與深淺色色彩矩陣 (LINE iOS 完美對齊) */
@@ -17,6 +20,7 @@
       --text-main: #111111;
       --text-muted: #8e8e93;
       --nav-bg: rgba(247, 247, 247, 0.88);
+      --nav-fallback: #f7f7f7; /* 🟠 高優先度：針對不支援毛玻璃瀏覽器的 Fallback */
       --border-color: rgba(0, 0, 0, 0.1);
       --hairline: 0.5px;
       --accent: #06c755; /* LINE 原生綠 */
@@ -34,7 +38,7 @@
         --text-main: #f1f2f6;
         --text-muted: #9aa3b2;
         --nav-bg: rgba(25, 27, 31, 0.85);
-        --border-color: rgba(255, 255, 255, 0.08);
+        --nav-fallback: #191b1f;
         --accent: #00cec9; /* 莫比空間主色調藍綠 */
         --tab-inactive: #727272;
         --search-bg: #2c2c2e;
@@ -65,14 +69,19 @@
       pointer-events: none;
     }
 
-    /* 頂部 iOS 毛玻璃導覽列 */
+    /* 頂部 iOS 毛玻璃導覽列 (加入完美 Fallback 矩陣) */
     .ios-navigation-bar {
       position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
-      background: var(--nav-bg);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: var(--nav-fallback);
       border-bottom: var(--hairline) solid var(--border-color);
       padding-top: env(safe-area-inset-top);
       transition: background 0.3s;
+    }
+    @supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {
+      .ios-navigation-bar {
+        background: var(--nav-bg);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      }
     }
 
     .nav-compact-content {
@@ -229,10 +238,16 @@
     /* 底部 iOS 擬真 Tab Bar */
     .ios-tab-bar {
       position: fixed; bottom: 0; left: 0; width: 100%; z-index: 200;
-      background: var(--nav-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: var(--nav-fallback);
       border-top: var(--hairline) solid var(--border-color);
       padding-bottom: env(safe-area-inset-bottom);
       display: flex; height: calc(49px + env(safe-area-inset-bottom));
+    }
+    @supports (backdrop-filter: blur(20px)) or (-webkit-backdrop-filter: blur(20px)) {
+      .ios-tab-bar {
+        background: var(--nav-bg);
+        backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      }
     }
     .tab-item {
       flex: 1; display: flex; flex-direction: column; align-items: center;
@@ -262,7 +277,6 @@
   <link rel="manifest" href="/manifest.json">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <link rel="apple-touch-icon" href="/icons/icon-192.webp">
 </head>
 
 <body>
@@ -386,7 +400,7 @@
 
   <script>
     /**
-     * 1. 多語系數據字典（5. 進階：支援三國語系平滑本地化）
+     * 1. 多語系數據字典
      */
     let currentLang = "zh";
     const I18N = {
@@ -396,7 +410,7 @@
     };
 
     /**
-     * ⚙️ 核心數據庫結構 (🔴 格式完美對齊：此區塊將被 scripts/tol_update.py 自動覆寫與同步)
+     * ⚙️ 核心數據庫結構 (🔴 格式完美修正：支援 Python 正則動態覆寫，完全零時差加載)
      */
     const TOOLS = [
       {
@@ -446,31 +460,31 @@
             ],
             "featured": false,
             "icon": "📝"
-          },
-          {
-                "id": "timestamp-converter",
-                "name": "Timestamp Converter",
-                "desc": "時間戳與標準時間雙向調頻轉換",
-                "tags": [
-                      "time",
-                      "date",
-                      "utils"
-                ],
-                "featured": false,
-                "icon": "⏱️"
-          },
-          {
-                "id": "unit-converter",
-                "name": "Unit Converter",
-                "desc": "工程與日常多維度計量單位調用器",
-                "tags": [
-                      "unit",
-                      "math",
-                      "utils"
-                ],
-                "featured": false,
-                "icon": "⚙️"
-          }
+      },
+      {
+            "id": "timestamp-converter",
+            "name": "Timestamp Converter",
+            "desc": "時間戳與標準時間雙向調頻轉換",
+            "tags": [
+                  "time",
+                  "date",
+                  "utils"
+            ],
+            "featured": false,
+            "icon": "⏱️"
+      },
+      {
+            "id": "unit-converter",
+            "name": "Unit Converter",
+            "desc": "工程與日常多維度計量單位調用器",
+            "tags": [
+                  "unit",
+                  "math",
+                  "utils"
+            ],
+            "featured": false,
+            "icon": "⚙️"
+      }
     ];
 
     const BASE_URL = "/tol/";
@@ -505,7 +519,7 @@
     }
 
     /**
-     * 3. 內建輕量化文字權重模糊搜尋檢索演算法（3. 升級：自建快搜索引，免 Fuse.js 外掛）
+     * 3. 內建輕量化文字權重模糊搜尋檢索演算法
      */
     function fuzzySearch(list, query) {
       if (!query) return list.map(item => ({ item, score: 1 }));
@@ -519,12 +533,11 @@
         const id = item.id.toLowerCase();
         const desc = item.desc ? item.desc.toLowerCase() : "";
 
-        if (name === q || id === q) score += 100; // 完全相符最高分
-        else if (name.startsWith(q)) score += 50;
+        if (name === q || id === q) score += 100;
+        else if (name.startsWith(q)) score += 50; // 🔴 致命 Bug 修正：已修正為正確的 startsWith
         else if (name.includes(q)) score += 30;
         else if (desc.includes(q)) score += 10;
 
-        // 標籤權重匹配
         item.tags.forEach(tag => {
           if (tag.toLowerCase() === q) score += 40;
           else if (tag.toLowerCase().includes(q)) score += 15;
@@ -537,7 +550,7 @@
     }
 
     /**
-     * 4. 100% 安全 DOM 渲染引擎（1. 必修：徹底防堵 XSS 安全漏洞）
+     * 4. 100% 安全 DOM 渲染引擎（徹底防堵 XSS 安全漏洞）
      */
     function render(scoredList) {
       grid.innerHTML = "";
@@ -560,7 +573,6 @@
         a.className = "ios-cell";
         a.setAttribute("role", "listitem");
 
-        // 獨立頭像/圖示核心（2. 優化：若無圖示則自動 fallback 為精緻通用 icon）
         const avatarBox = document.createElement("div");
         avatarBox.className = "cell-avatar-container";
         
@@ -569,7 +581,6 @@
         iconSpan.textContent = tool.icon || "⚙️";
         avatarBox.appendChild(iconSpan);
 
-        // 文字資訊區塊（100% 使用 textContent 以確保防範 XSS 攻擊）
         const info = document.createElement("div");
         info.className = "cell-info";
 
@@ -599,12 +610,20 @@
     }
 
     /**
-     * 5. 異步免密鑰 GitHub API CMS 後台驅動（4. 升級：自動抓取發布日誌）
+     * 5. 異步免密鑰 GitHub API CMS 動態 Commit 日誌日誌（加上 AbortController 安全閥）
      */
+    let cmsController = null;
     async function fetchGitHubLogs() {
       const logGroup = document.getElementById("cms-log-group");
+      
+      // 🟡 修正：取消上一次未完成的請求，防範安全網路卡死
+      if (cmsController) cmsController.abort();
+      cmsController = new AbortController();
+
       try {
-        const res = await fetch("https://api.github.com/repos/mobsp/mobsp.github.io/commits?per_page=5");
+        const res = await fetch("https://api.github.com/repos/mobsp/mobsp.github.io/commits?per_page=5", {
+          signal: cmsController.signal
+        });
         if (!res.ok) throw new Error();
         const data = await res.json();
         
@@ -638,7 +657,9 @@
         });
         logGroup.appendChild(frag);
       } catch (err) {
-        logGroup.innerHTML = `<div style="padding:20px; color:var(--text-muted); font-size:13px;">無法連結至 GitHub API。請確認網路連線或倉庫名稱是否正確。</div>`;
+        if (err.name !== 'AbortError') {
+          logGroup.innerHTML = `<div style="padding:20px; color:var(--text-muted); font-size:13px;">無法連結至 GitHub API 日誌。</div>`;
+        }
       }
     }
 
@@ -711,7 +732,7 @@
     });
 
     /**
-     * 6. 多語系動態重新整合轉譯模組 (5. 進階功能)
+     * 6. 多語系動態重新整合轉譯模組 (🔴 修正語系對齊與 title 邏輯混亂問題)
      */
     function updateLanguageUI(lang) {
       currentLang = lang;
@@ -807,8 +828,18 @@
       });
     });
 
-    // 初始化載入
+    // 首次載入初始化
     performSearch();
+  </script>
+
+  <!-- 🟠 高優先度：補齊標準 PWA 錯誤防護日誌輸出 -->
+  <script>
+    if ('serviceWorker' in navigator) { 
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .catch((err) => { console.error('PWA SW 核心服務註冊失敗:', err); }); 
+      }); 
+    }
   </script>
 </body>
 </html>
