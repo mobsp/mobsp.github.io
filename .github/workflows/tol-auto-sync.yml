@@ -1,0 +1,43 @@
+name: Tools Premium Auto-Sync Flow
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tol/**'
+      - 'scripts/tol_update.py'  # 🔴 變更監聽：當指令碼本身在 scripts/ 內被修改時也會觸發
+
+permissions:
+  contents: write
+
+jobs:
+  compile-and-sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 🗄️ Checkout Core Repository
+      uses: actions/checkout@v4
+
+    - name: 🐍 Initialize Optimized Python Environment
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    # 🔴 核心修正：先切換進 scripts 資料夾，再發動自動化引擎，確保相對路徑 100% 精準
+    - name: 🚀 Execute Engine Synchronization
+      run: |
+        cd scripts
+        python tol_update.py
+
+    - name: 📡 Automated Deployment Git Push
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲁ𝔠ⲉ Bot"
+        git add index.html
+        if git diff --cached --quiet; then
+          echo "No layout variance detected. Skipping commit."
+        else
+          git commit -m "chore(auto): update tools configuration matrix via scripts"
+          git push
+        fi
