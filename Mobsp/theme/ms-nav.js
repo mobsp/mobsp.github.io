@@ -59,7 +59,7 @@ class MobNavbar extends HTMLElement {
     this.initScrollLogic();
   }
 
-  / 智能滾動邏輯：下滾隱藏，上滾顯示
+  // 智能滾動邏輯：下滾隱藏，上滾顯示
   initScrollLogic() {
     let lastScroll = 0;
     const nav = this.shadowRoot.querySelector('#navbar');

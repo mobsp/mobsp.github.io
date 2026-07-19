@@ -46,7 +46,7 @@ export default class SearchView {
                 clearBtn.style.display = 'flex';
                 suggestionsArea.style.display = 'none';
                 resultsArea.style.display = 'block';
-                / 模擬搜尋結果
+                // 模擬搜尋結果
                 this.renderMockResults(val);
             } else {
                 clearBtn.style.display = 'none';

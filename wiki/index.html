@@ -120,7 +120,7 @@
                 const response = await fetch(`${DATA_URL}?v=${Date.now()}`);
                 const data = await response.json();
 
-                / ✨ 按分類 (Category) 分組資料
+                // ✨ 按分類 (Category) 分組資料
                 const groups = data.reduce((acc, item) => {
                     if (!acc[item.category]) acc[item.category] = [];
                     acc[item.category].push(item);
@@ -129,7 +129,7 @@
 
                 root.innerHTML = ''; / 清除載入中文字
 
-                / 渲染每個分組
+                // 渲染每個分組
                 for (const category in groups) {
                     const groupDiv = document.createElement('div');
                     groupDiv.className = 'category-group';
@@ -162,7 +162,7 @@
             const parent = el.parentElement;
             const isOpen = parent.classList.contains('active');
             
-            / 手風琴效果：關閉同分類下的其他項
+            // 手風琴效果：關閉同分類下的其他項
             parent.parentElement.querySelectorAll('.wiki-item').forEach(i => i.classList.remove('active'));
             
             if (!isOpen) parent.classList.add('active');

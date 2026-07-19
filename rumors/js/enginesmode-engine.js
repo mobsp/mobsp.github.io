@@ -18,7 +18,7 @@ export default class ModeEngine {
             return true;
         } catch (error) {
             console.error('[ModeEngine] Boot error:', error);
-            / Fallback to GitHub Native Mode
+            // Fallback to GitHub Native Mode
             this.currentMode = 'mode_a_github';
             return false;
         }
@@ -43,7 +43,7 @@ export default class ModeEngine {
             console.log('[ModeEngine] Operating in Hybrid Fusion Mode.');
         }
 
-        / 將特性寫入 DOM 供 CSS/JS 判斷
+        // 將特性寫入 DOM 供 CSS/JS 判斷
         document.documentElement.setAttribute('data-arch-mode', this.currentMode);
     }
 

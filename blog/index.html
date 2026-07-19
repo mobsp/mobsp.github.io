@@ -633,7 +633,7 @@ transform:none;
             
             status.innerText = "📡 正在穿透目標伺服器...";
             try {
-                / 使用跨域代理獲取源碼
+                // 使用跨域代理獲取源碼
                 const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
                 const data = await res.json();
                 const doc = new DOMParser().parseFromString(data.contents, 'text/html');
@@ -641,10 +641,10 @@ transform:none;
                 const title = doc.querySelector('h1')?.innerText || doc.title || "Ⲙ𝔬ⲃ¡ⳝ𝔭_Archive";
                 let contentHtml = '';
 
-                / 精確提取邏輯
+                // 精確提取邏輯
                 const selectors = harvestOptions.clean ? 'p' : 'p, h2, h3, img, pre, code, blockquote';
                 doc.querySelectorAll(selectors).forEach(el => {
-                    / 1. 影像提取與路徑補全
+                    // 1. 影像提取與路徑補全
                     if (el.tagName === 'IMG' && harvestOptions.img) {
                         let src = el.getAttribute('src');
                         if (src) {
@@ -652,17 +652,17 @@ transform:none;
                             contentHtml += `<div style="margin:25px 0;"><img src="${src}" style="max-width:100%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"></div>\n`;
                         }
                     } 
-                    / 2. 文字內容提取
+                    // 2. 文字內容提取
                     else if (el.innerText.trim().length > 5) {
                         const tag = el.tagName.toLowerCase();
                         let inner = el.innerHTML;
-                        / 如果是極簡模式，移除內嵌連結
+                        // 如果是極簡模式，移除內嵌連結
                         if (harvestOptions.clean) inner = el.innerText; 
                         contentHtml += `<${tag} style="margin-bottom:1.5rem;">${inner}</${tag}>\n`;
                     }
                 });
 
-                / 3. 樣式矩陣注入
+                // 3. 樣式矩陣注入
                 const styleTag = `
                     body { 
                         background:${harvestOptions.dark?'#000':'#fff'}; 
@@ -681,7 +681,7 @@ transform:none;
                     img { display:block; }
                 `;
 
-                / 4. 打包下載
+                // 4. 打包下載
                 const finalBlob = new Blob([`
                     <!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>${styleTag}</style></head>
                     <body><h1>${title}</h1>${contentHtml}</body></html>

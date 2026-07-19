@@ -214,7 +214,7 @@
     let currentBranch = "";
     let folderSet = new Set();
 
-    / 核心還原：GitHub API 遞迴抓取
+    // 核心還原：GitHub API 遞迴抓取
     async function startDeepScan() {
         const userInput = document.getElementById('userInput').value;
         const users = userInput.split(',').map(s => s.trim());
@@ -243,7 +243,7 @@
                         
                         if (treeData.tree) {
                             treeData.tree.filter(i => i.type === 'blob').forEach(f => {
-                                / 過濾邏輯：排除圖檔，保留 .js, .vue, .html 等代碼
+                                // 過濾邏輯：排除圖檔，保留 .js, .vue, .html 等代碼
                                 if (excludes.some(rule => f.path.toLowerCase().includes(rule.trim()))) return;
 
                                 let folder = f.path.includes('/') ? f.path.substring(0, f.path.lastIndexOf('/')) : 'ROOT';
@@ -401,7 +401,7 @@
 
     function copyIt(t) { navigator.clipboard.writeText(t); alert("連結已複製"); }
     
-    / 初始化
+    // 初始化
     updateLimit();
 </script>
 

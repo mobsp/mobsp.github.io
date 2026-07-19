@@ -194,7 +194,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        / 音樂播放邏輯
+        // 音樂播放邏輯
         function togglePlay() {
             const audio = document.getElementById('bgm');
             const icon = document.getElementById('play-icon');
@@ -214,7 +214,7 @@
             }
         }
 
-        / 導覽列伸縮邏輯
+        // 導覽列伸縮邏輯
         function toggleNav() {
             const nav = document.getElementById('dynamic-nav');
             const triggerIcon = document.getElementById('trigger-icon');
@@ -222,10 +222,10 @@
             triggerIcon.className = nav.classList.contains('expanded') ? "fa-solid fa-xmark" : "fa-solid fa-house";
         }
 
-        / 摺疊列表
+        // 摺疊列表
         function toggleList(el) { el.classList.toggle('expanded'); }
 
-        / Supabase 公告系統
+        // Supabase 公告系統
         const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
 

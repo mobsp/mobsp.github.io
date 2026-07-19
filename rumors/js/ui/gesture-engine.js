@@ -31,7 +31,7 @@ export default class GestureEngine {
         this.touchMoveY = e.changedTouches[0].screenY;
         this.touchMoveX = e.changedTouches[0].screenX;
 
-        / 處理 Sheet 下拉的彈性阻尼效果 (Rubber band effect)
+        // 處理 Sheet 下拉的彈性阻尼效果 (Rubber band effect)
         if (this.options.onSwipeDown && this.element.scrollTop <= 0) {
             const deltaY = this.touchMoveY - this.touchStartY;
             if (deltaY > 0) {
@@ -45,7 +45,7 @@ export default class GestureEngine {
         const deltaY = this.touchMoveY - this.touchStartY;
         const deltaX = this.touchMoveX - this.touchStartX;
 
-        / 恢復原位動畫
+        // 恢復原位動畫
         this.element.style.transition = 'transform var(--transition-spring)';
         this.element.style.transform = 'translateY(0)';
         
@@ -53,12 +53,12 @@ export default class GestureEngine {
             this.element.style.transition = '';
         }, 400);
 
-        / 判斷 Swipe Down (類似 iOS 關閉 Sheet)
+        // 判斷 Swipe Down (類似 iOS 關閉 Sheet)
         if (this.options.onSwipeDown && deltaY > this.options.threshold) {
             this.options.onSwipeDown();
         }
 
-        / 判斷 Swipe Right (類似 iOS 返回上一頁)
+        // 判斷 Swipe Right (類似 iOS 返回上一頁)
         if (this.options.onSwipeRight && deltaX > this.options.threshold && Math.abs(deltaY) < 30) {
             this.options.onSwipeRight();
         }

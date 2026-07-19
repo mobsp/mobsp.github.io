@@ -145,14 +145,14 @@
     </div>
 
     <script>
-        / 切換設定面板
+        // 切換設定面板
         function togglePanel(show) {
             const panel = document.getElementById('mobiPanel');
             if (show) panel.classList.add('show');
             else panel.classList.remove('show');
         }
 
-        / 更新文字亮度 (RGB 同步)
+        // 更新文字亮度 (RGB 同步)
         function updateColor(val) {
             const color = `rgb(${val},${val},${val})`;
             document.documentElement.style.setProperty('--text-color', color);
@@ -160,17 +160,17 @@
             document.getElementById('val-color').innerText = percent + '%';
         }
 
-        / 更新字體大小
+        // 更新字體大小
         function updateSize(val) {
             document.documentElement.style.setProperty('--font-size', val + 'px');
             document.getElementById('val-size').innerText = val + 'px';
         }
 
-        / 初始化 Markdown (如果有 marked 庫的話)
+        // 初始化 Markdown (如果有 marked 庫的話)
         window.onload = () => {
-            / 如果內容尚未解析，可以在這裡觸發 marked.parse
-            / const body = document.getElementById('articleBody');
-            / body.innerHTML = marked.parse(body.innerText);
+            // 如果內容尚未解析，可以在這裡觸發 marked.parse
+            // const body = document.getElementById('articleBody');
+            // body.innerHTML = marked.parse(body.innerText);
         };
     </script>
 
