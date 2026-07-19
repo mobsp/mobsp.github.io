@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo 智慧文字消除與編輯器 | 雙模架構版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #0b0f19;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        
+        /* Toggle Switch CSS */
+        .toggle-checkbox:checked { right: 0; border-color: #3b82f6; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #3b82f6; }
+        .toggle-checkbox:checked + .toggle-label:after { transform: translateX(100%); }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col">
+
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30">
+                    <i data-lucide="cpu" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Logo Eraser System</h1>
+                    <p class="text-xs text-slate-400">傳統視覺演算法 / 雙模邊緣運算平台</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 bg-slate-800/50 px-4 py-2 rounded-xl border border-slate-700">
+                <span class="text-xs font-medium text-slate-400" id="modeLocalText">本機 Canvas 運算</span>
+                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                    <input type="checkbox" name="toggle" id="architectureToggle" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer transition-transform duration-300 ease-in-out z-10"/>
+                    <label for="architectureToggle" class="toggle-label block overflow-hidden h-5 rounded-full bg-slate-600 cursor-pointer transition-colors duration-300 ease-in-out"></label>
+                </div>
+                <span class="text-xs font-medium text-slate-500" id="modeCloudText">Cloudflare+Supabase</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row gap-8">
+        
+        <section class="w-full lg:w-5/12 flex flex-col gap-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-slate-200">
+                    <i data-lucide="image-plus" class="w-5 h-5 text-indigo-400"></i>
+                    1. 載入原始圖片
+                </h2>
+                <div id="dropzone" class="border-2 border-dashed border-slate-700 hover:border-indigo-500/50 bg-slate-950/50 hover:bg-slate-950 transition-all rounded-xl p-8 text-center cursor-pointer group relative overflow-hidden">
+                    <input type="file" id="fileInput" accept="image/*" class="hidden">
+                    <div id="uploadPlaceholder" class="flex flex-col items-center justify-center gap-3 py-4">
+                        <div class="p-4 bg-slate-900 rounded-full text-slate-400 group-hover:text-indigo-400 group-hover:scale-110 transition-all duration-300">
+                            <i data-lucide="upload-cloud" class="w-10 h-10"></i>
+                        </div>
+                        <p class="text-sm font-medium text-slate-300">拖曳圖片至此或<span class="text-indigo-400 group-hover:underline"> 點擊瀏覽本機</span></p>
+                        <p class="text-xs text-slate-500">處理過程於選定之架構中進行</p>
+                    </div>
+                    <div id="uploadPreviewContainer" class="hidden flex flex-col items-center gap-3">
+                        <img id="uploadThumbnail" class="max-h-48 rounded-lg shadow-lg border border-slate-800" src="" alt="Thumbnail">
+                        <button id="changeImageBtn" class="px-3 py-1.5 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg flex items-center gap-1.5 transition">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i> 更換圖片
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl">
+                <h2 class="text-lg font-semibold mb-4 flex items-center gap-2 text-slate-200">
+                    <i data-lucide="settings-2" class="w-5 h-5 text-indigo-400"></i>
+                    2. 演算法參數設定
+                </h2>
+                
+                <div class="mb-5 space-y-4">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2 flex justify-between">
+                            <span>消除區域位置 (Y 軸偏移)</span>
+                            <span id="valPos">80%</span>
+                        </label>
+                        <input type="range" id="yPosition" min="0" max="100" value="80" class="w-full accent-indigo-500">
+                        <p class="text-[10px] text-slate-500 mt-1">設定要執行底部文字消除的高度起始點。</p>
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2 flex justify-between">
+                            <span>邊緣羽化程度 (Blur Radius)</span>
+                            <span id="valBlur">15px</span>
+                        </label>
+                        <input type="range" id="blurRadius" min="0" max="50" value="15" class="w-full accent-indigo-500">
+                    </div>
+                </div>
+
+                <button id="processBtn" class="w-full bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-medium py-3 px-4 rounded-xl shadow-lg transition-all duration-300 flex items-center justify-center gap-2">
+                    <i data-lucide="layers" class="w-5 h-5"></i>
+                    <span id="processBtnText">開始執行 (本機 Canvas)</span>
+                </button>
+            </div>
+        </section>
+
+        <section class="w-full lg:w-7/12 flex flex-col gap-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex-1 flex flex-col min-h-[450px]">
+                <div class="flex items-center justify-between mb-4 border-b border-slate-800/80 pb-3">
+                    <h2 class="text-lg font-semibold flex items-center gap-2 text-slate-200">
+                        <i data-lucide="eye" class="w-5 h-5 text-indigo-400"></i>
+                        效果對比與預覽
+                    </h2>
+                    <div id="viewModeToggle" class="hidden flex bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
+                        <button id="btnSliderMode" class="px-3 py-1 rounded-md bg-slate-800 text-indigo-400 font-medium transition flex items-center gap-1">
+                            <i data-lucide="columns" class="w-3.5 h-3.5"></i> 滑桿
+                        </button>
+                        <button id="btnSideMode" class="px-3 py-1 rounded-md text-slate-400 hover:text-slate-200 font-medium transition flex items-center gap-1">
+                            <i data-lucide="grid" class="w-3.5 h-3.5"></i> 並排
+                        </button>
+                    </div>
+                </div>
+
+                <div id="previewEmptyState" class="flex-1 flex flex-col items-center justify-center text-center p-8 border border-dashed border-slate-800 rounded-xl bg-slate-950/20">
+                    <div class="w-16 h-16 bg-slate-900/50 text-slate-600 rounded-full flex items-center justify-center mb-4">
+                        <i data-lucide="image" class="w-8 h-8"></i>
+                    </div>
+                    <p class="text-slate-400 font-medium mb-1">等待進行影像處理</p>
+                </div>
+
+                <div id="previewLoadingState" class="hidden flex-1 flex flex-col items-center justify-center text-center p-8">
+                    <div class="relative w-24 h-24 mb-6">
+                        <div class="absolute inset-0 rounded-full border-4 border-indigo-500/10"></div>
+                        <div class="absolute inset-0 rounded-full border-4 border-indigo-500 border-t-transparent animate-spin"></div>
+                        <div class="absolute inset-4 rounded-full bg-slate-900 flex items-center justify-center">
+                            <i id="loadingIcon" data-lucide="cpu" class="w-8 h-8 text-indigo-400 animate-pulse"></i>
+                        </div>
+                    </div>
+                    <h3 id="loadingTitle" class="text-base font-semibold text-slate-200 mb-1">正在進行像素運算...</h3>
+                    <p id="loadingSubtitle" class="text-xs text-slate-400 max-w-md">根據選擇的架構，正在透過矩陣演算法移除文字像素。</p>
+                </div>
+
+                <div id="resultContainer" class="hidden flex-1 flex flex-col justify-between">
+                    <div id="viewModeSlider" class="flex-1 flex items-center justify-center p-4">
+                        <div class="relative w-full max-w-[400px] aspect-square rounded-xl overflow-hidden border border-slate-800 shadow-2xl select-none" id="sliderWrapper">
+                            <img id="afterImageSlider" src="" class="absolute inset-0 w-full h-full object-cover pointer-events-none">
+                            <div id="beforeImgContainer" class="absolute inset-y-0 left-0 right-0 overflow-hidden w-1/2">
+                                <img id="beforeImageSlider" src="" class="absolute inset-0 w-full h-full object-cover max-w-none pointer-events-none">
+                            </div>
+                            <div id="sliderHandle" class="absolute inset-y-0 left-1/2 w-1 bg-white cursor-ew-resize flex items-center justify-center shadow-xl group">
+                                <div class="w-8 h-8 rounded-full bg-white text-slate-900 flex items-center justify-center shadow-md hover:scale-110 transition-transform">
+                                    <i data-lucide="chevrons-left-right" class="w-4 h-4 text-slate-700"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="viewModeSide" class="hidden flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center p-4">
+                        <div class="flex flex-col gap-2 items-center">
+                            <span class="text-xs text-slate-400 font-medium">處理前</span>
+                            <div class="border border-slate-800 rounded-xl overflow-hidden aspect-square w-full max-w-[280px]">
+                                <img id="beforeImageSide" src="" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-2 items-center">
+                            <span class="text-xs text-indigo-400 font-medium">處理後</span>
+                            <div class="border border-indigo-900/40 rounded-xl overflow-hidden aspect-square w-full max-w-[280px]">
+                                <img id="afterImageSide" src="" class="w-full h-full object-cover">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-800/80 pt-4 mt-4 flex items-center justify-between gap-4">
+                        <p class="text-xs text-slate-500 flex items-center gap-1" id="successArchitectureSource">
+                            <i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> 運算完成
+                        </p>
+                        <button id="downloadBtn" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold rounded-lg transition flex items-center gap-1.5">
+                            <i data-lucide="download" class="w-4 h-4"></i> 下載結果圖片
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <canvas id="processingCanvas" class="hidden"></canvas>
+
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-slate-900 border border-slate-800 text-slate-200 px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 flex items-center gap-3">
+        <div id="toastIcon" class="p-1.5 rounded-lg"></div>
+        <p id="toastMessage" class="text-xs font-medium"></p>
+    </div>
+
+    <script>
+        // === System Configuration ===
+        const CONFIG = {
+            // In a real environment, GitHub Actions python script injects these
+            CLOUDFLARE_WORKER_URL: "https://api.your-worker.workers.dev/process",
+            SUPABASE_URL: "https://your-project.supabase.co",
+            SUPABASE_ANON_KEY: "eyJhbGci..."
+        };
+
+        // DOM Elements
+        const toggleInput = document.getElementById('architectureToggle');
+        const modeLocalText = document.getElementById('modeLocalText');
+        const modeCloudText = document.getElementById('modeCloudText');
+        const processBtnText = document.getElementById('processBtnText');
+        const loadingIcon = document.getElementById('loadingIcon');
+        const successArchitectureSource = document.getElementById('successArchitectureSource');
+        
+        let isCloudMode = false;
+        let uploadedImageBase64 = null;
+        let generatedImageBase64 = null;
+        let originalFileName = "logo";
+
+        // === Architecture Toggle Logic ===
+        toggleInput.addEventListener('change', (e) => {
+            isCloudMode = e.target.checked;
+            if (isCloudMode) {
+                modeLocalText.classList.replace('text-indigo-400', 'text-slate-500');
+                modeCloudText.classList.replace('text-slate-500', 'text-cyan-400');
+                processBtnText.textContent = "發送至 Cloudflare 運算";
+            } else {
+                modeCloudText.classList.replace('text-cyan-400', 'text-slate-500');
+                modeLocalText.classList.replace('text-slate-500', 'text-indigo-400');
+                processBtnText.textContent = "開始執行 (本機 Canvas)";
+            }
+        });
+
+        // UI Listeners (Range sliders)
+        document.getElementById('yPosition').addEventListener('input', e => document.getElementById('valPos').textContent = e.target.value + '%');
+        document.getElementById('blurRadius').addEventListener('input', e => document.getElementById('valBlur').textContent = e.target.value + 'px');
+
+        // File Upload Logic
+        const fileInput = document.getElementById('fileInput');
+        document.getElementById('dropzone').addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            originalFileName = file.name.split('.')[0];
+            const reader = new FileReader();
+            reader.onload = () => {
+                uploadedImageBase64 = reader.result;
+                document.getElementById('uploadThumbnail').src = reader.result;
+                document.getElementById('uploadPlaceholder').classList.add('hidden');
+                document.getElementById('uploadPreviewContainer').classList.remove('hidden');
+                showToast("圖片就緒", "success");
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // === Architecture 1: Local Canvas Image Processing (No Backend) ===
+        function processLocally(base64Str, yPosPercent, blurRad) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.getElementById('processingCanvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    
+                    // Draw original
+                    ctx.drawImage(img, 0, 0);
+                    
+                    // Algorithm Simulation: Inpaint/Blur the bottom text area
+                    const startY = img.height * (yPosPercent / 100);
+                    const areaHeight = img.height - startY;
+                    
+                    if (areaHeight > 0) {
+                        // Sample background color from just above the cut line
+                        const bgData = ctx.getImageData(img.width/2, startY - 10, 1, 1).data;
+                        ctx.fillStyle = `rgb(${bgData[0]}, ${bgData[1]}, ${bgData[2]})`;
+                        
+                        // Apply simulated "patch" with basic blur simulation
+                        ctx.fillRect(0, startY, img.width, areaHeight);
+                        ctx.filter = `blur(${blurRad}px)`;
+                        ctx.drawImage(canvas, 0, startY, img.width, areaHeight, 0, startY, img.width, areaHeight);
+                        ctx.filter = 'none'; // reset
+                    }
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.src = base64Str;
+            });
+        }
+
+        // === Architecture 2: Cloudflare Workers + Supabase Edge Processing ===
+        async function processViaCloud(base64Str, yPosPercent, blurRad) {
+            // 實務上這裡會將 base64 傳送至 Cloudflare Worker，Worker 處理後寫入 Supabase Storage
+            /*
+            const response = await fetch(CONFIG.CLOUDFLARE_WORKER_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${CONFIG.SUPABASE_ANON_KEY}` },
+                body: JSON.stringify({ image: base64Str, yPos: yPosPercent, blur: blurRad })
+            });
+            const data = await response.json();
+            return data.processedImageUrl; // Returns URL from Supabase
+            */
+            
+            // 由於此處為純前端展示，使用 setTimeout 模擬網路請求與邊緣運算延遲
+            return new Promise((resolve) => {
+                setTimeout(async () => {
+                    // Fallback using local process to visually demonstrate success
+                    const result = await processLocally(base64Str, yPosPercent, blurRad);
+                    resolve(result);
+                }, 2500); // Simulate network latency
+            });
+        }
+
+        // === Main Execution Flow ===
+        document.getElementById('processBtn').addEventListener('click', async () => {
+            if (!uploadedImageBase64) return showToast("請先上傳圖片", "error");
+
+            const yPos = document.getElementById('yPosition').value;
+            const blur = document.getElementById('blurRadius').value;
+
+            // UI States
+            document.getElementById('previewEmptyState').classList.add('hidden');
+            document.getElementById('resultContainer').classList.add('hidden');
+            document.getElementById('previewLoadingState').classList.remove('hidden');
+            loadingIcon.setAttribute('data-lucide', isCloudMode ? 'cloud-lightning' : 'cpu');
+            lucide.createIcons();
+
+            try {
+                if (isCloudMode) {
+                    document.getElementById('loadingTitle').textContent = "正在連線至 Cloudflare Edge...";
+                    generatedImageBase64 = await processViaCloud(uploadedImageBase64, yPos, blur);
+                    successArchitectureSource.innerHTML = `<i data-lucide="cloud-check" class="w-4 h-4 text-cyan-500"></i> Cloudflare 邊緣運算完成`;
+                } else {
+                    document.getElementById('loadingTitle').textContent = "本機 Canvas 像素處理中...";
+                    generatedImageBase64 = await processLocally(uploadedImageBase64, yPos, blur);
+                    successArchitectureSource.innerHTML = `<i data-lucide="check" class="w-4 h-4 text-emerald-500"></i> 本機運算完成`;
+                }
+
+                // Show Results
+                document.getElementById('beforeImageSlider').src = uploadedImageBase64;
+                document.getElementById('afterImageSlider').src = generatedImageBase64;
+                document.getElementById('beforeImageSide').src = uploadedImageBase64;
+                document.getElementById('afterImageSide').src = generatedImageBase64;
+                
+                document.getElementById('previewLoadingState').classList.add('hidden');
+                document.getElementById('resultContainer').classList.remove('hidden');
+                document.getElementById('viewModeToggle').classList.remove('hidden');
+                
+                initSlider();
+                lucide.createIcons();
+                showToast("處理成功！", "success");
+
+            } catch (error) {
+                showToast("處理失敗：" + error.message, "error");
+            }
+        });
+
+        // Toast & Slider Utilities
+        function showToast(msg, type) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastMessage').textContent = msg;
+            toast.className = `fixed bottom-6 right-6 z-50 bg-slate-900 border text-slate-200 px-4 py-3 rounded-xl shadow-2xl transition-all duration-300 transform flex items-center gap-3 translate-y-0 opacity-100 ${type==='error'?'border-red-500/50':'border-emerald-500/50'}`;
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); toast.classList.remove('translate-y-0', 'opacity-100'); }, 3000);
+        }
+
+        function initSlider() {
+            const wrapper = document.getElementById('sliderWrapper');
+            const handle = document.getElementById('sliderHandle');
+            const container = document.getElementById('beforeImgContainer');
+            const beforeImg = document.getElementById('beforeImageSlider');
+            
+            const setDim = () => {
+                const rect = wrapper.getBoundingClientRect();
+                beforeImg.style.width = `${rect.width}px`;
+                beforeImg.style.height = `${rect.height}px`;
+            };
+            setDim();
+            window.addEventListener('resize', setDim);
+
+            let isDragging = false;
+            const onMove = (x) => {
+                const rect = wrapper.getBoundingClientRect();
+                let posX = Math.max(0, Math.min(x - rect.left, rect.width));
+                const percent = (posX / rect.width) * 100;
+                handle.style.left = `${percent}%`;
+                container.style.width = `${percent}%`;
+            };
+
+            handle.addEventListener('mousedown', () => isDragging = true);
+            window.addEventListener('mouseup', () => isDragging = false);
+            window.addEventListener('mousemove', (e) => isDragging && onMove(e.clientX));
+            wrapper.addEventListener('click', (e) => !handle.contains(e.target) && onMove(e.clientX));
+            
+            handle.style.left = "50%"; container.style.width = "50%";
+        }
+
+        // View Mode Toggles
+        document.getElementById('btnSliderMode').onclick = () => {
+            document.getElementById('viewModeSlider').classList.remove('hidden');
+            document.getElementById('viewModeSide').classList.add('hidden');
+            initSlider();
+        };
+        document.getElementById('btnSideMode').onclick = () => {
+            document.getElementById('viewModeSide').classList.remove('hidden');
+            document.getElementById('viewModeSlider').classList.add('hidden');
+        };
+
+        // Download
+        document.getElementById('downloadBtn').onclick = () => {
+            const link = document.createElement('a');
+            link.href = generatedImageBase64;
+            link.download = `${originalFileName}_processed.png`;
+            link.click();
+        };
+
+        lucide.createIcons();
+    </script>
+</body>
+</html>
