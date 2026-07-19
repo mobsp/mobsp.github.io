@@ -1,0 +1,52 @@
+name: 全自動遞迴修復單斜槓註解
+
+on:
+  push:
+    branches:
+      - main  # 當推送到 main 分支時觸發
+  workflow_dispatch: # 允許在 GitHub 網頁上手動點擊執行
+
+# 核心設定：賦予工作流對儲存庫內容的寫入權限，否則無法推回修正後的程式碼
+permissions:
+  contents: write
+
+jobs:
+  fix-single-slashes:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. 檢出儲存庫完整代碼
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    # 2. 使用 Linux 原生命令進行全專案多層路徑深度掃描並修復
+    - name: Deep Scan and Fix Slashes
+      run: |
+        echo "🔍 開始全盤深度巡檢所有子目錄與程式碼檔案..."
+        
+        # 使用 find 遞迴搜尋指定副檔名檔案，並排除 node_modules 和 .git 資料夾
+        # 透過 sed 精準捕捉「開頭為空白或無空白，接單斜線，再接一個空白與文字」的行，並將其替換為 //
+        find . -type f \( -name "*.js" -o -name "*.html" -o -name "*.ts" -o -name "*.json" \) \
+          ! -path "*/node_modules/*" \
+          ! -path "*/.git/*" \
+          -exec sed -i -E 's|^([[:space:]]*)/([[:space:]]+[^/])|\1//\2|g' {} +
+          
+        echo "🌌 深度巡檢完畢，所有格式不符之單斜線註解已校正完成。"
+
+    # 3. 自動偵測變更並推回儲存庫
+    - name: Commit and Push if changed
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        
+        # 檢查是否有檔案被修改
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "⚠️ 偵測到程式碼註解錯誤，正在自動提交修復後的變更..."
+          git add .
+          git commit -m "style: 自動修復全專案多層路徑下的單斜槓註解錯誤 [skip ci]"
+          git push origin HEAD:${{ github.ref_name }}
+        else
+          echo "✅ 全專案檔案註解一切正常，無需修改。"
+        fi
