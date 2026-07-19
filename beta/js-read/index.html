@@ -52,10 +52,10 @@
 </div>
 
 <script>
-    / 這裡放入我們重構後的 MobSpaceEngine Class
-    / (為了簡潔，這裡直接引用邏輯，您可以將之前的 JS 存為 mobspace-engine.js 引入)
+    // 這裡放入我們重構後的 MobSpaceEngine Class
+    // (為了簡潔，這裡直接引用邏輯，您可以將之前的 JS 存為 mobspace-engine.js 引入)
     
-    / 模擬我們剛才討論的「1.json」索引數據 (實際運作時會從 GitHub 抓取)
+    // 模擬我們剛才討論的「1.json」索引數據 (實際運作時會從 GitHub 抓取)
     const mockManifest = {
         files: [
             { id: "fileA", name: "2026研發紀錄", path: "data/A.json", tags: ["dev"] },
@@ -65,7 +65,7 @@
 
     class BrandApp {
         constructor() {
-            / 初始化渲染引擎
+            // 初始化渲染引擎
             this.engine = new MobSpaceEngine({
                 container: document.getElementById('display-area'),
                 brandName: "Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ"
@@ -84,20 +84,20 @@
             const query = this.input.value.trim();
             if(!query) return;
 
-            / 1. 顯示使用者輸入 (模擬聊天介面)
+            // 1. 顯示使用者輸入 (模擬聊天介面)
             this.appendMessage('user', query);
             this.input.value = '';
 
-            / 2. 搜尋與調度邏輯
+            // 2. 搜尋與調度邏輯
             const matchedFile = mockManifest.files.find(f => query.includes(f.name) || f.tags.some(t => query.includes(t)));
 
             if(matchedFile) {
                 this.appendMessage('assistant', `正在為您檢索「${matchedFile.name}」並加載數位資源...`);
-                / 模擬抓取 A.json 或 B.json 並渲染
-                / 這裡會執行 engine.render(data)
+                // 模擬抓取 A.json 或 B.json 並渲染
+                // 這裡會執行 engine.render(data)
                 setTimeout(() => {
                     this.engine.render([{ role: 'assistant', text: `這是從 ${matchedFile.name} 找到的內容，包含 HTML 語法與多媒體預覽：`, id: 'msg_001' }]);
-                    / 這裡可以觸發附件渲染
+                    // 這裡可以觸發附件渲染
                 }, 800);
             } else {
                 this.appendMessage('assistant', `抱歉，找不到與「${query}」相關的內容。建議試試：2026研發、品牌資源。`);
@@ -116,10 +116,10 @@
         }
     }
 
-    / 啟動應用
+    // 啟動應用
     const app = new BrandApp();
 
-    / 這裡預留給 MobSpaceEngine 的 Class 代碼部分...
+    // 這裡預留給 MobSpaceEngine 的 Class 代碼部分...
 </script>
 
 

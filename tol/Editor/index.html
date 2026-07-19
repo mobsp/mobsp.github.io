@@ -262,14 +262,14 @@
         const toastMessage = ref('');
         let toastTimeout = null;
 
-        / 代碼存儲區
+        // 代碼存儲區
         const codes = ref({
           html: '<div class="mobispace-welcome">\n  <h2>哈囉，部長！✨</h2>\n  <p>這是緹緹為您準備的終極編輯器。</p>\n  <button id="testBtn">點擊測試 JS</button>\n</div>',
           css: '.mobispace-welcome {\n  text-align: center;\n  font-family: -apple-system, sans-serif;\n  padding-top: 50px;\n}\nbutton {\n  padding: 12px 24px;\n  border-radius: 8px;\n  background: #007aff;\n  color: white;\n  border: none;\n  cursor: pointer;\n  transition: 0.2s;\n}\nbutton:hover {\n  background: #005bb5;\n  transform: scale(1.05);\n}',
           js: 'document.getElementById("testBtn").addEventListener("click", () => {\n  alert("✅ 緹緹報告：JS 執行成功！");\n});'
         });
 
-        / 讀取 LocalStorage (緹緹的防呆設計)
+        // 讀取 LocalStorage (緹緹的防呆設計)
         onMounted(() => {
           const saved = localStorage.getItem('mobispace-ide-codes');
           if (saved) {
@@ -278,12 +278,12 @@
           }
         });
 
-        / 自動儲存監聽
+        // 自動儲存監聽
         watch(codes, (newVal) => {
           localStorage.setItem('mobispace-ide-codes', JSON.stringify(newVal));
         }, { deep: true });
 
-        / 計算屬性：當前編輯框綁定的內容
+        // 計算屬性：當前編輯框綁定的內容
         const activeCode = computed({
           get: () => codes.value[currentLang.value],
           set: (val) => { codes.value[currentLang.value] = val; }
@@ -291,14 +291,14 @@
 
         const placeholderText = computed(() => `在這裡輸入您的 ${currentLang.value.toUpperCase()} 代碼...`);
 
-        / 顯示提示訊息
+        // 顯示提示訊息
         const showToast = (msg) => {
           toastMessage.value = msg;
           clearTimeout(toastTimeout);
           toastTimeout = setTimeout(() => { toastMessage.value = ''; }, 2000);
         };
 
-        / 處理 Tab 鍵縮排 (天才必備)
+        // 處理 Tab 鍵縮排 (天才必備)
         const handleTab = (e) => {
           if (e.key === 'Tab') {
             e.preventDefault();
@@ -306,7 +306,7 @@
             const start = target.selectionStart;
             const end = target.selectionEnd;
             const val = target.value;
-            / 插入兩個空白作為縮排
+            // 插入兩個空白作為縮排
             target.value = val.substring(0, start) + '  ' + val.substring(end);
             target.selectionStart = target.selectionEnd = start + 2;
             activeCode.value = target.value; / 更新雙向綁定
@@ -329,7 +329,7 @@
           }
         };
 
-        / 將 HTML/CSS/JS 縫合成單一字串
+        // 將 HTML/CSS/JS 縫合成單一字串
         const generateMonolithicCode = () => {
           return `<!DOCTYPE html>
 <html lang="zh-Hant">
@@ -350,7 +350,7 @@ ${codes.value.js}
 </html>`;
         };
 
-        / 打包匯出為單一 HTML 檔案
+        // 打包匯出為單一 HTML 檔案
         const exportMonolithic = () => {
           const fullCode = generateMonolithicCode();
           const blob = new Blob([fullCode], { type: 'text/html' });
@@ -365,7 +365,7 @@ ${codes.value.js}
           showToast('📦 已打包下載為單一檔案！');
         };
 
-        / 執行並渲染預覽畫面
+        // 執行並渲染預覽畫面
         const executeCode = async () => {
           viewMode.value = 'preview';
           await nextTick();

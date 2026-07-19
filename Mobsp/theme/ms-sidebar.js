@@ -51,7 +51,7 @@ class MobSidebar extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  / 開啟/關閉邏輯
+  // 開啟/關閉邏輯
   toggle() {
     this.shadowRoot.querySelector('#sidebar').classList.toggle('open');
   }

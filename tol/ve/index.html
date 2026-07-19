@@ -147,9 +147,9 @@ const status = document.getElementById('status');
 const runBtn = document.getElementById('run');
 const pauseBtn = document.getElementById('pause');
 
-/ ------------------------------------------------------------
-/ 運行模式：隱藏編輯器 → 顯示 iframe
-/ ------------------------------------------------------------
+// ------------------------------------------------------------
+// 運行模式：隱藏編輯器 → 顯示 iframe
+// ------------------------------------------------------------
 runBtn.addEventListener('click', () => {
   console.log('[Editor] Run clicked');
 
@@ -162,9 +162,9 @@ runBtn.addEventListener('click', () => {
   status.textContent = '運行中（Preview Mode）';
 });
 
-/ ------------------------------------------------------------
-/ 暫停模式：停止顯示 iframe → 回到編輯
-/ ------------------------------------------------------------
+// ------------------------------------------------------------
+// 暫停模式：停止顯示 iframe → 回到編輯
+// ------------------------------------------------------------
 pauseBtn.addEventListener('click', () => {
   console.log('[Editor] Pause clicked');
 

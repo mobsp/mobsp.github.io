@@ -10,7 +10,7 @@ class MobSpaceEngine {
         this.assets = assets;
         this.plugins = {}; / 存放黑科技插件：圖書館、實驗室、多媒體、轉換器
         
-        / 修正：自動偵測 GitHub Pages 路徑地雷
+        // 修正：自動偵測 GitHub Pages 路徑地雷
         this.baseUrl = window.location.hostname.includes('github.io') 
             ? `/${window.location.pathname.split('/')[1]}/` 
             : '/';
@@ -22,7 +22,7 @@ class MobSpaceEngine {
     render(data) {
         this.container.innerHTML = ""; / 清空容器
         
-        / 判斷是單一檔案還是打包後的「1.json」索引格式
+        // 判斷是單一檔案還是打包後的「1.json」索引格式
         const conversations = this.identifyAndNormalize(data);
         
         conversations.forEach(conv => {
@@ -40,7 +40,7 @@ class MobSpaceEngine {
      * 強化：格式自動辨識與正規化邏輯
      */
     identifyAndNormalize(data) {
-        / 1. 如果是 OpenAI 的 mapping 結構
+        // 1. 如果是 OpenAI 的 mapping 結構
         if (data.mapping || (Array.isArray(data) && data[0].mapping)) {
             const list = Array.isArray(data) ? data : [data];
             return list.map(item => ({
@@ -55,7 +55,7 @@ class MobSpaceEngine {
                     }))
             }));
         }
-        / 2. 如果是簡單的 [{role, text}] 格式
+        // 2. 如果是簡單的 [{role, text}] 格式
         if (Array.isArray(data) && data[0].role) {
             return [{ title: "快速對話", messages: data }];
         }
@@ -76,12 +76,12 @@ class MobSpaceEngine {
         const content = document.createElement("div");
         content.className = "brand-msg-content";
         
-        / 修改：使用 innerHTML 支援 .md 內的 HTML 語法，並偵測數位資源關鍵字
+        // 修改：使用 innerHTML 支援 .md 內的 HTML 語法，並偵測數位資源關鍵字
         content.innerHTML = this.processContent(msg.text);
 
         bubble.append(label, content);
         
-        / 呼叫「多媒體融合」插件：偵測是否有圖檔、影音或 3D 資源需要預覽
+        // 呼叫「多媒體融合」插件：偵測是否有圖檔、影音或 3D 資源需要預覽
         if (this.assets && this.assets[msg.id]) {
             bubble.appendChild(this.renderMediaPreview(this.assets[msg.id]));
         }
@@ -95,11 +95,11 @@ class MobSpaceEngine {
     processContent(text) {
         let html = text;
         
-        / 1. 基本安全過濾 (Sanitize)
+        // 1. 基本安全過濾 (Sanitize)
         html = html.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gms, "");
 
-        / 2. 插件觸發：即時代碼實驗室 (Code Sandbox)
-        / 偵測到程式碼區塊時，自動注入「🚀 執行」按鈕
+        // 2. 插件觸發：即時代碼實驗室 (Code Sandbox)
+        // 偵測到程式碼區塊時，自動注入「🚀 執行」按鈕
         if (html.includes("```html") || html.includes("```javascript")) {
             html += `<div class="sandbox-trigger" onclick="runLab()">🚀 啟動實驗室預覽</div>`;
         }

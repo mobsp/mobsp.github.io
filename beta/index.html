@@ -28,24 +28,24 @@
     </div>
 
     <script type="module">
-        / 1. 導入系統
+        // 1. 導入系統
         import { showSplash } from './mod/splash-screen.js';
         import { initTheme } from './mod/theme-engine.js';
         import { renderBrand } from './mod/brand-layout.js';
         import { initBottomNav } from './mod/bottom-nav.js';
         import { initFooter } from './mod/footer-sys.js';
 
-        / 2. 執行順序
-        / 先顯示啟動畫面，確保使用者第一眼看到的是圖片
+        // 2. 執行順序
+        // 先顯示啟動畫面，確保使用者第一眼看到的是圖片
         showSplash('/assets/brand/ms-blog.webp');
 
-        / 初始化背景與佈局
+        // 初始化背景與佈局
         initTheme();
         renderBrand('#brand-area');
         initBottomNav();
         initFooter();
 
-        / 3. 2號系統 (跑馬燈) 放在 DOM 加載後
+        // 3. 2號系統 (跑馬燈) 放在 DOM 加載後
         document.addEventListener('DOMContentLoaded', async () => {
             const { initNotice } = await import('./mod/notice-sync.js');
             initNotice(

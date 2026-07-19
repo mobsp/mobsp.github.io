@@ -48,7 +48,7 @@
 
         async function loadTree(branch) {
             document.getElementById('tree').innerHTML = "讀取中...";
-            / 使用 recursive=1 獲取所有深層檔案
+            // 使用 recursive=1 獲取所有深層檔案
             const res = await fetch(`${API_BASE}/git/trees/${branch}?recursive=1`);
             const data = await res.json();
             const root = { name: 'root', children: {} };

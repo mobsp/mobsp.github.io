@@ -47,9 +47,9 @@
   }
   </script>
 <link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/browser/sf/index.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">
-  / 修正原本不完整的 import，改為有效的 web-vitals ESM 引用（僅修正此 import 行）
+  // 修正原本不完整的 import，改為有效的 web-vitals ESM 引用（僅修正此 import 行）
   import {getLCP, getFID, getCLS} from 'https://unpkg.com/web-vitals@2.1.0/dist/web-vitals.esm.js';
-  / 開發時可觀察指標（不會改動其他區塊內容）
+  // 開發時可觀察指標（不會改動其他區塊內容）
   getLCP(metric => console.debug('LCP', metric));
   getFID(metric => console.debug('FID', metric));
   getCLS(metric => console.debug('CLS', metric));

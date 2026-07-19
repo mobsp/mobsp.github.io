@@ -119,7 +119,7 @@ createApp({
 
     onMounted(async () => {
       try {
-        / 重要修正：從 /tol/lab/ 跳出兩層回到根目錄，再進入 /data/config.json
+        // 重要修正：從 /tol/lab/ 跳出兩層回到根目錄，再進入 /data/config.json
         const res = await fetch('../../data/config.json'); 
         if (!res.ok) throw new Error("檔案載入失敗");
         const data = await res.json();

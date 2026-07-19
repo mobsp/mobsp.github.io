@@ -147,21 +147,21 @@
         const canvas = document.getElementById('canvas-mobi');
         const target = document.getElementById('svg-mobi');
         
-        / 核心三色與動態
+        // 核心三色與動態
         const bg = document.getElementById('bg_fill')?.value || '#1e2227';
         const fill = document.getElementById('icon_fill')?.value || '#00cec9';
         const stroke = document.getElementById('icon_stroke')?.value || '#ffffff';
         const rad = document.getElementById('radius_mode')?.value || '12px';
         const anim = document.getElementById('anim_level')?.value || '0';
 
-        / 視覺渲染
+        // 視覺渲染
         canvas.style.backgroundColor = bg;
         canvas.style.borderRadius = rad;
         target.style.webkitMask = `url(${svgUrl}) no-repeat center / contain`;
         target.style.background = fill;
         target.style.filter = `drop-shadow(0 0 1px ${stroke}) drop-shadow(0 0 1px ${stroke})`;
 
-        / 動態等級切換
+        // 動態等級切換
         target.className = "";
         if(anim.includes("1")) target.classList.add("anim-1");
         if(anim.includes("2")) target.classList.add("anim-2");

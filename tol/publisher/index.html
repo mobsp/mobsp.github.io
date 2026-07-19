@@ -145,7 +145,7 @@
             const year = new Date().getFullYear();
             const markdownBody = marked.parse(content);
 
-            / 使用模板字串時，將內部的反引號轉義，避免 JS 報錯
+            // 使用模板字串時，將內部的反引號轉義，避免 JS 報錯
             return `<!DOCTYPE html>
 <html lang="zh-TW">
 <head>

@@ -185,7 +185,7 @@
         const btn = document.getElementById('themeBtn');
         const html = document.documentElement;
         
-        / 初始檢測
+        // 初始檢測
         if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             html.setAttribute('data-theme', 'dark');
         }

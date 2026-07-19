@@ -25,7 +25,7 @@ export default class PermissionEngine {
         }
     }
 
-    / 檢查是否有足夠的等級權限 (Level-based RBAC)
+    // 檢查是否有足夠的等級權限 (Level-based RBAC)
     hasPermission(requiredRole) {
         if (!this.rolesData) return false;
         
@@ -35,13 +35,13 @@ export default class PermissionEngine {
         return userLevel >= requiredLevel;
     }
 
-    / 檢查會員層級功能開關 (Feature Flag)
+    // 檢查會員層級功能開關 (Feature Flag)
     canAccessFeature(featureKey) {
         if (!this.rolesData) return false;
         
         const tierConfig = this.rolesData.membership_tiers[this.currentTier];
         return tierConfig[featureKey] === true || tierConfig[featureKey] === -1; 
-        / -1 represents unlimited in our system
+        // -1 represents unlimited in our system
     }
 
     getReadQuota() {

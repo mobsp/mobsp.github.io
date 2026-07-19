@@ -40,7 +40,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
     
-    / API 請求不走本地快取，使用 Network First
+    // API 請求不走本地快取，使用 Network First
     if (event.request.url.includes('/api/') || event.request.url.includes('graphql')) {
         event.respondWith(
             fetch(event.request).catch(() => caches.match(event.request))
@@ -48,7 +48,7 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    / 靜態資源使用 Cache First, Network Fallback
+    // 靜態資源使用 Cache First, Network Fallback
     event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
             if (cachedResponse) return cachedResponse;

@@ -219,7 +219,7 @@
     let currentBranch = "";
     let folderSet = new Set();
 
-    / 核心還原：深度掃描與 API 抓取邏輯
+    // 核心還原：深度掃描與 API 抓取邏輯
     async function startDeepScan() {
         const users = document.getElementById('userInput').value.split(',').map(s => s.trim());
         const status = document.getElementById('scanStatus');
@@ -241,7 +241,7 @@
                         const treeData = await (await fetch(`https://api.github.com/repos/${user}/${repo.name}/git/trees/${b.name}?recursive=1`, { headers })).json();
                         if (treeData.tree) {
                             treeData.tree.filter(i => i.type === 'blob').forEach(f => {
-                                / 排除邏輯還原
+                                // 排除邏輯還原
                                 const isExcluded = excludes.some(rule => f.path.toLowerCase().includes(rule.trim()));
                                 if (isExcluded) return;
 
@@ -397,7 +397,7 @@
 
     function copyIt(t) { navigator.clipboard.writeText(t); alert("已複製連結"); }
     
-    / 初始化 API 配額顯示
+    // 初始化 API 配額顯示
     updateLimit();
 </script>
 

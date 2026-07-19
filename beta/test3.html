@@ -157,7 +157,7 @@
     </div>
 
     <script>
-        / 進入閱讀器
+        // 進入閱讀器
         function activateReader() {
             const original = document.getElementById('target-content');
             const readerBody = document.getElementById('readerBody');
@@ -173,19 +173,19 @@
             document.getElementById('fabBtn').style.display = 'flex';
         }
 
-        / 彈窗開關邏輯
+        // 彈窗開關邏輯
         function openModal() {
             document.getElementById('modalOverlay').classList.add('show');
         }
 
         function closeModal(event, force = false) {
-            / 如果點擊的是遮罩區或強行關閉
+            // 如果點擊的是遮罩區或強行關閉
             if (force || event.target.id === 'modalOverlay') {
                 document.getElementById('modalOverlay').classList.remove('show');
             }
         }
 
-        / 字體與排版控制
+        // 字體與排版控制
         function adjustFont(delta) {
             const root = document.documentElement;
             let current = parseInt(getComputedStyle(root).getPropertyValue('--font-size')) || 19;
@@ -205,7 +205,7 @@
             document.getElementById('articleFooter').style.display = show ? 'block' : 'none';
         }
 
-        / 全域鎖定補強
+        // 全域鎖定補強
         document.addEventListener('touchmove', function(e) {
             if (document.getElementById('modalOverlay').classList.contains('show')) {
                 e.preventDefault();
