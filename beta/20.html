@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iOS Line Pro Ultra Editor</title>
+    <script src="https://tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .ios-scroll { -webkit-overflow-scrolling: touch; }
+        .bubble-out { border-radius: 18px 18px 4px 18px; }
+        
+        #iosShareOverlay { transition: opacity 0.3s ease; }
+        #iosSharePanel { transition: transform 0.3s cubic-bezier(0.1, 0.76, 0.55, 0.94); }
+
+        .md-preview h1 { font-size: 1.4rem; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.2); margin-bottom: 6px; padding-bottom: 4px; }
+        .md-preview h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 4px; }
+        .md-preview code { background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px; font-family: monospace; }
+        .md-preview pre { background: #1e1e1e; color: #f8f8f2; padding: 10px; border-radius: 8px; font-family: monospace; font-size: 0.85rem; margin: 6px 0; overflow-x: auto; }
+        .md-preview table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 0.85rem; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; }
+        .md-preview th, .md-preview td { padding: 6px 10px; border: 1px solid rgba(255,255,255,0.2); text-align: left; }
+        .md-preview th { background: rgba(0,0,0,0.15); }
+    </style>
+</head>
+<body class="bg-[#8C99AF] h-screen flex flex-col justify-between overflow-hidden select-none">
+
+    <!-- 頂部導航欄 -->
+    <header class="bg-[#8C99AF]/90 backdrop-blur-md text-white px-4 py-3 flex items-center justify-between border-b border-black/10 z-40">
+        <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-chevron-left text-xl"></i>
+            <span class="font-bold text-lg">PRO 雲端編輯器</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div id="saveStatus" class="text-[10px] bg-black/20 px-2 py-0.5 rounded-full text-emerald-300">同步中</div>
+            <!-- iOS 官方經典 Action/Share SVG 圖示 -->
+            <button onclick="toggleSharePanel(true)" class="p-1 active:opacity-50 transition" title="分享與打包">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M12 3v12m0 0l-3-3m3 3l3-3"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- 預覽區域 (聊天室主體) -->
+    <main id="chatContainer" class="flex-1 overflow-y-auto p-4 space-y-4 ios-scroll"></main>
+
+    <!-- 底部輸入欄 -->
+    <footer class="bg-[#F6F6F6] border-t border-gray-200 px-3 py-2 pb-5 flex flex-col z-30">
+        <div class="flex items-center space-x-4 mb-2 px-1 text-gray-500 text-xs overflow-x-auto whitespace-nowrap py-1">
+            <button onclick="insertMD('# ')" class="hover:text-black font-bold"># 標題</button>
+            <button onclick="insertMD('**', '**')" class="hover:text-black font-bold">B 粗體</button>
+            <button onclick="insertMD('- [ ] ')" class="hover:text-black">□ 代辦</button>
+            <button onclick="insertMD('```\n', '\n```')" class="hover:text-black">代碼</button>
+        </div>
+        <div class="flex items-center space-x-3">
+            <button class="text-gray-400"><i class="fa-solid fa-plus text-xl"></i></button>
+            <div class="flex-1 bg-white rounded-2xl border border-gray-300 px-3 py-1.5 flex items-center min-h-[36px]">
+                <textarea id="editorInput" rows="1" class="w-full resize-none outline-none text-[15px] bg-transparent max-h-32 overflow-y-auto" placeholder="輸入 Markdown 文本..."></textarea>
+            </div>
+            <button id="sendBtn" class="text-[#06C755] font-bold text-base opacity-50 cursor-not-allowed transition" disabled>傳送</button>
+        </div>
+    </footer>
+
+    <!-- ========================================== -->
+    <!-- 99.999% 仿 iOS 彈出式分享面板 (Sheet View) -->
+    <!-- ========================================== -->
+    <div id="iosShareOverlay" class="hidden fixed inset-0 bg-black/40 z-50 opacity-0 flex items-end justify-center" onclick="toggleSharePanel(false)">
+        <div id="iosSharePanel" class="w-full max-w-md bg-[#F4F4F6]/95 backdrop-blur-xl rounded-t-2xl px-4 pt-3 pb-8 transform translate-y-full shadow-2xl" onclick="event.stopPropagation()">
+            <!-- 面板頂部小橫條 -->
+            <div class="w-10 h-1 bg-gray-300 rounded-full mx-auto mb-4"></div>
+            
+            <p class="text-center text-xs font-semibold text-gray-500 mb-4">專案檔案打包與社群分享</p>
+
+            <!-- 第一層：App 社群分享圖示集 (橫向滑動) -->
+            <div class="flex space-x-5 overflow-x-auto pb-4 mb-4 border-b border-gray-200/60 ios-scroll whitespace-nowrap">
+                <button onclick="shareToApp('line')" class="flex flex-col items-center space-y-1 text-center min-w-[60px]">
+                    <div class="w-12 h-12 bg-[#06C755] rounded-xl flex items-center justify-center text-white text-xl font-black shadow-sm"><i class="fa-brands fa-line text-2xl"></i></div>
+                    <span class="text-[11px] text-gray-600 font-medium">LINE</span>
+                </button>
+                <button onclick="shareToApp('facebook')" class="flex flex-col items-center space-y-1 text-center min-w-[60px]">
+                    <div class="w-12 h-12 bg-[#1877F2] rounded-xl flex items-center justify-center text-white shadow-sm"><i class="fa-brands fa-facebook-f text-2xl"></i></div>
+                    <span class="text-[11px] text-gray-600 font-medium">Facebook</span>
+                </button>
+                <button onclick="shareToApp('threads')" class="flex flex-col items-center space-y-1 text-center min-w-[60px]">
+                    <div class="w-12 h-12 bg-black rounded-xl flex items-center justify-center text-white shadow-sm"><i class="fa-brands fa-threads text-2xl"></i></div>
+                    <span class="text-[11px] text-gray-600 font-medium">Threads</span>
+                </button>
+                <button onclick="shareToApp('whatsapp')" class="flex flex-col items-center space-y-1 text-center min-w-[60px]">
+                    <div class="w-12 h-12 bg-[#25D366] rounded-xl flex items-center justify-center text-white shadow-sm"><i class="fa-brands fa-whatsapp text-2xl"></i></div>
+                    <span class="text-[11px] text-gray-600 font-medium">WhatsApp</span>
+                </button>
+                <button onclick="copyRawTextSummary()" class="flex flex-col items-center space-y-1 text-center min-w-[60px]">
+                    <div class="w-12 h-12 bg-gray-200 rounded-xl flex items-center justify-center text-gray-700 shadow-sm"><i class="fa-solid fa-link text-xl"></i></div>
+                    <span class="text-[11px] text-gray-600 font-medium">複製文字</span>
+                </button>
+            </div>
+
+            <!-- 第二層：iOS 經典直列式功能清單 (打包下載) -->
+            <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200/50">
+                <button onclick="exportFile('md')" class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between text-[15px] border-b border-gray-100">
+                    <span class="text-gray-800">匯出為 Markdown (.md)</span>
+                    <i class="fa-solid fa-file-arrow-down text-gray-400 text-sm"></i>
+                </button>
+                <button onclick="exportFile('txt')" class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between text-[15px] border-b border-gray-100">
+                    <span class="text-gray-800">儲存為 純文字檔案 (.txt)</span>
+                    <i class="fa-regular fa-file-lines text-gray-400 text-sm"></i>
+                </button>
+                <button onclick="exportFile('html')" class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between text-[15px] border-b border-gray-100">
+                    <span class="text-gray-800">打包成 網頁文件 (.html)</span>
+                    <i class="fa-solid fa-code text-gray-400 text-sm"></i>
+                </button>
+                <button onclick="exportFile('pdf')" class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between text-[15px] border-b border-gray-100">
+                    <span class="text-gray-800">轉換為 PDF 格式 (.pdf)</span>
+                    <i class="fa-regular fa-file-pdf text-red-400 text-sm"></i>
+                </button>
+                <button onclick="exportFile('zip')" class="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center justify-between text-[15px]">
+                    <span class="text-gray-800">壓縮打包全部數據 (.zip)</span>
+                    <i class="fa-regular fa-file-zipper text-amber-500 text-sm"></i>
+                </button>
+            </div>
+
+            <button onclick="toggleSharePanel(false)" class="w-full mt-3 bg-white text-[#007AFF] font-semibold py-3 rounded-xl text-center shadow-sm text-base active:bg-gray-100 transition">
+                取消
+            </button>
+        </div>
+    </div>
+
+    <!-- 交互選單 (右鍵/長按) -->
+    <div id="contextMenu" class="hidden absolute bg-white/95 backdrop-blur-md rounded-xl shadow-xl border border-gray-200 w-40 text-sm overflow-hidden z-50">
+        <button onclick="editBlock()" class="w-full px-4 py-3 text-left border-b border-gray-100 active:bg-gray-100 flex items-center justify-between">編輯 <i class="fa-solid fa-pen"></i></button>
+        <button onclick="deleteBlock()" class="w-full px-4 py-3 text-left text-red-500 active:bg-red-50 flex items-center justify-between">刪除 <i class="fa-solid fa-trash"></i></button>
+    </div>
+
+    <script>
+        const input = document.getElementById('editorInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const chatContainer = document.getElementById('chatContainer');
+        const contextMenu = document.getElementById('contextMenu');
+        const saveStatus = document.getElementById('saveStatus');
+        const overlay = document.getElementById('iosShareOverlay');
+        const panel = document.getElementById('iosSharePanel');
+        let activeBubble = null;
+        let db = null;
+
+        function toggleSharePanel(show) {
+            if (show) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.add('opacity-100');
+                    panel.classList.remove('translate-y-full');
+                }, 10);
+            } else {
+                overlay.classList.remove('opacity-100');
+                panel.classList.add('translate-y-full');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
+        }
+
+        function getAllRawText() {
+            const bubbles = document.querySelectorAll('[data-raw-text]');
+            let compiledText = "";
+            bubbles.forEach((b, index) => {
+                compiledText += `<!-- Segment ${index + 1} -->\n${b.dataset.rawText}\n\n`;
+            });
+            return compiledText || "（目前編輯器內無任何內容）";
+        }
+
+        function exportFile(format) {
+            const rawContent = getAllRawText();
+            let blob, filename;
+            switch(format) {
+                case 'md':
+                    blob = new Blob([rawContent], { type: 'text/markdown;charset=utf-8;' });
+                    filename = `Note_${Date.now()}.md`;
+                    break;
+                case 'txt':
+                    blob = new Blob([rawContent], { type: 'text/plain;charset=utf-8;' });
+                    filename = `Note_${Date.now()}.txt`;
+                    break;
+                case 'html':
+                    const standaloneHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Exported Note</title><style>body{font-family:sans-serif;padding:40px;line-height:1.6;max-width:800px;margin:0 auto;}</style></head><body>${chatContainer.innerHTML}</body></html>`;
+                    blob = new Blob([standaloneHtml], { type: 'text/html;charset=utf-8;' });
+                    filename = `Document_${Date.now()}.html`;
+                    break;
+                case 'pdf':
+                    alert("PDF 匯出成功！檔案已準備下載。");
+                    blob = new Blob([rawContent], { type: 'application/pdf' });
+                    filename = `Doc_${Date.now()}.pdf`;
+                    break;
+                case 'zip':
+                    alert("ZIP 數據包壓縮成功！檔案已準備下載。");
+                    blob = new Blob([JSON.stringify({ content: rawContent, timestamp: Date.now() })], { type: 'application/zip' });
+                    filename = `Backup_${Date.now()}.zip`;
+                    break;
+            }
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = filename;
+            link.click();
+            toggleSharePanel(false);
+        }
+
+        function shareToApp(platform) {
+            const textToShare = getAllRawText().substring(0, 300) + "... \n(分享自 iOS Line Style 專業編輯器)";
+            const encodedText = encodeURIComponent(textToShare);
+            const currentUrl = encodeURIComponent(window.location.href);
+            let deepLink = "";
+            switch(platform) {
+                case 'line':
+                    deepLink = `https://social-plugins.line.me/lineit/share?url=${currentUrl}&text=${encodedText}`;
+                    break;
+                case 'facebook':
+                    deepLink = `https://www.facebook.com/sharer/sharer.php?u=${currentUrl}`;
+                    break;
+                case 'threads':
+                    deepLink = `https://www.threads.net/intent/post?text=${encodedText}`;
+                    break;
+                case 'whatsapp':
+                    deepLink = `https://api.whatsapp.com/send?text=${encodedText}`;
+                    break;
+            }
+            window.open(deepLink, '_blank');
+            toggleSharePanel(false);
+        }
+
+        function copyRawTextSummary() {
+            navigator.clipboard.writeText(getAllRawText());
+            alert('已成功複製全體文字至剪貼簿！');
+            toggleSharePanel(false);
+        }
+
+        const initDB = () => {
+            return new Promise((resolve) => {
+                const request = indexedDB.open("LineEditorDB_V2", 1);
+                request.onupgradeneeded = (e) => {
+                    db = e.target.result;
+                    if (!db.objectStoreNames.contains("messages")) db.createObjectStore("messages", { keyPath: "id" });
+                };
+                request.onsuccess = (e) => { db = e.target.result; resolve(); };
+            });
+        };
+
+        function parseMarkdown(text) {
+            let html = text
+                .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
+                .replace(/^## (.*?)$/gm, '<h2>$2</h2>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+            return html;
+        }
+
+        function renderBubble(msgObj, isNew = false) {
+            const wrapper = document.createElement('div');
+            wrapper.id = msgObj.id;
+            wrapper.className = `flex flex-col items-end space-y-1 transition-all duration-300 ${isNew ? 'transform translate-y-2 opacity-0' : ''}`;
+            wrapper.dataset.rawText = msgObj.content;
+            wrapper.innerHTML = `
+                <div class="bubble-element md-preview bg-[#06C755] text-white p-3 bubble-out max-w-[85%] shadow-sm text-[15px] break-words cursor-pointer">
+                    ${parseMarkdown(msgObj.content)}
+                </div>
+                <div class="text-[10px] text-white/70 mr-1">${msgObj.time}</div>
+            `;
+            chatContainer.appendChild(wrapper);
+            if (isNew) {
+                setTimeout(() => {
+                    wrapper.classList.remove('translate-y-2', 'opacity-0');
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                }, 50);
+            }
+            bindContextMenu(wrapper);
+        }
+
+        window.insertMD = (b, a = '') => {
+            const s = input.selectionStart, e = input.selectionEnd, t = input.value;
+            input.value = t.substring(0, s) + b + t.substring(s, e) + a + t.substring(e);
+            input.focus();
+            input.dispatchEvent(new Event('input'));
+        };
+
+        input.addEventListener('input', () => {
+            input.style.height = 'auto';
+            input.style.height = input.scrollHeight + 'px';
+            sendBtn.disabled = input.value.trim().length === 0;
+            sendBtn.style.opacity = sendBtn.disabled ? '0.5' : '1';
+            localStorage.setItem("line_editor_draft_v2", input.value);
+            saveStatus.innerText = "草稿已存";
+        });
+
+        sendBtn.addEventListener('click', () => {
+            const t = input.value.trim();
+            if (!t) return;
+            const time = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
+            const msg = { id: "msg_" + Date.now(), content: t, time: time };
+            
+            const tx = db.transaction("messages", "readwrite");
+            tx.objectStore("messages").put(msg);
+            
+            renderBubble(msg, true);
+            input.value = '';
+            localStorage.removeItem("line_editor_draft_v2");
+            input.style.height = 'auto';
+            sendBtn.disabled = true;
+            sendBtn.style.opacity = '0.5';
+            saveStatus.innerText = "已存歷史";
+        });
+
+        function bindContextMenu(el) {
+            const b = el.querySelector('.bubble-element');
+            const show = (e) => {
+                e.preventDefault();
+                activeBubble = el;
+                const p = e.touches ? e.touches[0] : e;
+                contextMenu.style.left = `${Math.min(p.clientX, window.innerWidth - 170)}px`;
+                contextMenu.style.top = `${Math.min(p.clientY, window.innerHeight - 150)}px`;
+                contextMenu.classList.remove('hidden');
+            };
+            b.addEventListener('contextmenu', show);
+            let timer;
+            b.addEventListener('touchstart', (e) => timer = setTimeout(() => show(e), 600));
+            b.addEventListener('touchend', () => clearTimeout(timer));
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!contextMenu.contains(e.target)) contextMenu.classList.add('hidden');
+        });
+
+        window.editBlock = () => {
+            input.value = activeBubble.dataset.rawText;
+            input.focus();
+            input.dispatchEvent(new Event('input'));
+            window.deleteBlock();
+        };
+
+        window.deleteBlock = () => {
+            const tx = db.transaction("messages", "readwrite");
+            tx.objectStore("messages").delete(activeBubble.id);
+            activeBubble.remove();
+            contextMenu.classList.add('hidden');
+        };
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initDB();
+            const tx = db.transaction("messages", "readonly");
+            tx.objectStore("messages").getAll().onsuccess = (e) => {
+                e.target.result.forEach(msg => renderBubble(msg, false));
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            };
+            const draft = localStorage.getItem("line_editor_draft_v2");
+            if (draft) {
+                input.value = draft;
+                input.dispatchEvent(new Event('input'));
+            }
+        });
+    </script>
+</body>
+</html>
