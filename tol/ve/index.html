@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <!-- PWA & 逼近原生 APP 的 Meta 設定 (滿版、禁>用縮放、瀏海適配) -->
+  <!-- PWA & 逼近原生 APP 的 Meta 設定 (滿版、禁用縮放、瀏海適配) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,4 +17,308 @@
       /* 參考 iOS 深色模式 / LINE 介面色系 */
       --bg-color: #000000;
       --header-bg: rgba(28, 28, 30, 0.85);
-                               5,88-70       Top
+      --tabbar-bg: rgba(28, 28, 30, 0.9);
+      --text-color: #ffffff;
+      --text-muted: #8e8e93;
+      --tint-color: #0a84ff; /* iOS 藍色 */
+      --tint-success: #32d74b; /* LINE 綠色/成功色 */
+      --border-color: #38383a;
+      
+      /* 安全區域 (適配 iPhone 瀏海與底線) */
+      --safe-top: env(safe-area-inset-top, 20px);
+      --safe-bottom: env(safe-area-inset-bottom, 20px);
+    }
+
+    * {
+      box-sizing: border-box;
+      /* 禁用原生长按選取，逼近原生 APP 體驗 (除了編輯區外) */
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      /* 使用動態視窗高度解決 Safari 底部工具列問題 */
+      height: 100dvh; 
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; /* 防止整個頁面彈性滾動 */
+    }
+
+    /* =========================
+       Header (iOS Navigation Bar 風格)
+    ========================= */
+    header {
+      padding-top: var(--safe-top);
+      height: calc(44px + var(--safe-top));
+      background: var(--header-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 0.5px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 16px;
+      padding-right: 16px;
+      position: relative;
+      z-index: 10;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .header-btn {
+      background: transparent;
+      border: none;
+      color: var(--tint-success);
+      font-size: 17px;
+      padding: 0;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .header-btn:active {
+      opacity: 0.6;
+    }
+
+    /* =========================
+       Main (視圖區域)
+    ========================= */
+    main {
+      flex: 1;
+      position: relative;
+      background: #1c1c1e;
+    }
+
+    .view {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: none; /* 預設隱藏 */
+      flex-direction: column;
+    }
+
+    .view.active {
+      display: flex;
+    }
+
+    /* 編輯器視圖 */
+    textarea {
+      flex: 1;
+      background: transparent;
+      color: #e5e7eb;
+      border: none;
+      padding: 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      resize: none;
+      outline: none;
+      -webkit-user-select: text; /* 恢復選取功能 */
+      user-select: text;
+    }
+
+    /* 預覽視圖 */
+    iframe {
+      flex: 1;
+      border: none;
+      background: white; /* 網頁預設底色 */
+      width: 100%;
+      height: 100%;
+    }
+
+    /* =========================
+       Footer (iOS Tab Bar 風格 / LINE 下方選單)
+    ========================= */
+    footer {
+      height: calc(50px + var(--safe-bottom));
+      padding-bottom: var(--safe-bottom);
+      background: var(--tabbar-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 0.5px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      height: 100%;
+      cursor: pointer;
+    }
+
+    .tab-item.active {
+      color: var(--tint-color);
+    }
+
+    .tab-icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
+
+    .tab-label {
+      font-size: 10px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 導航列 -->
+  <header>
+    <div class="left"></div>
+    <h1>Mobispace Editor</h1>
+    <div class="right">
+      <button class="header-btn" id="run-btn">運行 ▶</button>
+    </div>
+  </header>
+
+  <!-- 內容區 (視圖切換) -->
+  <main>
+    <!-- 視圖 1: 編輯器 -->
+    <div id="view-editor" class="view active">
+      <!-- 關閉原生的拼字檢查與首字母大寫，符合寫程式需求 -->
+      <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+    </div>
+
+    <!-- 視圖 2: 預覽區 -->
+    <div id="view-preview" class="view">
+      <iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
+    </div>
+  </main>
+
+  <!-- 底部標籤列 -->
+  <footer>
+    <div class="tab-item active" data-target="view-editor" id="tab-editor">
+      <div class="tab-icon">📝</div>
+      <div class="tab-label">原始碼</div>
+    </div>
+    <div class="tab-item" data-target="view-preview" id="tab-preview">
+      <div class="tab-icon">🌐</div>
+      <div class="tab-label">預覽</div>
+    </div>
+  </footer>
+
+  <script>
+    /* ============================================================
+       核心邏輯：修復問題、加入 PWA 行為、LocalStorage
+    ============================================================ */
+    const editor = document.getElementById('editor');
+    const preview = document.getElementById('preview');
+    const runBtn = document.getElementById('run-btn');
+    
+    // Tab 控制項
+    const tabEditor = document.getElementById('tab-editor');
+    const tabPreview = document.getElementById('tab-preview');
+    const viewEditor = document.getElementById('view-editor');
+    const viewPreview = document.getElementById('view-preview');
+
+    const STORAGE_KEY = 'mobispace_code_cache';
+    const DEFAULT_CODE = `<!DOCTYPE html>\n<html lang="zh-Hant">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>Preview</title>\n  <style>\n    body { font-family: -apple-system, sans-serif; padding: 1.5rem; background: #f3f4f6; }\n    .card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }\n    h1 { color: #00c300; font-size: 24px; margin-top: 0; }\n  </style>\n</head>\n<body>\n  <div class="card">\n    <h1>Hello Mobispace 🚀</h1>\n    <p>這是您的 APP 級距編輯器，支援：</p>\n    <ul>\n      <li>Tab 鍵縮排</li>\n      <li>自動儲存代碼</li>\n      <li>iOS 原生級互動 UI</li>\n    </ul>\n  </div>\n</body>\n</html>`;
+
+    // 1. 初始化：載入上次儲存的代碼
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedCode = localStorage.getItem(STORAGE_KEY);
+      if (savedCode) {
+        editor.value = savedCode;
+      } else {
+        editor.value = DEFAULT_CODE;
+      }
+    });
+
+    // 2. 自動儲存機制 (監聽輸入)
+    editor.addEventListener('input', () => {
+      localStorage.setItem(STORAGE_KEY, editor.value);
+    });
+
+    // 3. 修正 Tab 鍵行為 (避免焦點跳轉，改為插入 2 個空白)
+    editor.addEventListener('keydown', (e) => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = editor.selectionStart;
+        const end = editor.selectionEnd;
+        
+        // 插入兩個空格作為縮排
+        editor.value = editor.value.substring(0, start) + "  " + editor.value.substring(end);
+        
+        // 將游標移至縮排後
+        editor.selectionStart = editor.selectionEnd = start + 2;
+        
+        // 觸發儲存
+        localStorage.setItem(STORAGE_KEY, editor.value);
+      }
+    });
+
+    // 4. 切換 Tab 邏輯
+    function switchTab(targetId) {
+      // 處理 UI 狀態
+      if (targetId === 'view-editor') {
+        tabEditor.classList.add('active');
+        tabPreview.classList.remove('active');
+        viewEditor.classList.add('active');
+        viewPreview.classList.remove('active');
+        
+        // 暫停預覽 (清空 iframe，避免背景耗能與音訊播放)
+        preview.srcdoc = '';
+        runBtn.textContent = '運行 ▶';
+        runBtn.style.color = 'var(--tint-success)';
+      } else {
+        tabPreview.classList.add('active');
+        tabEditor.classList.remove('active');
+        viewPreview.classList.add('active');
+        viewEditor.classList.remove('active');
+      }
+    }
+
+    // 點擊底部 Tab
+    tabEditor.addEventListener('click', () => switchTab('view-editor'));
+    tabPreview.addEventListener('click', () => {
+      switchTab('view-preview');
+      // 如果是主動點擊預覽 Tab，也一併執行代碼
+      runCode();
+    });
+
+    // 5. 運行代碼邏輯
+    function runCode() {
+      const code = editor.value;
+      preview.srcdoc = code; // 將原始碼送入 sandbox iframe
+      
+      // 切換至預覽畫面
+      switchTab('view-preview');
+      
+      // 更新按鈕狀態
+      runBtn.textContent = '重整 ↻';
+      runBtn.style.color = 'var(--tint-color)';
+    }
+
+    // 點擊右上角運行按鈕
+    runBtn.addEventListener('click', () => {
+      if (viewPreview.classList.contains('active')) {
+        // 如果已經在預覽模式，則重新載入 (重整)
+        preview.srcdoc = editor.value;
+      } else {
+        runCode();
+      }
+    });
+  </script>
+</body>
+</html>
