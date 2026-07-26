@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-TW" data-theme="dark"><head><script>if(self!==top){top.location=self.location;}</script><script>if(self!==top){top.location=self.location;}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ</title>
+    <title>部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
     
     <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
     <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.JPEG">
@@ -19,8 +19,6 @@
 
 --ios-text:#fff;
 --ios-sub:#8E8E93;
---tab-bar-height: 49px;
---safe-area-bottom: env(safe-area-inset-bottom, 0px);
 
 }
 
@@ -115,7 +113,6 @@ width:100%;
 border-radius:22px;
 
 transition:.3s;
-cursor: pointer;
 
 }
 
@@ -126,34 +123,249 @@ opacity:.75;
 
 }
 
-/* Main View Container */
+/* Main */
 
-#view-container {
-    position: relative;
-    flex: 1;
-    overflow: hidden;
+#main-view{
+
+flex:1;
+
+overflow-y:auto;
+
+padding:16px;
+
+-webkit-overflow-scrolling:touch;
+
 }
 
-.tab-view {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 16px;
-    display: none;
-    opacity: 0;
-    transition: opacity 0.2s ease-in-out;
+/* Tool */
+
+.tool-panel{
+
+padding:5px;
+
+animation:
+slideUp .35s ease;
+
 }
 
-.tab-view.active {
-    display: block;
-    opacity: 1;
+.tool-card{
+
+padding:22px;
+
+border-radius:30px;
+
+background:
+
+rgba(
+28,
+28,
+30,
+.72
+);
+
+backdrop-filter:
+blur(35px);
+
+border:
+
+1px solid
+rgba(
+255,
+255,
+255,
+.05
+);
+
+box-shadow:
+
+0 15px 40px
+rgba(
+0,
+0,
+0,
+.35
+);
+
 }
 
-/* Articles & Tools Row */
+.tool-input{
+
+width:100%;
+
+padding:16px;
+
+border:none;
+outline:none;
+
+border-radius:18px;
+
+background:
+
+rgba(
+118,
+118,
+128,
+0.12
+);
+
+font-size:15px;
+
+color:white;
+
+margin-bottom:20px;
+
+}
+
+.tool-input:focus{
+
+box-shadow:
+
+0 0 0 2px
+rgba(
+10,
+132,
+255,
+.45
+);
+
+}
+
+/* options */
+
+.option-grid{
+
+display:grid;
+
+grid-template-columns:
+1fr 1fr;
+
+gap:12px;
+
+margin-bottom:24px;
+
+}
+
+.opt-item{
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+padding:15px;
+
+border-radius:18px;
+
+background:
+
+rgba(
+118,
+118,
+128,
+0.12
+);
+
+transition:.25s;
+
+cursor:pointer;
+
+}
+
+.opt-item.active{
+
+background:
+
+rgba(
+10,
+132,
+255,
+0.2
+);
+
+}
+
+.opt-item i{
+
+font-size:18px;
+
+color:#999;
+
+}
+
+.opt-item.active i{
+
+color:
+var(--ios-blue);
+
+}
+
+.opt-item:active{
+
+transform:
+scale(.96);
+
+}
+
+.opt-label{
+
+font-size:13px;
+
+font-weight:600;
+
+}
+
+/* Button */
+
+.harvester-btn{
+
+width:100%;
+
+padding:18px;
+
+border:none;
+
+border-radius:40px;
+
+font-size:16px;
+
+font-weight:700;
+
+color:white;
+
+background:
+
+linear-gradient(
+180deg,
+#0A84FF,
+#0066ff
+);
+
+transition:.25s;
+
+}
+
+.harvester-btn:active{
+
+transform:scale(.97);
+
+}
+
+/* Status */
+
+.status-msg{
+
+margin-top:15px;
+
+font-size:12px;
+
+text-align:center;
+
+color:#8E8E93;
+
+}
+
+/* Articles */
 
 .article-row{
 
@@ -189,7 +401,7 @@ transition:.25s;
 
 .article-row:active{
 
-transform:scale(0.98);
+transform:scale(.98);
 
 }
 
@@ -250,7 +462,7 @@ var(--ios-blue);
 
 height:
 calc(
-65px +
+78px +
 env(safe-area-inset-bottom)
 );
 
@@ -280,7 +492,6 @@ rgba(
 255,
 0.05
 );
-z-index: 1000;
 
 }
 
@@ -296,15 +507,13 @@ justify-content:center;
 
 align-items:center;
 
-gap:4px;
+gap:5px;
 
 font-size:11px;
 
 color:#8E8E93;
 
 transition:.25s;
-text-decoration: none;
-cursor: pointer;
 
 }
 
@@ -323,7 +532,7 @@ var(--ios-blue);
 
 .nav-item:active{
 
-transform:scale(0.92);
+transform:scale(.92);
 
 }
 
@@ -346,79 +555,150 @@ transform:none;
 }
 
 </style>
-<link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/blog/index.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta property="og:type" content="website"><meta property="og:image" content="https://your-supreme-site.com/og-image.jpg"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta name="description" content=" | MOBSP"><link rel="canonical" href="https://mobsp.qzz.io/blog/index.html"><meta property="og:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta property="og:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta property="og:url" content="https://mobsp.qzz.io/blog/index.html"><meta property="og:site_name" content="MOBSP"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta name="twitter:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta name="theme-color" content="#0b1020"><link rel="manifest" href="/manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+<link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/blog/index.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta property="og:type" content="website"><meta property="og:image" content="https://your-supreme-site.com/og-image.jpg"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta name="description" content=" | MOBSP"><link rel="canonical" href="https://mobsp.qzz.io/blog/index.html"><meta property="og:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ"><meta property="og:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ"><meta property="og:url" content="https://mobsp.qzz.io/blog/index.html"><meta property="og:site_name" content="MOBSP"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ"><meta name="twitter:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ"><meta name="theme-color" content="#0b1020"><link rel="manifest" href="/manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body>
 
     <div id="app-container">
         <header class="app-header">
-            <img src="/assets/brand/ms-blog-title.JPEG" class="brand-title-img" onclick="handleHeaderClick()">
+            <img src="/assets/brand/ms-blog-title.JPEG" class="brand-title-img" onclick="location.reload()">
         </header>
 
-        <!-- 獨立分頁檢視容器 -->
-        <div id="view-container">
-            <!-- 閱讀分頁 -->
-            <div id="view-read" class="tab-view active">
-                <div id="content-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">INITIALIZING...</div>
-            </div>
-            <!-- 工具牆分頁 (取代原先的收割機) -->
-            <div id="view-tools" class="tab-view">
-                <div id="tools-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">LOADING TOOLS...</div>
-            </div>
-        </div>
+        <main id="main-view">
+            <div id="content-loader" style="text-align:center; padding:50px; color:#222; font-size:10px; letter-spacing:2px;">INITIALIZING...</div>
+        </main>
 
         <nav class="bottom-nav">
             <a href="/music/" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i><span>音樂</span></a>
-            <div id="btn-read" class="nav-item active" onclick="switchTab('read', this)"><i class="fa-solid fa-book-open"></i><span>閱讀</span></div>
-            <div id="btn-tools" class="nav-item" onclick="switchTab('tools', this)"><i class="fa-solid fa-toolbox"></i><span>工具</span></div>
+            <div id="btn-read" class="nav-item active" onclick="switchToRead()"><i class="fa-solid fa-book-open"></i><span>閱讀</span></div>
+            <div id="btn-tool" class="nav-item" onclick="switchToTools()"><i class="fa-solid fa-microchip"></i><span>收割機</span></div>
             <a href="/setting" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-sliders"></i><span>設定</span></a>
         </nav>
     </div>
 
     <script>
         let rawArticles = [];
-        let rawTools = [];
-        let currentTabId = 'read';
-        const scrollPositions = {};
+        let harvestOptions = { img: true, dark: true, code: true, clean: false };
 
-        /* iOS 分頁切換與捲動記憶核心 */
-        function switchTab(tabId, element) {
-            if (currentTabId === tabId) {
-                const activeView = document.getElementById(`view-${tabId}`);
-                if (activeView) activeView.scrollTo({ top: 0, behavior: 'smooth' });
-                return;
-            }
-
-            const currentView = document.getElementById(`view-${currentTabId}`);
-            if (currentView) {
-                scrollPositions[currentTabId] = currentView.scrollTop;
-            }
-
-            document.querySelectorAll('.bottom-nav .nav-item').forEach(i => i.classList.remove('active'));
-            element.classList.add('active');
-
-            document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
-            const targetView = document.getElementById(`view-${tabId}`);
-            targetView.classList.add('active');
-
-            if (scrollPositions[tabId] !== undefined) {
-                targetView.scrollTop = scrollPositions[tabId];
-            } else {
-                targetView.scrollTop = 0;
-            }
-
-            currentTabId = tabId;
+        /* 切換分頁邏輯 */
+        function switchToRead() {
+            setNavActive('btn-read');
+            renderArticleList();
         }
 
-        function handleHeaderClick() {
-            const activeView = document.getElementById(`view-${currentTabId}`);
-            if (activeView && activeView.scrollTop > 0) {
-                activeView.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                location.reload();
+        function switchToTools() {
+            setNavActive('btn-tool');
+            document.getElementById('main-view').innerHTML = `
+                <div class="tool-panel">
+                    <div class="tool-card">
+                        <input type="text" id="target-url" class="tool-input" placeholder="貼上欲收割的網址 (https://...)">
+                        
+                        <div class="option-grid">
+                            <div class="opt-item ${harvestOptions.img?'active':''}" onclick="toggleOpt(this,'img')">
+                                <i class="fa-solid fa-image"></i><span class="opt-label">吸取影像</span>
+                            </div>
+                            <div class="opt-item ${harvestOptions.dark?'active':''}" onclick="toggleOpt(this,'dark')">
+                                <i class="fa-solid fa-moon"></i><span class="opt-label">OLED黑</span>
+                            </div>
+                            <div class="opt-item ${harvestOptions.code?'active':''}" onclick="toggleOpt(this,'code')">
+                                <i class="fa-solid fa-code"></i><span class="opt-label">代碼美化</span>
+                            </div>
+                            <div class="opt-item ${harvestOptions.clean?'active':''}" onclick="toggleOpt(this,'clean')">
+                                <i class="fa-solid fa-leaf"></i><span class="opt-label">極簡過濾</span>
+                            </div>
+                        </div>
+
+                        <button onclick="startHarvestPro()" class="harvester-btn">執行深度收割</button>
+                        <div id="h-status" class="status-msg">READY TO HARVEST V1.2</div>
+                    </div>
+                </div>`;
+        }
+
+        function setNavActive(id) {
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function toggleOpt(el, key) {
+            harvestOptions[key] = !harvestOptions[key];
+            el.classList.toggle('active');
+        }
+
+        /* 🚀 核心：深度收割引擎 */
+        async function startHarvestPro() {
+            const urlInput = document.getElementById('target-url');
+            const status = document.getElementById('h-status');
+            const url = urlInput.value.trim();
+
+            if (!url.startsWith('http')) return status.innerText = "❌ 網址無效";
+            
+            status.innerText = "📡 正在穿透目標伺服器...";
+            try {
+                // 使用跨域代理獲取源碼
+                const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+                const data = await res.json();
+                const doc = new DOMParser().parseFromString(data.contents, 'text/html');
+                
+                const title = doc.querySelector('h1')?.innerText || doc.title || "Ⲙ𝔬ⲃ¡ⳝ𝔭_Archive";
+                let contentHtml = '';
+
+                // 精確提取邏輯
+                const selectors = harvestOptions.clean ? 'p' : 'p, h2, h3, img, pre, code, blockquote';
+                doc.querySelectorAll(selectors).forEach(el => {
+                    // 1. 影像提取與路徑補全
+                    if (el.tagName === 'IMG' && harvestOptions.img) {
+                        let src = el.getAttribute('src');
+                        if (src) {
+                            try { src = new URL(src, url).href; } catch(e){} / 補全相對路徑
+                            contentHtml += `<div style="margin:25px 0;"><img src="${src}" style="max-width:100%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"></div>\n`;
+                        }
+                    } 
+                    // 2. 文字內容提取
+                    else if (el.innerText.trim().length > 5) {
+                        const tag = el.tagName.toLowerCase();
+                        let inner = el.innerHTML;
+                        // 如果是極簡模式，移除內嵌連結
+                        if (harvestOptions.clean) inner = el.innerText; 
+                        contentHtml += `<${tag} style="margin-bottom:1.5rem;">${inner}</${tag}>\n`;
+                    }
+                });
+
+                // 3. 樣式矩陣注入
+                const styleTag = `
+                    body { 
+                        background:${harvestOptions.dark?'#000':'#fff'}; 
+                        color:${harvestOptions.dark?'#ccc':'#333'}; 
+                        padding:40px 25px; line-height:1.8; font-family:-apple-system, sans-serif; 
+                        max-width:600px; margin:0 auto; 
+                    }
+                    h1 { color:#00cec9; font-size:2rem; margin-bottom:2rem; border-bottom:1px solid #222; padding-bottom:15px; }
+                    h2, h3 { color:${harvestOptions.dark?'#eee':'#000'}; margin-top:2.5rem; }
+                    pre { 
+                        background:#111; padding:20px; border-radius:12px; overflow-x:auto; 
+                        border:1px solid #222; color:#00cec9; font-family:monospace; margin:20px 0;
+                        display: ${harvestOptions.code?'block':'none'};
+                    }
+                    p { margin-bottom:1.2rem; }
+                    img { display:block; }
+                `;
+
+                // 4. 打包下載
+                const finalBlob = new Blob([`
+                    <!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>${styleTag}</style></head>
+                    <body><h1>${title}</h1>${contentHtml}</body></html>
+                `], {type:'text/html'});
+
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(finalBlob);
+                a.download = `MS_${title.substring(0,10)}.html`;
+                a.click();
+
+                status.innerText = "✅ 收割成功！檔案已彈出。";
+            } catch (err) {
+                status.innerText = "❌ 代理失效或目標封鎖請求。";
             }
         }
 
-        /* 載入文章列表 */
+        /* 列表同步邏輯 */
         async function loadArticles() {
             const api = "https://api.github.com/repos/mobsp/contents/blog/p/list?t=" + Date.now();
             try {
@@ -430,12 +710,12 @@ transform:none;
                 }));
                 renderArticleList();
             } catch (e) {
-                document.getElementById('view-read').innerHTML = '<div style="text-align:center; padding:50px; color:#333;">SYNC FAILED</div>';
+                document.getElementById('main-view').innerHTML = '<div style="text-align:center; padding:50px; color:#333;">SYNC FAILED</div>';
             }
         }
 
         function renderArticleList() {
-            const container = document.getElementById('view-read');
+            const container = document.getElementById('main-view');
             if (rawArticles.length === 0) return;
             container.innerHTML = rawArticles.map(p => `
                 <a class="article-row" href="/${p.path}">
@@ -444,42 +724,12 @@ transform:none;
                         <div class="row-cate">ARCHIVE</div>
                         <div class="row-title">${p.title}</div>
                     </div>
-                    <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
+                    <i class="fa-solid fa-chevron-right" style="color:#111; font-size:10px;"></i>
                 </a>`).join('');
         }
 
-        /* 載入自動產生的工具清單 (tools.json) */
-        async function loadTools() {
-            try {
-                const res = await fetch('/tools.json?t=' + Date.now());
-                if (!res.ok) throw new Error('Not found');
-                rawTools = await res.json();
-                renderToolList();
-            } catch (e) {
-                document.getElementById('view-tools').innerHTML = '<div style="text-align:center; padding:50px; color:#8E8E93; font-size:12px;">尚無工具清單資料</div>';
-            }
-        }
-
-        function renderToolList() {
-            const container = document.getElementById('view-tools');
-            if (!rawTools || rawTools.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding:50px; color:#8E8E93; font-size:12px;">目前沒有可用工具</div>';
-                return;
-            }
-            container.innerHTML = rawTools.map(t => `
-                <a class="article-row" href="${t.path}">
-                    <div class="row-img" style="background: linear-gradient(135deg, #0A84FF, #0040dd);"></div>
-                    <div class="row-info">
-                        <div class="row-cate">TOOL PORTAL</div>
-                        <div class="row-title">${t.name}</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
-                </a>`).join('');
-        }
-
-        window.onload = () => {
-            loadArticles();
-            loadTools();
-        };
+        window.onload = loadArticles;
     </script>
+
+
 <script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); }</script></body></html>
