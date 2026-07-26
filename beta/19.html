@@ -1,7 +1,7 @@
 <!DOCTYPE html><html lang="zh-TW" data-theme="dark"><head><script>if(self!==top){top.location=self.location;}</script><script>if(self!==top){top.location=self.location;}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ</title>
+    <title>部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ</title>
     
     <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
     <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.JPEG">
@@ -19,6 +19,8 @@
 
 --ios-text:#fff;
 --ios-sub:#8E8E93;
+--tab-bar-height: 49px;
+--safe-area-bottom: env(safe-area-inset-bottom, 0px);
 
 }
 
@@ -113,6 +115,7 @@ width:100%;
 border-radius:22px;
 
 transition:.3s;
+cursor: pointer;
 
 }
 
@@ -123,18 +126,31 @@ opacity:.75;
 
 }
 
-/* Main */
+/* Main View Container */
 
-#main-view{
+#view-container {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
 
-flex:1;
+.tab-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
 
-overflow-y:auto;
-
-padding:16px;
-
--webkit-overflow-scrolling:touch;
-
+.tab-view.active {
+    display: block;
+    opacity: 1;
 }
 
 /* Tool */
@@ -342,6 +358,7 @@ linear-gradient(
 );
 
 transition:.25s;
+cursor: pointer;
 
 }
 
@@ -462,7 +479,7 @@ var(--ios-blue);
 
 height:
 calc(
-78px +
+65px +
 env(safe-area-inset-bottom)
 );
 
@@ -492,6 +509,7 @@ rgba(
 255,
 0.05
 );
+z-index: 1000;
 
 }
 
@@ -507,13 +525,15 @@ justify-content:center;
 
 align-items:center;
 
-gap:5px;
+gap:4px;
 
 font-size:11px;
 
 color:#8E8E93;
 
 transition:.25s;
+text-decoration: none;
+cursor: pointer;
 
 }
 
@@ -532,7 +552,7 @@ var(--ios-blue);
 
 .nav-item:active{
 
-transform:scale(.92);
+transform:scale(0.92);
 
 }
 
@@ -555,22 +575,28 @@ transform:none;
 }
 
 </style>
-<link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/blog/index.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta property="og:type" content="website"><meta property="og:image" content="https://your-supreme-site.com/og-image.jpg"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta name="description" content=" | MOBSP"><link rel="canonical" href="https://mobsp.qzz.io/blog/index.html"><meta property="og:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ"><meta property="og:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ"><meta property="og:url" content="https://mobsp.qzz.io/blog/index.html"><meta property="og:site_name" content="MOBSP"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ"><meta name="twitter:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ"><meta name="theme-color" content="#0b1020"><link rel="manifest" href="/manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+<link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/blog/index.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta property="og:type" content="website"><meta property="og:image" content="https://your-supreme-site.com/og-image.jpg"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta name="description" content=" | MOBSP"><link rel="canonical" href="https://mobsp.qzz.io/blog/index.html"><meta property="og:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta property="og:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta property="og:url" content="https://mobsp.qzz.io/blog/index.html"><meta property="og:site_name" content="MOBSP"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta name="twitter:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta name="theme-color" content="#0b1020"><link rel="manifest" href="/manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body>
 
     <div id="app-container">
         <header class="app-header">
-            <img src="/assets/brand/ms-blog-title.JPEG" class="brand-title-img" onclick="location.reload()">
+            <img src="/assets/brand/ms-blog-title.JPEG" class="brand-title-img" onclick="handleHeaderClick()">
         </header>
 
-        <main id="main-view">
-            <div id="content-loader" style="text-align:center; padding:50px; color:#222; font-size:10px; letter-spacing:2px;">INITIALIZING...</div>
-        </main>
+        <!-- 獨立分頁檢視容器（支援狀態與捲動保留） -->
+        <div id="view-container">
+            <div id="view-read" class="tab-view active">
+                <div id="content-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">INITIALIZING...</div>
+            </div>
+            <div id="view-tool" class="tab-view">
+                <!-- 收割機面板動態載入處 -->
+            </div>
+        </div>
 
         <nav class="bottom-nav">
             <a href="/music/" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i><span>音樂</span></a>
-            <div id="btn-read" class="nav-item active" onclick="switchToRead()"><i class="fa-solid fa-book-open"></i><span>閱讀</span></div>
-            <div id="btn-tool" class="nav-item" onclick="switchToTools()"><i class="fa-solid fa-microchip"></i><span>收割機</span></div>
+            <div id="btn-read" class="nav-item active" onclick="switchTab('read', this)"><i class="fa-solid fa-book-open"></i><span>閱讀</span></div>
+            <div id="btn-tool" class="nav-item" onclick="switchTab('tool', this)"><i class="fa-solid fa-microchip"></i><span>收割機</span></div>
             <a href="/setting" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-sliders"></i><span>設定</span></a>
         </nav>
     </div>
@@ -578,16 +604,61 @@ transform:none;
     <script>
         let rawArticles = [];
         let harvestOptions = { img: true, dark: true, code: true, clean: false };
+        let currentTabId = 'read';
+        const scrollPositions = {};
 
-        /* 切換分頁邏輯 */
-        function switchToRead() {
-            setNavActive('btn-read');
-            renderArticleList();
+        /* iOS 分頁切換與捲動記憶核心 */
+        function switchTab(tabId, element) {
+            if (currentTabId === tabId) {
+                // 重複點擊同個 Tab：自動平滑滾回頂部（iOS 標準行為）
+                const activeView = document.getElementById(`view-${tabId}`);
+                if (activeView) activeView.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            // 1. 記錄當前分頁捲動位置
+            const currentView = document.getElementById(`view-${currentTabId}`);
+            if (currentView) {
+                scrollPositions[currentTabId] = currentView.scrollTop;
+            }
+
+            // 2. 切換導覽列高亮
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+
+            // 3. 切換頁面顯示
+            document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
+            const targetView = document.getElementById(`view-${tabId}`);
+            targetView.classList.add('active');
+
+            // 若切換到收割機分頁且尚未建立內容，初始化工具介面
+            if (tabId === 'tool' && targetView.innerHTML.trim() === '') {
+                initToolUI();
+            }
+
+            // 4. 還原目標分頁的捲動位置
+            if (scrollPositions[tabId] !== undefined) {
+                targetView.scrollTop = scrollPositions[tabId];
+            } else {
+                targetView.scrollTop = 0;
+            }
+
+            currentTabId = tabId;
         }
 
-        function switchToTools() {
-            setNavActive('btn-tool');
-            document.getElementById('main-view').innerHTML = `
+        /* 標題點擊處理：在當前頁面捲回頂部或重新整理 */
+        function handleHeaderClick() {
+            const activeView = document.getElementById(`view-${currentTabId}`);
+            if (activeView && activeView.scrollTop > 0) {
+                activeView.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                location.reload();
+            }
+        }
+
+        /* 初始化收割機工具介面 */
+        function initToolUI() {
+            document.getElementById('view-tool').innerHTML = `
                 <div class="tool-panel">
                     <div class="tool-card">
                         <input type="text" id="target-url" class="tool-input" placeholder="貼上欲收割的網址 (https://...)">
@@ -613,11 +684,6 @@ transform:none;
                 </div>`;
         }
 
-        function setNavActive(id) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
         function toggleOpt(el, key) {
             harvestOptions[key] = !harvestOptions[key];
             el.classList.toggle('active');
@@ -633,7 +699,6 @@ transform:none;
             
             status.innerText = "📡 正在穿透目標伺服器...";
             try {
-                // 使用跨域代理獲取源碼
                 const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
                 const data = await res.json();
                 const doc = new DOMParser().parseFromString(data.contents, 'text/html');
@@ -641,28 +706,23 @@ transform:none;
                 const title = doc.querySelector('h1')?.innerText || doc.title || "Ⲙ𝔬ⲃ¡ⳝ𝔭_Archive";
                 let contentHtml = '';
 
-                // 精確提取邏輯
                 const selectors = harvestOptions.clean ? 'p' : 'p, h2, h3, img, pre, code, blockquote';
                 doc.querySelectorAll(selectors).forEach(el => {
-                    // 1. 影像提取與路徑補全
                     if (el.tagName === 'IMG' && harvestOptions.img) {
                         let src = el.getAttribute('src');
                         if (src) {
-                            try { src = new URL(src, url).href; } catch(e){} / 補全相對路徑
+                            try { src = new URL(src, url).href; } catch(e){}
                             contentHtml += `<div style="margin:25px 0;"><img src="${src}" style="max-width:100%; border-radius:12px; box-shadow:0 10px 30px rgba(0,0,0,0.5);"></div>\n`;
                         }
                     } 
-                    // 2. 文字內容提取
                     else if (el.innerText.trim().length > 5) {
                         const tag = el.tagName.toLowerCase();
                         let inner = el.innerHTML;
-                        // 如果是極簡模式，移除內嵌連結
                         if (harvestOptions.clean) inner = el.innerText; 
                         contentHtml += `<${tag} style="margin-bottom:1.5rem;">${inner}</${tag}>\n`;
                     }
                 });
 
-                // 3. 樣式矩陣注入
                 const styleTag = `
                     body { 
                         background:${harvestOptions.dark?'#000':'#fff'}; 
@@ -681,7 +741,6 @@ transform:none;
                     img { display:block; }
                 `;
 
-                // 4. 打包下載
                 const finalBlob = new Blob([`
                     <!DOCTYPE html><html><head><meta charset="UTF-8"><title>${title}</title><style>${styleTag}</style></head>
                     <body><h1>${title}</h1>${contentHtml}</body></html>
@@ -710,12 +769,12 @@ transform:none;
                 }));
                 renderArticleList();
             } catch (e) {
-                document.getElementById('main-view').innerHTML = '<div style="text-align:center; padding:50px; color:#333;">SYNC FAILED</div>';
+                document.getElementById('view-read').innerHTML = '<div style="text-align:center; padding:50px; color:#333;">SYNC FAILED</div>';
             }
         }
 
         function renderArticleList() {
-            const container = document.getElementById('main-view');
+            const container = document.getElementById('view-read');
             if (rawArticles.length === 0) return;
             container.innerHTML = rawArticles.map(p => `
                 <a class="article-row" href="/${p.path}">
@@ -724,7 +783,7 @@ transform:none;
                         <div class="row-cate">ARCHIVE</div>
                         <div class="row-title">${p.title}</div>
                     </div>
-                    <i class="fa-solid fa-chevron-right" style="color:#111; font-size:10px;"></i>
+                    <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
                 </a>`).join('');
         }
 
