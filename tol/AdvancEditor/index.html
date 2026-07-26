@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>莫比空間｜AdvancEditor編輯器＋</title>
 
-    <!-- PWA Manifest 與品牌 Icon 設定 (連動根目錄 manifest.json) -->
+    <!-- PWA Manifest 與品牌 Icon 設定 -->
     <link rel="manifest" href="/manifest.json">
     <link rel="icon" type="image/jpeg" href="https://mobsp.qzz.io/assets/brand/ms-logo1.webp">
 
@@ -47,7 +47,7 @@
         .ios-blur {
             backdrop-filter: saturate(190%) blur(25px);
             -webkit-backdrop-filter: saturate(190%) blur(25px);
-            background-color: rgba(28, 28, 30, 0.78);
+            background-color: rgba(28, 28, 30, 0.82);
         }
 
         .sheet-transition {
@@ -61,7 +61,6 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* 順暢慣性滾動 */
         .smooth-scroll {
             -webkit-overflow-scrolling: touch;
             overscroll-behavior-y: contain;
@@ -92,12 +91,10 @@
         .prose code { background: #2C2C2E; padding: 0.15rem 0.4rem; border-radius: 6px; font-family: ui-monospace, monospace; font-size: 0.88em; color: #FF9F0A; }
         .prose pre code { background: transparent; color: inherit; }
         
-        /* 動態島 Pill 浮動通知 */
         #dynamicPill {
             transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
         }
 
-        /* Wiki-Link 與 Hashtag 高亮 */
         .wiki-link { color: #0A84FF; font-weight: 600; text-decoration: underline; cursor: pointer; }
         .hashtag { color: #30D158; font-weight: 600; }
     </style>
@@ -110,7 +107,7 @@
         <span id="pillText">系統已同步</span>
     </div>
 
-    <!-- iOS 長按/點擊選取浮動工具列 (Contextual Floating Menu) -->
+    <!-- iOS 長按/點擊選取浮動工具列 -->
     <div id="floatingMenu" class="fixed hidden z-50 bg-[#1C1C1E]/95 ios-blur border border-[#38383A] rounded-2xl p-1.5 shadow-2xl text-xs flex items-center gap-1 popover-anim scale-95 opacity-0">
         <button onclick="insertText('**', '**'); hideFloatingMenu();" class="px-2.5 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-xl font-bold text-white transition active:scale-95">B</button>
         <button onclick="insertText('# '); hideFloatingMenu();" class="px-2.5 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-xl font-semibold text-white transition active:scale-95">H1</button>
@@ -120,11 +117,52 @@
         <button onclick="insertText('$$\n', '\n$$'); hideFloatingMenu();" class="px-2.5 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-xl font-mono text-amber-400 transition active:scale-95">KaTeX</button>
         <button onclick="insertText('```mermaid\ngraph TD;\nA-->B;\n```'); hideFloatingMenu();" class="px-2.5 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-xl font-mono text-cyan-400 transition active:scale-95"><i class="fa-solid fa-diagram-project"></i></button>
         <button onclick="insertText('[[', ']]'); hideFloatingMenu();" class="px-2.5 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-xl text-blue-400 font-semibold transition active:scale-95">Wiki</button>
-        <div class="w-[1px] h-4 bg-[#38383A] mx-0.5"></div>
-        <button onclick="startVoiceInput(); hideFloatingMenu();" class="px-2.5 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-xl text-emerald-400 transition active:scale-95"><i class="fa-solid fa-microphone"></i></button>
     </div>
 
-    <!-- Spotlight 全域搜尋與命令面板 -->
+    <!-- 筆記詳細資訊 Modal -->
+    <div id="docDetailModal" class="hidden fixed inset-0 bg-black/70 ios-blur z-50 flex items-center justify-center p-4" onclick="closeDocDetailModal()">
+        <div class="bg-[#1C1C1E] border border-[#38383A] rounded-2xl p-5 shadow-2xl max-w-sm w-full space-y-4" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-center border-b border-[#38383A] pb-3">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-circle-info text-[#0A84FF]"></i> 筆記詳細資訊
+                </h3>
+                <button onclick="closeDocDetailModal()" class="text-[#8E8E93] hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div class="space-y-1.5">
+                <label class="text-xs text-[#8E8E93] font-medium">筆記檔名 (含副檔名)</label>
+                <div class="flex items-center gap-2">
+                    <input id="detailFileNameInput" type="text" class="flex-1 bg-[#2C2C2E] border border-[#38383A] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#0A84FF]">
+                    <button onclick="saveRenamedFile()" class="bg-[#0A84FF] text-white px-3.5 py-2 rounded-xl text-xs font-semibold active:opacity-80">儲存</button>
+                </div>
+            </div>
+
+            <div class="bg-[#2C2C2E] rounded-xl p-3 space-y-2 text-xs">
+                <div class="flex justify-between text-[#8E8E93]">
+                    <span>建立時間：</span>
+                    <span id="detailCreatedAt" class="text-white font-mono">-</span>
+                </div>
+                <div class="flex justify-between text-[#8E8E93]">
+                    <span>最後編輯：</span>
+                    <span id="detailUpdatedAt" class="text-white font-mono">-</span>
+                </div>
+                <div class="flex justify-between text-[#8E8E93]">
+                    <span>字數統計：</span>
+                    <span id="detailWordCount" class="text-white font-mono">-</span>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+                <span class="text-xs text-white font-medium">顯示檔案副檔名</span>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggleExtCheckbox" class="sr-only peer" onchange="toggleExtensionDisplay(this.checked)">
+                    <div class="w-9 h-5 bg-[#3A3A3C] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#30D158]"></div>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spotlight 全域搜尋面板 -->
     <div id="spotlightOverlay" class="hidden fixed inset-0 bg-black/60 ios-blur z-50 flex flex-col pt-16 px-4" onclick="toggleSpotlight(false)">
         <div class="bg-[#1C1C1E] border border-[#38383A] rounded-2xl p-3 shadow-2xl max-w-lg mx-auto w-full" onclick="event.stopPropagation()">
             <div class="flex items-center gap-2 bg-[#2C2C2E] px-3 py-2 rounded-xl">
@@ -162,66 +200,73 @@
         </div>
     </div>
 
-    <!-- 頁首與導航欄容器 (固定鎖死 flex-none) -->
+    <!-- 頁首與導航欄容器 -->
     <div class="flex-none z-30 pt-[env(safe-area-inset-top)] bg-black">
         <!-- 頂部導航欄 -->
-        <header id="mainHeader" class="ios-blur px-4 py-2.5 flex items-center justify-between border-b border-[#38383A] transition-all duration-300">
-            <button onclick="toggleZenMode()" class="text-[#0A84FF] text-sm font-medium active:opacity-50 transition flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#2C2C2E]/60 border border-[#38383A]" title="專注模式">
-                <i class="fa-solid fa-expand text-xs"></i>
-                <span>專注</span>
-            </button>
-            
-            <div class="flex flex-col items-center cursor-pointer bg-[#2C2C2E]/40 px-3 py-1 rounded-full border border-[#38383A]/60" onclick="toggleSpotlight(true)">
-                <span id="docTitle" class="text-sm font-semibold leading-tight flex items-center gap-1.5">
-                    <span id="currentFileNameDisplay">預設筆記.md</span>
-                    <i class="fa-solid fa-chevron-down text-[9px] text-[#8E8E93]"></i>
-                </span>
-                <span id="wordCount" class="text-[9px] text-[#8E8E93] font-medium leading-none mt-0.5">0 字元 · 0 分鐘</span>
+        <header id="mainHeader" class="ios-blur px-3 py-2 flex items-center justify-between border-b border-[#38383A] transition-all duration-300">
+            <!-- 左上角：筆記名稱與鉛筆圖示（點擊開啟詳情 Modal） -->
+            <div class="flex items-center gap-1.5 cursor-pointer max-w-[50%] active:opacity-70 transition" onclick="openDocDetailModal()">
+                <span id="currentFileNameDisplay" class="text-sm font-semibold truncate text-white">預設筆記.md</span>
+                <svg class="w-3.5 h-3.5 text-[#8E8E93] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                </svg>
             </div>
-            
-            <button onclick="openActionSheet()" class="w-8 h-8 rounded-full bg-[#2C2C2E] border border-[#38383A] flex items-center justify-center text-[#0A84FF] active:bg-[#3A3A3C] transition">
-                <i class="fa-solid fa-ellipsis text-xs"></i>
-            </button>
+
+            <!-- 右上角：伸縮搜尋框與小倒三角形選單融合系統 -->
+            <div class="flex items-center gap-1.5">
+                <!-- 向左伸縮搜尋欄 -->
+                <div id="searchWrapper" class="relative flex items-center transition-all duration-300 w-8 focus-within:w-44 sm:focus-within:w-56 bg-[#2C2C2E]/80 rounded-full border border-[#38383A] overflow-hidden">
+                    <button onclick="focusHeaderSearch()" class="w-8 h-8 flex items-center justify-center text-[#8E8E93] flex-shrink-0 hover:text-white">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                    </button>
+                    <input id="headerSearchInput" type="text" placeholder="搜尋筆記..." class="w-full bg-transparent text-xs text-white outline-none pr-2" onfocus="toggleSpotlight(true)" oninput="handleHeaderSearch(this.value)">
+                </div>
+
+                <!-- 小倒三角形 SVG 選單按鈕 -->
+                <button onclick="openActionSheet()" class="w-8 h-8 rounded-full bg-[#2C2C2E] border border-[#38383A] flex items-center justify-center text-[#0A84FF] active:bg-[#3A3A3C] transition flex-shrink-0" title="選單">
+                    <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
         </header>
 
-        <!-- iOS 分段控制頁籤 (Segmented Control) -->
-        <div id="tabBarNav" class="bg-[#000000] px-4 py-2 border-b border-[#38383A] flex items-center justify-between">
-            <div class="bg-[#1C1C1E] p-1 rounded-xl flex w-full max-w-xs mx-auto shadow-inner border border-[#38383A]/50 items-center">
-                <button id="tabEdit" onclick="switchTab('edit')" class="flex-1 bg-[#3A3A3C] text-white rounded-lg py-1 text-xs font-semibold shadow transition-all duration-200">
-                    編輯
+        <!-- 頂部分段控制頁籤: [檔案] [單欄] [雙欄] [專注] -->
+        <div id="tabBarNav" class="bg-[#000000] px-3 py-1.5 border-b border-[#38383A] flex items-center justify-center">
+            <div class="bg-[#1C1C1E] p-1 rounded-xl flex w-full max-w-sm mx-auto shadow-inner border border-[#38383A]/50 items-center gap-1">
+                <button id="btnTabFile" onclick="openActionSheet()" class="flex-1 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200 hover:text-white">
+                    檔案
                 </button>
-                <button id="tabSplit" onclick="switchTab('split')" class="px-3 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200">
+                <button id="btnTabSingle" onclick="switchTab('edit')" class="flex-1 bg-[#3A3A3C] text-white rounded-lg py-1 text-xs font-semibold shadow transition-all duration-200">
+                    單欄
+                </button>
+                <button id="btnTabSplit" onclick="switchTab('split')" class="flex-1 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200">
                     雙欄
                 </button>
-                <button id="tabPreview" onclick="switchTab('preview')" class="flex-1 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200">
-                    預覽
+                <button id="btnTabZen" onclick="toggleZenMode()" class="flex-1 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200">
+                    專注
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- 編輯器主體區域 (自適應高寬，獨立滾動不影響外框) -->
+    <!-- 編輯器主體區域 -->
     <main id="mainViewport" class="flex-1 min-h-0 w-full relative bg-[#000000] flex overflow-hidden">
         
         <!-- 編輯區容器 -->
         <div id="editContainer" class="flex-1 w-full flex flex-col h-full min-w-0 overflow-hidden transition-all duration-300">
-            <textarea id="editor" class="w-full flex-1 bg-transparent text-white text-[16px] sm:text-[17px] p-4 outline-none resize-none leading-relaxed smooth-scroll no-scrollbar" spellcheck="false" placeholder="開始撰寫筆記... (支援長按彈出 iOS 功能列、檔案拖曳、語音輸入與圖片貼上)"></textarea>
+            <textarea id="editor" class="w-full flex-1 bg-transparent text-white text-[16px] sm:text-[17px] p-4 outline-none resize-none leading-relaxed smooth-scroll no-scrollbar" spellcheck="false" placeholder="開始撰寫筆記... (支援長按/右鍵彈出 iOS 浮動工具列、檔案拖曳與圖片貼上)"></textarea>
             
-            <!-- iOS 極簡鍵盤輔助列 (Accessory Toolbar) -->
+            <!-- 底部輔助列：僅留左下角顯示/關閉浮動工具列按鈕 -->
             <div id="accessoryBar" class="flex-none bg-[#1C1C1E]/95 ios-blur border-t border-[#38383A] px-3 py-1.5 flex items-center justify-between text-sm z-20 pb-[env(safe-area-inset-bottom)]">
-                <div class="flex items-center space-x-2">
-                    <!-- Aa 格式彈窗按鈕 -->
-                    <button onclick="toggleFloatingMenuAtCenter()" class="w-8 h-8 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-full text-white font-semibold flex items-center justify-center text-xs border border-[#38383A]" title="文字格式">Aa</button>
-                    <!-- + 插入彈窗按鈕 -->
-                    <button onclick="toggleInsertPopover()" class="w-8 h-8 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-full text-[#0A84FF] font-bold flex items-center justify-center text-base border border-[#38383A]">+</button>
-                    <!-- 語音聽寫 -->
-                    <button onclick="startVoiceInput()" class="w-8 h-8 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-full text-emerald-400 flex items-center justify-center border border-[#38383A]" title="語音輸入"><i class="fa-solid fa-microphone text-xs"></i></button>
-                    <div class="w-[1px] h-4 bg-[#38383A] mx-0.5"></div>
-                    <!-- 復原 / 重做 -->
-                    <button onclick="undo()" class="w-8 h-8 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-full text-white flex items-center justify-center border border-[#38383A]"><i class="fa-solid fa-rotate-left text-xs"></i></button>
-                    <button onclick="redo()" class="w-8 h-8 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-full text-white flex items-center justify-center border border-[#38383A]"><i class="fa-solid fa-rotate-right text-xs"></i></button>
-                </div>
-                <button onclick="dismissKeyboard()" class="px-3.5 py-1 text-[#0A84FF] text-sm font-semibold active:opacity-50 whitespace-nowrap">
+                <button onclick="toggleFloatingMenuAtCenter()" class="px-3 py-1 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-full text-xs text-white font-medium flex items-center gap-1.5 border border-[#38383A] transition active:scale-95" title="切換浮動工具列">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[#0A84FF]"></i>
+                    <span id="floatingBtnLabel">開啟浮動工具列</span>
+                </button>
+                
+                <button onclick="dismissKeyboard()" class="px-3 py-1 text-[#0A84FF] text-xs font-semibold active:opacity-50 whitespace-nowrap">
                     完成
                 </button>
             </div>
@@ -231,7 +276,7 @@
         <div id="previewContainer" class="hidden flex-1 w-full h-full min-w-0 bg-[#000000] p-4 md:p-6 overflow-y-auto smooth-scroll prose text-white transition-all duration-300"></div>
     </main>
 
-    <!-- iOS 系統 Action Sheet 操作選單 -->
+    <!-- iOS 系統 Action Sheet 操作選單 (檔案彈窗選單) -->
     <div id="sheetOverlay" class="hidden fixed inset-0 bg-black/50 z-50 opacity-0 transition-opacity duration-300 flex items-end justify-center" onclick="closeActionSheet()">
         <div id="actionSheet" class="w-full max-w-md bg-[#1C1C1E] rounded-t-[24px] px-4 pt-3 pb-8 transform translate-y-full sheet-transition border-t border-[#38383A]" onclick="event.stopPropagation()">
             <div class="w-10 h-1.5 bg-[#48484A] rounded-full mx-auto mb-5"></div>
@@ -239,21 +284,25 @@
             <p class="text-center text-[13px] font-medium text-[#8E8E93] mb-3">檔案與系統高階操作</p>
 
             <div class="bg-[#2C2C2E] rounded-[14px] overflow-hidden mb-4">
+                <button onclick="createNewFilePrompt(); closeActionSheet();" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
+                    <span>建立新筆記檔案</span>
+                    <i class="fa-solid fa-file-circle-plus text-[#30D158]"></i>
+                </button>
                 <button onclick="toggleVFS(true); closeActionSheet();" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
-                    <span>切換筆記目錄 (VFS)</span>
+                    <span>開啟筆記目錄 (VFS)</span>
                     <i class="fa-solid fa-folder-tree text-amber-400"></i>
                 </button>
                 <button onclick="triggerFileInput()" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
-                    <span>匯入檔案 (.md / .txt)</span>
+                    <span>匯入任意文檔 (.md / .txt / .py / .json ...)</span>
                     <i class="fa-solid fa-file-import text-[#0A84FF]"></i>
+                </button>
+                <button onclick="exportAction('file')" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
+                    <span>匯出當前檔案</span>
+                    <i class="fa-solid fa-file-arrow-down text-[#8E8E93]"></i>
                 </button>
                 <button onclick="exportAction('copy')" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
                     <span>複製淨化全文</span>
                     <i class="fa-regular fa-copy text-[#8E8E93]"></i>
-                </button>
-                <button onclick="exportAction('md')" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
-                    <span>匯出為 .md 檔案</span>
-                    <i class="fa-solid fa-file-arrow-down text-[#8E8E93]"></i>
                 </button>
                 <button onclick="exportAction('docx')" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
                     <span>匯出為 Word (.docx)</span>
@@ -286,20 +335,19 @@
         </div>
     </div>
 
-    <!-- 隱藏的檔案選擇器 -->
-    <input type="file" id="hiddenFileInput" class="hidden" accept=".md,.txt,.markdown" onchange="handleFileImport(event)">
+    <!-- 通用檔案選擇器（支援任意文字檔案類型） -->
+    <input type="file" id="hiddenFileInput" class="hidden" accept="*/*" onchange="handleFileImport(event)">
 
     <!-- JS 核心系統機制 -->
     <script>
         const editor = document.getElementById('editor');
-        const wordCount = document.getElementById('wordCount');
         const overlay = document.getElementById('sheetOverlay');
         const sheet = document.getElementById('actionSheet');
         const editContainer = document.getElementById('editContainer');
         const previewContainer = document.getElementById('previewContainer');
-        const tabEdit = document.getElementById('tabEdit');
-        const tabSplit = document.getElementById('tabSplit');
-        const tabPreview = document.getElementById('tabPreview');
+        const btnTabSingle = document.getElementById('btnTabSingle');
+        const btnTabSplit = document.getElementById('btnTabSplit');
+        const btnTabZen = document.getElementById('btnTabZen');
         const dynamicPill = document.getElementById('dynamicPill');
         const pillText = document.getElementById('pillText');
         const floatingMenu = document.getElementById('floatingMenu');
@@ -307,19 +355,20 @@
         let db = null;
         let isZenMode = false;
         let isBurnMode = false;
-        let isComposing = false; // CJK 輸入法攔截
+        let isComposing = false;
+        let showExtension = localStorage.getItem('show_ext') !== 'false';
         let currentFileId = "default_note.md";
+        let fileMetadata = { createdAt: Date.now(), updatedAt: Date.now() };
         let longPressTimer = null;
         
-        // 撤銷與重做堆疊 (Custom Undo/Redo Stack)
         let historyStack = [];
         let redoStack = [];
         const MAX_HISTORY = 50;
 
-        // 1. IndexedDB 核心資料庫 (支援 VFS 虛擬檔案與 Git 版本時間軸)
+        // 1. IndexedDB 核心資料庫
         const initDB = () => {
             return new Promise((resolve) => {
-                const request = indexedDB.open("iOSNativeProEditorDB_Masterpiece", 3);
+                const request = indexedDB.open("iOSNativeProEditorDB_Masterpiece", 4);
                 request.onupgradeneeded = (e) => {
                     db = e.target.result;
                     if (!db.objectStoreNames.contains("files")) db.createObjectStore("files", { keyPath: "id" });
@@ -333,12 +382,12 @@
             });
         };
 
-        // 2. 觸覺震動回饋 (Haptic Vibration)
+        // 2. 觸覺震動回饋
         function triggerHaptic(ms = 10) {
             if (navigator.vibrate) navigator.vibrate(ms);
         }
 
-        // 3. 動態島通知 (Dynamic Island Pill)
+        // 3. 動態島通知
         function showPill(text, isSuccess = true) {
             triggerHaptic(15);
             pillText.innerText = text;
@@ -351,11 +400,67 @@
             }, 2200);
         }
 
-        // 4. iOS Safari 長按與點擊浮動選單 (Floating Popover Menu)
+        // 4. 筆記檔名與副檔名顯示控制
+        function updateFileNameDisplay() {
+            const displayElem = document.getElementById('currentFileNameDisplay');
+            if (showExtension) {
+                displayElem.innerText = currentFileId;
+            } else {
+                const lastDotIndex = currentFileId.lastIndexOf('.');
+                displayElem.innerText = (lastDotIndex > 0) ? currentFileId.substring(0, lastDotIndex) : currentFileId;
+            }
+        }
+
+        function toggleExtensionDisplay(checked) {
+            showExtension = checked;
+            localStorage.setItem('show_ext', checked);
+            updateFileNameDisplay();
+        }
+
+        // 5. 筆記詳細資訊 Modal 控制與重命名
+        function openDocDetailModal() {
+            document.getElementById('detailFileNameInput').value = currentFileId;
+            document.getElementById('detailCreatedAt').innerText = new Date(fileMetadata.createdAt || Date.now()).toLocaleString();
+            document.getElementById('detailUpdatedAt').innerText = new Date(fileMetadata.updatedAt || Date.now()).toLocaleString();
+            
+            const text = editor.value;
+            const charLen = text.length;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            document.getElementById('detailWordCount').innerText = `${charLen} 字元 · ${words} 單詞`;
+            
+            document.getElementById('toggleExtCheckbox').checked = showExtension;
+            document.getElementById('docDetailModal').classList.remove('hidden');
+        }
+
+        function closeDocDetailModal() {
+            document.getElementById('docDetailModal').classList.add('hidden');
+        }
+
+        function saveRenamedFile() {
+            const newName = document.getElementById('detailFileNameInput').value.trim();
+            if (!newName || newName === currentFileId) {
+                closeDocDetailModal();
+                return;
+            }
+
+            if (db) {
+                const tx = db.transaction("files", "readwrite");
+                tx.objectStore("files").delete(currentFileId);
+            }
+            localStorage.removeItem("session_crash_guard_" + currentFileId);
+
+            currentFileId = newName;
+            saveActiveFile();
+            updateFileNameDisplay();
+            closeDocDetailModal();
+            showPill("筆記已改名為: " + currentFileId);
+        }
+
+        // 6. 浮動工具列控制
         function showFloatingMenu(x, y) {
             triggerHaptic(15);
             floatingMenu.classList.remove('hidden');
-            const menuWidth = 320;
+            const menuWidth = 280;
             const menuHeight = 45;
             let posX = Math.min(Math.max(10, x - menuWidth / 2), window.innerWidth - menuWidth - 10);
             let posY = Math.max(10, y - menuHeight - 20);
@@ -368,27 +473,24 @@
                 floatingMenu.classList.remove('scale-95', 'opacity-0');
                 floatingMenu.classList.add('scale-100', 'opacity-100');
             });
+            document.getElementById('floatingBtnLabel').innerText = "關閉浮動工具列";
         }
 
         function hideFloatingMenu() {
             floatingMenu.classList.remove('scale-100', 'opacity-100');
             floatingMenu.classList.add('scale-95', 'opacity-0');
             setTimeout(() => floatingMenu.classList.add('hidden'), 200);
+            document.getElementById('floatingBtnLabel').innerText = "開啟浮動工具列";
         }
 
         function toggleFloatingMenuAtCenter() {
             if (!floatingMenu.classList.contains('hidden')) {
                 hideFloatingMenu();
             } else {
-                showFloatingMenu(window.innerWidth / 2, window.innerHeight - 100);
+                showFloatingMenu(window.innerWidth / 2, window.innerHeight - 110);
             }
         }
 
-        function toggleInsertPopover() {
-            showFloatingMenu(window.innerWidth / 2, window.innerHeight - 100);
-        }
-
-        // 監聽 iOS 長按與右鍵事件
         editor.addEventListener('contextmenu', (e) => {
             e.preventDefault();
             showFloatingMenu(e.clientX, e.clientY);
@@ -412,15 +514,15 @@
             }
         });
 
-        // 5. CJK IME 組合語言事件監聽 (防止打字選字卡頓)
+        // 7. CJK IME 組合語言事件監聽
         editor.addEventListener('compositionstart', () => { isComposing = true; });
         editor.addEventListener('compositionend', () => { 
             isComposing = false; 
-            updateDocumentStats();
+            saveActiveFile();
             recordHistory();
         });
 
-        // 6. 撤銷 / 重做機制 (Command Pattern)
+        // 8. 撤銷 / 重做機制
         function recordHistory() {
             if (isComposing) return;
             const currentText = editor.value;
@@ -435,7 +537,7 @@
             if (historyStack.length > 1) {
                 redoStack.push(historyStack.pop());
                 editor.value = historyStack[historyStack.length - 1];
-                updateDocumentStats();
+                saveActiveFile();
                 triggerHaptic(10);
             }
         }
@@ -445,39 +547,42 @@
                 const text = redoStack.pop();
                 historyStack.push(text);
                 editor.value = text;
-                updateDocumentStats();
+                saveActiveFile();
                 triggerHaptic(10);
             }
         }
 
-        // 7. VFS 虛擬檔案系統存取邏輯
+        // 9. VFS 虛擬檔案系統存取
         const saveActiveFile = () => {
             if (isBurnMode) return;
             const content = editor.value;
+            fileMetadata.updatedAt = Date.now();
             localStorage.setItem("session_crash_guard_" + currentFileId, content);
             if (db) {
                 const tx = db.transaction("files", "readwrite");
-                tx.objectStore("files").put({ id: currentFileId, name: currentFileId, content: content, updatedAt: Date.now() });
+                tx.objectStore("files").put({ id: currentFileId, name: currentFileId, content: content, createdAt: fileMetadata.createdAt, updatedAt: fileMetadata.updatedAt });
             }
         };
 
         const loadActiveFile = (fileId) => {
             currentFileId = fileId;
-            document.getElementById('currentFileNameDisplay').innerText = fileId;
+            updateFileNameDisplay();
             const sessionContent = localStorage.getItem("session_crash_guard_" + fileId);
             if (sessionContent !== null) {
                 editor.value = sessionContent;
-                updateDocumentStats();
             } else if (db) {
                 const tx = db.transaction("files", "readonly");
                 const req = tx.objectStore("files").get(fileId);
                 req.onsuccess = (e) => {
                     if (e.target.result) {
                         editor.value = e.target.result.content;
+                        fileMetadata.createdAt = e.target.result.createdAt || Date.now();
+                        fileMetadata.updatedAt = e.target.result.updatedAt || Date.now();
                     } else {
                         editor.value = "";
+                        fileMetadata.createdAt = Date.now();
+                        fileMetadata.updatedAt = Date.now();
                     }
-                    updateDocumentStats();
                 };
             }
         };
@@ -488,7 +593,7 @@
             tx.objectStore("versions").add({ fileId: currentFileId, content: editor.value, timestamp: new Date().toLocaleString() });
         };
 
-        // 8. VFS 檔案列表 UI 面板控制
+        // 10. VFS 檔案清單面板
         function toggleVFS(show) {
             const overlay = document.getElementById('vfsOverlay');
             if (show) {
@@ -507,7 +612,7 @@
             tx.objectStore("files").getAll().onsuccess = (e) => {
                 const files = e.target.result;
                 if (files.length === 0) {
-                    list.innerHTML = '<div class="text-[#8E8E93] text-center py-4">沒有檔案，點擊上方新增。</div>';
+                    list.innerHTML = '<div class="text-[#8E8E93] text-center py-4">尚無檔案，點擊右上方新增。</div>';
                     return;
                 }
                 files.forEach(f => {
@@ -525,9 +630,10 @@
         }
 
         function createNewFilePrompt() {
-            const name = prompt("請輸入新檔案名稱 (例如: Notes.md):");
+            const name = prompt("請輸入新檔案名稱與副檔名 (例如: Note.md / Script.py):");
             if (name) {
-                currentFileId = name.endsWith('.md') ? name : name + '.md';
+                currentFileId = name;
+                fileMetadata = { createdAt: Date.now(), updatedAt: Date.now() };
                 editor.value = "";
                 saveActiveFile();
                 loadActiveFile(currentFileId);
@@ -536,61 +642,34 @@
             }
         }
 
-        // 9. 智慧排版、校正與 Tokenizer (Wiki-links [[ ]] / Hashtags #)
-        function processTokenizerAndTypography(text) {
-            let processed = text
-                .replace(/---/g, '—')
-                .replace(/\.\.\./g, '…');
-
-            // Wiki-links [[連結]] 轉換
-            processed = processed.replace(/\[\[(.*?)\]\]/g, '<span class="wiki-link" onclick="loadActiveFile(\'$1.md\')">[[ $1 ]]</span>');
-            
-            // Hashtags #標籤 轉換
-            processed = processed.replace(/(^|\s)#([^\s#]+)/g, '$1<span class="hashtag">#$2</span>');
-
-            // 自動隱式網址超連結
-            const urlRegex = /(https?:\/\/[^\s]+)/g;
-            processed = processed.replace(urlRegex, '<a href="$1" target="_blank" class="text-[#0A84FF] underline break-all">$1</a>');
-
-            return processed;
-        }
-
-        // 10. 雙向同步捲動 (Bi-directional Scroll Sync)
-        let isSyncingScroll = false;
-        editor.addEventListener('scroll', () => {
-            if (!isSyncingScroll && !previewContainer.classList.contains('hidden')) {
-                isSyncingScroll = true;
-                const percentage = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
-                previewContainer.scrollTop = percentage * (previewContainer.scrollHeight - previewContainer.clientHeight);
-                setTimeout(() => isSyncingScroll = false, 50);
-            }
-        });
-
-        // 11. 頁籤切換與最佳化雙欄模式 (Segmented Control)
+        // 11. 頁籤切換 (單欄 / 雙欄 / 專注)
         function switchTab(mode) {
             triggerHaptic(10);
-            tabEdit.className = "flex-1 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200";
-            tabSplit.className = "px-3 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200";
-            tabPreview.className = "flex-1 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200";
+            btnTabSingle.className = "flex-1 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200";
+            btnTabSplit.className = "flex-1 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200";
 
             if (mode === 'edit') {
-                tabEdit.className = "flex-1 bg-[#3A3A3C] text-white rounded-lg py-1 text-xs font-semibold shadow transition-all duration-200";
+                btnTabSingle.className = "flex-1 bg-[#3A3A3C] text-white rounded-lg py-1 text-xs font-semibold shadow transition-all duration-200";
                 editContainer.className = "flex-1 w-full flex flex-col h-full min-w-0 overflow-hidden";
                 previewContainer.className = "hidden";
             } else if (mode === 'split') {
-                tabSplit.className = "px-3 bg-[#3A3A3C] text-white rounded-lg py-1 text-xs font-semibold shadow transition-all duration-200";
+                btnTabSplit.className = "flex-1 bg-[#3A3A3C] text-white rounded-lg py-1 text-xs font-semibold shadow transition-all duration-200";
                 editContainer.className = "flex-1 w-1/2 flex flex-col h-full min-w-0 overflow-hidden border-r border-[#38383A]";
                 previewContainer.className = "flex-1 w-1/2 flex flex-col h-full min-w-0 overflow-y-auto smooth-scroll prose text-white p-4 md:p-6";
-                renderPreview();
-            } else {
-                tabPreview.className = "flex-1 bg-[#3A3A3C] text-white rounded-lg py-1 text-xs font-semibold shadow transition-all duration-200";
-                editContainer.className = "hidden";
-                previewContainer.className = "flex-1 w-full flex flex-col h-full min-w-0 overflow-y-auto smooth-scroll prose text-white p-4 md:p-6";
                 renderPreview();
             }
         }
 
         // 12. 渲染預覽 (KaTeX, Mermaid, Prism.js, DOMPurify)
+        function processTokenizerAndTypography(text) {
+            let processed = text.replace(/---/g, '—').replace(/\.\.\./g, '…');
+            processed = processed.replace(/\[\[(.*?)\]\]/g, '<span class="wiki-link" onclick="loadActiveFile(\'$1.md\')">[[ $1 ]]</span>');
+            processed = processed.replace(/(^|\s)#([^\s#]+)/g, '$1<span class="hashtag">#$2</span>');
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
+            processed = processed.replace(urlRegex, '<a href="$1" target="_blank" class="text-[#0A84FF] underline break-all">$1</a>');
+            return processed;
+        }
+
         function renderPreview() {
             let text = editor.value;
             if (!text.trim()) {
@@ -598,7 +677,6 @@
                 return;
             }
 
-            // YAML Frontmatter 拆解
             if (text.startsWith('---')) {
                 const parts = text.split('---');
                 if (parts.length >= 3) text = parts.slice(2).join('---');
@@ -606,10 +684,8 @@
 
             let html = processTokenizerAndTypography(text);
 
-            // Obsidian Callout 轉換
             html = html.replace(/> \[!(NOTE|WARNING|TIP)\]\s+(.*)/g, '<div class="bg-[#2C2C2E] border-l-4 border-[#0A84FF] p-3 rounded-r-xl my-2"><strong>$1</strong>: $2</div>');
 
-            // 基礎 Markdown 標籤轉換
             html = html
                 .replace(/^# (.*?)$/gm, '<h1>$1</h1>')
                 .replace(/^## (.*?)$/gm, '<h2>$2</h2>')
@@ -621,51 +697,30 @@
 
             html = html.replace(/<\/ul><br><ul>/g, '');
 
-            // XSS DOMPurify 淨化
             const cleanHTML = DOMPurify.sanitize(html);
             previewContainer.innerHTML = `<div class="prose w-full">${cleanHTML}</div>`;
 
-            // KaTeX 轉譯
             try {
                 previewContainer.innerHTML = previewContainer.innerHTML.replace(/\$\$([\s\S]*?)\$\$/g, (match, p1) => {
                     return katex.renderToString(p1, { displayMode: true, throwOnError: false });
                 }).replace(/\$([^\$]+?)\$/g, (match, p1) => {
                     return katex.renderToString(p1, { displayMode: false, throwOnError: false });
                 });
-            } catch (err) { console.error("KaTeX error:", err); }
+            } catch (err) {}
 
-            // Mermaid 圖表渲染
             try {
                 mermaid.init(undefined, previewContainer.querySelectorAll('.language-mermaid'));
             } catch (err) {}
 
-            // Prism 靜態語法高亮
             Prism.highlightAllUnder(previewContainer);
         }
 
-        // 13. 智慧文稿深度統計
-        function updateDocumentStats() {
-            if (isComposing) return;
-            const text = editor.value;
-            const charLen = text.length;
-            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-            const readMinutes = Math.ceil(words / 250);
-            wordCount.innerText = `${charLen} 字元 · ${readMinutes} 分鐘`;
-            saveActiveFile();
-        }
-
-        let throttleTimer = null;
         editor.addEventListener('input', () => {
             recordHistory();
-            if (!throttleTimer) {
-                throttleTimer = setTimeout(() => {
-                    updateDocumentStats();
-                    throttleTimer = null;
-                }, 300);
-            }
+            saveActiveFile();
         });
 
-        // 14. Smart Auto-Pairing (自動成對包裹)
+        // 13. Smart Auto-Pairing
         editor.addEventListener('keydown', (e) => {
             const pairs = { '(': ')', '[': ']', '{': '}', '"': '"', "'": "'" };
             if (pairs[e.key]) {
@@ -676,92 +731,72 @@
                 editor.value = val.substring(0, start) + e.key + val.substring(start, end) + pairs[e.key] + val.substring(end);
                 editor.selectionStart = start + 1;
                 editor.selectionEnd = end + 1;
-                updateDocumentStats();
+                saveActiveFile();
             }
         });
 
-        // 15. 拖曳檔案與剪貼簿圖片 EXIF 抹除與壓縮 (Canvas & Drag & Drop)
-        window.addEventListener('dragover', (e) => e.preventDefault());
-        window.addEventListener('drop', (e) => {
-            e.preventDefault();
-            if (e.dataTransfer.files.length > 0) {
-                handleUploadedFiles(e.dataTransfer.files);
-            }
-        });
-
-        editor.addEventListener('paste', (e) => {
-            const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-            for (let item of items) {
-                if (item.type.indexOf("image") === 0) {
-                    const blob = item.getAsFile();
-                    compressAndInsertImage(blob);
-                }
-            }
-        });
-
-        function compressAndInsertImage(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    const maxW = 800;
-                    const scale = maxW / img.width;
-                    canvas.width = (img.width > maxW) ? maxW : img.width;
-                    canvas.height = (img.width > maxW) ? img.height * scale : img.height;
-                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const base64 = canvas.toDataURL('image/jpeg', 0.8);
-                    insertText(`\n![圖片](${base64})\n`);
-                    showPill("圖片已抹除 EXIF 並壓縮貼上");
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
+        // 14. 通用檔案匯入與匯出 (支援任意副檔名)
         function triggerFileInput() {
             document.getElementById('hiddenFileInput').click();
             closeActionSheet();
         }
 
         function handleFileImport(e) {
-            handleUploadedFiles(e.target.files);
-        }
-
-        function handleUploadedFiles(files) {
-            for (let file of files) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    currentFileId = file.name;
-                    editor.value = ev.target.result;
-                    saveActiveFile();
-                    loadActiveFile(currentFileId);
-                    showPill("成功匯入: " + file.name);
-                };
-                reader.readAsText(file);
-            }
-        }
-
-        // 16. 語音聽寫輸入 (Web Speech API)
-        function startVoiceInput() {
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                showPill("瀏覽器不支援 Web Speech 語音輸入", false);
-                return;
-            }
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const recognition = new SpeechRecognition();
-            recognition.lang = 'zh-TW';
-            recognition.onstart = () => showPill("請開始說話 (語音聽寫中...)");
-            recognition.onresult = (event) => {
-                const text = event.results[0][0].transcript;
-                insertText(text);
-                showPill("已錄入語音文字");
+            const files = e.target.files;
+            if (files.length === 0) return;
+            const file = files[0];
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                currentFileId = file.name;
+                editor.value = ev.target.result;
+                fileMetadata = { createdAt: Date.now(), updatedAt: Date.now() };
+                saveActiveFile();
+                updateFileNameDisplay();
+                showPill("已匯入檔案: " + file.name);
             };
-            recognition.start();
+            reader.readAsText(file);
         }
 
-        // 17. Spotlight & Git 時間軸控制
+        function exportAction(type) {
+            const content = editor.value;
+            if (type === 'copy') {
+                navigator.clipboard.writeText(content);
+                showPill('已複製淨化全文至剪貼簿');
+            } else if (type === 'file') {
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = currentFileId;
+                link.click();
+                showPill('已匯出檔案: ' + currentFileId);
+            } else if (type === 'docx') {
+                const docxBlob = new Blob([`<html><body>${editor.value}</body></html>`], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(docxBlob);
+                link.download = `${currentFileId}.docx`;
+                link.click();
+                showPill('已匯出 Word 檔案');
+            } else if (type === 'share') {
+                if (navigator.share) {
+                    navigator.share({ title: currentFileId, text: content }).catch(console.error);
+                } else {
+                    showPill('瀏覽器不支援 Web Share API', false);
+                }
+            }
+            closeActionSheet();
+        }
+
+        // 15. 頂部搜尋框與 Spotlight 控制
+        function focusHeaderSearch() {
+            document.getElementById('headerSearchInput').focus();
+        }
+
+        function handleHeaderSearch(query) {
+            if (query.trim()) {
+                handleSpotlightSearch(query);
+            }
+        }
+
         function toggleSpotlight(show) {
             const spotlight = document.getElementById('spotlightOverlay');
             if (show) {
@@ -785,6 +820,7 @@
             `;
         }
 
+        // 16. Git 時間軸控制
         function toggleTimeline(show) {
             const overlay = document.getElementById('timelineOverlay');
             if (show) {
@@ -822,15 +858,18 @@
 
         function restoreVersion(content) {
             editor.value = content;
-            updateDocumentStats();
+            saveActiveFile();
             toggleTimeline(false);
             showPill('已成功還原快照版本');
         }
 
-        // 18. 沉浸與閱後即焚模式
+        // 17. 專注與閱後即焚模式 (點擊切換)
         function toggleZenMode() {
             isZenMode = !isZenMode;
             document.body.classList.toggle('zen-mode', isZenMode);
+            btnTabZen.className = isZenMode 
+                ? "flex-1 bg-amber-500 text-black rounded-lg py-1 text-xs font-semibold shadow transition-all duration-200" 
+                : "flex-1 text-[#8E8E93] rounded-lg py-1 text-xs font-medium transition-all duration-200";
             showPill(isZenMode ? '已進入沉浸專注模式' : '已退出專注模式');
         }
 
@@ -841,7 +880,7 @@
             showPill(isBurnMode ? '已開啟防偷看/閱後即焚' : '已關閉閱後即焚');
         }
 
-        // 19. 工具列文字插入與鍵盤控制
+        // 18. 基礎編輯輔助函式
         function insertText(before, after = '') {
             const start = editor.selectionStart;
             const end = editor.selectionEnd;
@@ -850,7 +889,7 @@
             editor.selectionStart = start + before.length;
             editor.selectionEnd = end + before.length;
             editor.focus();
-            updateDocumentStats();
+            saveActiveFile();
             recordHistory();
         }
 
@@ -872,40 +911,9 @@
             setTimeout(() => overlay.classList.add('hidden'), 350);
         }
 
-        // 20. 匯出操作 (Markdown, Word, Share)
-        function exportAction(type) {
-            const content = editor.value;
-            if (type === 'copy') {
-                navigator.clipboard.writeText(content);
-                showPill('已淨化並複製全文至剪貼簿');
-            } else if (type === 'md') {
-                const blob = new Blob([content], { type: 'text/markdown;charset=utf-8;' });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(blob);
-                link.download = `${currentFileId}`;
-                link.click();
-                showPill('已成功匯出 .md 檔案');
-            } else if (type === 'docx') {
-                const docxBlob = new Blob([`<html><body>${editor.value}</body></html>`], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-                const link = document.createElement("a");
-                link.href = URL.createObjectURL(docxBlob);
-                link.download = `${currentFileId}.docx`;
-                link.click();
-                showPill('已成功匯出 Word 檔案');
-            } else if (type === 'share') {
-                if (navigator.share) {
-                    navigator.share({ title: currentFileId, text: content }).catch(console.error);
-                } else {
-                    showPill('此瀏覽器不支援 Web Share API', false);
-                }
-            }
-            closeActionSheet();
-        }
-
         function clearText() {
             if(confirm('確定要清除當前內容嗎？')) {
                 editor.value = '';
-                updateDocumentStats();
                 localStorage.removeItem("session_crash_guard_" + currentFileId);
                 closeActionSheet();
                 if(!previewContainer.classList.contains('hidden')) renderPreview();
@@ -913,7 +921,7 @@
             }
         }
 
-        // 21. 頁面初始化與 Service Worker 註冊 (PWA 支援)
+        // 19. 頁面初始化與 Service Worker 註冊
         window.addEventListener('DOMContentLoaded', () => {
             initDB();
             if ('serviceWorker' in navigator) {
