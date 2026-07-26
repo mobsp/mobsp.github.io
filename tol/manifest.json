@@ -1,0 +1,19 @@
+{
+  "name": "莫比空間｜AdvancEditor＋",
+  "short_name": "Ⲙ𝔬ⲃⳝ𝔭 編輯器＋",
+  "id": "/tol/AdvancEditor/",
+  "start_url": "/tol/AdvancEditor/index.html",
+  "scope": "/tol/AdvancEditor/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://mobsp.qzz.io/assets/brand/ms-logo1.JPEG",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
