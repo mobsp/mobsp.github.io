@@ -418,9 +418,9 @@ transform:none;
             }
         }
 
-        /* 載入文章列表 */
+        /* 載入文章列表 (已修正 GitHub API 完整路徑) */
         async function loadArticles() {
-            const api = "https://api.github.com/repos/mobsp/contents/blog/p/list?t=" + Date.now();
+            const api = "https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p?t=" + Date.now();
             try {
                 const res = await fetch(api);
                 const files = await res.json();
@@ -436,7 +436,10 @@ transform:none;
 
         function renderArticleList() {
             const container = document.getElementById('view-read');
-            if (rawArticles.length === 0) return;
+            if (rawArticles.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:50px; color:#8E8E93; font-size:12px;">目前沒有文章</div>';
+                return;
+            }
             container.innerHTML = rawArticles.map(p => `
                 <a class="article-row" href="/${p.path}">
                     <div class="row-img"></div>
