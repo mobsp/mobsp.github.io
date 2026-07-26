@@ -356,11 +356,11 @@ transform:none;
 
         <!-- 獨立分頁檢視容器 -->
         <div id="view-container">
-            <!-- 閱讀分頁 -->
+            <!-- 閱讀分頁 (文章列表) -->
             <div id="view-read" class="tab-view active">
                 <div id="content-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">INITIALIZING...</div>
             </div>
-            <!-- 工具牆分頁 -->
+            <!-- 工具牆分頁 (從 /tol/tolist.json 讀取) -->
             <div id="view-tools" class="tab-view">
                 <div id="tools-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">LOADING TOOLS...</div>
             </div>
@@ -418,15 +418,16 @@ transform:none;
             }
         }
 
-        /* 載入文章列表 (已修正 GitHub API 完整路徑) */
+        /* 載入 blog/p/ 目錄底下的文章列表 */
         async function loadArticles() {
             const api = "https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p?t=" + Date.now();
             try {
                 const res = await fetch(api);
                 const files = await res.json();
-                rawArticles = files.filter(f => f.name.endsWith('.html')).reverse().map(f => ({
+                // 過濾出 .html 檔案（排除 theme.html 等共用殼檔案）
+                rawArticles = files.filter(f => f.name.endsWith('.html') && f.name !== 'theme.html').reverse().map(f => ({
                     title: decodeURIComponent(f.name).replace('.html','').trim(),
-                    path: f.path
+                    path: f.path // 這裡會對應到 blog/p/xxx.html
                 }));
                 renderArticleList();
             } catch (e) {
