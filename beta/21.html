@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>iOS Native GitHub Editor</title>
+    <!-- Tailwind CSS & FontAwesome Icons -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        /* iOS 毛玻璃與選單貝氏曲線動畫 */
+        .ios-blur {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .sheet-transition {
+            transition: transform 0.35s cubic-bezier(0.15, 0.85, 0.35, 1.2);
+        }
+        /* 程式碼編輯器專用行號與字體 */
+        .code-font {
+            font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+        }
+    </style>
+</head>
+<body class="bg-[#0D1117] text-[#C9D1D9] h-full flex flex-col justify-between overflow-hidden select-none pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+
+    <!-- 1. iOS 頂部導航欄 (頂部 Safe Area 整合) -->
+    <header class="bg-[#161B22]/80 ios-blur px-4 py-3 flex items-center justify-between border-b border-[#30363D] z-30 sticky top-0">
+        <div class="flex items-center space-x-3">
+            <button class="text-[#8B949E] active:opacity-50 text-lg">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="flex flex-col">
+                <span class="text-xs text-[#8B949E] font-medium leading-none">mobsp.github.io</span>
+                <span class="text-sm font-bold text-white mt-1 leading-none flex items-center gap-1.5">
+                    <i class="fa-regular fa-file-code text-blue-400"></i> CNAME
+                </span>
+            </div>
+        </div>
+        
+        <!-- 右側操作按鈕 -->
+        <div class="flex items-center space-x-3">
+            <button id="saveBtn" onclick="triggerSave()" class="bg-[#238636] active:bg-[#2EA043] text-white text-xs font-semibold px-3 py-1.5 rounded-full transition-all shadow-sm">
+                Commit
+            </button>
+            <button onclick="openActionSheet()" class="w-8 h-8 rounded-full bg-[#21262D] flex items-center justify-center text-white active:bg-[#30363D]">
+                <i class="fa-solid fa-ellipsis"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 2. 編輯與預覽 Tab 分頁導航欄 -->
+    <div class="bg-[#0D1117] border-b border-[#30363D] px-4 pt-2 flex items-center justify-between text-xs">
+        <div class="flex space-x-2">
+            <button id="tabEdit" onclick="switchTab('edit')" class="px-4 py-2 font-semibold text-white border-b-2 border-[#F78166] transition">
+                Edit
+            </button>
+            <button id="tabPreview" onclick="switchTab('preview')" class="px-4 py-2 font-semibold text-[#8B949E] transition">
+                Preview
+            </button>
+        </div>
+        <!-- 檔案字數狀態 -->
+        <span id="fileStats" class="text-[11px] text-[#8B949E]">1 lines · 12 Bytes</span>
+    </div>
+
+    <!-- 3. 核心編輯器區域 (支持 iOS 原生觸控) -->
+    <main class="flex-1 relative overflow-hidden bg-[#0D1117] flex">
+        <!-- 行號區塊 -->
+        <div id="lineNumbers" class="w-10 bg-[#0D1117] border-r border-[#21262D] text-[#484F58] code-font text-xs pt-3 text-right pr-2 select-none">
+            1
+        </div>
+        
+        <!-- 文字輸入主體 -->
+        <div class="flex-1 relative h-full">
+            <textarea id="codeEditor" class="w-full h-full bg-transparent text-[#E6EDE3] code-font text-sm p-3 outline-none resize-none leading-relaxed" spellcheck="false" placeholder="Enter code here...">mobsp.qzz.io</textarea>
+            
+            <!-- 預覽容器 (初始隱藏) -->
+            <div id="previewContainer" class="hidden absolute inset-0 bg-[#0D1117] p-4 overflow-y-auto text-sm text-[#C9D1D9]">
+                <div class="p-4 rounded-xl border border-[#30363D] bg-[#161B22] text-center text-[#8B949E]">
+                    <i class="fa-solid fa-[#06C755] fa-eye mb-2 text-2xl text-emerald-400"></i>
+                    <p>網域設定檔無 HTML 渲染預覽</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 4. iOS 專屬輸入輔助工具列 (Keyboard Accessory Bar) -->
+    <div id="accessoryBar" class="bg-[#161B22] border-t border-[#30363D] px-2 py-1.5 flex items-center justify-between text-sm z-20">
+        <div class="flex items-center space-x-1 overflow-x-auto no-scrollbar">
+            <button onclick="insertText('  ')" class="px-3 py-1 bg-[#21262D] active:bg-[#30363D] text-[#C9D1D9] rounded-md font-mono text-xs">Tab</button>
+            <button onclick="insertText('# ')" class="px-3 py-1 bg-[#21262D] active:bg-[#30363D] text-[#C9D1D9] rounded-md text-xs">#</button>
+            <button onclick="insertText('/')" class="px-3 py-1 bg-[#21262D] active:bg-[#30363D] text-[#C9D1D9] rounded-md text-xs">/</button>
+            <button onclick="insertText(':')" class="px-3 py-1 bg-[#21262D] active:bg-[#30363D] text-[#C9D1D9] rounded-md text-xs">:</button>
+            <button onclick="insertText('.')" class="px-3 py-1 bg-[#21262D] active:bg-[#30363D] text-[#C9D1D9] rounded-md text-xs">.</button>
+        </div>
+        <button onclick="dismissKeyboard()" class="px-3 py-1 text-[#8B949E] active:text-white">
+            <i class="fa-solid fa-keyboard-down"></i>
+        </button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 5. iOS 仿生彈出式選單 (Action Sheet) -->
+    <!-- ========================================== -->
+    <div id="sheetOverlay" class="hidden fixed inset-0 bg-black/60 z-50 opacity-0 transition-opacity duration-300 flex items-end justify-center" onclick="closeActionSheet()">
+        <div id="actionSheet" class="w-full max-w-md bg-[#161B22]/95 ios-blur rounded-t-2xl p-4 transform translate-y-full sheet-transition border-t border-[#30363D]" onclick="event.stopPropagation()">
+            <!-- 頂部拉桿 -->
+            <div class="w-9 h-1 bg-[#484F58] rounded-full mx-auto mb-4"></div>
+            
+            <p class="text-center text-xs font-semibold text-[#8B949E] mb-3">CNAME 檔案設定</p>
+
+            <!-- 選擇清單塊 -->
+            <div class="bg-[#21262D] rounded-xl overflow-hidden border border-[#30363D] mb-3">
+                <button onclick="copyCode()" class="w-full px-4 py-3.5 text-left active:bg-[#30363D] flex items-center justify-between text-sm border-b border-[#30363D] text-white">
+                    <span>複製檔案內容</span>
+                    <i class="fa-regular fa-copy text-[#8B949E]"></i>
+                </button>
+                <button onclick="toggleLineWrap()" class="w-full px-4 py-3.5 text-left active:bg-[#30363D] flex items-center justify-between text-sm border-b border-[#30363D] text-white">
+                    <span>切換自動換行 (Line Wrap)</span>
+                    <i id="wrapIcon" class="fa-solid fa-check text-emerald-400"></i>
+                </button>
+                <button onclick="changeIndent()" class="w-full px-4 py-3.5 text-left active:bg-[#30363D] flex items-center justify-between text-sm text-white">
+                    <span>縮排設定 (Spaces: 2)</span>
+                    <i class="fa-solid fa-sliders text-[#8B949E]"></i>
+                </button>
+            </div>
+
+            <!-- 危險區塊 -->
+            <div class="bg-[#21262D] rounded-xl overflow-hidden border border-[#30363D] mb-3">
+                <button onclick="deleteFile()" class="w-full px-4 py-3.5 text-left active:bg-[#30363D] flex items-center justify-between text-sm text-red-400">
+                    <span>刪除檔案 (Delete File)</span>
+                    <i class="fa-regular fa-trash-can"></i>
+                </button>
+            </div>
+
+            <!-- 取消按鈕 -->
+            <button onclick="closeActionSheet()" class="w-full bg-[#21262D] text-white font-semibold py-3.5 rounded-xl text-center text-sm active:bg-[#30363D]">
+                取消
+            </button>
+        </div>
+    </div>
+
+    <!-- 核心 JS 邏輯 -->
+    <script>
+        const editor = document.getElementById('codeEditor');
+        const lineNumbers = document.getElementById('lineNumbers');
+        const overlay = document.getElementById('sheetOverlay');
+        const sheet = document.getElementById('actionSheet');
+        let isWrapped = true;
+
+        // 1. 動態計算行號與統計數據
+        editor.addEventListener('input', updateEditor);
+        
+        function updateEditor() {
+            const lines = editor.value.split('\n').length;
+            lineNumbers.innerHTML = Array.from({length: lines}, (_, i) => i + 1).join('<br>');
+            
+            const bytes = new Blob([editor.value]).size;
+            document.getElementById('fileStats').innerText = `${lines} lines · ${bytes} Bytes`;
+        }
+
+        // 2. 頁籤切換 (Edit / Preview)
+        function switchTab(tab) {
+            const editBtn = document.getElementById('tabEdit');
+            const previewBtn = document.getElementById('tabPreview');
+            const previewContainer = document.getElementById('previewContainer');
+
+            if (tab === 'edit') {
+                editBtn.className = "px-4 py-2 font-semibold text-white border-b-2 border-[#F78166] transition";
+                previewBtn.className = "px-4 py-2 font-semibold text-[#8B949E] transition";
+                previewContainer.classList.add('hidden');
+            } else {
+                previewBtn.className = "px-4 py-2 font-semibold text-white border-b-2 border-[#F78166] transition";
+                editBtn.className = "px-4 py-2 font-semibold text-[#8B949E] transition";
+                previewContainer.classList.remove('hidden');
+            }
+        }
+
+        // 3. iOS 輔助鍵盤工具欄文字插入
+        function insertText(text) {
+            const start = editor.selectionStart;
+            const end = editor.selectionEnd;
+            editor.value = editor.value.substring(0, start) + text + editor.value.substring(end);
+            editor.selectionStart = editor.selectionEnd = start + text.length;
+            editor.focus();
+            updateEditor();
+        }
+
+        function dismissKeyboard() {
+            editor.blur();
+        }
+
+        // 4. iOS 彈出選單 (Action Sheet) 控制
+        function openActionSheet() {
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                sheet.classList.remove('translate-y-full');
+            }, 10);
+        }
+
+        function closeActionSheet() {
+            overlay.classList.add('opacity-0');
+            sheet.classList.add('translate-y-full');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
+
+        // 5. 編輯器功能魔改
+        function copyCode() {
+            navigator.clipboard.writeText(editor.value);
+            closeActionSheet();
+            alert('已成功複製檔案內容至剪貼簿');
+        }
+
+        function toggleLineWrap() {
+            isWrapped = !isWrapped;
+            editor.style.whiteSpace = isWrapped ? 'pre-wrap' : 'pre';
+            document.getElementById('wrapIcon').className = isWrapped ? 'fa-solid fa-check text-emerald-400' : 'hidden';
+            closeActionSheet();
+        }
+
+        function triggerSave() {
+            alert('已成功 Submit 變更至 GitHub 遠端儲存庫！');
+        }
+
+        function deleteFile() {
+            if(confirm('確定要刪除 CNAME 檔案嗎？')) {
+                editor.value = '';
+                updateEditor();
+                closeActionSheet();
+            }
+        }
+
+        // 初始化行號
+        updateEditor();
+    </script>
+</body>
+</html>
