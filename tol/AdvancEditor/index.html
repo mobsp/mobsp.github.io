@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW" class="h-full">
+<html lang="zh-TW" class="h-full w-full overflow-hidden">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -30,24 +30,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
 
     <style>
-        body {
+        /* 全域鎖死防晃動與橡皮筋效應 */
+        html, body {
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden !important;
+            overscroll-behavior: none !important;
+            position: fixed;
+            inset: 0;
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
             -webkit-tap-highlight-color: transparent;
             touch-action: manipulation;
             background-color: #000000;
-            overscroll-behavior-y: none;
         }
+
         .ios-blur {
             backdrop-filter: saturate(180%) blur(20px);
             -webkit-backdrop-filter: saturate(180%) blur(20px);
-            background-color: rgba(28, 28, 30, 0.75);
+            background-color: rgba(28, 28, 30, 0.85);
         }
+
         .sheet-transition {
             transition: transform 0.35s cubic-bezier(0.15, 0.85, 0.35, 1.2);
         }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        
+
+        /* 順暢慣性滾動 */
+        .smooth-scroll {
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior-y: contain;
+        }
+
         /* 沉浸專注模式 (Zen Mode) */
         body.zen-mode header, body.zen-mode #tabBarNav, body.zen-mode #accessoryBar {
             opacity: 0.05;
@@ -57,7 +72,7 @@
 
         /* 閱後即焚 / 隱私模糊模式 */
         body.burn-mode #editor, body.burn-mode #previewContainer {
-            filter: blur(10px);
+            filter: blur(12px);
             transition: filter 0.3s ease;
         }
         body.burn-mode #editor:focus, body.burn-mode #previewContainer:hover {
@@ -66,11 +81,11 @@
 
         /* Markdown 樣式與渲染優化 */
         .prose { content-visibility: auto; contain-intrinsic-size: 1px 500px; }
-        .prose h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; border-bottom: 1px solid #38383A; padding-bottom: 0.25rem; }
-        .prose h2 { font-size: 1.4rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }
-        .prose p { margin-bottom: 0.75rem; line-height: 1.6; }
-        .prose ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1rem; }
-        .prose code { background: #2C2C2E; padding: 0.15rem 0.4rem; border-radius: 6px; font-family: ui-monospace, monospace; font-size: 0.9em; color: #FF9F0A; }
+        .prose h1 { font-size: 1.65rem; font-weight: 700; margin-bottom: 0.5rem; border-bottom: 1px solid #38383A; padding-bottom: 0.25rem; }
+        .prose h2 { font-size: 1.35rem; font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .prose p { margin-bottom: 0.75rem; line-height: 1.65; }
+        .prose ul { list-style-type: disc; padding-left: 1.25rem; margin-bottom: 1rem; }
+        .prose code { background: #2C2C2E; padding: 0.15rem 0.4rem; border-radius: 6px; font-family: ui-monospace, monospace; font-size: 0.88em; color: #FF9F0A; }
         .prose pre code { background: transparent; color: inherit; }
         
         /* 動態島 Pill 浮動通知 */
@@ -79,14 +94,14 @@
         }
 
         /* Wiki-Link 與 Hashtag 高亮 */
-        .wiki-link { color: #0A84FF; font-weight: 600; text-decoration: underline; }
+        .wiki-link { color: #0A84FF; font-weight: 600; text-decoration: underline; cursor: pointer; }
         .hashtag { color: #30D158; font-weight: 600; }
     </style>
 </head>
-<body class="text-white h-full flex flex-col justify-between overflow-hidden select-none pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+<body class="text-white h-[100dvh] w-screen flex flex-col justify-between select-none bg-black">
 
     <!-- 動態島膠囊通知 (Dynamic Island Pill) -->
-    <div id="dynamicPill" class="fixed top-2 left-1/2 -translate-x-1/2 bg-[#1C1C1E]/90 ios-blur border border-[#38383A] text-white text-xs px-4 py-1.5 rounded-full shadow-2xl z-50 opacity-0 pointer-events-none flex items-center gap-2">
+    <div id="dynamicPill" class="fixed top-3 left-1/2 -translate-x-1/2 bg-[#1C1C1E]/90 ios-blur border border-[#38383A] text-white text-xs px-4 py-1.5 rounded-full shadow-2xl z-50 opacity-0 pointer-events-none flex items-center gap-2">
         <i id="pillIcon" class="fa-solid fa-circle-check text-emerald-400"></i>
         <span id="pillText">系統已同步</span>
     </div>
@@ -129,69 +144,72 @@
         </div>
     </div>
 
-    <!-- 頂部導航欄 -->
-    <header id="mainHeader" class="ios-blur px-4 py-3 flex items-center justify-between border-b border-[#38383A] z-30 sticky top-0 transition-all duration-300">
-        <button onclick="toggleZenMode()" class="text-[#0A84FF] text-lg active:opacity-50 transition flex items-center gap-1" title="專注模式">
-            <i class="fa-solid fa-expand"></i>
-            <span class="text-base">專注</span>
-        </button>
-        
-        <div class="flex flex-col items-center cursor-pointer" onclick="toggleSpotlight(true)">
-            <span id="docTitle" class="text-base font-semibold leading-tight flex items-center gap-1">
-                <span id="currentFileNameDisplay">預設筆記.md</span>
-                <i class="fa-solid fa-chevron-down text-[10px] text-[#8E8E93]"></i>
-            </span>
-            <span id="wordCount" class="text-[10px] text-[#8E8E93] font-medium leading-none mt-0.5">0 字元 · 預估 0 分鐘閱讀</span>
-        </div>
-        
-        <button onclick="openActionSheet()" class="w-8 h-8 rounded-full bg-[#2C2C2E] flex items-center justify-center text-[#0A84FF] active:bg-[#3A3A3C] transition">
-            <i class="fa-solid fa-ellipsis"></i>
-        </button>
-    </header>
+    <!-- 頁首與導航欄容器 (固定鎖死 flex-none) -->
+    <div class="flex-none z-30 pt-[env(safe-area-inset-top)] bg-black">
+        <!-- 頂部導航欄 -->
+        <header id="mainHeader" class="ios-blur px-4 py-2.5 flex items-center justify-between border-b border-[#38383A] transition-all duration-300">
+            <button onclick="toggleZenMode()" class="text-[#0A84FF] text-base active:opacity-50 transition flex items-center gap-1" title="專注模式">
+                <i class="fa-solid fa-expand text-sm"></i>
+                <span>專注</span>
+            </button>
+            
+            <div class="flex flex-col items-center cursor-pointer" onclick="toggleSpotlight(true)">
+                <span id="docTitle" class="text-base font-semibold leading-tight flex items-center gap-1">
+                    <span id="currentFileNameDisplay">預設筆記.md</span>
+                    <i class="fa-solid fa-chevron-down text-[10px] text-[#8E8E93]"></i>
+                </span>
+                <span id="wordCount" class="text-[10px] text-[#8E8E93] font-medium leading-none mt-0.5">0 字元 · 預估 0 分鐘閱讀</span>
+            </div>
+            
+            <button onclick="openActionSheet()" class="w-8 h-8 rounded-full bg-[#2C2C2E] flex items-center justify-center text-[#0A84FF] active:bg-[#3A3A3C] transition">
+                <i class="fa-solid fa-ellipsis"></i>
+            </button>
+        </header>
 
-    <!-- iOS 分段控制頁籤 (Segmented Control) -->
-    <div id="tabBarNav" class="bg-[#000000] px-4 py-2 border-b border-[#38383A] z-20 flex items-center justify-between">
-        <div class="bg-[#1C1C1E] p-1 rounded-lg flex w-full max-w-sm mx-auto shadow-sm items-center">
-            <button id="tabEdit" onclick="switchTab('edit')" class="flex-1 bg-[#3A3A3C] text-white rounded-md py-1.5 text-sm font-semibold shadow-sm transition">
-                編輯
-            </button>
-            <button id="tabSplit" onclick="switchTab('split')" class="px-3 text-[#8E8E93] rounded-md py-1.5 text-xs font-medium transition">
-                雙欄
-            </button>
-            <button id="tabPreview" onclick="switchTab('preview')" class="flex-1 text-[#8E8E93] rounded-md py-1.5 text-sm font-medium transition">
-                預覽
-            </button>
+        <!-- iOS 分段控制頁籤 (Segmented Control) -->
+        <div id="tabBarNav" class="bg-[#000000] px-4 py-2 border-b border-[#38383A] flex items-center justify-between">
+            <div class="bg-[#1C1C1E] p-1 rounded-lg flex w-full max-w-sm mx-auto shadow-sm items-center">
+                <button id="tabEdit" onclick="switchTab('edit')" class="flex-1 bg-[#3A3A3C] text-white rounded-md py-1.5 text-sm font-semibold shadow-sm transition-all duration-200">
+                    編輯
+                </button>
+                <button id="tabSplit" onclick="switchTab('split')" class="px-3 text-[#8E8E93] rounded-md py-1.5 text-xs font-medium transition-all duration-200">
+                    雙欄
+                </button>
+                <button id="tabPreview" onclick="switchTab('preview')" class="flex-1 text-[#8E8E93] rounded-md py-1.5 text-sm font-medium transition-all duration-200">
+                    預覽
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- 編輯器主體區域 (支援 Drag & Drop, Touch Gestures) -->
-    <main id="mainViewport" class="flex-1 relative overflow-hidden bg-[#000000] flex">
+    <!-- 編輯器主體區域 (自適應高寬，獨立滾動不影響外框) -->
+    <main id="mainViewport" class="flex-1 min-h-0 w-full relative bg-[#000000] flex overflow-hidden">
         
         <!-- 編輯區容器 -->
-        <div id="editContainer" class="flex-1 relative h-full flex flex-col transition-all duration-300">
-            <textarea id="editor" class="w-full flex-1 bg-transparent text-white text-[17px] p-4 outline-none resize-none leading-relaxed" spellcheck="false" placeholder="開始撰寫筆記、Markdown、KaTeX 公式 ($$)、Mermaid 圖表... (支援檔案拖曳、語音輸入與圖片剪貼)"></textarea>
+        <div id="editContainer" class="flex-1 w-full flex flex-col h-full min-w-0 overflow-hidden transition-all duration-300">
+            <textarea id="editor" class="w-full flex-1 bg-transparent text-white text-[16px] sm:text-[17px] p-4 outline-none resize-none leading-relaxed smooth-scroll no-scrollbar" spellcheck="false" placeholder="開始撰寫筆記、Markdown、KaTeX 公式 ($$)、Mermaid 圖表... (支援檔案拖曳、語音輸入與圖片剪貼)"></textarea>
             
             <!-- iOS 輸入輔助工具列 (Accessory Toolbar) -->
-            <div id="accessoryBar" class="bg-[#1C1C1E] border-t border-[#38383A] px-2 py-2 flex items-center justify-between text-sm z-20">
-                <div class="flex items-center space-x-2 overflow-x-auto no-scrollbar pb-1">
-                    <button onclick="insertText('# ')" class="px-3 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white font-medium">H1</button>
-                    <button onclick="insertText('**', '**')" class="px-3 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white font-bold">B</button>
-                    <button onclick="insertText('- ')" class="px-3 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white"><i class="fa-solid fa-list-ul"></i></button>
-                    <button onclick="insertText('$$\n', '\n$$')" class="px-3 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white font-mono">KaTeX</button>
-                    <button onclick="insertText('```mermaid\ngraph TD;\nA-->B;\n```')" class="px-3 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white font-mono">Mermaid</button>
-                    <button onclick="insertText('[[', ']]')" class="px-3 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white font-mono">Wiki</button>
-                    <button onclick="startVoiceInput()" class="px-3 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-emerald-400" title="語音聽寫"><i class="fa-solid fa-microphone"></i></button>
-                    <button onclick="undo()" class="px-3 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white"><i class="fa-solid fa-rotate-left"></i></button>
-                    <button onclick="redo()" class="px-3 py-1.5 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white"><i class="fa-solid fa-rotate-right"></i></button>
+            <div id="accessoryBar" class="flex-none bg-[#1C1C1E] border-t border-[#38383A] px-2 py-1.5 flex items-center justify-between text-sm z-20 pb-[env(safe-area-inset-bottom)]">
+                <div class="flex items-center space-x-1.5 overflow-x-auto no-scrollbar pb-0.5">
+                    <button onclick="insertText('# ')" class="px-2.5 py-1 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white font-medium">H1</button>
+                    <button onclick="insertText('**', '**')" class="px-2.5 py-1 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white font-bold">B</button>
+                    <button onclick="insertText('- ')" class="px-2.5 py-1 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white"><i class="fa-solid fa-list-ul"></i></button>
+                    <button onclick="insertText('$$\n', '\n$$')" class="px-2.5 py-1 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white font-mono text-xs">KaTeX</button>
+                    <button onclick="insertText('```mermaid\ngraph TD;\nA-->B;\n```')" class="px-2.5 py-1 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white font-mono text-xs">Mermaid</button>
+                    <button onclick="insertText('[[', ']]')" class="px-2.5 py-1 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white font-mono text-xs">Wiki</button>
+                    <button onclick="startVoiceInput()" class="px-2.5 py-1 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-emerald-400" title="語音聽寫"><i class="fa-solid fa-microphone"></i></button>
+                    <button onclick="undo()" class="px-2.5 py-1 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button onclick="redo()" class="px-2.5 py-1 bg-[#2C2C2E] active:bg-[#3A3A3C] rounded-lg text-white"><i class="fa-solid fa-rotate-right"></i></button>
                 </div>
-                <button onclick="dismissKeyboard()" class="px-4 py-1.5 ml-2 text-[#0A84FF] font-semibold active:opacity-50 whitespace-nowrap">
+                <button onclick="dismissKeyboard()" class="px-3 py-1 ml-1 text-[#0A84FF] text-sm font-semibold active:opacity-50 whitespace-nowrap">
                     完成
                 </button>
             </div>
         </div>
 
         <!-- 預覽區容器 -->
-        <div id="previewContainer" class="hidden flex-1 relative h-full bg-[#000000] p-5 overflow-y-auto prose text-white transition-all duration-300 border-l border-[#38383A]"></div>
+        <div id="previewContainer" class="hidden flex-1 w-full h-full min-w-0 bg-[#000000] p-4 md:p-6 overflow-y-auto smooth-scroll prose text-white transition-all duration-300"></div>
     </main>
 
     <!-- iOS 系統 Action Sheet 操作選單 -->
@@ -202,48 +220,48 @@
             <p class="text-center text-[13px] font-medium text-[#8E8E93] mb-3">檔案與系統高階操作</p>
 
             <div class="bg-[#2C2C2E] rounded-[14px] overflow-hidden mb-4">
-                <button onclick="toggleVFS(true); closeActionSheet();" class="w-full px-4 py-3.5 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[17px] text-white">
+                <button onclick="toggleVFS(true); closeActionSheet();" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
                     <span>切換筆記目錄 (VFS)</span>
                     <i class="fa-solid fa-folder-tree text-amber-400"></i>
                 </button>
-                <button onclick="triggerFileInput()" class="w-full px-4 py-3.5 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[17px] text-white">
+                <button onclick="triggerFileInput()" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
                     <span>匯入檔案 (.md / .txt)</span>
                     <i class="fa-solid fa-file-import text-[#0A84FF]"></i>
                 </button>
-                <button onclick="exportAction('copy')" class="w-full px-4 py-3.5 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[17px] text-white">
+                <button onclick="exportAction('copy')" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
                     <span>複製淨化全文</span>
                     <i class="fa-regular fa-copy text-[#8E8E93]"></i>
                 </button>
-                <button onclick="exportAction('md')" class="w-full px-4 py-3.5 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[17px] text-white">
+                <button onclick="exportAction('md')" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
                     <span>匯出為 .md 檔案</span>
                     <i class="fa-solid fa-file-arrow-down text-[#8E8E93]"></i>
                 </button>
-                <button onclick="exportAction('docx')" class="w-full px-4 py-3.5 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[17px] text-white">
+                <button onclick="exportAction('docx')" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-white">
                     <span>匯出為 Word (.docx)</span>
                     <i class="fa-solid fa-file-word text-[#0A84FF]"></i>
                 </button>
-                <button onclick="exportAction('share')" class="w-full px-4 py-3.5 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[17px] text-[#0A84FF]">
+                <button onclick="exportAction('share')" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-[#0A84FF]">
                     <span>系統分享 (Share...)</span>
                     <i class="fa-solid fa-arrow-up-from-bracket"></i>
                 </button>
-                <button onclick="toggleTimeline(true); closeActionSheet();" class="w-full px-4 py-3.5 text-left active:bg-[#3A3A3C] flex items-center justify-between text-[17px] text-white">
+                <button onclick="toggleTimeline(true); closeActionSheet();" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between text-[16px] text-white">
                     <span>Git 本地版本時間軸</span>
                     <i class="fa-solid fa-clock-rotate-left text-[#0A84FF]"></i>
                 </button>
             </div>
 
             <div class="bg-[#2C2C2E] rounded-[14px] overflow-hidden mb-4">
-                <button onclick="toggleBurnMode()" class="w-full px-4 py-3.5 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[17px] text-amber-400">
+                <button onclick="toggleBurnMode()" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between border-b border-[#38383A] text-[16px] text-amber-400">
                     <span>閱後即焚 / 隱私防偷看模式</span>
-                    <i class="fa-solid fa-[#06C755]"></i>
+                    <i class="fa-solid fa-eye-slash"></i>
                 </button>
-                <button onclick="clearText()" class="w-full px-4 py-3.5 text-left active:bg-[#3A3A3C] flex items-center justify-between text-[17px] text-[#FF453A]">
+                <button onclick="clearText()" class="w-full px-4 py-3 text-left active:bg-[#3A3A3C] flex items-center justify-between text-[16px] text-[#FF453A]">
                     <span>清除當前內容</span>
                     <i class="fa-regular fa-trash-can"></i>
                 </button>
             </div>
 
-            <button onclick="closeActionSheet()" class="w-full bg-[#2C2C2E] text-[#0A84FF] font-semibold py-3.5 rounded-[14px] text-center text-[17px] active:bg-[#3A3A3C]">
+            <button onclick="closeActionSheet()" class="w-full bg-[#2C2C2E] text-[#0A84FF] font-semibold py-3 rounded-[14px] text-center text-[16px] active:bg-[#3A3A3C]">
                 取消
             </button>
         </div>
@@ -327,7 +345,7 @@
             if (historyStack.length === 0 || historyStack[historyStack.length - 1] !== currentText) {
                 historyStack.push(currentText);
                 if (historyStack.length > MAX_HISTORY) historyStack.shift();
-                redoStack = []; // 清空重做堆疊
+                redoStack = [];
             }
         }
 
@@ -352,7 +370,7 @@
 
         // 6. VFS 虛擬檔案系統存取邏輯
         const saveActiveFile = () => {
-            if (isBurnMode) return; // 閱後即焚模式下不寫入持久快取
+            if (isBurnMode) return;
             const content = editor.value;
             localStorage.setItem("session_crash_guard_" + currentFileId, content);
             if (db) {
@@ -466,26 +484,26 @@
             }
         });
 
-        // 10. 頁籤切換與雙欄模式 (Segmented Control)
+        // 10. 頁籤切換與最佳化雙欄模式 (Segmented Control)
         function switchTab(mode) {
             triggerHaptic(10);
-            tabEdit.className = "flex-1 text-[#8E8E93] rounded-md py-1.5 text-sm font-medium transition";
-            tabSplit.className = "px-3 text-[#8E8E93] rounded-md py-1.5 text-xs font-medium transition";
-            tabPreview.className = "flex-1 text-[#8E8E93] rounded-md py-1.5 text-sm font-medium transition";
+            tabEdit.className = "flex-1 text-[#8E8E93] rounded-md py-1.5 text-sm font-medium transition-all duration-200";
+            tabSplit.className = "px-3 text-[#8E8E93] rounded-md py-1.5 text-xs font-medium transition-all duration-200";
+            tabPreview.className = "flex-1 text-[#8E8E93] rounded-md py-1.5 text-sm font-medium transition-all duration-200";
 
             if (mode === 'edit') {
-                tabEdit.className = "flex-1 bg-[#3A3A3C] text-white rounded-md py-1.5 text-sm font-semibold shadow-sm transition";
-                editContainer.classList.remove('hidden');
-                previewContainer.classList.add('hidden');
+                tabEdit.className = "flex-1 bg-[#3A3A3C] text-white rounded-md py-1.5 text-sm font-semibold shadow-sm transition-all duration-200";
+                editContainer.className = "flex-1 w-full flex flex-col h-full min-w-0 overflow-hidden";
+                previewContainer.className = "hidden";
             } else if (mode === 'split') {
-                tabSplit.className = "px-3 bg-[#3A3A3C] text-white rounded-md py-1.5 text-xs font-semibold shadow-sm transition";
-                editContainer.classList.remove('hidden');
-                previewContainer.classList.remove('hidden');
+                tabSplit.className = "px-3 bg-[#3A3A3C] text-white rounded-md py-1.5 text-xs font-semibold shadow-sm transition-all duration-200";
+                editContainer.className = "flex-1 w-1/2 flex flex-col h-full min-w-0 overflow-hidden border-r border-[#38383A]";
+                previewContainer.className = "flex-1 w-1/2 flex flex-col h-full min-w-0 overflow-y-auto smooth-scroll prose text-white p-4 md:p-6";
                 renderPreview();
             } else {
-                tabPreview.className = "flex-1 bg-[#3A3A3C] text-white rounded-md py-1.5 text-sm font-semibold shadow-sm transition";
-                editContainer.classList.add('hidden');
-                previewContainer.classList.remove('hidden');
+                tabPreview.className = "flex-1 bg-[#3A3A3C] text-white rounded-md py-1.5 text-sm font-semibold shadow-sm transition-all duration-200";
+                editContainer.className = "hidden";
+                previewContainer.className = "flex-1 w-full flex flex-col h-full min-w-0 overflow-y-auto smooth-scroll prose text-white p-4 md:p-6";
                 renderPreview();
             }
         }
@@ -523,7 +541,7 @@
 
             // XSS DOMPurify 淨化
             const cleanHTML = DOMPurify.sanitize(html);
-            previewContainer.innerHTML = `<div class="prose">${cleanHTML}</div>`;
+            previewContainer.innerHTML = `<div class="prose w-full">${cleanHTML}</div>`;
 
             // KaTeX 轉譯
             try {
@@ -611,7 +629,7 @@
                     canvas.width = (img.width > maxW) ? maxW : img.width;
                     canvas.height = (img.width > maxW) ? img.height * scale : img.height;
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const base64 = canvas.toDataURL('image/jpeg', 0.8); // 抹除 EXIF 並壓縮
+                    const base64 = canvas.toDataURL('image/jpeg', 0.8);
                     insertText(`\n![圖片](${base64})\n`);
                     showPill("圖片已抹除 EXIF 並壓縮貼上");
                 };
