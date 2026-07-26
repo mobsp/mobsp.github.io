@@ -2,323 +2,391 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8">
-  <!-- PWA & 逼近原生 APP 的 Meta 設定 (滿版、禁用縮放、瀏海適配) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Mobispace Code Visual Editor</title>
+  <title>Mobispace IDE Pro Max</title>
+
+  <!-- CodeMirror 核心與主題 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/eclipse.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.css">
+  
+  <!-- CodeMirror 依賴 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+  
+  <!-- CodeMirror 擴充套件 (Emmet, 括號閉合, Linting) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/matchbrackets.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emmet-codemirror@1.2.5/dist/emmet.min.js"></script>
+  
+  <!-- Linter 核心 (JSHint, CSSLint, HTMLHint) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jshint/2.13.6/jshint.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/csslint/1.0.5/csslint.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/htmlhint/0.9.13/htmlhint.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/lint.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/javascript-lint.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/css-lint.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/lint/html-lint.min.js"></script>
+
+  <!-- Babel, Prettier, JSZip -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://unpkg.com/prettier@2.8.8/standalone.js"></script>
+  <script src="https://unpkg.com/prettier@2.8.8/parser-html.js"></script>
+  <script src="https://unpkg.com/prettier@2.8.8/parser-postcss.js"></script>
+  <script src="https://unpkg.com/prettier@2.8.8/parser-babel.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
   <style>
-    /* =========================
-       iOS 原生 APP 風格全域樣式
-    ========================= */
     :root {
-      /* 參考 iOS 深色模式 / LINE 介面色系 */
       --bg-color: #000000;
       --header-bg: rgba(28, 28, 30, 0.85);
       --tabbar-bg: rgba(28, 28, 30, 0.9);
       --text-color: #ffffff;
       --text-muted: #8e8e93;
-      --tint-color: #0a84ff; /* iOS 藍色 */
-      --tint-success: #32d74b; /* LINE 綠色/成功色 */
+      --tint-color: #0a84ff;
+      --tint-success: #32d74b;
       --border-color: #38383a;
-      
-      /* 安全區域 (適配 iPhone 瀏海與底線) */
       --safe-top: env(safe-area-inset-top, 20px);
       --safe-bottom: env(safe-area-inset-bottom, 20px);
     }
 
-    * {
-      box-sizing: border-box;
-      /* 禁用原生长按選取，逼近原生 APP 體驗 (除了編輯區外) */
-      -webkit-touch-callout: none;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: var(--bg-color);
-      color: var(--text-color);
-      /* 使用動態視窗高度解決 Safari 底部工具列問題 */
-      height: 100dvh; 
-      display: flex;
-      flex-direction: column;
-      overflow: hidden; /* 防止整個頁面彈性滾動 */
+      margin: 0; font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-color); color: var(--text-color);
+      height: 100dvh; display: flex; flex-direction: column; overflow: hidden;
+      -webkit-user-select: none; user-select: none;
     }
 
-    /* =========================
-       Header (iOS Navigation Bar 風格)
-    ========================= */
+    /* 頂部導航列 */
     header {
-      padding-top: var(--safe-top);
-      height: calc(44px + var(--safe-top));
-      background: var(--header-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      padding-top: var(--safe-top); height: calc(55px + var(--safe-top));
+      background: var(--header-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-bottom: 0.5px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-left: 16px;
-      padding-right: 16px;
-      position: relative;
-      z-index: 10;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 17px;
-      font-weight: 600;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .header-btn {
-      background: transparent;
-      border: none;
-      color: var(--tint-success);
-      font-size: 17px;
-      padding: 0;
-      cursor: pointer;
-      font-weight: 500;
+      display: flex; justify-content: space-between; align-items: center; padding-left: 12px; padding-right: 12px; z-index: 10;
     }
     
-    .header-btn:active {
-      opacity: 0.6;
+    .header-group { display: flex; align-items: center; gap: 8px; flex: 1; }
+    .header-group.center { flex: 2; justify-content: center; flex-direction: column; }
+    .header-group.right { justify-content: flex-end; }
+    
+    header h1 { margin: 0; font-size: 14px; font-weight: 600; }
+    
+    .header-btn {
+      background: transparent; border: none; color: var(--tint-color); font-size: 13px; padding: 4px; cursor: pointer;
     }
+    .header-btn:active { opacity: 0.6; }
+    .btn-primary { color: var(--tint-success); font-weight: 600; font-size: 15px; }
 
-    /* =========================
-       Main (視圖區域)
-    ========================= */
-    main {
-      flex: 1;
-      position: relative;
-      background: #1c1c1e;
+    /* 控制選單 (Select / Toggle) */
+    select {
+      background: #333; color: white; border: none; border-radius: 4px; padding: 2px 4px; font-size: 11px; outline: none;
     }
+    .toggle-wrap { display: flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-muted); margin-top: 4px;}
+    .switch { position: relative; display: inline-block; width: 28px; height: 16px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border-color); transition: .3s; border-radius: 16px; }
+    .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 2px; bottom: 2px; background-color: white; transition: .3s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--tint-color); }
+    input:checked + .slider:before { transform: translateX(12px); }
 
-    .view {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      display: none; /* 預設隱藏 */
-      flex-direction: column;
+    /* 主要視圖區塊 */
+    main { flex: 1; display: flex; position: relative; background: #1e1e1e; flex-direction: column; }
+    .pane { flex: 1; position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; }
+    .pane.active { display: flex; }
+
+    /* 多檔標籤列 */
+    .file-tabs { display: flex; background: #2c2c2e; padding: 6px 12px; gap: 6px; border-bottom: 0.5px solid #000; }
+    .file-tab { flex: 1; text-align: center; padding: 4px; font-size: 12px; border-radius: 4px; background: #48484a; color: #ccc; cursor: pointer; }
+    .file-tab.active { background: var(--tint-color); color: white; font-weight: 600; }
+    
+    .editor-container { flex: 1; display: none; height: 100%; }
+    .editor-container.active { display: block; }
+    .CodeMirror { height: 100% !important; font-family: ui-monospace, monospace; font-size: 13px; z-index: 1; }
+
+    /* iframe 預覽與終端機 */
+    iframe { flex: 1; border: none; background: white; width: 100%; height: 100%; }
+    #console-output {
+      flex: 1; background: #1e1e1e; color: #d4d4d4; padding: 12px; font-family: monospace; font-size: 12px; overflow-y: auto; user-select: text; -webkit-user-select: text;
     }
+    .log-line { border-bottom: 1px solid #333; padding: 4px 0; word-break: break-all; }
+    .log-error { color: #f48771; }
+    .log-sys { color: #569cd6; font-style: italic; }
 
-    .view.active {
-      display: flex;
-    }
-
-    /* 編輯器視圖 */
-    textarea {
-      flex: 1;
-      background: transparent;
-      color: #e5e7eb;
-      border: none;
-      padding: 16px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: 14px;
-      line-height: 1.5;
-      resize: none;
-      outline: none;
-      -webkit-user-select: text; /* 恢復選取功能 */
-      user-select: text;
-    }
-
-    /* 預覽視圖 */
-    iframe {
-      flex: 1;
-      border: none;
-      background: white; /* 網頁預設底色 */
-      width: 100%;
-      height: 100%;
-    }
-
-    /* =========================
-       Footer (iOS Tab Bar 風格 / LINE 下方選單)
-    ========================= */
+    /* 底部標籤列 (iOS) */
     footer {
-      height: calc(50px + var(--safe-bottom));
-      padding-bottom: var(--safe-bottom);
-      background: var(--tabbar-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 0.5px solid var(--border-color);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 10;
+      height: calc(50px + var(--safe-bottom)); padding-bottom: var(--safe-bottom);
+      background: var(--tabbar-bg); backdrop-filter: blur(20px); border-top: 0.5px solid var(--border-color); display: flex; justify-content: space-around; align-items: center; z-index: 10;
     }
+    .tab-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-muted); cursor: pointer; }
+    .tab-item.active { color: var(--tint-color); }
+    .tab-icon { font-size: 20px; margin-bottom: 2px; }
+    .tab-label { font-size: 10px; }
 
-    .tab-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--text-muted);
-      height: 100%;
-      cursor: pointer;
-    }
-
-    .tab-item.active {
-      color: var(--tint-color);
-    }
-
-    .tab-icon {
-      font-size: 20px;
-      margin-bottom: 2px;
-    }
-
-    .tab-label {
-      font-size: 10px;
-      font-weight: 500;
+    /* =========================================
+       ✨ 響應式佈局 (RWD) - iPad / 桌機雙欄模式
+    ========================================= */
+    @media (min-width: 768px) {
+      main { flex-direction: row; }
+      .pane { position: relative; display: flex !important; width: 50%; height: 100%; border-right: 1px solid var(--border-color); }
+      #pane-editor-single { display: none !important; }
+      #pane-editor-multi { display: none !important; }
+      
+      /* 控制編輯器面板顯示 */
+      body.mode-single #pane-editor-single { display: flex !important; }
+      body.mode-multi #pane-editor-multi { display: flex !important; }
+      
+      /* 桌面端隱藏底部 Tab，直接並排顯示 */
+      footer { display: none; }
+      
+      /* 右側控制 */
+      #pane-preview { width: 50%; border-right: none; }
+      #pane-console { display: none !important; position: absolute; bottom: 0; right: 0; width: 50%; height: 30%; border-top: 2px solid var(--border-color); z-index: 5; }
+      body.show-console #pane-console { display: flex !important; }
     }
   </style>
 </head>
-<body>
+<body class="mode-multi">
 
-  <!-- 導航列 -->
   <header>
-    <div class="left"></div>
-    <h1>Mobispace Editor</h1>
-    <div class="right">
-      <button class="header-btn" id="run-btn">運行 ▶</button>
+    <div class="header-group">
+      <button class="header-btn" id="format-btn">✨排版</button>
+      <button class="header-btn" id="export-btn">📦匯出</button>
+      <button class="header-btn" id="sync-btn">☁️同步</button>
+    </div>
+    
+    <div class="header-group center">
+      <h1>Mobispace IDE</h1>
+      <div class="toggle-wrap">
+        <span>單檔</span>
+        <label class="switch"><input type="checkbox" id="mode-toggle" checked><span class="slider"></span></label>
+        <span>多檔</span>
+        <span style="margin-left:8px;">Tailwind</span>
+        <label class="switch"><input type="checkbox" id="tailwind-toggle"><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <div class="header-group right">
+      <select id="theme-select">
+        <option value="monokai">Monokai</option>
+        <option value="dracula">Dracula</option>
+        <option value="eclipse">Eclipse (亮)</option>
+      </select>
+      <button class="header-btn btn-primary" id="run-btn">運行 ▶</button>
     </div>
   </header>
 
-  <!-- 內容區 (視圖切換) -->
   <main>
-    <!-- 視圖 1: 編輯器 -->
-    <div id="view-editor" class="view active">
-      <!-- 關閉原生的拼字檢查與首字母大寫，符合寫程式需求 -->
-      <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea>
+    <!-- 單檔模式 -->
+    <div id="pane-editor-single" class="pane">
+      <textarea id="editor-single"></textarea>
     </div>
 
-    <!-- 視圖 2: 預覽區 -->
-    <div id="view-preview" class="view">
-      <iframe id="preview" sandbox="allow-scripts allow-same-origin"></iframe>
+    <!-- 多檔模式 -->
+    <div id="pane-editor-multi" class="pane active">
+      <div class="file-tabs">
+        <div class="file-tab active" data-file="html">index.html</div>
+        <div class="file-tab" data-file="css">style.css</div>
+        <div class="file-tab" data-file="js">script.js (ES6)</div>
+      </div>
+      <div class="editor-container active" id="container-html"><textarea id="editor-html"></textarea></div>
+      <div class="editor-container" id="container-css"><textarea id="editor-css"></textarea></div>
+      <div class="editor-container" id="container-js"><textarea id="editor-js"></textarea></div>
+    </div>
+
+    <!-- 預覽區 -->
+    <div id="pane-preview" class="pane">
+      <iframe id="preview" sandbox="allow-scripts allow-same-origin allow-modals"></iframe>
+    </div>
+
+    <!-- 終端機 -->
+    <div id="pane-console" class="pane">
+      <div id="console-output"><div class="log-line log-sys">🚀 終端機啟動 (支援全域錯誤攔截)...</div></div>
     </div>
   </main>
 
-  <!-- 底部標籤列 -->
   <footer>
-    <div class="tab-item active" data-target="view-editor" id="tab-editor">
-      <div class="tab-icon">📝</div>
-      <div class="tab-label">原始碼</div>
-    </div>
-    <div class="tab-item" data-target="view-preview" id="tab-preview">
-      <div class="tab-icon">🌐</div>
-      <div class="tab-label">預覽</div>
-    </div>
+    <div class="tab-item active" data-target="editor" id="tab-editor"><div class="tab-icon">📝</div><div class="tab-label">代碼</div></div>
+    <div class="tab-item" data-target="preview" id="tab-preview"><div class="tab-icon">🌐</div><div class="tab-label">預覽</div></div>
+    <div class="tab-item" data-target="console" id="tab-console"><div class="tab-icon">⌨️</div><div class="tab-label">終端機</div></div>
   </footer>
 
   <script>
-    /* ============================================================
-       核心邏輯：修復問題、加入 PWA 行為、LocalStorage
-    ============================================================ */
-    const editor = document.getElementById('editor');
-    const preview = document.getElementById('preview');
-    const runBtn = document.getElementById('run-btn');
+    const CACHE_KEY = 'mobispace_ide_max';
+    let isMultiMode = true;
+    let isTailwind = false;
+
+    // --- 初始化 CodeMirror ---
+    const cmConfig = {
+      theme: 'monokai', lineNumbers: true, matchBrackets: true, autoCloseBrackets: true,
+      indentUnit: 2, tabSize: 2, lineWrapping: true,
+      extraKeys: { "Tab": "emmetExpandAbbreviation", "Esc": "emmetResetAbbreviation", "Enter": "emmetInsertLineBreak" }
+    };
+
+    const cmSingle = CodeMirror.fromTextArea(document.getElementById('editor-single'), { ...cmConfig, mode: 'htmlmixed', gutters: ["CodeMirror-lint-markers"], lint: true });
+    const cmHtml = CodeMirror.fromTextArea(document.getElementById('editor-html'), { ...cmConfig, mode: 'htmlmixed', gutters: ["CodeMirror-lint-markers"], lint: true });
+    const cmCss = CodeMirror.fromTextArea(document.getElementById('editor-css'), { ...cmConfig, mode: 'css', gutters: ["CodeMirror-lint-markers"], lint: true });
+    const cmJs = CodeMirror.fromTextArea(document.getElementById('editor-js'), { ...cmConfig, mode: 'javascript', gutters: ["CodeMirror-lint-markers"], lint: true });
     
-    // Tab 控制項
-    const tabEditor = document.getElementById('tab-editor');
-    const tabPreview = document.getElementById('tab-preview');
-    const viewEditor = document.getElementById('view-editor');
-    const viewPreview = document.getElementById('view-preview');
+    if(typeof emmetCodeMirror !== 'undefined') { emmetCodeMirror(cmSingle); emmetCodeMirror(cmHtml); }
 
-    const STORAGE_KEY = 'mobispace_code_cache';
-    const DEFAULT_CODE = `<!DOCTYPE html>\n<html lang="zh-Hant">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>Preview</title>\n  <style>\n    body { font-family: -apple-system, sans-serif; padding: 1.5rem; background: #f3f4f6; }\n    .card { background: white; padding: 1.5rem; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }\n    h1 { color: #00c300; font-size: 24px; margin-top: 0; }\n  </style>\n</head>\n<body>\n  <div class="card">\n    <h1>Hello Mobispace 🚀</h1>\n    <p>這是您的 APP 級距編輯器，支援：</p>\n    <ul>\n      <li>Tab 鍵縮排</li>\n      <li>自動儲存代碼</li>\n      <li>iOS 原生級互動 UI</li>\n    </ul>\n  </div>\n</body>\n</html>`;
+    // --- 載入快取與防抖儲存 ---
+    const defaultData = {
+      html: `<div class="p-5 text-center">\n  <h1 class="text-3xl font-bold text-blue-500">Mobispace IDE Pro</h1>\n  <p>支援 Emmet (輸入 div>p*2 按 Tab)</p>\n  <button id="btn" class="mt-4 px-4 py-2 bg-green-500 text-white rounded">Click Me</button>\n</div>`,
+      css: `body { background-color: #f8f9fa; }`,
+      js: `const btn = document.getElementById('btn');\nbtn.addEventListener('click', () => {\n  console.log('ES6 Arrow Function!', new Date().getTime());\n});\n\n// 測試 Linter：故意漏掉分號\nlet a = 1`
+    };
 
-    // 1. 初始化：載入上次儲存的代碼
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedCode = localStorage.getItem(STORAGE_KEY);
-      if (savedCode) {
-        editor.value = savedCode;
+    function loadData() {
+      const saved = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (saved) {
+        isMultiMode = saved.isMulti; isTailwind = saved.isTailwind;
+        document.getElementById('mode-toggle').checked = isMultiMode;
+        document.getElementById('tailwind-toggle').checked = isTailwind;
+        document.getElementById('theme-select').value = saved.theme || 'monokai';
+        changeTheme(saved.theme || 'monokai');
+        
+        cmSingle.setValue(saved.single || defaultData.html);
+        cmHtml.setValue(saved.html || defaultData.html);
+        cmCss.setValue(saved.css || defaultData.css);
+        cmJs.setValue(saved.js || defaultData.js);
       } else {
-        editor.value = DEFAULT_CODE;
+        cmHtml.setValue(defaultData.html); cmCss.setValue(defaultData.css); cmJs.setValue(defaultData.js);
       }
-    });
-
-    // 2. 自動儲存機制 (監聽輸入)
-    editor.addEventListener('input', () => {
-      localStorage.setItem(STORAGE_KEY, editor.value);
-    });
-
-    // 3. 修正 Tab 鍵行為 (避免焦點跳轉，改為插入 2 個空白)
-    editor.addEventListener('keydown', (e) => {
-      if (e.key === 'Tab') {
-        e.preventDefault();
-        const start = editor.selectionStart;
-        const end = editor.selectionEnd;
-        
-        // 插入兩個空格作為縮排
-        editor.value = editor.value.substring(0, start) + "  " + editor.value.substring(end);
-        
-        // 將游標移至縮排後
-        editor.selectionStart = editor.selectionEnd = start + 2;
-        
-        // 觸發儲存
-        localStorage.setItem(STORAGE_KEY, editor.value);
-      }
-    });
-
-    // 4. 切換 Tab 邏輯
-    function switchTab(targetId) {
-      // 處理 UI 狀態
-      if (targetId === 'view-editor') {
-        tabEditor.classList.add('active');
-        tabPreview.classList.remove('active');
-        viewEditor.classList.add('active');
-        viewPreview.classList.remove('active');
-        
-        // 暫停預覽 (清空 iframe，避免背景耗能與音訊播放)
-        preview.srcdoc = '';
-        runBtn.textContent = '運行 ▶';
-        runBtn.style.color = 'var(--tint-success)';
-      } else {
-        tabPreview.classList.add('active');
-        tabEditor.classList.remove('active');
-        viewPreview.classList.add('active');
-        viewEditor.classList.remove('active');
-      }
+      applyUIState();
     }
 
-    // 點擊底部 Tab
-    tabEditor.addEventListener('click', () => switchTab('view-editor'));
-    tabPreview.addEventListener('click', () => {
-      switchTab('view-preview');
-      // 如果是主動點擊預覽 Tab，也一併執行代碼
-      runCode();
-    });
+    const autoSave = () => {
+      clearTimeout(window.saveTimer);
+      window.saveTimer = setTimeout(() => {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          isMulti: isMultiMode, isTailwind: isTailwind, theme: document.getElementById('theme-select').value,
+          single: cmSingle.getValue(), html: cmHtml.getValue(), css: cmCss.getValue(), js: cmJs.getValue()
+        }));
+      }, 500);
+    };
 
-    // 5. 運行代碼邏輯
-    function runCode() {
-      const code = editor.value;
-      preview.srcdoc = code; // 將原始碼送入 sandbox iframe
-      
-      // 切換至預覽畫面
-      switchTab('view-preview');
-      
-      // 更新按鈕狀態
-      runBtn.textContent = '重整 ↻';
-      runBtn.style.color = 'var(--tint-color)';
+    [cmSingle, cmHtml, cmCss, cmJs].forEach(cm => cm.on('change', autoSave));
+
+    // --- UI 互動邏輯 ---
+    function applyUIState() {
+      document.body.className = isMultiMode ? 'mode-multi' : 'mode-single';
+      setTimeout(() => { cmSingle.refresh(); cmHtml.refresh(); cmCss.refresh(); cmJs.refresh(); }, 50);
     }
 
-    // 點擊右上角運行按鈕
-    runBtn.addEventListener('click', () => {
-      if (viewPreview.classList.contains('active')) {
-        // 如果已經在預覽模式，則重新載入 (重整)
-        preview.srcdoc = editor.value;
-      } else {
-        runCode();
-      }
+    document.getElementById('mode-toggle').addEventListener('change', e => { isMultiMode = e.target.checked; applyUIState(); autoSave(); });
+    document.getElementById('tailwind-toggle').addEventListener('change', e => { isTailwind = e.target.checked; autoSave(); });
+    
+    document.getElementById('theme-select').addEventListener('change', e => {
+      changeTheme(e.target.value); autoSave();
     });
+    
+    function changeTheme(theme) {
+      [cmSingle, cmHtml, cmCss, cmJs].forEach(cm => cm.setOption("theme", theme));
+    }
+
+    document.querySelectorAll('.file-tab').forEach(tab => {
+      tab.addEventListener('click', e => {
+        document.querySelectorAll('.file-tab, .editor-container').forEach(el => el.classList.remove('active'));
+        e.target.classList.add('active');
+        const file = e.target.getAttribute('data-file');
+        document.getElementById(`container-${file}`).classList.add('active');
+        if(file==='html') cmHtml.refresh(); if(file==='css') cmCss.refresh(); if(file==='js') cmJs.refresh();
+      });
+    });
+
+    // 手機端底部 Tab 切換
+    const panes = { editor: document.querySelectorAll('.pane')[isMultiMode?1:0], preview: document.getElementById('pane-preview'), console: document.getElementById('pane-console') };
+    function switchMobileTab(target) {
+      if(window.innerWidth >= 768) {
+        if(target === 'console') document.body.classList.toggle('show-console');
+        return; 
+      }
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      document.getElementById(`tab-${target}`).classList.add('active');
+      document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
+      
+      if(target === 'editor') {
+        document.getElementById(isMultiMode ? 'pane-editor-multi' : 'pane-editor-single').classList.add('active');
+      } else {
+        document.getElementById(`pane-${target}`).classList.add('active');
+      }
+    }
+    document.getElementById('tab-editor').addEventListener('click', () => switchMobileTab('editor'));
+    document.getElementById('tab-preview').addEventListener('click', () => switchMobileTab('preview'));
+    document.getElementById('tab-console').addEventListener('click', () => switchMobileTab('console'));
+
+    // --- 核心：編譯與執行 ---
+    const consoleOutput = document.getElementById('console-output');
+    function logMsg(className, msg) {
+      const d = document.createElement('div'); d.className = `log-line ${className}`; d.textContent = msg;
+      consoleOutput.appendChild(d); consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+
+    window.addEventListener('message', e => {
+      if(e.data?.type === 'console') logMsg(e.data.level==='error'?'log-error':'', `> ${e.data.data}`);
+    });
+
+    const interceptScript = `<script>
+      window.onerror=function(m,u,l){ window.parent.postMessage({type:'console',level:'error',data:m+' (Line '+l+')'},'*'); return false; };
+      window.onunhandledrejection=function(e){ window.parent.postMessage({type:'console',level:'error',data:'Promise Error: '+e.reason},'*'); };
+      ['log','warn','error'].forEach(m => { const o = console[m]; console[m] = function(...a){ window.parent.postMessage({type:'console',level:m,data:a.join(' ')},'*'); o(...a); } });
+    <\/script>`;
+
+    document.getElementById('run-btn').addEventListener('click', () => {
+      logMsg('log-sys', '--- 重新編譯執行 ---');
+      let finalCode = '';
+      const twScript = isTailwind ? '<script src="https://cdn.tailwindcss.com"><\/script>' : '';
+      const csp = `<meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:;">`;
+
+      if(isMultiMode) {
+        let jsCode = cmJs.getValue();
+        try { if(jsCode) jsCode = Babel.transform(jsCode, {presets: ['env']}).code; } catch(e) { logMsg('log-error', 'Babel Error: '+e.message); }
+        finalCode = `<!DOCTYPE html><html><head><meta charset="UTF-8">${csp}${twScript}${interceptScript}<style>${cmCss.getValue()}</style></head><body>${cmHtml.getValue()}<script>${jsCode}<\/script></body></html>`;
+      } else {
+        finalCode = cmSingle.getValue().replace('<head>', `<head>${csp}${twScript}${interceptScript}`);
+      }
+      
+      document.getElementById('preview').srcdoc = finalCode;
+      if(window.innerWidth < 768) switchMobileTab('preview');
+    });
+
+    // --- 工具列：排版、匯出、同步 ---
+    document.getElementById('format-btn').addEventListener('click', () => {
+      try {
+        if(isMultiMode) {
+          cmHtml.setValue(prettier.format(cmHtml.getValue(), {parser:"html", plugins:prettierPlugins}));
+          cmCss.setValue(prettier.format(cmCss.getValue(), {parser:"css", plugins:prettierPlugins}));
+          cmJs.setValue(prettier.format(cmJs.getValue(), {parser:"babel", plugins:prettierPlugins}));
+        } else {
+          cmSingle.setValue(prettier.format(cmSingle.getValue(), {parser:"html", plugins:prettierPlugins}));
+        }
+        logMsg('log-sys', '✨ 代碼已排版');
+      } catch(e) { logMsg('log-error', '排版失敗: '+e.message); }
+    });
+
+    document.getElementById('export-btn').addEventListener('click', () => {
+      const zip = new JSZip();
+      if(isMultiMode) {
+        zip.file("index.html", `<!DOCTYPE html>\n<html>\n<head>\n  <link rel="stylesheet" href="style.css">\n</head>\n<body>\n${cmHtml.getValue()}\n  <script src="script.js"><\/script>\n</body>\n</html>`);
+        zip.file("style.css", cmCss.getValue()); zip.file("script.js", cmJs.getValue());
+      } else { zip.file("index.html", cmSingle.getValue()); }
+      zip.generateAsync({type:"blob"}).then(c => {
+        const a = document.createElement("a"); a.href = URL.createObjectURL(c); a.download = "mobispace.zip"; a.click();
+      });
+    });
+
+    document.getElementById('sync-btn').addEventListener('click', () => alert('☁️ 雲端同步模組 (需串接 Firebase API)\n請於設定中綁定您的資料庫 URL。'));
+
+    window.onload = loadData;
   </script>
 </body>
 </html>
