@@ -18,32 +18,32 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Generate tools.json
+      - name: Generate tol/tolist.json
         run: |
           cd tol 2>/dev/null || mkdir tol
-          echo "[" > ../tools.json
+          echo "[" > tolist.json
           FIRST=true
           for d in */; do
             if [ -d "$d" ]; then
               TOOL_NAME=${d%/}
-              # 檢查該資料夾內是否有 index.html
+              # 檢查該子資料夾內是否有 index.html
               if [ -f "$d/index.html" ]; then
                 if [ "$FIRST" = true ]; then
                   FIRST=false
                 else
-                  echo "," >> ../tools.json
+                  echo "," >> tolist.json
                 fi
-                echo "  {\"name\": \"$TOOL_NAME\", \"path\": \"/tol/$TOOL_NAME/\"}" >> ../tools.json
+                echo "  {\"name\": \"$TOOL_NAME\", \"path\": \"/tol/$TOOL_NAME/\"}" >> tolist.json
               fi
             fi
           done
-          echo "]" >> ../tools.json
+          echo "]" >> tolist.json
           cd ..
-          echo "Generated tools.json successfully."
+          echo "Generated tol/tolist.json successfully."
 
       - name: Commit and Push if changed
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add tools.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: auto-update tools.json index" && git push)
+          git add tol/tolist.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: auto-update tol/tolist.json index" && git push)
