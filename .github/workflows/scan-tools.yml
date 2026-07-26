@@ -13,7 +13,6 @@ permissions:
 
 jobs:
   scan:
-  name: Generate Tools Index
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
