@@ -356,11 +356,11 @@ transform:none;
 
         <!-- 獨立分頁檢視容器 -->
         <div id="view-container">
-            <!-- 閱讀分頁 -->
+            <!-- 閱讀分頁 (文章列表) -->
             <div id="view-read" class="tab-view active">
-                <div id="content-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">LOADING ARTICLES...</div>
+                <div id="content-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">INITIALIZING...</div>
             </div>
-            <!-- 工具牆分頁 -->
+            <!-- 工具牆分頁 (從 /tol/tolist.json 讀取) -->
             <div id="view-tools" class="tab-view">
                 <div id="tools-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">LOADING TOOLS...</div>
             </div>
@@ -418,30 +418,35 @@ transform:none;
             }
         }
 
-        /* 載入 /blog/p/bloglist.json 文章清單 */
+        /* 載入 blog/p/ 目錄底下的文章列表 */
         async function loadArticles() {
+            const api = "https://api.github.com/repos/mobsp/mobsp.github.io/contents/blog/p?t=" + Date.now();
             try {
-                const res = await fetch('/blog/p/bloglist.json?t=' + Date.now());
-                if (!res.ok) throw new Error('Not found');
-                rawArticles = await res.json();
+                const res = await fetch(api);
+                const files = await res.json();
+                // 過濾出 .html 檔案（排除 theme.html 等共用殼檔案）
+                rawArticles = files.filter(f => f.name.endsWith('.html') && f.name !== 'theme.html').reverse().map(f => ({
+                    title: decodeURIComponent(f.name).replace('.html','').trim(),
+                    path: f.path // 這裡會對應到 blog/p/xxx.html
+                }));
                 renderArticleList();
             } catch (e) {
-                document.getElementById('view-read').innerHTML = '<div style="text-align:center; padding:50px; color:#8E8E93; font-size:12px;">尚無文章清單資料</div>';
+                document.getElementById('view-read').innerHTML = '<div style="text-align:center; padding:50px; color:#333;">SYNC FAILED</div>';
             }
         }
 
         function renderArticleList() {
             const container = document.getElementById('view-read');
-            if (!rawArticles || rawArticles.length === 0) {
+            if (rawArticles.length === 0) {
                 container.innerHTML = '<div style="text-align:center; padding:50px; color:#8E8E93; font-size:12px;">目前沒有文章</div>';
                 return;
             }
-            container.innerHTML = rawArticles.map(a => `
-                <a class="article-row" href="${a.path}">
+            container.innerHTML = rawArticles.map(p => `
+                <a class="article-row" href="/${p.path}">
                     <div class="row-img"></div>
                     <div class="row-info">
                         <div class="row-cate">ARCHIVE</div>
-                        <div class="row-title">${a.title}</div>
+                        <div class="row-title">${p.title}</div>
                     </div>
                     <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
                 </a>`).join('');
