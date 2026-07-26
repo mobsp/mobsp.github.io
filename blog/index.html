@@ -1,0 +1,485 @@
+<!DOCTYPE html><html lang="zh-TW" data-theme="dark"><head><script>if(self!==top){top.location=self.location;}</script><script>if(self!==top){top.location=self.location;}</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ</title>
+    
+    <link rel="icon" href="/assets/brand/ms-logo1.webp" type="image/jpeg">
+    <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.webp">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+<style>
+
+:root{
+
+--ios-bg:#000;
+--ios-card:rgba(28,28,30,.72);
+--ios-card2:#2C2C2E;
+
+--ios-blue:#0A84FF;
+
+--ios-text:#fff;
+--ios-sub:#8E8E93;
+--tab-bar-height: 49px;
+--safe-area-bottom: env(safe-area-inset-bottom, 0px);
+
+}
+
+*{
+
+box-sizing:border-box;
+margin:0;
+padding:0;
+-webkit-tap-highlight-color:transparent;
+
+}
+
+body{
+
+font-family:
+-apple-system,
+BlinkMacSystemFont,
+"SF Pro Display",
+"SF Pro Text",
+sans-serif;
+
+background:
+radial-gradient(
+circle at top,
+#1b1b1d,
+#000
+);
+
+height:100dvh;
+
+overflow:hidden;
+
+color:white;
+
+}
+
+#app-container{
+
+max-width:500px;
+margin:auto;
+
+height:100%;
+
+display:flex;
+flex-direction:column;
+
+overflow:hidden;
+
+}
+
+/* Header */
+
+.app-header{
+
+padding:
+calc(15px + env(safe-area-inset-top))
+15px
+10px;
+
+background:
+
+rgba(
+0,
+0,
+0,
+.72
+);
+
+backdrop-filter:
+blur(35px);
+
+border-bottom:
+
+1px solid
+rgba(
+255,
+255,
+255,
+.05
+);
+
+position:sticky;
+top:0;
+z-index:999;
+
+}
+
+.brand-title-img{
+
+width:100%;
+
+border-radius:22px;
+
+transition:.3s;
+cursor: pointer;
+
+}
+
+.brand-title-img:active{
+
+transform:scale(.97);
+opacity:.75;
+
+}
+
+/* Main View Container */
+
+#view-container {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+
+.tab-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.tab-view.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Articles & Tools Row */
+
+.article-row{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+padding:15px;
+
+margin-bottom:12px;
+
+text-decoration:none;
+
+border-radius:22px;
+
+background:
+
+rgba(
+28,
+28,
+30,
+.72
+);
+
+backdrop-filter:
+blur(35px);
+
+transition:.25s;
+
+}
+
+.article-row:active{
+
+transform:scale(0.98);
+
+}
+
+.row-img{
+
+width:58px;
+height:58px;
+
+border-radius:15px;
+
+background:
+
+linear-gradient(
+135deg,
+#333,
+#111
+);
+
+}
+
+.row-info{
+
+flex:1;
+overflow:hidden;
+
+}
+
+.row-title{
+
+font-size:15px;
+
+font-weight:600;
+
+white-space:nowrap;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+color:white;
+
+}
+
+.row-cate{
+
+font-size:11px;
+
+margin-bottom:5px;
+
+color:
+var(--ios-blue);
+
+}
+
+/* Bottom Tab */
+
+.bottom-nav{
+
+height:
+calc(
+65px +
+env(safe-area-inset-bottom)
+);
+
+padding-bottom:
+env(safe-area-inset-bottom);
+
+display:flex;
+
+background:
+
+rgba(
+28,
+28,
+30,
+0.8
+);
+
+backdrop-filter:
+blur(40px);
+
+border-top:
+
+1px solid
+rgba(
+255,
+255,
+255,
+0.05
+);
+z-index: 1000;
+
+}
+
+.nav-item{
+
+flex:1;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+gap:4px;
+
+font-size:11px;
+
+color:#8E8E93;
+
+transition:.25s;
+text-decoration: none;
+cursor: pointer;
+
+}
+
+.nav-item i{
+
+font-size:20px;
+
+}
+
+.nav-item.active{
+
+color:
+var(--ios-blue);
+
+}
+
+.nav-item:active{
+
+transform:scale(0.92);
+
+}
+
+@keyframes slideUp{
+
+from{
+
+opacity:0;
+transform:translateY(15px);
+
+}
+
+to{
+
+opacity:1;
+transform:none;
+
+}
+
+}
+
+</style>
+<link rel="alternate" hreflang="x-default" href="https://mobsp.qzz.io/blog/index.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><meta property="og:type" content="website"><meta property="og:image" content="https://mobsp.qzz.io/og-image.webp"><meta name="description" content=" | MOBSP"><link rel="canonical" href="https://mobsp.qzz.io/blog/index.html"><meta property="og:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta property="og:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta property="og:url" content="https://mobsp.qzz.io/blog/index.html"><meta property="og:site_name" content="MOBSP"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta name="twitter:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta name="theme-color" content="#0b1020"><link rel="manifest" href="/manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
+<body>
+
+    <div id="app-container">
+        <header class="app-header">
+            <img src="/assets/brand/ms-blog-title.webp" class="brand-title-img" onclick="handleHeaderClick()">
+        </header>
+
+        <!-- 獨立分頁檢視容器 -->
+        <div id="view-container">
+            <!-- 閱讀分頁 -->
+            <div id="view-read" class="tab-view active">
+                <div id="content-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">INITIALIZING...</div>
+            </div>
+            <!-- 工具牆分頁 -->
+            <div id="view-tools" class="tab-view">
+                <div id="tools-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">LOADING TOOLS...</div>
+            </div>
+        </div>
+
+        <nav class="bottom-nav">
+            <a href="/music/" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i><span>音樂</span></a>
+            <div id="btn-read" class="nav-item active" onclick="switchTab('read', this)"><i class="fa-solid fa-book-open"></i><span>閱讀</span></div>
+            <div id="btn-tools" class="nav-item" onclick="switchTab('tools', this)"><i class="fa-solid fa-toolbox"></i><span>工具</span></div>
+            <a href="/setting" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-sliders"></i><span>設定</span></a>
+        </nav>
+    </div>
+
+    <script>
+        let rawArticles = [];
+        let rawTools = [];
+        let currentTabId = 'read';
+        const scrollPositions = {};
+
+        /* iOS 分頁切換與捲動記憶核心 */
+        function switchTab(tabId, element) {
+            if (currentTabId === tabId) {
+                const activeView = document.getElementById(`view-${tabId}`);
+                if (activeView) activeView.scrollTo({ top: 0, behavior: 'smooth' });
+                return;
+            }
+
+            const currentView = document.getElementById(`view-${currentTabId}`);
+            if (currentView) {
+                scrollPositions[currentTabId] = currentView.scrollTop;
+            }
+
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+
+            document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
+            const targetView = document.getElementById(`view-${tabId}`);
+            targetView.classList.add('active');
+
+            if (scrollPositions[tabId] !== undefined) {
+                targetView.scrollTop = scrollPositions[tabId];
+            } else {
+                targetView.scrollTop = 0;
+            }
+
+            currentTabId = tabId;
+        }
+
+        function handleHeaderClick() {
+            const activeView = document.getElementById(`view-${currentTabId}`);
+            if (activeView && activeView.scrollTop > 0) {
+                activeView.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                location.reload();
+            }
+        }
+
+        /* 載入文章列表 */
+        async function loadArticles() {
+            const api = "https://api.github.com/repos/mobsp/contents/blog/p/list?t=" + Date.now();
+            try {
+                const res = await fetch(api);
+                const files = await res.json();
+                rawArticles = files.filter(f => f.name.endsWith('.html')).reverse().map(f => ({
+                    title: decodeURIComponent(f.name).replace('.html','').trim(),
+                    path: f.path
+                }));
+                renderArticleList();
+            } catch (e) {
+                document.getElementById('view-read').innerHTML = '<div style="text-align:center; padding:50px; color:#333;">SYNC FAILED</div>';
+            }
+        }
+
+        function renderArticleList() {
+            const container = document.getElementById('view-read');
+            if (rawArticles.length === 0) return;
+            container.innerHTML = rawArticles.map(p => `
+                <a class="article-row" href="/${p.path}">
+                    <div class="row-img"></div>
+                    <div class="row-info">
+                        <div class="row-cate">ARCHIVE</div>
+                        <div class="row-title">${p.title}</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
+                </a>`).join('');
+        }
+
+        /* 載入 /tol/tolist.json 工具清單 */
+        async function loadTools() {
+            try {
+                const res = await fetch('/tol/tolist.json?t=' + Date.now());
+                if (!res.ok) throw new Error('Not found');
+                rawTools = await res.json();
+                renderToolList();
+            } catch (e) {
+                document.getElementById('view-tools').innerHTML = '<div style="text-align:center; padding:50px; color:#8E8E93; font-size:12px;">尚無工具清單資料</div>';
+            }
+        }
+
+        function renderToolList() {
+            const container = document.getElementById('view-tools');
+            if (!rawTools || rawTools.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:50px; color:#8E8E93; font-size:12px;">目前沒有可用工具</div>';
+                return;
+            }
+            container.innerHTML = rawTools.map(t => `
+                <a class="article-row" href="${t.path}">
+                    <div class="row-img" style="background: linear-gradient(135deg, #0A84FF, #0040dd);"></div>
+                    <div class="row-info">
+                        <div class="row-cate">TOOL PORTAL</div>
+                        <div class="row-title">${t.name}</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
+                </a>`).join('');
+        }
+
+        window.onload = () => {
+            loadArticles();
+            loadTools();
+        };
+    </script>
+<script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); }</script></body></html>
