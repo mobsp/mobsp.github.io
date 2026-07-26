@@ -26,12 +26,15 @@ jobs:
           for d in */; do
             if [ -d "$d" ]; then
               TOOL_NAME=${d%/}
-              if [ "$FIRST" = true ]; then
-                FIRST=false
-              else
-                echo "," >> ../tools.json
+              # 檢查該資料夾內是否有 index.html
+              if [ -f "$d/index.html" ]; then
+                if [ "$FIRST" = true ]; then
+                  FIRST=false
+                else
+                  echo "," >> ../tools.json
+                fi
+                echo "  {\"name\": \"$TOOL_NAME\", \"path\": \"/tol/$TOOL_NAME/\"}" >> ../tools.json
               fi
-              echo "  {\"name\": \"$TOOL_NAME\", \"path\": \"/tol/$TOOL_NAME/\"}" >> ../tools.json
             fi
           done
           echo "]" >> ../tools.json
