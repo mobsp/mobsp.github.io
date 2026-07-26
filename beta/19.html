@@ -1,258 +1,405 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
+<!DOCTYPE html><html lang="zh-TW" data-theme="dark"><head><script>if(self!==top){top.location=self.location;}</script><script>if(self!==top){top.location=self.location;}</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>MOBSP iOS Navigation System</title>
-    <style>
-        /* ==========================================
-           1. CSS 變數與基礎設定 (iOS 系統色彩與互動)
-           ========================================== */
-        :root {
-            --tab-bar-height: 49px;
-            --safe-area-bottom: env(safe-area-inset-bottom, 0px);
-            --system-background: #f2f2f7;
-            --system-grouped-background: #efeff4;
-            --label-primary: #000000;
-            --label-secondary: #3c3c4399;
-            --accent-color: #007aff;
-            --tab-blur-bg: rgba(248, 248, 248, 0.82);
-            --tab-border: rgba(0, 0, 0, 0.15);
-        }
+    <title>部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ</title>
+    
+    <link rel="icon" href="/assets/brand/ms-logo1.JPEG" type="image/jpeg">
+    <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.JPEG">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+<style>
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --system-background: #000000;
-                --system-grouped-background: #1c1c1e;
-                --label-primary: #ffffff;
-                --label-secondary: #ebebf599;
-                --accent-color: #0a84ff;
-                --tab-blur-bg: rgba(22, 22, 22, 0.82);
-                --tab-border: rgba(255, 255, 255, 0.15);
-            }
-        }
+:root{
 
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        }
+--ios-bg:#000;
+--ios-card:rgba(28,28,30,.72);
+--ios-card2:#2C2C2E;
 
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: var(--system-background);
-            color: var(--label-primary);
-        }
+--ios-blue:#0A84FF;
 
-        /* ==========================================
-           2. 頁面視圖與容器管理 (View Stack)
-           ========================================== */
-        #view-container {
-            position: relative;
-            width: 100%;
-            height: calc(100% - var(--tab-bar-height) - var(--safe-area-bottom));
-            overflow: hidden;
-        }
+--ios-text:#fff;
+--ios-sub:#8E8E93;
+--tab-bar-height: 49px;
+--safe-area-bottom: env(safe-area-inset-bottom, 0px);
 
-        .tab-view {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-            padding: 20px;
-            display: none;
-            opacity: 0;
-            transition: opacity 0.25s ease-in-out;
-        }
+}
 
-        .tab-view.active {
-            display: block;
-            opacity: 1;
-        }
+*{
 
-        .content-card {
-            background: var(--system-grouped-background);
-            padding: 18px 20px;
-            border-radius: 14px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            text-decoration: none;
-            color: var(--label-primary);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-            transition: transform 0.15s ease, opacity 0.15s ease;
-        }
+box-sizing:border-box;
+margin:0;
+padding:0;
+-webkit-tap-highlight-color:transparent;
 
-        .content-card:active {
-            transform: scale(0.97);
-            opacity: 0.8;
-        }
+}
 
-        .tool-info h3 {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
+body{
 
-        .tool-info p {
-            font-size: 12px;
-            color: var(--label-secondary);
-        }
+font-family:
+-apple-system,
+BlinkMacSystemFont,
+"SF Pro Display",
+"SF Pro Text",
+sans-serif;
 
-        /* ==========================================
-           3. iOS 頂級擬真 Tab Bar (毛玻璃 + 互動)
-           ========================================== */
-        #tab-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: calc(var(--tab-bar-height) + var(--safe-area-bottom));
-            padding-bottom: var(--safe-area-bottom);
-            background-color: var(--tab-blur-bg);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 0.5px solid var(--tab-border);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 1000;
-        }
+background:
+radial-gradient(
+circle at top,
+#1b1b1d,
+#000
+);
 
-        .tab-item {
-            flex: 1;
-            height: var(--tab-bar-height);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            color: var(--label-secondary);
-            transition: transform 0.1s ease, color 0.2s ease;
-        }
+height:100dvh;
 
-        .tab-item:active {
-            transform: scale(0.92);
-        }
+overflow:hidden;
 
-        .tab-item.active {
-            color: var(--accent-color);
-        }
+color:white;
 
-        .tab-icon {
-            font-size: 22px;
-            line-height: 1;
-            margin-bottom: 2px;
-        }
+}
 
-        .tab-label {
-            font-size: 10px;
-            font-weight: 500;
-            letter-spacing: -0.2px;
-        }
-    </style>
-</head>
+#app-container{
+
+max-width:500px;
+margin:auto;
+
+height:100%;
+
+display:flex;
+flex-direction:column;
+
+overflow:hidden;
+
+}
+
+/* Header */
+
+.app-header{
+
+padding:
+calc(15px + env(safe-area-inset-top))
+15px
+10px;
+
+background:
+
+rgba(
+0,
+0,
+0,
+.72
+);
+
+backdrop-filter:
+blur(35px);
+
+border-bottom:
+
+1px solid
+rgba(
+255,
+255,
+255,
+.05
+);
+
+position:sticky;
+top:0;
+z-index:999;
+
+}
+
+.brand-title-img{
+
+width:100%;
+
+border-radius:22px;
+
+transition:.3s;
+cursor: pointer;
+
+}
+
+.brand-title-img:active{
+
+transform:scale(.97);
+opacity:.75;
+
+}
+
+/* Main View Container */
+
+#view-container {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+
+.tab-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.tab-view.active {
+    display: block;
+    opacity: 1;
+}
+
+/* Articles & Tools Row */
+
+.article-row{
+
+display:flex;
+
+align-items:center;
+
+gap:15px;
+
+padding:15px;
+
+margin-bottom:12px;
+
+text-decoration:none;
+
+border-radius:22px;
+
+background:
+
+rgba(
+28,
+28,
+30,
+.72
+);
+
+backdrop-filter:
+blur(35px);
+
+transition:.25s;
+
+}
+
+.article-row:active{
+
+transform:scale(0.98);
+
+}
+
+.row-img{
+
+width:58px;
+height:58px;
+
+border-radius:15px;
+
+background:
+
+linear-gradient(
+135deg,
+#333,
+#111
+);
+
+}
+
+.row-info{
+
+flex:1;
+overflow:hidden;
+
+}
+
+.row-title{
+
+font-size:15px;
+
+font-weight:600;
+
+white-space:nowrap;
+
+overflow:hidden;
+
+text-overflow:ellipsis;
+
+color:white;
+
+}
+
+.row-cate{
+
+font-size:11px;
+
+margin-bottom:5px;
+
+color:
+var(--ios-blue);
+
+}
+
+/* Bottom Tab */
+
+.bottom-nav{
+
+height:
+calc(
+65px +
+env(safe-area-inset-bottom)
+);
+
+padding-bottom:
+env(safe-area-inset-bottom);
+
+display:flex;
+
+background:
+
+rgba(
+28,
+28,
+30,
+0.8
+);
+
+backdrop-filter:
+blur(40px);
+
+border-top:
+
+1px solid
+rgba(
+255,
+255,
+255,
+0.05
+);
+z-index: 1000;
+
+}
+
+.nav-item{
+
+flex:1;
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+align-items:center;
+
+gap:4px;
+
+font-size:11px;
+
+color:#8E8E93;
+
+transition:.25s;
+text-decoration: none;
+cursor: pointer;
+
+}
+
+.nav-item i{
+
+font-size:20px;
+
+}
+
+.nav-item.active{
+
+color:
+var(--ios-blue);
+
+}
+
+.nav-item:active{
+
+transform:scale(0.92);
+
+}
+
+@keyframes slideUp{
+
+from{
+
+opacity:0;
+transform:translateY(15px);
+
+}
+
+to{
+
+opacity:1;
+transform:none;
+
+}
+
+}
+
+</style>
+<link rel="alternate" hreflang="x-default" href="https://your-supreme-site.com/blog/index.html"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta property="og:type" content="website"><meta property="og:image" content="https://your-supreme-site.com/og-image.jpg"><link rel="preconnect" href="https://gstatic.com" crossorigin=""><script type="module">import {onLCP,onFID,onCLS} from 'https://unpkg.com;</script><meta name="description" content=" | MOBSP"><link rel="canonical" href="https://mobsp.qzz.io/blog/index.html"><meta property="og:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta property="og:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta property="og:url" content="https://mobsp.qzz.io/blog/index.html"><meta property="og:site_name" content="MOBSP"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta name="twitter:description" content="部落格 | Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"><meta name="theme-color" content="#0b1020"><link rel="manifest" href="/manifest.json"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head>
 <body>
 
-    <!-- 頁面容器 -->
-    <div id="view-container">
-        <!-- 分頁 1: Today / 首頁 -->
-        <div id="view-today" class="tab-view active">
-            <h2>Today 導覽頁</h2>
-            <p style="margin: 10px 0 20px 0; color: var(--label-secondary);">體驗原生 iOS 般的切換與捲動維持。</p>
-            <div style="background: var(--system-grouped-background); padding: 20px; border-radius: 12px; margin-bottom: 16px;">下滑測試捲動位置保留</div>
-            <div style="background: var(--system-grouped-background); padding: 20px; border-radius: 12px; margin-bottom: 16px;">模擬大量內容區塊 A</div>
-            <div style="background: var(--system-grouped-background); padding: 20px; border-radius: 12px; margin-bottom: 16px;">模擬大量內容區塊 B</div>
-        </div>
+    <div id="app-container">
+        <header class="app-header">
+            <img src="/assets/brand/ms-blog-title.JPEG" class="brand-title-img" onclick="handleHeaderClick()">
+        </header>
 
-        <!-- 分頁 2: Tools / 工具牆 (動態從 tol/ 資料夾獲取) -->
-        <div id="view-tools" class="tab-view">
-            <h2>MOBSP 常用工具</h2>
-            <p style="margin: 10px 0 20px 0; color: var(--label-secondary);">自動掃描 tol/ 資料夾產生的工具清單。</p>
-            <div id="tools-container">
-                <p style="color: var(--label-secondary); font-size: 14px;">正在載入工具清單...</p>
+        <!-- 獨立分頁檢視容器 -->
+        <div id="view-container">
+            <!-- 閱讀分頁 -->
+            <div id="view-read" class="tab-view active">
+                <div id="content-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">INITIALIZING...</div>
+            </div>
+            <!-- 工具牆分頁 (取代原先的收割機) -->
+            <div id="view-tools" class="tab-view">
+                <div id="tools-loader" style="text-align:center; padding:50px; color:#666; font-size:11px; letter-spacing:2px;">LOADING TOOLS...</div>
             </div>
         </div>
 
-        <!-- 分頁 3: Wiki / 支援中心 -->
-        <div id="view-wiki" class="tab-view">
-            <h2>Wiki 說明文件</h2>
-            <p style="margin: 10px 0 20px 0; color: var(--label-secondary);">系統架構與說明文件。</p>
-            <div style="background: var(--system-grouped-background); padding: 20px; border-radius: 12px;">文件內容區塊 01</div>
-        </div>
-
-        <!-- 分頁 4: Settings / 設定 -->
-        <div id="view-settings" class="tab-view">
-            <h2>系統設定</h2>
-            <p style="margin: 10px 0 20px 0; color: var(--label-secondary);">外觀與偏好調整。</p>
-            <div style="background: var(--system-grouped-background); padding: 20px; border-radius: 12px;">外觀模式：自動適配</div>
-        </div>
+        <nav class="bottom-nav">
+            <a href="/music/" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-circle-play"></i><span>音樂</span></a>
+            <div id="btn-read" class="nav-item active" onclick="switchTab('read', this)"><i class="fa-solid fa-book-open"></i><span>閱讀</span></div>
+            <div id="btn-tools" class="nav-item" onclick="switchTab('tools', this)"><i class="fa-solid fa-toolbox"></i><span>工具</span></div>
+            <a href="/setting" class="nav-item" rel="noopener noreferrer"><i class="fa-solid fa-sliders"></i><span>設定</span></a>
+        </nav>
     </div>
 
-    <!-- 底部導覽列 (已替換收割機為 Tools 工具牆) -->
-    <nav id="tab-bar">
-        <div class="tab-item active" onclick="switchTab('today', this)">
-            <div class="tab-icon">􀋂</div>
-            <div class="tab-label">Today</div>
-        </div>
-        <div class="tab-item" onclick="switchTab('tools', this)" id="btn-tools">
-            <div class="tab-icon">􌂝</div>
-            <div class="tab-label">Tools</div>
-        </div>
-        <div class="tab-item" onclick="switchTab('wiki', this)">
-            <div class="tab-icon">􅜖</div>
-            <div class="tab-label">Wiki</div>
-        </div>
-        <div class="tab-item" onclick="switchTab('settings', this)">
-            <div class="tab-icon">􌅱</div>
-            <div class="tab-label">Settings</div>
-        </div>
-    </nav>
-
     <script>
-        /* ==========================================
-           4. 輕量高效邏輯核心 (State & Switcher)
-           ========================================== */
-        let currentTabId = 'today';
+        let rawArticles = [];
+        let rawTools = [];
+        let currentTabId = 'read';
         const scrollPositions = {};
-        let toolsLoaded = false;
 
+        /* iOS 分頁切換與捲動記憶核心 */
         function switchTab(tabId, element) {
             if (currentTabId === tabId) {
                 const activeView = document.getElementById(`view-${tabId}`);
-                activeView.scrollTo({ top: 0, behavior: 'smooth' });
+                if (activeView) activeView.scrollTo({ top: 0, behavior: 'smooth' });
                 return;
             }
 
-            // 1. 紀錄當前分頁的滾動位置
             const currentView = document.getElementById(`view-${currentTabId}`);
             if (currentView) {
                 scrollPositions[currentTabId] = currentView.scrollTop;
             }
 
-            // 2. 切換導覽列高亮狀態
-            document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(i => i.classList.remove('active'));
             element.classList.add('active');
 
-            // 3. 切換頁面顯示
             document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
             const targetView = document.getElementById(`view-${tabId}`);
             targetView.classList.add('active');
 
-            // 若切換到 tools 且尚未載入過，執行自動掃描載入
-            if (tabId === 'tools' && !toolsLoaded) {
-                loadToolsList();
-            }
-
-            // 4. 還原目標分頁的滾動位置
             if (scrollPositions[tabId] !== undefined) {
                 targetView.scrollTop = scrollPositions[tabId];
             } else {
@@ -262,50 +409,77 @@
             currentTabId = tabId;
         }
 
-        /* 🚀 自動讀取 GitHub 儲存庫 tol/ 資料夾的工具清單 */
-        async function loadToolsList() {
-            const container = document.getElementById('tools-container');
-            // 替換為你的實際 GitHub 帳號與儲存庫名稱
-            const owner = 'mobsp';
-            const repo = 'mobsp.github.io'; 
-            const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/tol`;
-
-            try {
-                const res = await fetch(apiUrl);
-                if (!res.ok) throw new Error('無法讀取工具清單');
-                const items = await res.json();
-
-                // 過濾出資料夾項目
-                const subDirs = items.filter(item => item.type === 'dir');
-                
-                if (subDirs.length === 0) {
-                    container.innerHTML = `<p style="color: var(--label-secondary);">目前 tol/ 資料夾下尚無工具。</p>`;
-                    return;
-                }
-
-                let html = '';
-                for (let dir of subDirs) {
-                    const toolName = dir.name;
-                    const toolUrl = `/tol/${toolName}/`;
-                    
-                    html += `
-                        <a href="${toolUrl}" class="content-card">
-                            <div class="tool-info">
-                                <h3>${toolName}</h3>
-                                <p>${toolUrl}</p>
-                            </div>
-                            <span style="color: var(--label-secondary); font-size: 14px;">›</span>
-                        </a>
-                    `;
-                }
-
-                container.innerHTML = html;
-                toolsLoaded = true;
-            } catch (err) {
-                // 若直接用 API 受限，退回預設路徑或提示
-                container.innerHTML = `<p style="color: var(--label-secondary);">載入失敗，請確認 GitHub 儲存庫路徑設定。</p>`;
+        function handleHeaderClick() {
+            const activeView = document.getElementById(`view-${currentTabId}`);
+            if (activeView && activeView.scrollTop > 0) {
+                activeView.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                location.reload();
             }
         }
+
+        /* 載入文章列表 */
+        async function loadArticles() {
+            const api = "https://api.github.com/repos/mobsp/contents/blog/p/list?t=" + Date.now();
+            try {
+                const res = await fetch(api);
+                const files = await res.json();
+                rawArticles = files.filter(f => f.name.endsWith('.html')).reverse().map(f => ({
+                    title: decodeURIComponent(f.name).replace('.html','').trim(),
+                    path: f.path
+                }));
+                renderArticleList();
+            } catch (e) {
+                document.getElementById('view-read').innerHTML = '<div style="text-align:center; padding:50px; color:#333;">SYNC FAILED</div>';
+            }
+        }
+
+        function renderArticleList() {
+            const container = document.getElementById('view-read');
+            if (rawArticles.length === 0) return;
+            container.innerHTML = rawArticles.map(p => `
+                <a class="article-row" href="/${p.path}">
+                    <div class="row-img"></div>
+                    <div class="row-info">
+                        <div class="row-cate">ARCHIVE</div>
+                        <div class="row-title">${p.title}</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
+                </a>`).join('');
+        }
+
+        /* 載入自動產生的工具清單 (tools.json) */
+        async function loadTools() {
+            try {
+                const res = await fetch('/tools.json?t=' + Date.now());
+                if (!res.ok) throw new Error('Not found');
+                rawTools = await res.json();
+                renderToolList();
+            } catch (e) {
+                document.getElementById('view-tools').innerHTML = '<div style="text-align:center; padding:50px; color:#8E8E93; font-size:12px;">尚無工具清單資料</div>';
+            }
+        }
+
+        function renderToolList() {
+            const container = document.getElementById('view-tools');
+            if (!rawTools || rawTools.length === 0) {
+                container.innerHTML = '<div style="text-align:center; padding:50px; color:#8E8E93; font-size:12px;">目前沒有可用工具</div>';
+                return;
+            }
+            container.innerHTML = rawTools.map(t => `
+                <a class="article-row" href="${t.path}">
+                    <div class="row-img" style="background: linear-gradient(135deg, #0A84FF, #0040dd);"></div>
+                    <div class="row-info">
+                        <div class="row-cate">TOOL PORTAL</div>
+                        <div class="row-title">${t.name}</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right" style="color:#222; font-size:10px;"></i>
+                </a>`).join('');
+        }
+
+        window.onload = () => {
+            loadArticles();
+            loadTools();
+        };
     </script>
-</body>
-</html>
+<script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); }</script></body></html>
