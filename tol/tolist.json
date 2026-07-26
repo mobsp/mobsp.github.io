@@ -1,4 +1,6 @@
 [
+  {"name": "AdvancEditor", "path": "/tol/AdvancEditor/"}
+,
   {"name": "Editor", "path": "/tol/Editor/"}
 ,
   {"name": "FileStores", "path": "/tol/FileStores/"}
