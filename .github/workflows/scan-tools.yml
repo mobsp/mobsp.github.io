@@ -1,0 +1,47 @@
+name: Scan Tools Directory
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'tol/**'
+
+permissions:
+  contents: write
+
+jobs:
+  scan:
+  name: Generate Tools Index
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Generate tools.json
+        run: |
+          cd tol 2>/dev/null || mkdir tol
+          echo "[" > ../tools.json
+          FIRST=true
+          for d in */; do
+            if [ -d "$d" ]; then
+              TOOL_NAME=${d%/}
+              if [ "$FIRST" = true ]; then
+                FIRST=false
+              else
+                echo "," >> ../tools.json
+              fi
+              echo "  {\"name\": \"$TOOL_NAME\", \"path\": \"/tol/$TOOL_NAME/\"}" >> ../tools.json
+            fi
+          done
+          echo "]" >> ../tools.json
+          cd ..
+          echo "Generated tools.json successfully."
+
+      - name: Commit and Push if changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add tools.json
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore: auto-update tools.json index" && git push)
