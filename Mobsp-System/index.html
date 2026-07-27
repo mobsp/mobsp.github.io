@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>MOBSP iOS Style App Prototype</title>
+
+<style>
+
+:root {
+
+    --bg:#f2f2f7;
+    --card:#ffffff;
+    --text:#111111;
+    --sub:#666;
+    --blue:#007aff;
+    --border:#dddddd;
+
+    --radius:20px;
+
+    --glass:
+    rgba(255,255,255,.65);
+
+}
+
+
+*{
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
+
+
+body{
+
+    margin:0;
+
+    font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
+
+    background:var(--bg);
+
+    color:var(--text);
+
+    height:100vh;
+
+    overflow:hidden;
+
+}
+
+
+body.dark{
+
+    --bg:#000000;
+    --card:#1c1c1e;
+    --text:#ffffff;
+    --sub:#aaa;
+    --border:#333;
+
+}
+
+
+
+#app{
+
+    max-width:520px;
+
+    height:100vh;
+
+    margin:auto;
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+
+
+/* Navigation */
+
+
+.navbar{
+
+    height:70px;
+
+    padding:
+    20px 20px 10px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    position:relative;
+
+    backdrop-filter:blur(20px);
+
+}
+
+
+.nav-title{
+
+    font-size:30px;
+
+    font-weight:700;
+
+}
+
+
+
+.icon-btn{
+
+    border:none;
+
+    background:var(--card);
+
+    width:42px;
+
+    height:42px;
+
+    border-radius:50%;
+
+    font-size:20px;
+
+    color:var(--text);
+
+}
+
+
+
+/* Content */
+
+
+.content{
+
+    flex:1;
+
+    overflow:auto;
+
+    padding:20px;
+
+}
+
+
+
+.section-title{
+
+    font-size:22px;
+
+    font-weight:700;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.card{
+
+    background:var(--card);
+
+    border-radius:var(--radius);
+
+    padding:18px;
+
+    margin-bottom:15px;
+
+    border:1px solid var(--border);
+
+}
+
+
+
+.card-title{
+
+    font-size:18px;
+
+    font-weight:600;
+
+}
+
+
+
+.card-desc{
+
+    margin-top:8px;
+
+    color:var(--sub);
+
+    font-size:14px;
+
+}
+
+
+
+button.action{
+
+    margin-top:15px;
+
+    background:var(--blue);
+
+    color:white;
+
+    border:none;
+
+    padding:12px 20px;
+
+    border-radius:14px;
+
+    font-size:15px;
+
+}
+
+
+
+/* Search */
+
+
+.search{
+
+    width:100%;
+
+    padding:14px 18px;
+
+    border-radius:15px;
+
+    border:none;
+
+    background:var(--card);
+
+    color:var(--text);
+
+    font-size:16px;
+
+    margin-bottom:20px;
+
+}
+
+
+
+/* Tab */
+
+
+.tabbar{
+
+    height:70px;
+
+    display:flex;
+
+    justify-content:space-around;
+
+    align-items:center;
+
+    background:var(--glass);
+
+    backdrop-filter:blur(20px);
+
+    border-top:1px solid var(--border);
+
+}
+
+
+
+.tab{
+
+    flex:1;
+
+    text-align:center;
+
+    color:var(--sub);
+
+    font-size:13px;
+
+}
+
+
+
+.tab.active{
+
+    color:var(--blue);
+
+    font-weight:bold;
+
+}
+
+
+.tab span{
+
+    display:block;
+
+    font-size:24px;
+
+}
+
+
+
+
+/* Modal */
+
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:
+    rgba(0,0,0,.45);
+
+    display:none;
+
+    align-items:center;
+
+    justify-content:center;
+
+}
+
+
+
+.modal.show{
+
+    display:flex;
+
+}
+
+
+
+.modal-box{
+
+    width:85%;
+
+    background:var(--card);
+
+    border-radius:25px;
+
+    padding:25px;
+
+}
+
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div id="app">
+
+
+<header class="navbar">
+
+<div class="nav-title" id="title">
+首頁
+</div>
+
+
+<button class="icon-btn"
+onclick="toggleTheme()">
+🌙
+</button>
+
+
+</header>
+
+
+
+<main class="content" id="view">
+
+</main>
+
+
+
+<nav class="tabbar">
+
+
+<div class="tab active"
+onclick="navigate('home')">
+
+<span>🏠</span>
+
+首頁
+
+</div>
+
+
+
+<div class="tab"
+onclick="navigate('tools')">
+
+<span>🧰</span>
+
+工具
+
+</div>
+
+
+
+<div class="tab"
+onclick="navigate('settings')">
+
+<span>⚙️</span>
+
+設定
+
+</div>
+
+
+</nav>
+
+
+</div>
+
+
+
+
+
+<div class="modal" id="modal">
+
+
+<div class="modal-box">
+
+
+<h2 id="modalTitle">
+</h2>
+
+
+<p id="modalText">
+</p>
+
+
+<button class="action"
+onclick="closeModal()">
+
+關閉
+
+</button>
+
+
+</div>
+
+</div>
+
+
+
+
+
+<script>
+
+
+/*
+========================
+
+App State
+
+========================
+*/
+
+
+const state={
+
+page:"home",
+
+theme:"light",
+
+search:""
+
+
+};
+
+
+
+const data={
+
+
+home:[
+
+{
+title:"MOBSP System",
+
+desc:"iOS Style Web Application Prototype"
+},
+
+
+{
+title:"Liquid Glass Engine",
+
+desc:"模擬 iOS Glass UI 效果"
+},
+
+
+{
+title:"Component Runtime",
+
+desc:"HTML CSS JS 單檔執行核心"
+}
+
+],
+
+
+
+tools:[
+
+{
+title:"QR Generator",
+
+desc:"快速產生 QR Code 工具"
+},
+
+
+{
+title:"JSON Viewer",
+
+desc:"資料檢視工具"
+}
+
+
+],
+
+
+
+settings:[
+
+{
+title:"Theme",
+
+desc:"切換 Light / Dark 模式"
+},
+
+
+{
+title:"Application",
+
+desc:"管理 App 狀態"
+}
+
+
+]
+
+};
+
+
+
+
+
+
+/*
+========================
+
+Render Engine
+
+========================
+*/
+
+
+function render(){
+
+
+const view=
+document.getElementById("view");
+
+
+const title=
+document.getElementById("title");
+
+
+
+const pageData=
+data[state.page];
+
+
+
+title.innerText=
+{
+home:"首頁",
+tools:"工具",
+settings:"設定"
+
+}[state.page];
+
+
+
+let html="";
+
+
+
+if(state.page==="tools"){
+
+html+=`
+
+<input
+class="search"
+placeholder="搜尋工具..."
+oninput="search(this.value)"
+>
+
+`;
+
+}
+
+
+
+
+html+=`
+
+<div class="section-title">
+
+${title.innerText}
+
+</div>
+
+`;
+
+
+
+
+pageData
+.filter(item=>
+
+item.title
+.toLowerCase()
+.includes(
+state.search.toLowerCase()
+)
+
+)
+
+.forEach(item=>{
+
+
+html+=`
+
+<div class="card"
+onclick="openModal('${item.title}','${item.desc}')">
+
+
+<div class="card-title">
+
+${item.title}
+
+</div>
+
+
+<div class="card-desc">
+
+${item.desc}
+
+</div>
+
+
+<button class="action">
+
+開啟
+
+</button>
+
+
+</div>
+
+`;
+
+
+});
+
+
+
+view.innerHTML=html;
+
+
+
+updateTabs();
+
+
+}
+
+
+
+
+
+/*
+========================
+
+Navigation
+
+========================
+*/
+
+
+function navigate(page){
+
+state.page=page;
+
+state.search="";
+
+render();
+
+}
+
+
+
+function updateTabs(){
+
+
+document
+.querySelectorAll(".tab")
+.forEach((el,i)=>{
+
+
+el.classList.remove("active");
+
+
+if(
+["home","tools","settings"][i]
+===
+state.page
+){
+
+el.classList.add("active");
+
+}
+
+
+});
+
+
+}
+
+
+
+
+
+/*
+========================
+
+Theme
+
+========================
+*/
+
+
+function toggleTheme(){
+
+
+document.body.classList.toggle("dark");
+
+
+}
+
+
+
+
+
+/*
+========================
+
+Search
+
+========================
+*/
+
+
+function search(value){
+
+state.search=value;
+
+render();
+
+}
+
+
+
+
+
+/*
+========================
+
+Modal
+
+========================
+*/
+
+
+function openModal(title,text){
+
+
+document
+.getElementById("modalTitle")
+.innerText=title;
+
+
+document
+.getElementById("modalText")
+.innerText=text;
+
+
+
+document
+.getElementById("modal")
+.classList.add("show");
+
+
+}
+
+
+
+function closeModal(){
+
+document
+.getElementById("modal")
+.classList.remove("show");
+
+}
+
+
+
+
+render();
+
+
+
+</script>
+
+
+</body>
+
+</html>
