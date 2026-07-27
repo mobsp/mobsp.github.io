@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>iOS Settings V3</title>
+    <style>
+        :root {
+            --ios-bg: #f2f2f7;
+            --ios-card: #ffffff;
+            --ios-pressed: #e5e5ea;
+            --ios-text: #000000;
+            --ios-sub: #8e8e93;
+            --ios-border: rgba(60,60,67,.18);
+            --ios-search: rgba(118,118,128,.12);
+            --ios-green: #34c759;
+            --ios-blue: #007aff;
+            --sat: env(safe-area-inset-top, 0px);
+            --sab: env(safe-area-inset-bottom, 0px);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --ios-bg: #000000;
+                --ios-card: #1c1c1e;
+                --ios-pressed: #2c2c2e;
+                --ios-text: #ffffff;
+                --ios-sub: #8e8e93;
+                --ios-border: #38383a;
+                --ios-search: rgba(118,118,128,.24);
+            }
+        }
+
+        * {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--ios-bg);
+            color: var(--ios-text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            padding-bottom: calc(60px + var(--sab));
+        }
+
+        /* Nav Bar 強化：硬體加速與硬核渲染 */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: calc(44px + var(--sat));
+            padding-top: var(--sat);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            background: transparent;
+            transition: background .25s, backdrop-filter .25s, border-color .25s;
+            border-bottom: .5px solid transparent;
+            transform: translateZ(0); /* 避免 Safari 閃爍 */
+            -webkit-transform: translateZ(0);
+        }
+
+        .nav.scrolled {
+            background: rgba(255,255,255,.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-color: var(--ios-border);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .nav.scrolled { background: rgba(28,28,30,.82); }
+        }
+
+        .nav-title {
+            font-size: 17px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: .22s;
+        }
+
+        .nav.scrolled .nav-title {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* 內容區塊與 Large Title */
+        .content { padding-top: calc(44px + var(--sat)); }
+        .large-title { padding: 4px 16px 10px; }
+        .large-title h1 {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -.5px;
+        }
+
+        /* 搜尋框 */
+        .search-wrap { padding: 0 16px 12px; }
+        .search {
+            height: 36px;
+            border-radius: 10px;
+            background: var(--ios-search);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: var(--ios-sub);
+        }
+        .search svg { width: 16px; height: 16px; fill: var(--ios-sub); margin-right: 6px; flex-shrink: 0; }
+        .search input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 17px;
+            color: var(--ios-text);
+            width: 100%;
+        }
+        .search input::placeholder { color: var(--ios-sub); }
+
+        /* 卡片組 */
+        .group { margin: 0 16px 20px; }
+        .group-title {
+            font-size: 13px;
+            color: var(--ios-sub);
+            padding-left: 16px;
+            padding-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: -.08px;
+        }
+
+        .list {
+            list-style: none;
+            background: var(--ios-card);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Apple ID 個人頭像卡片細節校正 */
+        .profile-cell {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            min-height: 66px;
+        }
+        .avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #8e8e93;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .profile-info { flex: 1; overflow: hidden; }
+        .profile-name { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+        .profile-sub { font-size: 12px; color: var(--ios-sub); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* 一般 Cell 細節校正 */
+        .cell {
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 48px; /* 校正為 iOS 標準高度 */
+            padding: 8px 16px;
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background .12s;
+        }
+        .cell:active { background: var(--ios-pressed); }
+
+        li:not(:last-child) .cell::after {
+            content: "";
+            position: absolute;
+            inset-inline-start: 56px;
+            inset-inline-end: 0;
+            bottom: 0;
+            height: .5px;
+            background: var(--ios-border);
+        }
+
+        /* SF Symbols 風格向量 Icon */
+        .icon {
+            width: 29px;
+            height: 29px;
+            border-radius: 7px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+        .label { flex: 1; font-size: 17px; letter-spacing: -.4px; }
+        .value { color: var(--ios-sub); font-size: 17px; margin-right: 6px; }
+
+        .chevron {
+            width: 8px; height: 8px;
+            border-top: 1.5px solid #c7c7cc;
+            border-right: 1.5px solid #c7c7cc;
+            transform: rotate(45deg);
+            flex-shrink: 0;
+        }
+
+        /* Switch */
+        .switch {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 51px; height: 31px;
+            border-radius: 16px;
+            background: #e4e4e7;
+            position: relative;
+            transition: .25s;
+            cursor: pointer;
+        }
+        .switch::before {
+            content: "";
+            position: absolute;
+            width: 27px; height: 27px;
+            left: 2px; top: 2px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 3px 8px rgba(0,0,0,.15);
+            transition: .25s;
+        }
+        .switch:checked { background: var(--ios-green); }
+        .switch:checked::before { transform: translateX(20px); }
+
+        @media (prefers-color-scheme: dark) {
+            .switch { background: #39393d; }
+            .switch:checked::before { box-shadow: 0 3px 8px rgba(0,0,0,.3); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav" id="nav">
+        <div class="nav-title">設定</div>
+    </div>
+
+    <div class="content">
+
+        <div class="large-title">
+            <h1>設定</h1>
+        </div>
+
+        <!-- 1. Apple ID 帳號區塊 -->
+        <div class="group">
+            <ul class="list">
+                <li>
+                    <a class="cell profile-cell" href="#appleid">
+                        <div class="avatar">AC</div>
+                        <div class="profile-info">
+                            <div class="profile-name">Alex Chen</div>
+                            <div class="profile-sub">Apple 帳號、iCloud、媒體與購買項目</div>
+                        </div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 2. 搜尋列 -->
+        <div class="search-wrap">
+            <div class="search">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" placeholder="搜尋" id="searchInput" autocomplete="off">
+            </div>
+        </div>
+
+        <!-- 3. 網路與無線連接 -->
+        <div class="group">
+            <ul class="list">
+                <li>
+                    <div class="cell" style="cursor:default;">
+                        <div class="icon" style="background:#ff9500;">
+                            <!-- Airplane (SF Symbol Style) -->
+                            <svg viewBox="0 0 24 24"><path d="M22 16v-2l-8.5-5V3.5C13.5 2.67 12.83 2 12 2s-1.5.67-1.5 1.5V9L2 14v2l8.5-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13.5 19v-5.5L22 16z"/></svg>
+                        </div>
+                        <div class="label">飛航模式</div>
+                        <input class="switch" type="checkbox" id="flightSwitch">
+                    </div>
+                </li>
+                <li>
+                    <a class="cell" href="#wifi">
+                        <div class="icon" style="background:#007aff;">
+                            <!-- Wi-Fi (SF Symbol Style) -->
+                            <svg viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 6c2.92 0 5.57 1.05 7.65 2.79L12 20.08l-7.65-7.29C6.43 11.05 9.08 10 12 10z"/></svg>
+                        </div>
+                        <div class="label">Wi-Fi</div>
+                        <div class="value" id="wifiStatus">Home_Network</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#bluetooth">
+                        <div class="icon" style="background:#007aff;">
+                            <!-- Bluetooth (SF Symbol Style) -->
+                            <svg viewBox="0 0 24 24"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 12.46L13 20.17v-3.76l1.88 1.88z"/></svg>
+                        </div>
+                        <div class="label">藍牙</div>
+                        <div class="value" id="btStatus">開啟</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#cellular">
+                        <div class="icon" style="background:#34c759;">
+                            <!-- Cellular (SF Symbol Style) -->
+                            <svg viewBox="0 0 24 24"><path d="M2 22h20V2z"/></svg>
+                        </div>
+                        <div class="label">行動服務</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#hotspot">
+                        <div class="icon" style="background:#34c759;">
+                            <!-- Personal Hotspot (SF Symbol Style) -->
+                            <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5 0 1.28.48 2.45 1.28 3.34L6.86 16.76C5.7 15.44 5 13.8 5 12c0-3.87 3.13-7 7-7s7 3.13 7 7c0 1.8-.7 3.44-1.86 4.76l-1.42-1.42C16.52 14.45 17 13.28 17 12c0-2.76-2.24-5-5-5zm0-4C7.03 3 3 7.03 3 12c0 2.48.98 4.73 2.58 6.38l-1.42 1.42C2.37 17.91 1 15.11 1 12 1 5.93 5.93 1 12 1s11 4.93 11 11c0 3.11-1.37 5.91-3.16 7.8l-1.42-1.42C20.02 16.73 21 14.48 21 12c0-4.97-4.03-9-9-9zm0 7c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                        </div>
+                        <div class="label">個人熱點</div>
+                        <div class="value">關閉</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 4. 通知、專注、螢幕時間 -->
+        <div class="group">
+            <ul class="list">
+                <li>
+                    <a class="cell" href="#notifications">
+                        <div class="icon" style="background:#ff3b30;">
+                            <!-- Bell.fill (SF Symbol Style) -->
+                            <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                        </div>
+                        <div class="label">通知</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#sounds">
+                        <div class="icon" style="background:#ff2d55;">
+                            <!-- Speaker.wave.3.fill -->
+                            <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                        </div>
+                        <div class="label">聲音與觸覺回饋</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#focus">
+                        <div class="icon" style="background:#5856d6;">
+                            <!-- Moon.fill (Focus) -->
+                            <svg viewBox="0 0 24 24"><path d="M12.3 2a10 10 0 0 0 9.7 11.6 10 10 0 1 1-11.6-9.7c.6 0 1.3.1 1.9.1z"/></svg>
+                        </div>
+                        <div class="label">專注模式</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#screentime">
+                        <div class="icon" style="background:#5856d6;">
+                            <!-- Hourglass (Screen Time) -->
+                            <svg viewBox="0 0 24 24"><path d="M6 2v6l4 4-4 4v6h12v-6l-4-4 4-4V2H6zm10 14.5V20H8v-3.5l4-4 4 4zM10 6L8 4h8l-2 2h-4z"/></svg>
+                        </div>
+                        <div class="label">螢幕使用時間</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 5. 一般、顯示與隱私 -->
+        <div class="group">
+            <ul class="list">
+                <li>
+                    <a class="cell" href="#general">
+                        <div class="icon" style="background:#8e8e93;">
+                            <!-- Gear (SF Symbol Style) -->
+                            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                        </div>
+                        <div class="label">一般</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#display">
+                        <div class="icon" style="background:#007aff;">
+                            <!-- Sun.max.fill (Display) -->
+                            <svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1z"/></svg>
+                        </div>
+                        <div class="label">顯示與亮度</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#faceid">
+                        <div class="icon" style="background:#34c759;">
+                            <!-- FaceID Symbol -->
+                            <svg viewBox="0 0 24 24"><path d="M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-5c-1.48 0-2.75.81-3.45 2h6.9c-.7-1.19-1.97-2-3.45-2z"/></svg>
+                        </div>
+                        <div class="label">Face ID 與密碼</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#privacy">
+                        <div class="icon" style="background:#007aff;">
+                            <!-- Hand.raised.fill (Privacy) -->
+                            <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                        </div>
+                        <div class="label">隱私權與安全性</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 6. 電池與系統工具 -->
+        <div class="group">
+            <ul class="list">
+                <li>
+                    <a class="cell" href="#battery">
+                        <div class="icon" style="background:#34c759;">
+                            <!-- Battery 100% -->
+                            <svg viewBox="0 0 24 24"><path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/></svg>
+                        </div>
+                        <div class="label">電池</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#wallet">
+                        <div class="icon" style="background:#000000;">
+                            <!-- Wallet/Apple Pay -->
+                            <svg viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+                        </div>
+                        <div class="label">錢包與 Apple Pay</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 7. Apps 頁面與系統內建 APP -->
+        <div class="group">
+            <div class="group-title">應用程式</div>
+            <ul class="list">
+                <li>
+                    <a class="cell" href="#safari">
+                        <div class="icon" style="background:#007aff;">
+                            <!-- Safari Compass -->
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm2.19-12.19L8.4 10.4 10.4 15.6l5.79-2.19-2-5.6zM12 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/></svg>
+                        </div>
+                        <div class="label">Safari</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#photos">
+                        <div class="icon" style="background:#ff9500;">
+                            <!-- Photos Flower -->
+                            <svg viewBox="0 0 24 24"><path d="M12 2c1.1 0 2 .9 2 2v3c0 1.1-.9 2-2 2s-2-.9-2-2V4c0-1.1.9-2 2-2zm6 6c1.1 0 2 .9 2 2s-.9 2-2 2h-3c-1.1 0-2-.9-2-2s.9-2 2-2h3zm-6 6c1.1 0 2 .9 2 2v3c0 1.1-.9 2-2 2s-2-.9-2-2v-3c0-1.1.9-2 2-2zm-6-6c1.1 0 2 .9 2 2s-.9 2-2 2H3c-1.1 0-2-.9-2-2s.9-2 2-2h3z"/></svg>
+                        </div>
+                        <div class="label">照片</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#camera">
+                        <div class="icon" style="background:#8e8e93;">
+                            <!-- Camera -->
+                            <svg viewBox="0 0 24 24"><path d="M9 2L7.17 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2h-3.17L15 2H9zm3 15c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5z"/></svg>
+                        </div>
+                        <div class="label">相機</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div style="text-align:center; color:var(--ios-sub); font-size:13px; padding:20px; line-height:1.6;">
+            iOS Settings UI Demo V3<br>HTML + CSS + JavaScript
+        </div>
+
+    </div>
+
+    <script>
+        // 1. Navbar 動態滾動透明度/Blur 處理
+        const nav = document.getElementById("nav");
+        const largeTitle = document.querySelector(".large-title");
+
+        function updateNavigation() {
+            const trigger = largeTitle.offsetHeight - 10;
+            if (window.scrollY > trigger) {
+                nav.classList.add("scrolled");
+            } else {
+                nav.classList.remove("scrolled");
+            }
+        }
+        window.addEventListener("scroll", updateNavigation, { passive: true });
+
+        // 2. 飛航模式開關狀態連動
+        const flightSwitch = document.getElementById('flightSwitch');
+        const wifiStatus = document.getElementById('wifiStatus');
+        const btStatus = document.getElementById('btStatus');
+
+        flightSwitch.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                wifiStatus.textContent = '關閉';
+                btStatus.textContent = '關閉';
+            } else {
+                wifiStatus.textContent = 'Home_Network';
+                btStatus.textContent = '開啟';
+            }
+        });
+
+        // 3. 全面優化版搜尋機制 (正確比對文字內容且能完整恢復)
+        const searchInput = document.getElementById('searchInput');
+
+        searchInput.addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase().trim();
+
+            document.querySelectorAll('.group').forEach(group => {
+                let visibleCount = 0;
+
+                group.querySelectorAll('li').forEach(li => {
+                    const text = li.textContent.toLowerCase();
+
+                    if (keyword === "" || text.includes(keyword)) {
+                        li.style.display = "";
+                        visibleCount++;
+                    } else {
+                        li.style.display = "none";
+                    }
+                });
+
+                // 若此 Group 內有任何相符項目或是搜尋框清空，則顯示卡片區塊
+                group.style.display = (visibleCount > 0 || keyword === "") ? "" : "none";
+            });
+        });
+    </script>
+</body>
+</html>
