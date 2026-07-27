@@ -5,63 +5,95 @@
 
 <meta charset="UTF-8">
 
+
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>莫比空間｜導覽 Ⓒ 2026•Ⲙ𝔬ⲃⳝ𝔭</title>
+
+<title>
+莫比空間｜導覽 Ⓒ 2026•Ⲙ𝔬ⲃⳝ𝔭
+</title>
+
 
 
 <meta name="description"
-content="莫比空間｜導覽 - MOBSP Website Navigation">
+content="莫比空間｜導覽，MOBSP Website Navigation">
+
+
+
+<meta name="theme-color"
+content="#f2f2f7">
+
 
 
 <style>
 
 /*
-====================================
+================================================
+
 莫比空間｜導覽
+
 Mobsp-System Single File UI
+
 CSS Layer
-====================================
+
+================================================
 */
+
 
 
 :root {
 
+
     --bg:#f2f2f7;
+
 
     --card:#ffffff;
 
+
     --text:#111111;
+
 
     --sub:#666666;
 
+
     --blue:#007aff;
+
 
     --border:#dddddd;
 
+
     --glass:
-    rgba(255,255,255,0.65);
+    rgba(255,255,255,.65);
+
 
 
     --radius-xl:24px;
 
+
     --radius-lg:18px;
+
 
     --radius-md:14px;
 
+
 }
+
 
 
 
 
 * {
 
+
     box-sizing:border-box;
+
 
     -webkit-tap-highlight-color:transparent;
 
+
 }
+
 
 
 
@@ -72,9 +104,12 @@ body {
 
     width:100%;
 
+
     height:100%;
 
+
     margin:0;
+
 
     padding:0;
 
@@ -84,10 +119,12 @@ body {
 
 
 
+
 body {
 
 
     font-family:
+
 
     -apple-system,
     BlinkMacSystemFont,
@@ -97,9 +134,12 @@ body {
     sans-serif;
 
 
+
     background:var(--bg);
 
+
     color:var(--text);
+
 
 
     overflow:hidden;
@@ -110,10 +150,13 @@ body {
 
 
 
+
 /*
-===========================
-Dark Mode
-===========================
+================================================
+
+Dark Theme
+
+================================================
 */
 
 
@@ -122,16 +165,20 @@ body.dark {
 
     --bg:#000000;
 
+
     --card:#1c1c1e;
+
 
     --text:#ffffff;
 
+
     --sub:#aaaaaa;
+
 
     --border:#333333;
 
-    --glass:
 
+    --glass:
     rgba(28,28,30,.75);
 
 
@@ -141,11 +188,12 @@ body.dark {
 
 
 
-
 /*
-===========================
+================================================
+
 Application Container
-===========================
+
+================================================
 */
 
 
@@ -164,6 +212,7 @@ Application Container
     margin:auto;
 
 
+
     display:flex;
 
 
@@ -176,12 +225,12 @@ Application Container
 
 
 
-
-
 /*
-===========================
+================================================
+
 Navigation Bar
-===========================
+
+================================================
 */
 
 
@@ -191,9 +240,11 @@ Navigation Bar
     height:78px;
 
 
+
     padding:
 
     24px 20px 10px;
+
 
 
     display:flex;
@@ -212,8 +263,23 @@ Navigation Bar
     -webkit-backdrop-filter:blur(20px);
 
 
+}
+
+
+
+
+
+.nav-left {
+
+
+    display:flex;
+
+
+    flex-direction:column;
+
 
 }
+
 
 
 
@@ -239,28 +305,13 @@ Navigation Bar
 .nav-subtitle {
 
 
+    margin-top:3px;
+
+
     font-size:13px;
 
 
     color:var(--sub);
-
-
-    margin-top:3px;
-
-
-}
-
-
-
-
-
-.nav-left {
-
-
-    display:flex;
-
-
-    flex-direction:column;
 
 
 }
@@ -278,10 +329,12 @@ Navigation Bar
     height:42px;
 
 
+
     border:none;
 
 
     border-radius:50%;
+
 
 
     background:var(--card);
@@ -290,7 +343,12 @@ Navigation Bar
     color:var(--text);
 
 
+
     font-size:20px;
+
+
+
+    cursor:pointer;
 
 
 }
@@ -299,12 +357,12 @@ Navigation Bar
 
 
 
-
-
 /*
-===========================
-Main Content
-===========================
+================================================
+
+Content
+
+================================================
 */
 
 
@@ -317,9 +375,7 @@ Main Content
     overflow-y:auto;
 
 
-    padding:
-
-    20px;
+    padding:20px;
 
 
 }
@@ -346,12 +402,12 @@ Main Content
 
 
 
-
-
 /*
-===========================
+================================================
+
 iOS Grouped List Card
-===========================
+
+================================================
 */
 
 
@@ -361,13 +417,17 @@ iOS Grouped List Card
     background:var(--card);
 
 
+
     border-radius:var(--radius-xl);
+
 
 
     padding:18px;
 
 
+
     margin-bottom:14px;
+
 
 
     border:
@@ -420,6 +480,7 @@ iOS Grouped List Card
     margin-top:8px;
 
 
+
     font-size:14px;
 
 
@@ -441,7 +502,7 @@ iOS Grouped List Card
     float:right;
 
 
-    font-size:20px;
+    font-size:22px;
 
 
     color:var(--sub);
@@ -459,6 +520,7 @@ iOS Grouped List Card
     margin-top:15px;
 
 
+
     padding:
 
     11px 18px;
@@ -471,13 +533,18 @@ iOS Grouped List Card
     border-radius:14px;
 
 
+
     background:var(--blue);
 
 
-    color:white;
+    color:#ffffff;
+
 
 
     font-size:15px;
+
+
+    cursor:pointer;
 
 
 }
@@ -486,13 +553,12 @@ iOS Grouped List Card
 
 
 
-
-
-
 /*
-===========================
+================================================
+
 Search
-===========================
+
+================================================
 */
 
 
@@ -500,6 +566,7 @@ Search
 
 
     width:100%;
+
 
 
     padding:
@@ -514,6 +581,7 @@ Search
     outline:none;
 
 
+
     border-radius:16px;
 
 
@@ -524,7 +592,9 @@ Search
     color:var(--text);
 
 
+
     font-size:16px;
+
 
 
     margin-bottom:20px;
@@ -536,12 +606,12 @@ Search
 
 
 
-
-
 /*
-===========================
+================================================
+
 Bottom Tab Bar
-===========================
+
+================================================
 */
 
 
@@ -549,6 +619,7 @@ Bottom Tab Bar
 
 
     height:72px;
+
 
 
     display:flex;
@@ -562,6 +633,7 @@ Bottom Tab Bar
 
 
     background:var(--glass);
+
 
 
     border-top:
@@ -581,6 +653,7 @@ Bottom Tab Bar
 
 
 
+
 .tab {
 
 
@@ -590,7 +663,9 @@ Bottom Tab Bar
     text-align:center;
 
 
+
     color:var(--sub);
+
 
 
     font-size:13px;
@@ -609,6 +684,7 @@ Bottom Tab Bar
 
 
     font-size:24px;
+
 
 
     margin-bottom:3px;
@@ -635,12 +711,12 @@ Bottom Tab Bar
 
 
 
-
-
 /*
-===========================
+================================================
+
 Modal
-===========================
+
+================================================
 */
 
 
@@ -653,6 +729,7 @@ Modal
     inset:0;
 
 
+
     background:
 
     rgba(0,0,0,.45);
@@ -660,6 +737,7 @@ Modal
 
 
     display:none;
+
 
 
     align-items:center;
@@ -692,10 +770,13 @@ Modal
     width:85%;
 
 
+
     background:var(--card);
 
 
+
     border-radius:28px;
+
 
 
     padding:25px;
@@ -735,9 +816,11 @@ Modal
 
 
 /*
-===========================
+================================================
+
 Footer
-===========================
+
+================================================
 */
 
 
@@ -747,10 +830,13 @@ Footer
     text-align:center;
 
 
+
     font-size:12px;
 
 
+
     color:var(--sub);
+
 
 
     padding:
@@ -763,16 +849,16 @@ Footer
 
 
 </style>
-
-
-</head>
-
-
 <body>
 
 
 <div id="app">
 
+
+
+<!-- =========================
+     Navigation Bar
+========================= -->
 
 
 <header class="navbar">
@@ -788,6 +874,7 @@ Footer
 </div>
 
 
+
 <div class="nav-subtitle">
 
 導覽 Ⓒ 2026•Ⲙ𝔬ⲃⳝ𝔭
@@ -799,10 +886,14 @@ Footer
 
 
 
+
 <button class="icon-btn"
-onclick="toggleTheme()">
+onclick="toggleTheme()"
+aria-label="切換主題">
+
 
 🌙
+
 
 </button>
 
@@ -814,6 +905,12 @@ onclick="toggleTheme()">
 
 
 
+
+<!-- =========================
+     Main Content View
+========================= -->
+
+
 <main class="content" id="view">
 
 
@@ -823,7 +920,18 @@ onclick="toggleTheme()">
 
 
 
+
+
+
+<!-- =========================
+     Bottom Tab Navigation
+========================= -->
+
+
 <nav class="tabbar">
+
+
+
 
 
 <div class="tab active"
@@ -841,6 +949,10 @@ onclick="navigate('home')">
 
 
 </div>
+
+
+
+
 
 
 
@@ -862,6 +974,10 @@ onclick="navigate('system')">
 
 
 
+
+
+
+
 <div class="tab"
 onclick="navigate('settings')">
 
@@ -880,7 +996,13 @@ onclick="navigate('settings')">
 
 
 
+
+
+
+
 </nav>
+
+
 
 
 </div>
@@ -891,655 +1013,57 @@ onclick="navigate('settings')">
 
 
 
+
+<!-- =========================
+     Modal Layer
+========================= -->
+
+
 <div class="modal" id="modal">
+
 
 
 <div class="modal-box">
 
 
-<h2 id="modalTitle"></h2>
 
 
-<p id="modalText"></p>
+
+<h2 id="modalTitle">
+
+</h2>
+
+
+
+
+
+<p id="modalText">
+
+</p>
+
+
+
 
 
 
 <button class="action"
 onclick="closeModal()">
 
+
 關閉
 
-</button>
-
-
-
-</div>
-
-
-</div>
-<script>
-
-/*
-====================================
-莫比空間｜導覽
-Mobsp-System Single File UI
-JavaScript Layer
-====================================
-*/
-
-
-/*
-===========================
-App State
-===========================
-*/
-
-
-const state = {
-
-    page:"home",
-
-    theme:"light",
-
-    search:""
-
-};
-
-
-
-
-
-
-/*
-===========================
-Navigation Data
-===========================
-*/
-
-
-const data = {
-
-
-home:[
-
-
-{
-
-title:"網站首頁",
-
-desc:"莫比空間主要入口與網站資訊導覽。"
-
-},
-
-
-{
-
-title:"內容中心",
-
-desc:"文章、資訊、公告與公開內容入口。"
-
-},
-
-
-{
-
-title:"工具中心",
-
-desc:"各類 Web 工具與功能集合。"
-
-}
-
-
-],
-
-
-
-
-system:[
-
-
-{
-
-title:"Mobsp-System",
-
-desc:"莫比空間系統導覽核心。"
-
-},
-
-
-{
-
-title:"UI System",
-
-desc:"iOS Style Interface Design System。"
-
-},
-
-
-{
-
-title:"Component Library",
-
-desc:"網站元件與互動模組管理。"
-
-}
-
-
-],
-
-
-
-
-settings:[
-
-
-{
-
-title:"主題模式",
-
-desc:"切換亮色與深色顯示模式。"
-
-},
-
-
-{
-
-title:"網站設定",
-
-desc:"管理網站顯示與使用體驗。"
-
-},
-
-
-{
-
-title:"關於莫比空間",
-
-desc:"站點資訊與版本資訊。"
-
-}
-
-
-]
-
-
-};
-
-
-
-
-
-
-
-
-/*
-===========================
-Render Engine
-===========================
-*/
-
-
-function render(){
-
-
-
-const view =
-
-document.getElementById("view");
-
-
-
-const title =
-
-document.getElementById("title");
-
-
-
-
-
-const pageTitle = {
-
-
-home:"首頁",
-
-
-system:"系統",
-
-
-settings:"設定"
-
-
-
-}[state.page];
-
-
-
-
-
-let html = "";
-
-
-
-
-
-/*
-搜尋功能
-*/
-
-
-if(state.page==="system"){
-
-
-html += `
-
-
-<input
-
-class="search"
-
-placeholder="搜尋系統項目..."
-
-oninput="search(this.value)">
-
-
-`;
-
-
-}
-
-
-
-
-
-
-html += `
-
-
-<div class="section-title">
-
-${pageTitle}
-
-</div>
-
-
-`;
-
-
-
-
-
-
-
-data[state.page]
-
-.filter(item =>
-
-
-item.title
-
-.toLowerCase()
-
-.includes(
-
-state.search.toLowerCase()
-
-)
-
-
-
-)
-
-
-.forEach(item=>{
-
-
-html += `
-
-
-<div class="card"
-
-onclick="openModal(
-
-'${item.title}',
-
-'${item.desc}'
-
-)">
-
-
-
-<div class="card-title">
-
-
-${item.title}
-
-
-<span class="card-arrow">
-
-›
-
-</span>
-
-
-</div>
-
-
-
-<div class="card-desc">
-
-
-${item.desc}
-
-
-</div>
-
-
-
-<button class="action">
-
-
-開啟
-
 
 </button>
 
 
 
-</div>
 
-
-
-`;
-
-
-});
-
-
-
-
-
-html += `
-
-
-<div class="site-footer">
-
-
-莫比空間｜導覽
-
-<br>
-
-Ⓒ 2026•Ⲙ𝔬ⲃⳝ𝔭
 
 
 </div>
 
 
-`;
 
-
-
-
-view.innerHTML = html;
-
-
-
-updateTabs();
-
-
-
-}
-
-
-
-
-
-
-
-/*
-===========================
-Navigation Controller
-===========================
-*/
-
-
-function navigate(page){
-
-
-state.page = page;
-
-
-state.search = "";
-
-
-render();
-
-
-
-}
-
-
-
-
-
-
-
-function updateTabs(){
-
-
-
-const tabs =
-
-document.querySelectorAll(".tab");
-
-
-
-
-const pages = [
-
-"home",
-
-"system",
-
-"settings"
-
-];
-
-
-
-
-tabs.forEach((tab,index)=>{
-
-
-tab.classList.remove("active");
-
-
-
-if(
-
-pages[index]===state.page
-
-){
-
-
-tab.classList.add("active");
-
-
-}
-
-
-
-});
-
-
-}
-
-
-
-
-
-
-
-
-/*
-===========================
-Theme Controller
-===========================
-*/
-
-
-function toggleTheme(){
-
-
-
-document
-
-.body
-
-.classList
-
-.toggle("dark");
-
-
-
-
-state.theme =
-
-document.body.classList.contains("dark")
-
-?
-
-"dark"
-
-:
-
-"light";
-
-
-
-}
-
-
-
-
-
-
-
-
-/*
-===========================
-Search Controller
-===========================
-*/
-
-
-function search(value){
-
-
-
-state.search = value;
-
-
-
-render();
-
-
-
-}
-
-
-
-
-
-
-
-
-/*
-===========================
-Modal Controller
-===========================
-*/
-
-
-function openModal(title,text){
-
-
-
-document
-
-.getElementById("modalTitle")
-
-.innerText = title;
-
-
-
-
-
-document
-
-.getElementById("modalText")
-
-.innerText = text;
-
-
-
-
-
-document
-
-.getElementById("modal")
-
-.classList
-
-.add("show");
-
-
-
-}
-
-
-
-
-
-
-
-function closeModal(){
-
-
-
-document
-
-.getElementById("modal")
-
-.classList
-
-.remove("show");
-
-
-
-}
-
-
-
-
-
-
-
-
-/*
-===========================
-Initial Launch
-===========================
-*/
-
-
-render();
-
-
-
-</script>
-
-
+</div>
 </body>
-
-
 </html>
