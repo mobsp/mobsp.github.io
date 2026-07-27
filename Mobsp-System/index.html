@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>熱門網站導覽集</title>
+    <title>iOS 風格網站導覽</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -29,27 +29,27 @@
         .app-viewport { position: relative; width: 100%; height: 100%; background: var(--ios-bg); overflow: hidden; }
         .view-container { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
         
-        /* 頁面切換核心動畫 */
-        .view { position: absolute; inset: 0; background: var(--ios-bg); color: var(--ios-text); overflow-y: auto; padding-bottom: calc(40px + var(--sab)); transition: transform 0.4s var(--ios-smooth), opacity 0.35s ease; z-index: 1; display: none; pointer-events: auto; }
-        .view.mounted { display: block; }
+        /* iOS 頁面切換核心動畫 (Push / Pop) */
+        .view { position: absolute; inset: 0; background: var(--ios-bg); color: var(--ios-text); display: flex; flex-direction: column; overflow: hidden; transition: transform 0.4s var(--ios-smooth), opacity 0.35s ease; z-index: 1; display: none; pointer-events: auto; }
+        .view.mounted { display: flex; }
         .view.sub-page { transform: translateX(100%); z-index: 10; box-shadow: -12px 0 40px rgba(0,0,0,0.5); }
         .view.sub-page.active { transform: translateX(0); }
         .view.parent-pushed { transform: translateX(-25%); opacity: 0.85; }
 
         /* Navigation Bar */
-        .nav { position: sticky; top: 0; height: calc(44px + var(--sat)); padding-top: var(--sat); display: flex; justify-content: space-between; align-items: center; padding-inline: 8px; z-index: 99; background: rgba(28, 28, 30, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--ios-border); }
+        .nav { position: sticky; top: 0; height: calc(44px + var(--sat)); padding-top: var(--sat); display: flex; justify-content: space-between; align-items: center; padding-inline: 8px; z-index: 99; background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--ios-border); flex-shrink: 0; }
         .nav-back { display: flex; align-items: center; color: var(--ios-blue); font-size: 17px; cursor: pointer; padding: 4px 8px; }
-        .nav-back-arrow { width: 12px; height: 12px; border-left: 2px solid var(--ios-blue); border-bottom: 2px solid var(--ios-blue); transform: rotate(45deg); margin-right: 4px; }
+        .nav-back-arrow { width: 10px; height: 10px; border-left: 2px solid var(--ios-blue); border-bottom: 2px solid var(--ios-blue); transform: rotate(45deg); margin-right: 6px; }
         .nav-title { font-size: 17px; font-weight: 600; text-align: center; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        .content { padding-top: 12px; }
+        .content { flex: 1; overflow-y: auto; padding-top: 12px; padding-bottom: calc(20px + var(--sab)); }
         .large-title { padding: 4px 20px 12px; font-size: 34px; font-weight: 700; letter-spacing: 0.38px; }
 
-        /* 群組與清單元件 */
+        /* 列表結構 */
         .group { margin: 0 16px 20px; }
         .group-header { font-size: 13px; color: var(--ios-sub); margin-bottom: 6px; padding-left: 16px; text-transform: uppercase; }
         .list { list-style: none; background: var(--ios-card); border-radius: 10px; overflow: hidden; }
-        .cell { position: relative; display: flex; align-items: center; min-height: 48px; padding: 8px 16px; cursor: pointer; text-decoration: none; color: inherit; }
+        .cell { position: relative; display: flex; align-items: center; min-height: 48px; padding: 8px 16px; cursor: pointer; }
         .cell:active { background: var(--ios-pressed); }
         
         .list li:not(:last-child) .cell::after { content: ""; position: absolute; inset-inline-start: 52px; inset-inline-end: 0; bottom: 0; height: 0.5px; background: var(--ios-border); }
@@ -59,6 +59,9 @@
         .cell-label { font-size: 17px; }
         .cell-sub { font-size: 13px; color: var(--ios-sub); }
         .chevron { width: 7px; height: 7px; border-top: 2px solid var(--ios-sub); border-right: 2px solid var(--ios-sub); transform: rotate(45deg); margin-left: 6px; flex-shrink: 0; }
+
+        /* 網站嵌入容器 (iframe) */
+        .web-view-container { flex: 1; width: 100%; height: 100%; border: none; background: #fff; }
     </style>
 </head>
 <body>
@@ -68,7 +71,13 @@
 </div>
 
 <script>
-    /* 簡易版頁面堆疊與跳轉管理器 */
+    /* 定義你的網站清單資料：點擊後要滑入並載入哪一個網址 */
+    const websites = [
+        { id: 'site_github', name: 'GitHub', sub: '程式碼代管與協作平台', icon: '🐙', bg: '#333', url: 'https://github.com' },
+        { id: 'site_mdn', name: 'MDN Web Docs', sub: '前端開發者權威文件', icon: '📖', bg: '#f0db4f', url: 'https://developer.mozilla.org' },
+        { id: 'site_wiki', name: '維基百科', sub: '自由的百科全書', icon: '🌍', bg: '#0a84ff', url: 'https://zh.wikipedia.org' }
+    ];
+
     class Router {
         constructor() {
             this.stack = [];
@@ -76,21 +85,58 @@
             this.container = document.getElementById('viewContainer');
         }
 
-        mount(viewId) {
+        mount(viewId, data = null) {
             if (!this.cache[viewId]) {
                 const el = document.createElement('div');
                 el.className = `view ${this.stack.length > 0 ? 'sub-page' : ''}`;
                 el.id = viewId;
-                el.innerHTML = ViewTemplates[viewId] ? ViewTemplates[viewId]() : `<div class="nav"><div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>返回</span></div><div class="nav-title">頁面</div></div><div class="content"><div class="large-title">載入中</div></div>`;
+
+                if (viewId === 'main') {
+                    // 主目錄頁面
+                    el.innerHTML = `
+                        <div class="nav"><div class="nav-title">熱門網站導覽</div></div>
+                        <div class="content">
+                            <div class="large-title">精選網站</div>
+                            <div class="group-header">快捷清單</div>
+                            <div class="group">
+                                <ul class="list">
+                                    ${websites.map(site => `
+                                        <li>
+                                            <div class="cell" data-action="push-site" data-id="${site.id}">
+                                                <div class="cell-icon" style="background: ${site.bg};">${site.icon}</div>
+                                                <div class="cell-content">
+                                                    <div class="cell-label">${site.name}</div>
+                                                    <div class="cell-sub">${site.sub}</div>
+                                                </div>
+                                                <div class="chevron"></div>
+                                            </div>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // 子頁面：右側滑入後，載入對應的網站 iframe
+                    el.innerHTML = `
+                        <div class="nav">
+                            <div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>返回</span></div>
+                            <div class="nav-title">${data.name}</div>
+                            <div style="width: 50px;"></div>
+                        </div>
+                        <iframe class="web-view-container" src="${data.url}"></iframe>
+                    `;
+                }
+
                 this.container.appendChild(el);
                 this.cache[viewId] = el;
             }
             return this.cache[viewId];
         }
 
-        push(viewId) {
+        push(viewId, data = null) {
             const currentId = this.stack.at(-1);
-            const nextEl = this.mount(viewId);
+            const nextEl = this.mount(viewId, data);
             nextEl.classList.add('mounted');
             
             requestAnimationFrame(() => {
@@ -118,105 +164,25 @@
 
     const appRouter = new Router();
 
-    /* 網站導覽各層級的模板定義 */
-    const ViewTemplates = {
-        // 主目錄頁面
-        main: () => `
-            <div class="nav"><div class="nav-title">熱門網站導覽</div></div>
-            <div class="content">
-                <div class="large-title">探索</div>
-                
-                <div class="group-header">常用分類</div>
-                <div class="group">
-                    <ul class="list">
-                        <li>
-                            <div class="cell" data-action="push" data-target="dev_tools">
-                                <div class="cell-icon" style="background: var(--ios-blue);">💻</div>
-                                <div class="cell-content">
-                                    <div class="cell-label">開發與程式工具</div>
-                                    <div class="cell-sub">GitHub, Stack Overflow, MDN...</div>
-                                </div>
-                                <div class="chevron"></div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="cell" data-action="push" data-target="social_media">
-                                <div class="cell-icon" style="background: #ff453a;">🔥</div>
-                                <div class="cell-content">
-                                    <div class="cell-label">熱門社群與資訊</div>
-                                    <div class="cell-sub">Twitter/X, Reddit, Medium...</div>
-                                </div>
-                                <div class="chevron"></div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        `,
-
-        // 子頁面：開發與程式工具
-        dev_tools: () => `
-            <div class="nav">
-                <div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>導覽</span></div>
-                <div class="nav-title">開發工具</div>
-                <div style="width: 50px;"></div>
-            </div>
-            <div class="content">
-                <div class="large-title">開發工具</div>
-                <div class="group">
-                    <ul class="list">
-                        <li>
-                            <a class="cell" href="https://github.com" target="_blank">
-                                <div class="cell-icon" style="background: #333;">🐙</div>
-                                <div class="cell-label">GitHub 程式碼代管</div>
-                                <div class="chevron" style="border-color: var(--ios-sub);"></div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="cell" href="https://developer.mozilla.org" target="_blank">
-                                <div class="cell-icon" style="background: #f0db4f;">📖</div>
-                                <div class="cell-label">MDN Web Docs</div>
-                                <div class="chevron" style="border-color: var(--ios-sub);"></div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        `,
-
-        // 子頁面：熱門社群
-        social_media: () => `
-            <div class="nav">
-                <div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>導覽</span></div>
-                <div class="nav-title">熱門社群</div>
-                <div style="width: 50px;"></div>
-            </div>
-            <div class="content">
-                <div class="large-title">熱門社群</div>
-                <div class="group">
-                    <ul class="list">
-                        <li>
-                            <a class="cell" href="https://twitter.com" target="_blank">
-                                <div class="cell-icon" style="background: #1da1f2;">🐦</div>
-                                <div class="cell-label">X (Twitter)</div>
-                                <div class="chevron" style="border-color: var(--ios-sub);"></div>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        `
-    };
-
-    /* 全域點擊切換控制 */
+    /* 監聽點擊事件 */
     document.addEventListener('click', e => {
         const target = e.target.closest('[data-action]');
         if (!target) return;
-        if (target.dataset.action === 'push') appRouter.push(target.dataset.target);
-        if (target.dataset.action === 'pop') appRouter.pop();
+
+        const action = target.dataset.action;
+        if (action === 'push-site') {
+            const siteId = target.dataset.id;
+            const siteData = websites.find(s => s.id === siteId);
+            if (siteData) {
+                // 以網址 ID 作為唯一的 View ID 進行推入
+                appRouter.push(siteId, siteData);
+            }
+        } else if (action === 'pop') {
+            appRouter.pop();
+        }
     });
 
-    // 初始化啟動載入主畫面
+    // 初始化載入主畫面
     appRouter.push('main');
 </script>
 </body>
