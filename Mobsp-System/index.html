@@ -1,42 +1,94 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport"
 content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-<title>MOBSP iOS Style App Prototype</title>
+<title>莫比空間｜導覽 Ⓒ 2026•Ⲙ𝔬ⲃⳝ𝔭</title>
+
+
+<meta name="description"
+content="莫比空間｜導覽 - MOBSP Website Navigation">
+
 
 <style>
+
+/*
+====================================
+莫比空間｜導覽
+Mobsp-System Single File UI
+CSS Layer
+====================================
+*/
+
 
 :root {
 
     --bg:#f2f2f7;
+
     --card:#ffffff;
+
     --text:#111111;
-    --sub:#666;
+
+    --sub:#666666;
+
     --blue:#007aff;
+
     --border:#dddddd;
 
-    --radius:20px;
-
     --glass:
-    rgba(255,255,255,.65);
+    rgba(255,255,255,0.65);
+
+
+    --radius-xl:24px;
+
+    --radius-lg:18px;
+
+    --radius-md:14px;
 
 }
 
 
-*{
+
+
+* {
+
     box-sizing:border-box;
+
     -webkit-tap-highlight-color:transparent;
+
 }
 
 
-body{
+
+
+html,
+body {
+
+
+    width:100%;
+
+    height:100%;
 
     margin:0;
 
+    padding:0;
+
+
+}
+
+
+
+
+body {
+
+
     font-family:
+
     -apple-system,
     BlinkMacSystemFont,
     "SF Pro Display",
@@ -44,310 +96,674 @@ body{
     Arial,
     sans-serif;
 
+
     background:var(--bg);
 
     color:var(--text);
 
-    height:100vh;
 
     overflow:hidden;
 
+
 }
 
 
-body.dark{
+
+
+/*
+===========================
+Dark Mode
+===========================
+*/
+
+
+body.dark {
+
 
     --bg:#000000;
+
     --card:#1c1c1e;
+
     --text:#ffffff;
-    --sub:#aaa;
-    --border:#333;
+
+    --sub:#aaaaaa;
+
+    --border:#333333;
+
+    --glass:
+
+    rgba(28,28,30,.75);
+
 
 }
 
 
 
-#app{
 
-    max-width:520px;
 
-    height:100vh;
 
-    margin:auto;
+/*
+===========================
+Application Container
+===========================
+*/
 
-    display:flex;
 
-    flex-direction:column;
+#app {
 
-}
-
-
-
-/* Navigation */
-
-
-.navbar{
-
-    height:70px;
-
-    padding:
-    20px 20px 10px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    position:relative;
-
-    backdrop-filter:blur(20px);
-
-}
-
-
-.nav-title{
-
-    font-size:30px;
-
-    font-weight:700;
-
-}
-
-
-
-.icon-btn{
-
-    border:none;
-
-    background:var(--card);
-
-    width:42px;
-
-    height:42px;
-
-    border-radius:50%;
-
-    font-size:20px;
-
-    color:var(--text);
-
-}
-
-
-
-/* Content */
-
-
-.content{
-
-    flex:1;
-
-    overflow:auto;
-
-    padding:20px;
-
-}
-
-
-
-.section-title{
-
-    font-size:22px;
-
-    font-weight:700;
-
-    margin-bottom:15px;
-
-}
-
-
-
-.card{
-
-    background:var(--card);
-
-    border-radius:var(--radius);
-
-    padding:18px;
-
-    margin-bottom:15px;
-
-    border:1px solid var(--border);
-
-}
-
-
-
-.card-title{
-
-    font-size:18px;
-
-    font-weight:600;
-
-}
-
-
-
-.card-desc{
-
-    margin-top:8px;
-
-    color:var(--sub);
-
-    font-size:14px;
-
-}
-
-
-
-button.action{
-
-    margin-top:15px;
-
-    background:var(--blue);
-
-    color:white;
-
-    border:none;
-
-    padding:12px 20px;
-
-    border-radius:14px;
-
-    font-size:15px;
-
-}
-
-
-
-/* Search */
-
-
-.search{
 
     width:100%;
 
-    padding:14px 18px;
 
-    border-radius:15px;
+    max-width:520px;
 
-    border:none;
 
-    background:var(--card);
+    height:100vh;
 
-    color:var(--text);
 
-    font-size:16px;
+    margin:auto;
 
-    margin-bottom:20px;
+
+    display:flex;
+
+
+    flex-direction:column;
+
 
 }
 
 
 
-/* Tab */
 
 
-.tabbar{
 
-    height:70px;
+
+/*
+===========================
+Navigation Bar
+===========================
+*/
+
+
+.navbar {
+
+
+    height:78px;
+
+
+    padding:
+
+    24px 20px 10px;
+
 
     display:flex;
 
-    justify-content:space-around;
 
     align-items:center;
 
-    background:var(--glass);
+
+    justify-content:space-between;
+
+
 
     backdrop-filter:blur(20px);
 
-    border-top:1px solid var(--border);
+
+    -webkit-backdrop-filter:blur(20px);
+
+
 
 }
 
 
 
-.tab{
 
-    flex:1;
+.nav-title {
 
-    text-align:center;
 
-    color:var(--sub);
+    font-size:30px;
+
+
+    font-weight:700;
+
+
+    letter-spacing:-0.5px;
+
+
+}
+
+
+
+
+
+.nav-subtitle {
+
 
     font-size:13px;
 
-}
+
+    color:var(--sub);
 
 
+    margin-top:3px;
 
-.tab.active{
-
-    color:var(--blue);
-
-    font-weight:bold;
-
-}
-
-
-.tab span{
-
-    display:block;
-
-    font-size:24px;
 
 }
 
 
 
 
-/* Modal */
 
+.nav-left {
 
-.modal{
-
-    position:fixed;
-
-    inset:0;
-
-    background:
-    rgba(0,0,0,.45);
-
-    display:none;
-
-    align-items:center;
-
-    justify-content:center;
-
-}
-
-
-
-.modal.show{
 
     display:flex;
 
+
+    flex-direction:column;
+
+
 }
 
 
 
-.modal-box{
 
-    width:85%;
+
+.icon-btn {
+
+
+    width:42px;
+
+
+    height:42px;
+
+
+    border:none;
+
+
+    border-radius:50%;
+
 
     background:var(--card);
 
-    border-radius:25px;
+
+    color:var(--text);
+
+
+    font-size:20px;
+
+
+}
+
+
+
+
+
+
+
+/*
+===========================
+Main Content
+===========================
+*/
+
+
+.content {
+
+
+    flex:1;
+
+
+    overflow-y:auto;
+
+
+    padding:
+
+    20px;
+
+
+}
+
+
+
+
+
+.section-title {
+
+
+    font-size:24px;
+
+
+    font-weight:700;
+
+
+    margin-bottom:18px;
+
+
+}
+
+
+
+
+
+
+
+/*
+===========================
+iOS Grouped List Card
+===========================
+*/
+
+
+.card {
+
+
+    background:var(--card);
+
+
+    border-radius:var(--radius-xl);
+
+
+    padding:18px;
+
+
+    margin-bottom:14px;
+
+
+    border:
+
+    1px solid var(--border);
+
+
+
+    transition:
+
+    transform .15s ease;
+
+
+}
+
+
+
+
+
+.card:active {
+
+
+    transform:scale(.98);
+
+
+}
+
+
+
+
+
+.card-title {
+
+
+    font-size:18px;
+
+
+    font-weight:600;
+
+
+}
+
+
+
+
+
+.card-desc {
+
+
+    margin-top:8px;
+
+
+    font-size:14px;
+
+
+    color:var(--sub);
+
+
+    line-height:1.5;
+
+
+}
+
+
+
+
+
+.card-arrow {
+
+
+    float:right;
+
+
+    font-size:20px;
+
+
+    color:var(--sub);
+
+
+}
+
+
+
+
+
+.action {
+
+
+    margin-top:15px;
+
+
+    padding:
+
+    11px 18px;
+
+
+
+    border:none;
+
+
+    border-radius:14px;
+
+
+    background:var(--blue);
+
+
+    color:white;
+
+
+    font-size:15px;
+
+
+}
+
+
+
+
+
+
+
+
+/*
+===========================
+Search
+===========================
+*/
+
+
+.search {
+
+
+    width:100%;
+
+
+    padding:
+
+    14px 18px;
+
+
+
+    border:none;
+
+
+    outline:none;
+
+
+    border-radius:16px;
+
+
+
+    background:var(--card);
+
+
+    color:var(--text);
+
+
+    font-size:16px;
+
+
+    margin-bottom:20px;
+
+
+}
+
+
+
+
+
+
+
+/*
+===========================
+Bottom Tab Bar
+===========================
+*/
+
+
+.tabbar {
+
+
+    height:72px;
+
+
+    display:flex;
+
+
+    align-items:center;
+
+
+    justify-content:space-around;
+
+
+
+    background:var(--glass);
+
+
+    border-top:
+
+    1px solid var(--border);
+
+
+
+    backdrop-filter:blur(20px);
+
+
+    -webkit-backdrop-filter:blur(20px);
+
+
+}
+
+
+
+
+.tab {
+
+
+    flex:1;
+
+
+    text-align:center;
+
+
+    color:var(--sub);
+
+
+    font-size:13px;
+
+
+}
+
+
+
+
+
+.tab span {
+
+
+    display:block;
+
+
+    font-size:24px;
+
+
+    margin-bottom:3px;
+
+
+}
+
+
+
+
+
+.tab.active {
+
+
+    color:var(--blue);
+
+
+    font-weight:700;
+
+
+}
+
+
+
+
+
+
+
+/*
+===========================
+Modal
+===========================
+*/
+
+
+.modal {
+
+
+    position:fixed;
+
+
+    inset:0;
+
+
+    background:
+
+    rgba(0,0,0,.45);
+
+
+
+    display:none;
+
+
+    align-items:center;
+
+
+    justify-content:center;
+
+
+}
+
+
+
+
+
+.modal.show {
+
+
+    display:flex;
+
+
+}
+
+
+
+
+
+.modal-box {
+
+
+    width:85%;
+
+
+    background:var(--card);
+
+
+    border-radius:28px;
+
 
     padding:25px;
+
+
+}
+
+
+
+
+
+.modal-box h2 {
+
+
+    margin-top:0;
+
+
+}
+
+
+
+
+
+.modal-box p {
+
+
+    color:var(--sub);
+
+
+    line-height:1.6;
+
+
+}
+
+
+
+
+
+/*
+===========================
+Footer
+===========================
+*/
+
+
+.site-footer {
+
+
+    text-align:center;
+
+
+    font-size:12px;
+
+
+    color:var(--sub);
+
+
+    padding:
+
+    10px 0 20px;
+
 
 }
 
 
 
 </style>
+
 
 </head>
 
@@ -358,26 +774,52 @@ button.action{
 <div id="app">
 
 
+
 <header class="navbar">
 
-<div class="nav-title" id="title">
-首頁
+
+<div class="nav-left">
+
+
+<div class="nav-title">
+
+莫比空間
+
 </div>
+
+
+<div class="nav-subtitle">
+
+導覽 Ⓒ 2026•Ⲙ𝔬ⲃⳝ𝔭
+
+</div>
+
+
+</div>
+
 
 
 <button class="icon-btn"
 onclick="toggleTheme()">
+
 🌙
+
 </button>
+
 
 
 </header>
 
 
 
+
+
 <main class="content" id="view">
 
+
 </main>
+
+
 
 
 
@@ -387,20 +829,34 @@ onclick="toggleTheme()">
 <div class="tab active"
 onclick="navigate('home')">
 
-<span>🏠</span>
+
+<span>
+
+🏠
+
+</span>
+
 
 首頁
+
 
 </div>
 
 
 
 <div class="tab"
-onclick="navigate('tools')">
+onclick="navigate('system')">
 
-<span>🧰</span>
 
-工具
+<span>
+
+🧩
+
+</span>
+
+
+系統
+
 
 </div>
 
@@ -409,11 +865,19 @@ onclick="navigate('tools')">
 <div class="tab"
 onclick="navigate('settings')">
 
-<span>⚙️</span>
+
+<span>
+
+⚙️
+
+</span>
+
 
 設定
 
+
 </div>
+
 
 
 </nav>
@@ -425,18 +889,19 @@ onclick="navigate('settings')">
 
 
 
+
+
 <div class="modal" id="modal">
 
 
 <div class="modal-box">
 
 
-<h2 id="modalTitle">
-</h2>
+<h2 id="modalTitle"></h2>
 
 
-<p id="modalText">
-</p>
+<p id="modalText"></p>
+
 
 
 <button class="action"
@@ -447,105 +912,156 @@ onclick="closeModal()">
 </button>
 
 
-</div>
 
 </div>
 
 
-
-
-
+</div>
 <script>
 
-
 /*
-========================
-
-App State
-
-========================
+====================================
+莫比空間｜導覽
+Mobsp-System Single File UI
+JavaScript Layer
+====================================
 */
 
 
-const state={
+/*
+===========================
+App State
+===========================
+*/
 
-page:"home",
 
-theme:"light",
+const state = {
 
-search:""
+    page:"home",
 
+    theme:"light",
+
+    search:""
 
 };
 
 
 
-const data={
+
+
+
+/*
+===========================
+Navigation Data
+===========================
+*/
+
+
+const data = {
 
 
 home:[
 
-{
-title:"MOBSP System",
 
-desc:"iOS Style Web Application Prototype"
+{
+
+title:"網站首頁",
+
+desc:"莫比空間主要入口與網站資訊導覽。"
+
 },
 
 
 {
-title:"Liquid Glass Engine",
 
-desc:"模擬 iOS Glass UI 效果"
+title:"內容中心",
+
+desc:"文章、資訊、公告與公開內容入口。"
+
 },
 
 
 {
-title:"Component Runtime",
 
-desc:"HTML CSS JS 單檔執行核心"
-}
+title:"工具中心",
 
-],
+desc:"各類 Web 工具與功能集合。"
 
-
-
-tools:[
-
-{
-title:"QR Generator",
-
-desc:"快速產生 QR Code 工具"
-},
-
-
-{
-title:"JSON Viewer",
-
-desc:"資料檢視工具"
 }
 
 
 ],
+
+
+
+
+system:[
+
+
+{
+
+title:"Mobsp-System",
+
+desc:"莫比空間系統導覽核心。"
+
+},
+
+
+{
+
+title:"UI System",
+
+desc:"iOS Style Interface Design System。"
+
+},
+
+
+{
+
+title:"Component Library",
+
+desc:"網站元件與互動模組管理。"
+
+}
+
+
+],
+
 
 
 
 settings:[
 
-{
-title:"Theme",
 
-desc:"切換 Light / Dark 模式"
+{
+
+title:"主題模式",
+
+desc:"切換亮色與深色顯示模式。"
+
 },
 
 
 {
-title:"Application",
 
-desc:"管理 App 狀態"
+title:"網站設定",
+
+desc:"管理網站顯示與使用體驗。"
+
+},
+
+
+{
+
+title:"關於莫比空間",
+
+desc:"站點資訊與版本資訊。"
+
 }
 
 
 ]
+
 
 };
 
@@ -554,118 +1070,184 @@ desc:"管理 App 狀態"
 
 
 
+
+
 /*
-========================
-
+===========================
 Render Engine
-
-========================
+===========================
 */
 
 
 function render(){
 
 
-const view=
+
+const view =
+
 document.getElementById("view");
 
 
-const title=
+
+const title =
+
 document.getElementById("title");
 
 
 
-const pageData=
-data[state.page];
 
 
+const pageTitle = {
 
-title.innerText=
-{
+
 home:"首頁",
-tools:"工具",
+
+
+system:"系統",
+
+
 settings:"設定"
+
+
 
 }[state.page];
 
 
 
-let html="";
+
+
+let html = "";
 
 
 
-if(state.page==="tools"){
 
-html+=`
+
+/*
+搜尋功能
+*/
+
+
+if(state.page==="system"){
+
+
+html += `
+
 
 <input
+
 class="search"
-placeholder="搜尋工具..."
-oninput="search(this.value)"
->
+
+placeholder="搜尋系統項目..."
+
+oninput="search(this.value)">
+
 
 `;
+
 
 }
 
 
 
 
-html+=`
+
+
+html += `
+
 
 <div class="section-title">
 
-${title.innerText}
+${pageTitle}
 
 </div>
+
 
 `;
 
 
 
 
-pageData
-.filter(item=>
+
+
+
+data[state.page]
+
+.filter(item =>
+
 
 item.title
+
 .toLowerCase()
+
 .includes(
+
 state.search.toLowerCase()
-)
 
 )
+
+
+
+)
+
 
 .forEach(item=>{
 
 
-html+=`
+html += `
+
 
 <div class="card"
-onclick="openModal('${item.title}','${item.desc}')">
+
+onclick="openModal(
+
+'${item.title}',
+
+'${item.desc}'
+
+)">
+
 
 
 <div class="card-title">
 
+
 ${item.title}
 
+
+<span class="card-arrow">
+
+›
+
+</span>
+
+
 </div>
+
 
 
 <div class="card-desc">
 
+
 ${item.desc}
 
+
 </div>
+
 
 
 <button class="action">
 
+
 開啟
+
 
 </button>
 
 
+
 </div>
+
+
 
 `;
 
@@ -674,60 +1256,116 @@ ${item.desc}
 
 
 
-view.innerHTML=html;
+
+
+html += `
+
+
+<div class="site-footer">
+
+
+莫比空間｜導覽
+
+<br>
+
+Ⓒ 2026•Ⲙ𝔬ⲃⳝ𝔭
+
+
+</div>
+
+
+`;
+
+
+
+
+view.innerHTML = html;
 
 
 
 updateTabs();
 
 
+
 }
+
+
 
 
 
 
 
 /*
-========================
-
-Navigation
-
-========================
+===========================
+Navigation Controller
+===========================
 */
 
 
 function navigate(page){
 
-state.page=page;
 
-state.search="";
+state.page = page;
+
+
+state.search = "";
+
 
 render();
 
+
+
 }
+
+
+
+
 
 
 
 function updateTabs(){
 
 
-document
-.querySelectorAll(".tab")
-.forEach((el,i)=>{
+
+const tabs =
+
+document.querySelectorAll(".tab");
 
 
-el.classList.remove("active");
+
+
+const pages = [
+
+"home",
+
+"system",
+
+"settings"
+
+];
+
+
+
+
+tabs.forEach((tab,index)=>{
+
+
+tab.classList.remove("active");
+
 
 
 if(
-["home","tools","settings"][i]
-===
-state.page
+
+pages[index]===state.page
+
 ){
 
-el.classList.add("active");
+
+tab.classList.add("active");
+
 
 }
+
 
 
 });
@@ -739,19 +1377,43 @@ el.classList.add("active");
 
 
 
+
+
+
 /*
-========================
-
-Theme
-
-========================
+===========================
+Theme Controller
+===========================
 */
 
 
 function toggleTheme(){
 
 
-document.body.classList.toggle("dark");
+
+document
+
+.body
+
+.classList
+
+.toggle("dark");
+
+
+
+
+state.theme =
+
+document.body.classList.contains("dark")
+
+?
+
+"dark"
+
+:
+
+"light";
+
 
 
 }
@@ -760,20 +1422,27 @@ document.body.classList.toggle("dark");
 
 
 
+
+
+
 /*
-========================
-
-Search
-
-========================
+===========================
+Search Controller
+===========================
 */
 
 
 function search(value){
 
-state.search=value;
+
+
+state.search = value;
+
+
 
 render();
+
+
 
 }
 
@@ -781,47 +1450,86 @@ render();
 
 
 
+
+
+
 /*
-========================
-
-Modal
-
-========================
+===========================
+Modal Controller
+===========================
 */
 
 
 function openModal(title,text){
 
 
+
 document
+
 .getElementById("modalTitle")
-.innerText=title;
+
+.innerText = title;
+
+
+
 
 
 document
+
 .getElementById("modalText")
-.innerText=text;
+
+.innerText = text;
+
+
 
 
 
 document
+
 .getElementById("modal")
-.classList.add("show");
+
+.classList
+
+.add("show");
+
 
 
 }
+
+
+
+
 
 
 
 function closeModal(){
 
+
+
 document
+
 .getElementById("modal")
-.classList.remove("show");
+
+.classList
+
+.remove("show");
+
+
 
 }
 
 
+
+
+
+
+
+
+/*
+===========================
+Initial Launch
+===========================
+*/
 
 
 render();
@@ -832,5 +1540,6 @@ render();
 
 
 </body>
+
 
 </html>
