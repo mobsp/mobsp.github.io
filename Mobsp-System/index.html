@@ -1227,8 +1227,13 @@ aria-label="切換主題">
 ========================= -->
 
 
-<main class="content" id="view">
+<main class="content">
 
+<div 
+id="view"
+class="page-stack">
+
+</div>
 
 </main>
 
@@ -1407,13 +1412,29 @@ App State
 const state = {
 
 
-    page:"home",
+page:"home",
 
 
-    theme:"light",
+theme:"light",
 
 
-    search:""
+search:"",
+
+
+
+/*
+iOS Navigation Stack
+*/
+
+stack:[
+
+"home"
+
+],
+
+
+
+currentDetail:null
 
 
 };
