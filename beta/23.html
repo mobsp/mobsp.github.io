@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>iOS Settings V2</title>
+    <style>
+        :root {
+            --ios-bg: #f2f2f7;
+            --ios-card: #ffffff;
+            --ios-pressed: #e5e5ea;
+            --ios-text: #000000;
+            --ios-sub: #8e8e93;
+            --ios-border: rgba(60,60,67,.18);
+            --ios-search: rgba(118,118,128,.12);
+            --ios-green: #34c759;
+            --ios-blue: #007aff;
+            --sat: env(safe-area-inset-top, 0px);
+            --sab: env(safe-area-inset-bottom, 0px);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --ios-bg: #000000;
+                --ios-card: #1c1c1e;
+                --ios-pressed: #2c2c2e;
+                --ios-text: #ffffff;
+                --ios-sub: #8e8e93;
+                --ios-border: #38383a;
+                --ios-search: rgba(118,118,128,.24);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--ios-bg);
+            color: var(--ios-text);
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            padding-bottom: calc(60px + var(--sab));
+        }
+
+        /* 導覽列 */
+        .nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: calc(44px + var(--sat));
+            padding-top: var(--sat);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            background: transparent;
+            transition: background .25s, backdrop-filter .25s, border-color .25s;
+            border-bottom: .5px solid transparent;
+        }
+
+        .nav.scrolled {
+            background: rgba(255,255,255,.82);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-color: var(--ios-border);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            .nav.scrolled { background: rgba(28,28,30,.82); }
+        }
+
+        .nav-title {
+            font-size: 17px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: .22s;
+        }
+
+        .nav.scrolled .nav-title {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* 內容區 */
+        .content { padding-top: calc(44px + var(--sat)); }
+
+        .large-title { padding: 6px 20px 10px; }
+        .large-title h1 {
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -.5px;
+        }
+
+        /* 搜尋列 */
+        .search-wrap { padding: 0 16px 14px; }
+        .search {
+            height: 36px;
+            border-radius: 10px;
+            background: var(--ios-search);
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: var(--ios-sub);
+        }
+        .search svg { width: 18px; height: 18px; fill: var(--ios-sub); margin-right: 6px; }
+        .search input {
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 17px;
+            color: var(--ios-text);
+            width: 100%;
+        }
+        .search input::placeholder { color: var(--ios-sub); }
+
+        /* 卡片組 */
+        .group { margin: 0 16px 22px; }
+        .group-title {
+            font-size: 13px;
+            color: var(--ios-sub);
+            padding-left: 16px;
+            padding-bottom: 6px;
+            text-transform: uppercase;
+        }
+
+        .list {
+            list-style: none;
+            background: var(--ios-card);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        /* Apple ID 個人頭像卡片特化 */
+        .profile-cell {
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            cursor: pointer;
+        }
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #8e8e93;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            font-weight: 600;
+            margin-right: 14px;
+            flex-shrink: 0;
+        }
+        .profile-info { flex: 1; }
+        .profile-name { font-size: 20px; font-weight: 500; margin-bottom: 2px; }
+        .profile-sub { font-size: 13px; color: var(--ios-sub); }
+
+        /* 一般 Cell */
+        .cell {
+            position: relative;
+            display: flex;
+            align-items: center;
+            min-height: 50px;
+            padding: 8px 16px;
+            color: inherit;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background .15s;
+        }
+        .cell:active { background: var(--ios-pressed); }
+
+        li:not(:last-child) .cell::after {
+            content: "";
+            position: absolute;
+            inset-inline-start: 56px;
+            inset-inline-end: 0;
+            bottom: 0;
+            height: .5px;
+            background: var(--ios-border);
+        }
+
+        /* SVG 圖示外框 */
+        .icon {
+            width: 29px;
+            height: 29px;
+            border-radius: 7px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            flex-shrink: 0;
+        }
+        .icon svg { width: 18px; height: 18px; fill: currentColor; }
+
+        .label { flex: 1; font-size: 17px; letter-spacing: -.4px; }
+        .value { color: var(--ios-sub); font-size: 17px; margin-right: 8px; }
+
+        /* 箭頭 */
+        .chevron {
+            width: 8px; height: 8px;
+            border-top: 1.5px solid #c7c7cc;
+            border-right: 1.5px solid #c7c7cc;
+            transform: rotate(45deg);
+            flex-shrink: 0;
+        }
+
+        /* Switch 開關 */
+        .switch {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 51px; height: 31px;
+            border-radius: 16px;
+            background: #e4e4e7;
+            position: relative;
+            transition: .25s;
+            cursor: pointer;
+        }
+        .switch::before {
+            content: "";
+            position: absolute;
+            width: 27px; height: 27px;
+            left: 2px; top: 2px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 3px 8px rgba(0,0,0,.15);
+            transition: .25s;
+        }
+        .switch:checked { background: var(--ios-green); }
+        .switch:checked::before { transform: translateX(20px); }
+
+        @media (prefers-color-scheme: dark) {
+            .switch { background: #39393d; }
+            .switch:checked::before { box-shadow: 0 3px 8px rgba(0,0,0,.3); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav" id="nav">
+        <div class="nav-title">設定</div>
+    </div>
+
+    <div class="content">
+
+        <div class="large-title">
+            <h1>設定</h1>
+        </div>
+
+        <!-- 1. 置頂：Apple ID 帳號卡片 -->
+        <div class="group">
+            <ul class="list">
+                <li>
+                    <a class="cell profile-cell" href="#appleid">
+                        <div class="avatar">使用者</div>
+                        <div class="profile-info">
+                            <div class="profile-name">Alex Chen</div>
+                            <div class="profile-sub">Apple 帳號、iCloud、媒體與購買項目</div>
+                        </div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 2. 搜尋欄 -->
+        <div class="search-wrap">
+            <div class="search">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" placeholder="搜尋" id="searchInput">
+            </div>
+        </div>
+
+        <!-- 3. 網路與連線 -->
+        <div class="group">
+            <ul class="list">
+                <li>
+                    <div class="cell" style="cursor:default;">
+                        <div class="icon" style="background:#ff9500;">
+                            <!-- 飛航 SVG -->
+                            <svg viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+                        </div>
+                        <div class="label">飛航模式</div>
+                        <input class="switch" type="checkbox" id="flightSwitch">
+                    </div>
+                </li>
+                <li>
+                    <a class="cell" href="#wifi">
+                        <div class="icon" style="background:#007aff;">
+                            <!-- Wi-Fi SVG -->
+                            <svg viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 6c2.92 0 5.57 1.05 7.65 2.79L12 20.08l-7.65-7.29C6.43 11.05 9.08 10 12 10z"/></svg>
+                        </div>
+                        <div class="label">Wi-Fi</div>
+                        <div class="value" id="wifiStatus">Home_Network</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#bluetooth">
+                        <div class="icon" style="background:#007aff;">
+                            <!-- 藍牙 SVG -->
+                            <svg viewBox="0 0 24 24"><path d="M17.71 7.71L12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 12.46L13 20.17v-3.76l1.88 1.88z"/></svg>
+                        </div>
+                        <div class="label">藍牙</div>
+                        <div class="value" id="btStatus">開啟</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 4. 通知與聲音 -->
+        <div class="group">
+            <ul class="list">
+                <li>
+                    <a class="cell" href="#notifications">
+                        <div class="icon" style="background:#ff3b30;">
+                            <!-- 通知 SVG -->
+                            <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                        </div>
+                        <div class="label">通知</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+                <li>
+                    <a class="cell" href="#general">
+                        <div class="icon" style="background:#8e8e93;">
+                            <!-- 一般/設定 SVG -->
+                            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                        </div>
+                        <div class="label">一般</div>
+                        <div class="chevron"></div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div style="text-align:center; color:var(--ios-sub); font-size:13px; padding:20px; line-height:1.6;">
+            iOS Settings UI Demo V2<br>HTML + CSS + JavaScript
+        </div>
+
+    </div>
+
+    <script>
+        // 1. Navbar Scroll 滾動動畫
+        const nav = document.getElementById("nav");
+        const largeTitle = document.querySelector(".large-title");
+
+        function updateNavigation(){
+            const trigger = largeTitle.offsetHeight - 12;
+            if (window.scrollY > trigger) {
+                nav.classList.add("scrolled");
+            } else {
+                nav.classList.remove("scrolled");
+            }
+        }
+        window.addEventListener("scroll", updateNavigation, { passive: true });
+
+        // 2. 飛航模式 Switch 連動 logic
+        const flightSwitch = document.getElementById('flightSwitch');
+        const wifiStatus = document.getElementById('wifiStatus');
+        const btStatus = document.getElementById('btStatus');
+
+        flightSwitch.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                wifiStatus.textContent = '關閉';
+                btStatus.textContent = '關閉';
+            } else {
+                wifiStatus.textContent = 'Home_Network';
+                btStatus.textContent = '開啟';
+            }
+        });
+
+        // 3. 即時搜尋過濾功能
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase().trim();
+            const groups = document.querySelectorAll('.group');
+
+            groups.forEach(group => {
+                const cells = group.querySelectorAll('li');
+                let hasVisibleCell = false;
+
+                cells.forEach(li => {
+                    const label = li.querySelector('.label')?.textContent || '';
+                    const profileName = li.querySelector('.profile-name')?.textContent || '';
+                    
+                    if (label.toLowerCase().includes(keyword) || profileName.toLowerCase().includes(keyword)) {
+                        li.style.display = '';
+                        hasVisibleCell = true;
+                    } else {
+                        li.style.display = 'none';
+                    }
+                });
+
+                // 若整個卡片內都沒有符合的項目，則隱藏該區塊
+                group.style.display = hasVisibleCell ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+</html>
