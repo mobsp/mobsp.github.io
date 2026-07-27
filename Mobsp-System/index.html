@@ -3,404 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>iOS V8/V9 Ultimate WebOS Simulator</title>
+    <title>iOS V10 Ultimate WebOS</title>
     
     <!-- PWA & Standalone Meta -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="iOS WebOS">
     <meta name="theme-color" content="#000000">
-    <link rel="manifest" id="manifestPlaceholder">
+    <!-- 正確的 Manifest 連結 -->
+    <link rel="manifest" href="manifest.json">
 
     <style>
+        /* 基礎 CSS 變數與原版相同，省略部分重複樣式以維持簡潔 */
         :root {
-            --ios-bg: #f2f2f7;
-            --ios-card: #ffffff;
-            --ios-pressed: #e5e5ea;
-            --ios-text: #000000;
-            --ios-sub: #8e8e93;
-            --ios-border: rgba(60,60,67,.18);
-            --ios-search: rgba(118,118,128,.12);
-            --ios-green: #34c759;
-            --ios-blue: #007aff;
-            --ios-red: #ff3b30;
-            --ios-orange: #ff9500;
-            --sat: env(safe-area-inset-top, 0px);
-            --sab: env(safe-area-inset-bottom, 0px);
+            --ios-bg: #f2f2f7; --ios-card: #ffffff; --ios-pressed: #e5e5ea;
+            --ios-text: #000000; --ios-sub: #8e8e93; --ios-border: rgba(60,60,67,.18);
+            --ios-green: #34c759; --ios-blue: #007aff; --ios-red: #ff3b30; --ios-orange: #ff9500;
+            --sat: env(safe-area-inset-top, 0px); --sab: env(safe-area-inset-bottom, 0px);
             --ios-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
             --ios-smooth: cubic-bezier(0.22, 1, 0.36, 1);
         }
-
         [data-theme="dark"] {
-            --ios-bg: #000000;
-            --ios-card: #1c1c1e;
-            --ios-pressed: #2c2c2e;
-            --ios-text: #ffffff;
-            --ios-sub: #8e8e93;
-            --ios-border: #38383a;
-            --ios-search: rgba(118,118,128,.24);
+            --ios-bg: #000000; --ios-card: #1c1c1e; --ios-pressed: #2c2c2e;
+            --ios-text: #ffffff; --ios-border: #38383a;
         }
-
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none; -webkit-user-select: none;
-        }
-
-        html, body {
-            width: 100%; height: 100%; height: 100dvh;
-            background: #000000; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", sans-serif;
-            overflow: hidden; -webkit-font-smoothing: antialiased;
-        }
-
-        .app-viewport {
-            position: relative; width: 100%; height: 100%;
-            background: var(--ios-bg); overflow: hidden;
-            will-change: transform;
-        }
-
-        /* ---------------- 1. Dynamic Island & Siri ---------------- */
-        .island-container {
-            position: absolute; top: calc(8px + var(--sat)); left: 50%;
-            transform: translateX(-50%); z-index: 3500; pointer-events: auto;
-        }
-
-        .dynamic-island {
-            width: 120px; height: 36px; background: #000000; border-radius: 20px;
-            color: #fff; display: flex; align-items: center; justify-content: space-between;
-            padding: 0 12px; transition: all 0.4s var(--ios-spring);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4); overflow: hidden; cursor: pointer;
-            will-change: width, height, transform;
-        }
-
-        .dynamic-island.expanded {
-            width: 340px; height: 110px; border-radius: 38px; padding: 18px;
-            flex-direction: column; justify-content: space-between; align-items: stretch;
-        }
-
-        .dynamic-island.siri-active {
-            width: 280px; height: 60px; border-radius: 30px;
-            background: linear-gradient(135deg, #111, #222);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        /* ---------------- 2. Navigation & View Container ---------------- */
-        .view-container { position: absolute; inset: 0; z-index: 10; }
-
-        .view {
-            position: absolute; inset: 0; background: var(--ios-bg); color: var(--ios-text);
-            overflow-y: auto; -webkit-overflow-scrolling: touch;
-            padding-bottom: calc(80px + var(--sab)); transition: transform 0.4s var(--ios-smooth), opacity 0.35s ease;
-            will-change: transform, opacity; z-index: 1; display: none;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+        html, body { width: 100%; height: 100%; height: 100dvh; background: #000; font-family: -apple-system, BlinkMacSystemFont, sans-serif; overflow: hidden; }
+        
+        .app-viewport { position: relative; width: 100%; height: 100%; background: var(--ios-bg); overflow: hidden; }
+        
+        /* Dynamic Island */
+        .island-container { position: absolute; top: calc(8px + var(--sat)); left: 50%; transform: translateX(-50%); z-index: 3500; pointer-events: auto; }
+        .dynamic-island { width: 120px; height: 36px; background: #000; border-radius: 20px; color: #fff; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; transition: all 0.4s var(--ios-spring); box-shadow: 0 6px 20px rgba(0,0,0,0.4); cursor: pointer; }
+        
+        /* View Container */
+        .view-container { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+        .view { position: absolute; inset: 0; background: var(--ios-bg); color: var(--ios-text); overflow-y: auto; padding-bottom: calc(80px + var(--sab)); transition: transform 0.4s var(--ios-smooth), opacity 0.35s ease; z-index: 1; display: none; pointer-events: auto; }
         .view.mounted { display: block; }
         .view.sub-page { transform: translateX(100%); z-index: 10; box-shadow: -12px 0 40px rgba(0,0,0,0.25); }
         .view.sub-page.active { transform: translateX(0); }
         .view.parent-pushed { transform: translateX(-20%); opacity: 0.88; }
-
-        .nav {
-            position: sticky; top: 0; height: calc(44px + var(--sat)); padding-top: var(--sat);
-            display: flex; justify-content: space-between; align-items: center; padding-left: 8px; padding-right: 8px;
-            z-index: 99; background: rgba(249, 249, 249, 0.78); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 0.5px solid var(--ios-border);
-        }
+        
+        /* Navbar */
+        .nav { position: sticky; top: 0; height: calc(44px + var(--sat)); padding-top: var(--sat); display: flex; justify-content: space-between; align-items: center; padding: 0 8px; z-index: 99; background: rgba(249, 249, 249, 0.78); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--ios-border); }
         [data-theme="dark"] .nav { background: rgba(28, 28, 30, 0.78); }
-
         .nav-back { display: flex; align-items: center; color: var(--ios-blue); font-size: 17px; cursor: pointer; }
         .nav-back-arrow { width: 10px; height: 10px; border-left: 2.5px solid var(--ios-blue); border-bottom: 2.5px solid var(--ios-blue); transform: rotate(45deg); margin-right: 4px; }
-        .nav-title { font-size: 17px; font-weight: 600; color: var(--ios-text); text-align: center; flex: 1; }
-
+        .nav-title { font-size: 17px; font-weight: 600; text-align: center; flex: 1; }
         .content { padding-top: 8px; }
         .large-title { padding: 4px 16px 10px; font-size: 34px; font-weight: 700; }
 
-        /* ---------------- 3. SpringBoard Home Screen ---------------- */
-        .home-screen {
-            position: absolute; inset: 0; z-index: 5;
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            background-size: 400% 400%; animation: gradientBG 15s ease infinite;
-            padding: calc(60px + var(--sat)) 20px calc(100px + var(--sab));
-            display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: max-content; gap: 20px 16px;
-            transition: transform 0.4s var(--ios-smooth), opacity 0.3s;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
+        /* SpringBoard */
+        .home-screen { position: absolute; inset: 0; z-index: 5; background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d); padding: calc(60px + var(--sat)) 20px calc(100px + var(--sab)); display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: max-content; gap: 20px 16px; transition: transform 0.4s var(--ios-smooth), opacity 0.3s; }
         .app-icon-wrapper { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; position: relative; }
-        .app-icon {
-            width: 60px; height: 60px; border-radius: 14px; background: #fff;
-            display: flex; align-items: center; justify-content: center; font-size: 30px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: transform 0.2s;
-        }
+        .app-icon { width: 60px; height: 60px; border-radius: 14px; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 8px 16px rgba(0,0,0,0.2); transition: transform 0.2s; }
         .app-icon-wrapper:active .app-icon { transform: scale(0.9); }
         .app-label { font-size: 11px; color: #fff; font-weight: 500; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
-
-        /* Jiggle / Editing Mode Animation */
+        
+        /* Jiggle Mode */
         .jiggle .app-icon { animation: jiggle 0.22s infinite alternate ease-in-out; }
-        @keyframes jiggle {
-            0% { transform: rotate(-2.5deg) scale(1.02); }
-            100% { transform: rotate(2.5deg) scale(0.98); }
-        }
-        .app-delete-btn {
-            position: absolute; top: -6px; left: -6px; width: 22px; height: 22px;
-            background: rgba(120,120,120,0.9); color: #fff; border-radius: 50%;
-            display: none; align-items: center; justify-content: center; font-size: 12px; font-weight: bold;
-        }
+        @keyframes jiggle { 0% { transform: rotate(-2.5deg) scale(1.02); } 100% { transform: rotate(2.5deg) scale(0.98); } }
+        .app-delete-btn { position: absolute; top: -6px; left: -6px; width: 22px; height: 22px; background: rgba(120,120,120,0.9); color: #fff; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 12px; font-weight: bold; z-index: 2; }
         .jiggle .app-delete-btn { display: flex; }
 
-        .dock {
-            position: absolute; bottom: calc(20px + var(--sab)); left: 16px; right: 16px; height: 90px;
-            background: rgba(255,255,255,0.25); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-            border-radius: 32px; display: flex; justify-content: space-around; align-items: center; padding: 0 12px;
-            z-index: 6;
-        }
-
-        /* ---------------- 4. Control Center & Notification Center ---------------- */
-        .control-center {
-            position: fixed; inset: 0; z-index: 2800; background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-            padding: calc(40px + var(--sat)) 20px calc(20px + var(--sab));
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; grid-auto-rows: max-content;
-            transform: translateY(-100%); transition: transform 0.45s var(--ios-smooth);
-        }
-        .control-center.active { transform: translateY(0); }
-
-        .cc-card { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 16px; color: #fff; display: flex; flex-direction: column; gap: 12px; }
-        .cc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .cc-btn { background: rgba(255,255,255,0.25); border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; }
-        .cc-btn.active { background: var(--ios-blue); }
-
-        .cc-slider-container { display: flex; flex-direction: column; gap: 6px; }
-        .cc-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 38px; border-radius: 12px; background: rgba(255,255,255,0.3); outline: none; overflow: hidden; }
-        .cc-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 0px; box-shadow: -400px 0 0 400px #fff; }
-
-        .notification-center {
-            position: fixed; inset: 0; z-index: 2700; background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            padding: calc(40px + var(--sat)) 16px 20px; display: flex; flex-direction: column; gap: 12px;
-            transform: translateY(-100%); transition: transform 0.45s var(--ios-smooth); overflow-y: auto;
-        }
-        .notification-center.active { transform: translateY(0); }
-
-        .notif-card {
-            background: rgba(255,255,255,0.25); backdrop-filter: blur(15px); border-radius: 18px;
-            padding: 14px 16px; color: #fff; display: flex; flex-direction: column; gap: 6px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        /* ---------------- 5. Group & Cell UI ---------------- */
+        .dock { position: absolute; bottom: calc(20px + var(--sab)); left: 16px; right: 16px; height: 90px; background: rgba(255,255,255,0.25); backdrop-filter: blur(30px); border-radius: 32px; display: flex; justify-content: space-around; align-items: center; padding: 0 12px; z-index: 6; }
+        
+        /* List UI */
         .group { margin: 0 16px 20px; }
-        .group-title { font-size: 13px; color: var(--ios-sub); padding: 0 0 6px 16px; text-transform: uppercase; }
         .list { list-style: none; background: var(--ios-card); border-radius: 12px; overflow: hidden; }
-
-        .cell {
-            position: relative; display: flex; align-items: center; min-height: 48px; padding: 8px 16px;
-            color: inherit; cursor: pointer;
-        }
+        .cell { position: relative; display: flex; align-items: center; min-height: 48px; padding: 8px 16px; cursor: pointer; }
         .cell:active { background: var(--ios-pressed); }
-        li:not(:last-child) .cell::after {
-            content: ""; position: absolute; inset-inline-start: 56px; inset-inline-end: 0; bottom: 0;
-            height: .5px; background: var(--ios-border);
-        }
-
+        li:not(:last-child) .cell::after { content: ""; position: absolute; inset-inline-start: 56px; inset-inline-end: 0; bottom: 0; height: .5px; background: var(--ios-border); }
         .icon { width: 29px; height: 29px; border-radius: 7px; margin-right: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .icon-symbol { width: 18px; height: 18px; background-color: #fff; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center; }
         .label { flex: 1; font-size: 17px; }
-        .value { color: var(--ios-sub); font-size: 17px; margin-right: 6px; }
-        .chevron { width: 8px; height: 8px; border-top: 1.5px solid #c7c7cc; border-right: 1.5px solid #c7c7cc; transform: rotate(45deg); flex-shrink: 0; }
-
-        .switch {
-            appearance: none; -webkit-appearance: none; width: 51px; height: 31px; border-radius: 16px;
-            background: #e4e4e7; position: relative; transition: background 0.25s; cursor: pointer;
-        }
-        .switch::before {
-            content: ""; position: absolute; width: 27px; height: 27px; left: 2px; top: 2px; border-radius: 50%;
-            background: #fff; box-shadow: 0 3px 8px rgba(0,0,0,.15); transition: transform 0.35s var(--ios-spring);
-        }
-        .switch:checked { background: var(--ios-green); }
-        .switch:checked::before { transform: translateX(20px); }
-        [data-theme="dark"] .switch { background: #39393d; }
-
-        /* ---------------- 6. App Switcher & Lock Screen ---------------- */
-        .app-switcher {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            z-index: 2900; display: flex; align-items: center; padding: 20px; gap: 20px; overflow-x: auto;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
-        .app-switcher.active { opacity: 1; pointer-events: auto; }
-        .switcher-card {
-            min-width: 260px; height: 480px; background: var(--ios-bg); border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); padding: 16px; display: flex; flex-direction: column;
-            transition: transform 0.3s; cursor: pointer; position: relative;
-        }
-
-        .lock-screen {
-            position: fixed; inset: 0; background: linear-gradient(180deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            z-index: 4000; color: #fff; display: flex; flex-direction: column; align-items: center;
-            padding-top: calc(40px + var(--sat)); transition: transform 0.5s var(--ios-smooth);
-        }
-        .lock-screen.unlocked { transform: translateY(-100%); }
-        .ls-widgets { display: flex; gap: 12px; margin-top: 15px; }
-        .ls-widget-card { background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 16px; padding: 10px 16px; font-size: 13px; text-align: center; }
-
-        /* Face ID Authentication Animation */
-        .face-id-modal {
-            position: absolute; top: 120px; left: 50%; transform: translateX(-50%);
-            width: 100px; height: 100px; border: 3px solid rgba(255,255,255,0.4); border-radius: 24px;
-            display: flex; align-items: center; justify-content: center; font-size: 40px; opacity: 0; transition: opacity 0.3s;
-        }
-        .face-id-modal.scanning { opacity: 1; border-color: var(--ios-blue); animation: pulse 1s infinite alternate; }
-        @keyframes pulse { 0% { transform: translateX(-50%) scale(0.95); } 100% { transform: translateX(-50%) scale(1.05); } }
-
-        /* Spotlight Overlay */
-        .spotlight-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            z-index: 2600; padding: calc(60px + var(--sat)) 20px 20px; display: none; flex-direction: column; gap: 16px;
-        }
-        .spotlight-overlay.active { display: flex; }
-        .spotlight-input { width: 100%; height: 44px; border-radius: 12px; border: none; background: rgba(255,255,255,0.2); color: #fff; padding: 0 16px; font-size: 18px; outline: none; }
-
-        /* Developer Console Pro */
-        .dev-console {
-            position: fixed; bottom: calc(10px + var(--sab)); left: 10px; background: rgba(0,0,0,0.85);
-            color: #00ff00; font-family: monospace; font-size: 10px; padding: 8px 12px; border-radius: 8px;
-            z-index: 5000; pointer-events: none; display: none; width: 220px;
-        }
     </style>
 </head>
 <body>
 
 <div class="app-viewport" id="appViewport">
-
-    <!-- 1. 動態島 Dynamic Island -->
+    <!-- Dynamic Island -->
     <div class="island-container">
-        <div class="dynamic-island" id="dynamicIsland" data-action="toggle-island">
-            <div id="diMiniView" style="display:flex; align-items:center; gap:8px; width:100%; justify-content:space-between;">
-                <span id="diIcon" style="font-size:14px;">⚡</span>
-                <span id="diText" style="font-size:12px; font-weight:600;">72% 電量</span>
-            </div>
-            <div id="diExpandedView" style="display:none; color:#fff;">
-                <div style="font-size:14px; font-weight:bold;" id="diTitle">系統狀態</div>
-                <div style="font-size:12px; opacity:0.8; margin-top:4px;" id="diDesc">目前運作良好 (RAM: 4.2GB 可用)</div>
-            </div>
+        <div class="dynamic-island" id="dynamicIsland">
+            <span id="diIcon" style="font-size:14px;">⚡</span>
+            <span id="diText" style="font-size:12px; font-weight:600;">System Ready</span>
         </div>
     </div>
 
-    <!-- 2. SpringBoard 主畫面 (Home Screen) -->
-    <div class="home-screen" id="homeScreen">
-        <div class="app-icon-wrapper" data-action="launch-app" data-app="settings">
-            <div class="app-delete-btn">✕</div>
-            <div class="app-icon" style="background:#8e8e93; color:#fff;">⚙️</div>
-            <span class="app-label">設定</span>
-        </div>
-        <div class="app-icon-wrapper" data-action="launch-app" data-app="camera">
-            <div class="app-delete-btn">✕</div>
-            <div class="app-icon" style="background:#333; color:#fff;">📷</div>
-            <span class="app-label">相機</span>
-        </div>
-        <div class="app-icon-wrapper" data-action="launch-app" data-app="appstore">
-            <div class="app-delete-btn">✕</div>
-            <div class="app-icon" style="background:#007aff; color:#fff;">🅰️</div>
-            <span class="app-label">App Store</span>
-        </div>
-        <div class="app-icon-wrapper" data-action="launch-app" data-app="safari">
-            <div class="app-delete-btn">✕</div>
-            <div class="app-icon" style="background:#fff; color:#007aff;">🌐</div>
-            <span class="app-label">Safari</span>
-        </div>
-    </div>
+    <!-- SpringBoard (動態生成) -->
+    <div class="home-screen" id="homeScreen"></div>
+    <div class="dock" id="dockContainer"></div>
 
-    <!-- Dock -->
-    <div class="dock">
-        <div class="app-icon-wrapper" data-action="launch-app" data-app="settings">
-            <div class="app-icon" style="background:#8e8e93; color:#fff;">⚙️</div>
-        </div>
-        <div class="app-icon-wrapper" data-action="launch-app" data-app="safari">
-            <div class="app-icon" style="background:#fff; color:#007aff;">🌐</div>
-        </div>
-        <div class="app-icon-wrapper" data-action="launch-app" data-app="camera">
-            <div class="app-icon" style="background:#333; color:#fff;">📷</div>
-        </div>
-    </div>
-
-    <!-- 3. Navigation View 容器 -->
+    <!-- View Container -->
     <div class="view-container" id="viewContainer"></div>
-
-    <!-- 4. Control Center -->
-    <div class="control-center" id="controlCenter">
-        <div class="cc-card">
-            <div style="font-size:12px; font-weight:bold; opacity:0.8;">連線設定</div>
-            <div class="cc-grid">
-                <div class="cc-btn active" data-action="toggle-cc-wifi">📶</div>
-                <div class="cc-btn active" data-action="toggle-cc-bt">📡</div>
-                <div class="cc-btn" data-action="toggle-cc-flight">✈️</div>
-                <div class="cc-btn active" data-action="toggle-cc-airdrop">🟢</div>
-            </div>
-        </div>
-        <div class="cc-card" style="justify-content:center; align-items:center;">
-            <div class="cc-btn" id="ccSiriBtn" data-action="trigger-siri">🎙️ Siri</div>
-        </div>
-        <div class="cc-card cc-slider-container">
-            <span style="font-size:12px;">☀️ 螢幕亮度</span>
-            <input type="range" class="cc-slider" min="0.2" max="1" step="0.05" value="1" id="brightnessSlider">
-        </div>
-        <div class="cc-card cc-slider-container">
-            <span style="font-size:12px;">🔊 音量</span>
-            <input type="range" class="cc-slider" min="0" max="1" step="0.05" value="0.8">
-        </div>
-    </div>
-
-    <!-- 5. Notification Center -->
-    <div class="notification-center" id="notificationCenter">
-        <div style="font-size:20px; font-weight:bold; color:#fff; margin-bottom:8px;">通知中心</div>
-        <div id="notifList" style="display:flex; flex-direction:column; gap:10px;">
-            <div class="notif-card">
-                <div style="font-size:12px; opacity:0.7;">Messages • 剛剛</div>
-                <div style="font-weight:600;">Alex Chen</div>
-                <div style="font-size:14px; opacity:0.9;">Hey, iOS V9 WebOS 已經部署成功了嗎？</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 6. Spotlight 搜尋 -->
-    <div class="spotlight-overlay" id="spotlight">
-        <input type="text" class="spotlight-input" placeholder="搜尋 App、設定與聯絡人..." id="spotlightInput">
-        <div id="spotlightResults" style="color:#fff; font-size:15px; display:flex; flex-direction:column; gap:10px;"></div>
-    </div>
-
-    <!-- 7. App Switcher -->
-    <div class="app-switcher" id="appSwitcher"></div>
-
-    <!-- 8. Lock Screen -->
-    <div class="lock-screen" id="lockScreen" data-action="unlock">
-        <div class="face-id-modal" id="faceIdModal">🙂</div>
-        <div style="font-size:18px; margin-top:20px;">🔒</div>
-        <div style="font-size:18px; opacity:0.9; margin-top:10px;" id="lsDate">7月27日 星期一</div>
-        <div style="font-size:76px; font-weight:700;" id="lsTime">16:19</div>
-        
-        <div class="ls-widgets">
-            <div class="ls-widget-card">🌤️ 台北 28°C</div>
-            <div class="ls-widget-card" id="lsBatteryWidget">🔋 電池 72%</div>
-        </div>
-        <div style="margin-top:auto; padding-bottom:calc(30px + var(--sab)); font-size:13px; opacity:0.7;">向上滑動或點擊解鎖</div>
-    </div>
-
-    <!-- 9. Pro Console HUD -->
-    <div class="dev-console" id="devConsole">
-        <div>FPS: <span id="fpsVal">60</span> | CPU: <span id="cpuVal">12</span>%</div>
-        <div>RAM: <span id="ramVal">3.8</span>GB / 8GB</div>
-        <div>Processes: <span id="procVal">0</span> Active</div>
-    </div>
-
 </div>
 
 <script>
     /* ===================================================
-       1. Kernel Simulation (Kernel, EventBus, ProcessManager)
+       [Phase 1] Kernel & System Store (kernel.js / store.js)
     =================================================== */
     class KernelEventBus {
         constructor() { this.listeners = {}; }
@@ -414,61 +113,17 @@
     }
     const SysEvents = new KernelEventBus();
 
-    class ProcessManager {
-        constructor() {
-            this.processes = new Map();
-        }
-        launch(appId) {
-            if (!this.processes.has(appId)) {
-                this.processes.set(appId, { id: appId, status: 'active', ram: Math.floor(Math.random() * 80 + 120) });
-                SysEvents.emit('process.started', appId);
-            } else {
-                this.processes.get(appId).status = 'active';
-            }
-            this.updateStats();
-        }
-        suspend(appId) {
-            if (this.processes.has(appId)) {
-                this.processes.get(appId).status = 'suspended';
-                SysEvents.emit('process.suspended', appId);
-            }
-            this.updateStats();
-        }
-        terminate(appId) {
-            if (this.processes.has(appId)) {
-                this.processes.delete(appId);
-                SysEvents.emit('process.terminated', appId);
-            }
-            this.updateStats();
-        }
-        updateStats() {
-            let totalRam = 0;
-            this.processes.forEach(p => totalRam += p.ram);
-            document.getElementById('procVal').textContent = this.processes.size;
-            document.getElementById('ramVal').textContent = (totalRam / 1024 + 2.1).toFixed(1);
-        }
-    }
-    const OSKernel = new ProcessManager();
-
-    /* ===================================================
-       2. SVG & Store Engine
-    =================================================== */
-    function svgMask(svgContent) {
-        const fullSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">${svgContent}</svg>`;
-        return `url("data:image/svg+xml;charset=UTF-8,${encodeURIComponent(fullSvg)}")`;
-    }
-
-    const DEFAULT_STORE = {
-        version: "9.0",
-        user: { name: "Alex Chen", email: "alex.chen@apple.com" },
-        system: { theme: "auto", developerMode: true, lowPower: false },
-        battery: { level: 72, health: 98, charging: false, temperature: 31 },
-        network: { flight: false, wifi: true, bluetooth: true, airdrop: true }
-    };
-
+    // 升級版的狀態管理器，負責持久化與資料存取
     const Store = {
-        data: JSON.parse(localStorage.getItem('ios_v9_store')) || DEFAULT_STORE,
-        save() { localStorage.setItem('ios_v9_store', JSON.stringify(this.data)); },
+        data: JSON.parse(localStorage.getItem('ios_v10_store')) || {
+            version: "10.0",
+            system: { theme: "auto" },
+            apps: {
+                // 預設安裝的 App
+                settings: true, camera: true, safari: true, appstore: true, phone: true, messages: true
+            }
+        },
+        save() { localStorage.setItem('ios_v10_store', JSON.stringify(this.data)); },
         get(path) { return path.split('.').reduce((acc, part) => acc && acc[part], this.data); },
         set(path, value) {
             const parts = path.split('.');
@@ -480,361 +135,220 @@
         }
     };
 
-    function haptic(type = 'light') {
-        if (!navigator.vibrate) return;
-        if (type === 'light') navigator.vibrate(10);
-        if (type === 'medium') navigator.vibrate(20);
-        if (type === 'heavy') navigator.vibrate([30, 20, 30]);
-    }
-
     /* ===================================================
-       3. View Templates & System Apps
+       [Phase 2] App Registry (apps/registry.js)
     =================================================== */
-    const SETTINGS_GROUPS = [
-        {
-            title: "網路連線",
-            items: [
-                { id: "flight", label: "飛航模式", iconBg: "#ff9500", type: "switch", key: "network.flight", icon: '<path d="M22 16v-2l-8.5-5V3.5C13.5 2.67 12.83 2 12 2s-1.5.67-1.5 1.5V9L2 14v2l8.5-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13.5 19v-5.5L22 16z"/>' },
-                { id: "wifi", label: "Wi-Fi", iconBg: "#007aff", type: "link", target: "wifiView", value: "Home_5G", icon: '<path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98C20.93 5.9 16.69 4 12 4zm0 6c2.92 0 5.57 1.05 7.65 2.79L12 20.08l-7.65-7.29C6.43 11.05 9.08 10 12 10z"/>' }
-            ]
-        },
-        {
-            title: "系統與儲存空間",
-            items: [
-                { id: "display", label: "顯示與亮度", iconBg: "#007aff", type: "link", target: "displayView", icon: '<path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1z"/>' },
-                { id: "battery", label: "電池", iconBg: "#34c759", type: "link", target: "batteryView", value: `${Store.get('battery.level')}%`, icon: '<path d="M15.67 4H14V2h-4v2H8.33C7.6 4 7 4.6 7 5.33v15.33C7 21.4 7.6 22 8.33 22h7.33c.74 0 1.34-.6 1.34-1.33V5.33C17 4.6 16.4 4 15.67 4z"/>' },
-                { id: "storage", label: "iPhone 儲存空間", iconBg: "#ff3b30", type: "link", target: "storageView", value: "92GB / 256GB", icon: '<path d="M2 20h20v-4H2v4zm2-3h2v2H4v-2zM2 4v4h20V4H2zm4 3H4V5h2v2zm-4 7h20v-4H2v4zm2-3h2v2H4v-2z"/>' }
-            ]
-        }
-    ];
-
-    const ViewTemplates = {
-        settings: () => `
-            <div class="nav"><div style="width:70px;"></div><div class="nav-title">設定</div><div style="width:70px;"></div></div>
-            <div class="content">
-                <div class="large-title">設定</div>
-                <div class="group">
-                    <ul class="list">
-                        <li>
-                            <div class="cell" data-action="navigate" data-target="appleIdView">
-                                <div class="icon" style="background:#8e8e93;"><div class="icon-symbol" style="-webkit-mask-image:${svgMask('<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>')}"></div></div>
-                                <div class="label" style="font-weight:600;">${Store.get('user.name')}</div>
-                                <div class="chevron"></div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                ${SETTINGS_GROUPS.map(g => `
-                    <div class="group">
-                        <div class="group-title">${g.title}</div>
-                        <ul class="list">
-                            ${g.items.map(i => `
-                                <li>
-                                    <div class="cell" ${i.target ? `data-action="navigate" data-target="${i.target}"` : ''}>
-                                        <div class="icon" style="background:${i.iconBg};"><div class="icon-symbol" style="-webkit-mask-image:${svgMask(i.icon)}; mask-image:${svgMask(i.icon)};"></div></div>
-                                        <div class="label">${i.label}</div>
-                                        ${i.type === 'switch' ? `<input class="switch" type="checkbox" data-action="toggle" data-key="${i.key}" ${Store.get(i.key) ? 'checked' : ''}>` : ''}
-                                        ${i.value ? `<div class="value">${i.value}</div>` : ''}
-                                        ${i.type === 'link' ? `<div class="chevron"></div>` : ''}
-                                    </div>
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                `).join('')}
-            </div>
-        `,
-        camera: () => `
-            <div class="nav"><div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>主畫面</span></div><div class="nav-title">相機</div><div style="width:70px;"></div></div>
-            <div class="content" style="text-align:center;">
-                <video id="cameraVideo" autoplay playsinline style="width:92%; height:380px; background:#000; border-radius:24px; object-fit:cover; margin-top:10px;"></video>
-                <div style="margin-top:20px; display:flex; justify-content:center; gap:20px;">
-                    <button data-action="start-camera" style="padding:12px 24px; border-radius:20px; border:none; background:var(--ios-blue); color:#fff; font-size:16px; font-weight:600;">開啟相機取景</button>
-                </div>
-            </div>
-        `,
-        appstore: () => `
-            <div class="nav"><div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>主畫面</span></div><div class="nav-title">App Store</div><div style="width:70px;"></div></div>
-            <div class="content">
-                <div class="large-title">App Store</div>
-                <div class="group">
-                    <ul class="list">
-                        <li>
-                            <div class="cell">
-                                <div class="icon" style="background:#ff2d55;"><span style="color:#fff;">🎵</span></div>
-                                <div class="label">Apple Music</div>
-                                <button data-action="install-app" data-appname="Music" style="padding:4px 12px; border-radius:12px; border:none; background:var(--ios-blue); color:#fff;">取得</button>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        `,
-        safari: () => `
-            <div class="nav"><div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>主畫面</span></div><div class="nav-title">Safari</div><div style="width:70px;"></div></div>
-            <div class="content" style="padding:16px;">
-                <input type="text" value="https://www.apple.com" style="width:100%; height:40px; border-radius:10px; border:1px solid var(--ios-border); padding:0 12px; background:var(--ios-card); color:var(--ios-text);">
-                <div style="margin-top:20px; text-align:center; color:var(--ios-sub);">WebOS Built-in Web Browser</div>
-            </div>
-        `,
-        storageView: () => `
-            <div class="nav"><div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>設定</span></div><div class="nav-title">iPhone 儲存空間</div><div style="width:70px;"></div></div>
-            <div class="content">
-                <div class="group">
-                    <div style="height:20px; background:#e5e5ea; border-radius:10px; overflow:hidden; display:flex; margin-bottom:12px;">
-                        <div style="width:35%; background:#ff3b30;"></div>
-                        <div style="width:25%; background:#007aff;"></div>
-                        <div style="width:10%; background:#34c759;"></div>
-                    </div>
-                    <div style="font-size:13px; color:var(--ios-sub);">已使用 92 GB / 256 GB</div>
-                </div>
-            </div>
-        `,
-        batteryView: () => `
-            <div class="nav"><div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>設定</span></div><div class="nav-title">電池</div><div style="width:70px;"></div></div>
-            <div class="content">
-                <div class="group"><ul class="list">
-                    <li><div class="cell"><div class="label">電池健康度</div><div class="value">${Store.get('battery.health')}%</div></div></li>
-                    <li><div class="cell"><div class="label">低耗電模式</div><input class="switch" type="checkbox" data-action="toggle" data-key="system.lowPower" ${Store.get('system.lowPower') ? 'checked' : ''}></div></li>
-                </ul></div>
-            </div>
-        `,
-        displayView: () => `
-            <div class="nav"><div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>設定</span></div><div class="nav-title">顯示與亮度</div><div style="width:70px;"></div></div>
-            <div class="content">
-                <div class="group"><ul class="list">
-                    <li><div class="cell"><div class="label">深色模式</div><input class="switch" type="checkbox" data-action="toggle-dark" ${Store.get('system.theme') === 'dark' ? 'checked' : ''}></div></li>
-                </ul></div>
-            </div>
-        `
+    const AppRegistry = {
+        settings: { name: "設定", icon: "⚙️", bg: "#8e8e93", isSystem: true, inDock: true },
+        safari: { name: "Safari", icon: "🌐", bg: "#fff", color: "#007aff", isSystem: true, inDock: true },
+        camera: { name: "相機", icon: "📷", bg: "#333", isSystem: true },
+        appstore: { name: "App Store", icon: "🅰️", bg: "#007aff", isSystem: true },
+        phone: { name: "電話", icon: "📞", bg: "#34c759", isSystem: true, inDock: true },
+        messages: { name: "訊息", icon: "💬", bg: "#34c759", isSystem: true, inDock: true },
+        photos: { name: "照片", icon: "🌄", bg: "#fff", isSystem: false },
+        music: { name: "音樂", icon: "🎵", bg: "#ff2d55", isSystem: false },
+        maps: { name: "地圖", icon: "🗺️", bg: "#34c759", isSystem: false }
     };
 
     /* ===================================================
-       4. View Router & Stack Manager
+       [Phase 1] View Manager (修復 DOM 記憶體洩漏)
     =================================================== */
-    const viewContainer = document.getElementById('viewContainer');
-    const viewCache = new Map();
-    const historyStack = [];
+    class ViewManager {
+        constructor() {
+            this.stack = [];
+            this.cache = {}; // 只暫存活躍的 View
+            this.container = document.getElementById('viewContainer');
+        }
 
-    const Router = {
-        getView(viewId) {
-            if (!viewCache.has(viewId)) {
+        mount(appId) {
+            if (!this.cache[appId]) {
                 const el = document.createElement('div');
-                el.className = `view ${historyStack.length > 0 ? 'sub-page' : ''}`;
-                el.id = viewId;
-                el.innerHTML = ViewTemplates[viewId] ? ViewTemplates[viewId]() : '';
-                viewContainer.appendChild(el);
-                viewCache.set(viewId, el);
+                el.className = `view ${this.stack.length > 0 ? 'sub-page' : ''}`;
+                el.id = appId;
+                
+                // 動態取得 View Template
+                el.innerHTML = ViewTemplates[appId] ? ViewTemplates[appId]() : `
+                    <div class="nav"><div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>返回</span></div><div class="nav-title">${AppRegistry[appId]?.name || appId}</div><div style="width:70px;"></div></div>
+                    <div class="content"><div class="large-title">開發中...</div></div>
+                `;
+                this.container.appendChild(el);
+                this.cache[appId] = el;
             }
-            return viewCache.get(viewId);
-        },
-        push(viewId) {
-            haptic('light');
-            OSKernel.launch(viewId);
-            const currentId = historyStack.at(-1);
-            const nextEl = this.getView(viewId);
+            return this.cache[appId];
+        }
+
+        destroy(appId) {
+            if (this.cache[appId]) {
+                // 等待動畫結束後移除 DOM
+                setTimeout(() => {
+                    if (this.cache[appId]) {
+                        this.cache[appId].remove();
+                        delete this.cache[appId];
+                    }
+                }, 400);
+            }
+        }
+
+        push(appId) {
+            const currentId = this.stack.at(-1);
+            const nextEl = this.mount(appId);
 
             nextEl.classList.add('mounted');
             requestAnimationFrame(() => {
-                if (currentId) this.getView(currentId).classList.add('parent-pushed');
+                if (currentId) this.cache[currentId].classList.add('parent-pushed');
                 nextEl.classList.add('active');
             });
-            historyStack.push(viewId);
-            document.getElementById('homeScreen').style.opacity = '0';
-            document.getElementById('homeScreen').style.pointerEvents = 'none';
-        },
+            this.stack.push(appId);
+            
+            if (this.stack.length === 1) {
+                document.getElementById('homeScreen').style.opacity = '0';
+                document.getElementById('homeScreen').style.pointerEvents = 'none';
+            }
+        }
+
         pop() {
-            if (historyStack.length === 0) return;
-            haptic('light');
-            const topId = historyStack.pop();
-            const topEl = this.getView(topId);
-            OSKernel.suspend(topId);
+            if (this.stack.length === 0) return;
+            const topId = this.stack.pop();
+            const topEl = this.cache[topId];
 
             topEl.classList.remove('active');
-            const parentId = historyStack.at(-1);
+            const parentId = this.stack.at(-1);
+            
             if (parentId) {
-                this.getView(parentId).classList.remove('parent-pushed');
+                this.cache[parentId].classList.remove('parent-pushed');
             } else {
                 document.getElementById('homeScreen').style.opacity = '1';
                 document.getElementById('homeScreen').style.pointerEvents = 'auto';
             }
 
-            setTimeout(() => { topEl.classList.remove('mounted'); }, 400);
+            // 真正釋放資源 (Phase 1 修復)
+            this.destroy(topId);
+        }
+    }
+    const Router = new ViewManager();
+
+    /* ===================================================
+       [Phase 3] App Store & SpringBoard Engine (springboard.js)
+    =================================================== */
+    const SpringBoard = {
+        render() {
+            const home = document.getElementById('homeScreen');
+            const dock = document.getElementById('dockContainer');
+            home.innerHTML = '';
+            dock.innerHTML = '';
+
+            const installed = Store.get('apps');
+            
+            Object.keys(AppRegistry).forEach(id => {
+                if (!installed[id]) return;
+                
+                const app = AppRegistry[id];
+                const isJiggling = home.classList.contains('jiggle');
+                const deleteBtn = !app.isSystem ? `<div class="app-delete-btn" data-action="uninstall-app" data-appid="${id}">✕</div>` : '';
+                
+                const html = `
+                    <div class="app-icon-wrapper" data-action="${isJiggling ? '' : 'launch-app'}" data-app="${id}">
+                        ${deleteBtn}
+                        <div class="app-icon" style="background:${app.bg}; color:${app.color || '#fff'};">${app.icon}</div>
+                        <span class="app-label">${app.inDock ? '' : app.name}</span>
+                    </div>
+                `;
+
+                if (app.inDock) dock.innerHTML += html;
+                else home.innerHTML += html;
+            });
+        },
+        
+        install(id) {
+            Store.set(`apps.${id}`, true);
+            this.render();
+            alert(`已安裝 ${AppRegistry[id].name} 至主畫面`);
+        },
+        
+        uninstall(id) {
+            if (AppRegistry[id].isSystem) return;
+            Store.set(`apps.${id}`, false);
+            this.render();
         }
     };
 
+    /* App 模板定義 */
+    const ViewTemplates = {
+        appstore: () => `
+            <div class="nav"><div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>主畫面</span></div><div class="nav-title">App Store</div><div style="width:70px;"></div></div>
+            <div class="content">
+                <div class="large-title">探索 App</div>
+                <div class="group">
+                    <ul class="list">
+                        ${Object.keys(AppRegistry).filter(id => !AppRegistry[id].isSystem).map(id => `
+                            <li>
+                                <div class="cell">
+                                    <div class="icon" style="background:${AppRegistry[id].bg}; font-size:18px;">${AppRegistry[id].icon}</div>
+                                    <div class="label">${AppRegistry[id].name}</div>
+                                    <button data-action="install-app" data-appid="${id}" style="padding:6px 16px; border-radius:14px; border:none; background:var(--ios-blue); color:#fff; font-weight:bold;">取得</button>
+                                </div>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            </div>
+        `
+    };
+
     /* ===================================================
-       5. Global Interaction Engine & Event Delegation
+       Global Event Listener (事件代理)
     =================================================== */
     document.addEventListener('click', e => {
         const target = e.target.closest('[data-action]');
         if (!target) return;
 
         const action = target.dataset.action;
-        if (action === 'navigate') Router.push(target.dataset.target);
-        if (action === 'pop') Router.pop();
         if (action === 'launch-app') Router.push(target.dataset.app);
-        if (action === 'unlock') triggerFaceID();
-        if (action === 'toggle-island') toggleIsland();
-        if (action === 'start-camera') initCamera();
-        if (action === 'trigger-siri') triggerSiri();
+        if (action === 'pop') Router.pop();
         if (action === 'install-app') {
-            alert('已安裝 ' + target.dataset.appname + ' 至主畫面');
-            haptic('medium');
+            SpringBoard.install(target.dataset.appid);
+            // 安裝後稍微震動回饋 (若裝置支援)
+            if (navigator.vibrate) navigator.vibrate(20);
+        }
+        if (action === 'uninstall-app') {
+            e.stopPropagation(); // 防止觸發 launch-app
+            SpringBoard.uninstall(target.dataset.appid);
+            if (navigator.vibrate) navigator.vibrate([20, 50, 20]);
         }
     });
 
-    document.addEventListener('change', e => {
-        const target = e.target.closest('[data-action]');
-        if (!target) return;
-
-        if (target.dataset.action === 'toggle') {
-            Store.set(target.dataset.key, target.checked);
-            haptic('light');
-        }
-        if (target.dataset.action === 'toggle-dark') {
-            Store.set('system.theme', target.checked ? 'dark' : 'light');
-            syncTheme();
-            haptic('medium');
-        }
-    });
-
-    /* Long Press Handler for Jiggle Mode */
+    /* Jiggle Mode (長按編輯主畫面) */
     let longPressTimer;
-    document.getElementById('homeScreen').addEventListener('touchstart', () => {
+    document.getElementById('homeScreen').addEventListener('touchstart', (e) => {
+        if (e.target.closest('[data-action="uninstall-app"]')) return;
         longPressTimer = setTimeout(() => {
             document.getElementById('homeScreen').classList.add('jiggle');
-            haptic('heavy');
+            document.getElementById('dockContainer').classList.add('jiggle');
+            if (navigator.vibrate) navigator.vibrate([40, 20, 40]);
+            SpringBoard.render(); // 重新渲染以綁定/解綁點擊事件
         }, 800);
     }, { passive: true });
+    
     document.getElementById('homeScreen').addEventListener('touchend', () => clearTimeout(longPressTimer));
-
-    /* Face ID & Unlock Engine */
-    function triggerFaceID() {
-        const modal = document.getElementById('faceIdModal');
-        modal.classList.add('scanning');
-        haptic('medium');
-        setTimeout(() => {
-            modal.classList.remove('scanning');
-            document.getElementById('lockScreen').classList.add('unlocked');
-            haptic('light');
-        }, 800);
-    }
-
-    /* Dynamic Island Control */
-    function toggleIsland() {
-        const island = document.getElementById('dynamicIsland');
-        const isExp = island.classList.toggle('expanded');
-        document.getElementById('diMiniView').style.display = isExp ? 'none' : 'flex';
-        document.getElementById('diExpandedView').style.display = isExp ? 'block' : 'none';
-        haptic('light');
-    }
-
-    /* Siri Assistant Simulation */
-    function triggerSiri() {
-        const island = document.getElementById('dynamicIsland');
-        island.classList.add('siri-active');
-        haptic('heavy');
-
-        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-            const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
-            const rec = new Speech();
-            rec.lang = 'zh-TW';
-            rec.start();
-            rec.onresult = (e) => {
-                const text = e.results[0][0].transcript;
-                alert('Siri 收到指令: ' + text);
-                island.classList.remove('siri-active');
-            };
-            rec.onerror = () => island.classList.remove('siri-active');
-        } else {
-            setTimeout(() => {
-                alert('Siri: 你好！我是你的 iOS WebOS 語音助理。');
-                island.classList.remove('siri-active');
-            }, 1000);
-        }
-    }
-
-    /* Camera API Integration */
-    async function initCamera() {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            const video = document.getElementById('cameraVideo');
-            if (video) video.srcObject = stream;
-        } catch (err) {
-            alert('無法獲取相機權限: ' + err.message);
-        }
-    }
-
-    function syncTheme() {
-        const theme = Store.get('system.theme');
-        if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
-        else if (theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
-        else document.documentElement.removeAttribute('data-theme');
-    }
-
-    /* Gesture Navigation & Control Center Pull */
-    let touchStartY = 0, touchStartX = 0;
-    document.addEventListener('touchstart', e => {
-        touchStartY = e.touches[0].clientY;
-        touchStartX = e.touches[0].clientX;
-    }, { passive: true });
-
-    document.addEventListener('touchend', e => {
-        const deltaY = e.changedTouches[0].clientY - touchStartY;
-        const startY = touchStartY;
-
-        // 右上角向下滑動 -> Control Center
-        if (startY < 60 && touchStartX > window.innerWidth - 100 && deltaY > 80) {
-            document.getElementById('controlCenter').classList.add('active');
-            haptic('medium');
-        }
-        // 左上/頂部向下滑動 -> Notification Center
-        else if (startY < 60 && touchStartX < window.innerWidth - 100 && deltaY > 80) {
-            document.getElementById('notificationCenter').classList.add('active');
-            haptic('medium');
-        }
-        // 向上滑動關閉選單
-        if (deltaY < -100) {
-            document.getElementById('controlCenter').classList.remove('active');
-            document.getElementById('notificationCenter').classList.remove('active');
+    
+    // 點擊空白處解除 Jiggle Mode
+    document.getElementById('homeScreen').addEventListener('click', (e) => {
+        if (e.target.id === 'homeScreen' && e.target.classList.contains('jiggle')) {
             document.getElementById('homeScreen').classList.remove('jiggle');
+            document.getElementById('dockContainer').classList.remove('jiggle');
+            SpringBoard.render();
         }
     });
 
-    /* Hardware Sensor Engine */
-    if (window.DeviceMotionEvent) {
-        window.addEventListener('devicemotion', (e) => {
-            SysEvents.emit('sensor.motion', e.acceleration);
-        });
-    }
-
-    /* Pro FPS Counter */
-    let lastTime = performance.now(), frames = 0;
-    function loopFPS() {
-        const now = performance.now();
-        frames++;
-        if (now > lastTime + 1000) {
-            document.getElementById('fpsVal').textContent = Math.round((frames * 1000) / (now - lastTime));
-            lastTime = now; frames = 0;
-        }
-        requestAnimationFrame(loopFPS);
-    }
-
-    if (Store.get('system.developerMode')) {
-        document.getElementById('devConsole').style.display = 'block';
-        loopFPS();
-    }
-
-    /* Auto PWA ServiceWorker Injector */
+    /* 啟動 Service Worker */
     if ('serviceWorker' in navigator) {
-        const swCode = `self.addEventListener('fetch', function(e) { e.respondWith(fetch(e.request)); });`;
-        const blob = new Blob([swCode], { type: 'text/javascript' });
-        navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(() => console.log('V10 Service Worker 註冊成功'))
+            .catch(err => console.error('SW 註冊失敗', err));
     }
 
-    // System Init
-    syncTheme();
+    // 初始化系統
+    SpringBoard.render();
 </script>
 </body>
 </html>
