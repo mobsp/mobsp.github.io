@@ -171,11 +171,12 @@
                         });
 
                     } catch (error) {
-                        const contentContainer = el.querySelector('.spa-content');
-                        if (contentContainer) {
-                            contentContainer.innerHTML = `<div style="padding: 40px; text-align: center; color: #ff375f;">無法載入頁面內容，請確認路徑或網路連線。</div>`;
-                        }
-                    }
+    const contentContainer = el.querySelector('.spa-content');
+    if (contentContainer) {
+        contentContainer.innerHTML = `<div style="padding: 20px; color: #ff375f; word-break: break-all;">載入失敗原因：${error.message} (路徑: ${data.url})</div>`;
+    }
+}
+
                     return el;
                 }
 
