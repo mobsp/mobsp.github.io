@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-TW" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>網站導覽 - 莫比空間 (Beta)</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#000000">
+    <link rel="sitemap" type="application/xml" href="https://mobsp.qzz.io/sitemap.xml">
+
+    <style>
+        :root {
+            --ios-bg: #000000;
+            --ios-card: #1c1c1e;
+            --ios-pressed: #2c2c2e;
+            --ios-text: #ffffff;
+            --ios-sub: #8e8e93;
+            --ios-border: #38383a;
+            --ios-blue: #0a84ff;
+            --sat: env(safe-area-inset-top, 0px);
+            --sab: env(safe-area-inset-bottom, 0px);
+            --ios-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+        html, body { width: 100%; height: 100%; height: 100dvh; background: var(--ios-bg); color: var(--ios-text); font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif; overflow: hidden; }
+
+        .app-viewport { position: relative; width: 100%; height: 100%; background: var(--ios-bg); overflow: hidden; }
+        .view-container { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+        
+        /* iOS 頁面切換核心動畫 (Push / Pop) */
+        .view { position: absolute; inset: 0; background: var(--ios-bg); color: var(--ios-text); display: flex; flex-direction: column; overflow: hidden; transition: transform 0.4s var(--ios-smooth), opacity 0.35s ease; z-index: 1; display: none; pointer-events: auto; }
+        .view.mounted { display: flex; }
+        .view.sub-page { transform: translateX(100%); z-index: 10; box-shadow: -12px 0 40px rgba(0,0,0,0.5); }
+        .view.sub-page.active { transform: translateX(0); }
+        .view.parent-pushed { transform: translateX(-25%); opacity: 0.85; }
+
+        /* Navigation Bar */
+        .nav { position: sticky; top: 0; height: calc(44px + var(--sat)); padding-top: var(--sat); display: flex; justify-content: space-between; align-items: center; padding-inline: 8px; z-index: 99; background: rgba(28, 28, 30, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 0.5px solid var(--ios-border); flex-shrink: 0; }
+        .nav-back { display: flex; align-items: center; color: var(--ios-blue); font-size: 17px; cursor: pointer; padding: 4px 8px; }
+        .nav-back-arrow { width: 10px; height: 10px; border-left: 2px solid var(--ios-blue); border-bottom: 2px solid var(--ios-blue); transform: rotate(45deg); margin-right: 6px; }
+        .nav-title { font-size: 17px; font-weight: 600; text-align: center; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .content { flex: 1; overflow-y: auto; padding-top: 12px; padding-bottom: calc(20px + var(--sab)); }
+
+        /* 列表結構 */
+        .group { margin: 0 16px 20px; }
+        .list { list-style: none; background: var(--ios-card); border-radius: 10px; overflow: hidden; }
+        .cell { position: relative; display: flex; align-items: center; min-height: 48px; padding: 8px 16px; cursor: pointer; }
+        .cell:active { background: var(--ios-pressed); }
+        
+        .list li:not(:last-child) .cell::after { content: ""; position: absolute; inset-inline-start: 52px; inset-inline-end: 0; bottom: 0; height: 0.5px; background: var(--ios-border); }
+        
+        .cell-icon { width: 29px; height: 29px; border-radius: 6px; margin-right: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #fff; font-size: 15px; }
+        .cell-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .cell-label { font-size: 17px; }
+        .cell-sub { font-size: 13px; color: var(--ios-sub); }
+        .chevron { width: 7px; height: 7px; border-top: 2px solid var(--ios-sub); border-right: 2px solid var(--ios-sub); transform: rotate(45deg); margin-left: 6px; flex-shrink: 0; }
+
+        /* SPA 內容渲染容器 */
+        .spa-content { flex: 1; width: 100%; height: 100%; overflow-y: auto; background: var(--ios-bg); color: var(--ios-text); }
+    </style>
+</head>
+<body>
+
+<div class="app-viewport">
+    <div class="view-container" id="viewContainer"></div>
+</div>
+
+<script>
+    /* 註冊 Service Worker (放置於根目錄) */
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('../sw.js')
+            .then(() => console.log('Service Worker 註冊成功！'))
+            .catch(err => console.log('Service Worker 註冊失敗:', err));
+    }
+
+    /* 莫比空間 網站導覽清單 (因為檔案在 beta/tst.html，子頁面路徑需往上一層 '../') */
+    const websites = [
+        { id: 'site_entry1', name: '①號導覽入口', sub: '莫比空間主導覽', icon: '🌐', bg: '#0a84ff', url: '../index.html' },
+        { id: 'site_entry2', name: '❷號導覽入口', sub: '新版入口 - 工程師努力建設中 (不停機同步更新)', icon: '🚀', bg: '#30d158', url: '../Mobsp-System/index.html' },
+        { id: 'site_blog', name: '部落格', sub: '最新文章與專欄分享', icon: '✍️', bg: '#ff9f0a', url: '../blog/index.html' },
+        { id: 'site_music', name: '莫比音樂頻道', sub: '探索音樂與靈感', icon: '🎵', bg: '#ff375f', url: '../music/index.html' },
+        { id: 'site_shorts', name: 'Shorts', sub: '短影音專區', icon: '📱', bg: '#5856d6', url: '../shots/index.html' },
+        { id: 'site_tol', name: '工具庫', sub: '實用工具與開發資源', icon: '🛠️', bg: '#64d2ff', url: '../tol/index.html' },
+        { id: 'site_wiki', name: '支援中心', sub: '常見問題與說明文件', icon: '📖', bg: '#ac8e68', url: '../wiki/index.html' },
+        { id: 'site_setting', name: '控制中心', sub: '系統設定與偏好管理', icon: '⚙️', bg: '#8e8e93', url: '../setting/index.html' }
+    ];
+
+    class Router {
+        constructor() {
+            this.stack = [];
+            this.cache = {};
+            this.container = document.getElementById('viewContainer');
+        }
+
+        async mount(viewId, data = null) {
+            if (!this.cache[viewId]) {
+                const el = document.createElement('div');
+                el.className = `view ${this.stack.length > 0 ? 'sub-page' : ''}`;
+                el.id = viewId;
+
+                if (viewId === 'main') {
+                    // 主目錄頁面
+                    el.innerHTML = `
+                        <div class="nav"><div class="nav-title">Ⲙ𝔬ⲃⳝ𝔭 (Beta)</div></div>
+                        <div class="content">
+                            <div class="group">
+                                <ul class="list">
+                                    ${websites.map(site => `
+                                        <li>
+                                            <div class="cell" data-action="push-site" data-id="${site.id}">
+                                                <div class="cell-icon" style="background: ${site.bg};">${site.icon}</div>
+                                                <div class="cell-content">
+                                                    <div class="cell-label">${site.name}</div>
+                                                    <div class="cell-sub">${site.sub}</div>
+                                                </div>
+                                                <div class="chevron"></div>
+                                            </div>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // 子頁面：右側滑入後，利用 Fetch 載入對應頁面並渲染，同時自動執行內部 <script>
+                    el.innerHTML = `
+                        <div class="nav">
+                            <div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>返回</span></div>
+                            <div class="nav-title">${data.name}</div>
+                            <div style="width: 50px;"></div>
+                        </div>
+                        <div class="spa-content">
+                            <div style="padding: 40px; text-align: center; color: var(--ios-sub);">載入中...</div>
+                        </div>
+                    `;
+
+                    this.container.appendChild(el);
+                    this.cache[viewId] = el;
+
+                    try {
+                        const response = await fetch(data.url);
+                        const htmlText = await response.text();
+                        
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(htmlText, 'text/html');
+                        
+                        const contentContainer = el.querySelector('.spa-content');
+                        contentContainer.innerHTML = doc.body ? doc.body.innerHTML : htmlText;
+
+                        // 自動找出並重新執行被抓回來的 <script> 標籤
+                        const scripts = contentContainer.querySelectorAll('script');
+                        scripts.forEach(oldScript => {
+                            const newScript = document.createElement('script');
+                            Array.from(oldScript.attributes).forEach(attr => {
+                                newScript.setAttribute(attr.name, attr.value);
+                            });
+                            if (oldScript.innerHTML) {
+                                newScript.innerHTML = oldScript.innerHTML;
+                            }
+                            oldScript.parentNode.replaceChild(newScript, oldScript);
+                        });
+
+                        // 同步引入子頁面的獨立樣式 (CSS)
+                        const styles = doc.querySelectorAll('link[rel="stylesheet"], style');
+                        styles.forEach(style => {
+                            el.appendChild(style.cloneNode(true));
+                        });
+
+                    } catch (error) {
+                        const contentContainer = el.querySelector('.spa-content');
+                        if (contentContainer) {
+                            contentContainer.innerHTML = `<div style="padding: 40px; text-align: center; color: #ff375f;">無法載入頁面內容，請確認路徑或網路連線。</div>`;
+                        }
+                    }
+                    return el;
+                }
+
+                this.container.appendChild(el);
+                this.cache[viewId] = el;
+            }
+            return this.cache[viewId];
+        }
+
+        async push(viewId, data = null) {
+            const currentId = this.stack.at(-1);
+            const nextEl = await this.mount(viewId, data);
+            nextEl.classList.add('mounted');
+            
+            requestAnimationFrame(() => {
+                if (currentId) this.cache[currentId].classList.add('parent-pushed');
+                nextEl.classList.add('active');
+            });
+            this.stack.push(viewId);
+        }
+
+        pop() {
+            if (this.stack.length <= 1) return;
+            const topId = this.stack.pop();
+            const topEl = this.cache[topId];
+
+            topEl.classList.remove('active');
+            const parentId = this.stack.at(-1);
+            if (parentId) this.cache[parentId].classList.remove('parent-pushed');
+
+            setTimeout(() => {
+                topEl.remove();
+                delete this.cache[topId];
+            }, 400);
+        }
+    }
+
+    const appRouter = new Router();
+
+    /* 監聽點擊事件 */
+    document.addEventListener('click', e => {
+        const target = e.target.closest('[data-action]');
+        if (!target) return;
+
+        const action = target.dataset.action;
+        if (action === 'push-site') {
+            const siteId = target.dataset.id;
+            const siteData = websites.find(s => s.id === siteId);
+            if (siteData) {
+                appRouter.push(siteId, siteData);
+            }
+        } else if (action === 'pop') {
+            appRouter.pop();
+        }
+    });
+
+    // 初始化載入主畫面
+    appRouter.push('main');
+</script>
+</body>
+</html>
