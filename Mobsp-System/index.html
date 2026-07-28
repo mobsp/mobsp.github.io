@@ -8,6 +8,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#000000">
+    <link rel="sitemap" type="application/xml" href="https://mobsp.qzz.io/sitemap.xml">
 
     <style>
         :root {
@@ -43,11 +44,9 @@
         .nav-title { font-size: 17px; font-weight: 600; text-align: center; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .content { flex: 1; overflow-y: auto; padding-top: 12px; padding-bottom: calc(20px + var(--sab)); }
-        .large-title { padding: 4px 20px 12px; font-size: 34px; font-weight: 700; letter-spacing: 0.38px; }
 
         /* 列表結構 */
         .group { margin: 0 16px 20px; }
-        .group-header { font-size: 13px; color: var(--ios-sub); margin-bottom: 6px; padding-left: 16px; text-transform: uppercase; }
         .list { list-style: none; background: var(--ios-card); border-radius: 10px; overflow: hidden; }
         .cell { position: relative; display: flex; align-items: center; min-height: 48px; padding: 8px 16px; cursor: pointer; }
         .cell:active { background: var(--ios-pressed); }
@@ -71,11 +70,16 @@
 </div>
 
 <script>
-    /* 定義你的網站清單資料：點擊後要滑入並載入哪一個網址 */
+    /* 莫比空間 網站導覽清單 */
     const websites = [
-        { id: 'site_github', name: 'GitHub', sub: '程式碼代管與協作平台', icon: '🐙', bg: '#333', url: 'https://github.com' },
-        { id: 'site_mdn', name: 'MDN Web Docs', sub: '前端開發者權威文件', icon: '📖', bg: '#f0db4f', url: 'https://developer.mozilla.org' },
-        { id: 'site_wiki', name: '維基百科', sub: '自由的百科全書', icon: '🌍', bg: '#0a84ff', url: 'https://zh.wikipedia.org' }
+        { id: 'site_entry1', name: '①號導覽入口', sub: '莫比空間主導覽', icon: '🌐', bg: '#0a84ff', url: 'https://mobsp.qzz.io' },
+        { id: 'site_entry2', name: '❷號導覽入口', sub: '新版入口 - 工程師努力建設中 (不停機同步更新)', icon: '🚀', bg: '#30d158', url: 'https://mobsp.qzz.io/Mobsp-System/' },
+        { id: 'site_blog', name: '部落格', sub: '最新文章與專欄分享', icon: '✍️', bg: '#ff9f0a', url: 'https://mobsp.qzz.io/blog/' },
+        { id: 'site_music', name: '莫比音樂頻道', sub: '探索音樂與靈感', icon: '🎵', bg: '#ff375f', url: 'https://mobsp.qzz.io/music/' },
+        { id: 'site_shorts', name: 'Shorts', sub: '短影音專區', icon: '📱', bg: '#5856d6', url: 'https://mobsp.qzz.io/shots/' },
+        { id: 'site_tol', name: '工具庫', sub: '實用工具與開發資源', icon: '🛠️', bg: '#64d2ff', url: 'https://mobsp.qzz.io/tol/' },
+        { id: 'site_wiki', name: '支援中心', sub: '常見問題與說明文件', icon: '📖', bg: '#ac8e68', url: 'https://mobsp.qzz.io/wiki/' },
+        { id: 'site_setting', name: '控制中心', sub: '系統設定與偏好管理', icon: '⚙️', bg: '#8e8e93', url: 'https://mobsp.qzz.io/setting/' }
     ];
 
     class Router {
@@ -92,12 +96,10 @@
                 el.id = viewId;
 
                 if (viewId === 'main') {
-                    // 主目錄頁面
+                    // 主目錄頁面（已移除標題文字，改為簡潔排版）
                     el.innerHTML = `
                         <div class="nav"><div class="nav-title">Ⲙ𝔬ⲃⳝ𝔭</div></div>
                         <div class="content">
-                            <div class="large-title">"❗️移除目錄標題,改成自適應的標題圖"</div>
-                            <div class="group-header">"❕移除此功能"</div>
                             <div class="group">
                                 <ul class="list">
                                     ${websites.map(site => `
@@ -174,7 +176,6 @@
             const siteId = target.dataset.id;
             const siteData = websites.find(s => s.id === siteId);
             if (siteData) {
-                // 以網址 ID 作為唯一的 View ID 進行推入
                 appRouter.push(siteId, siteData);
             }
         } else if (action === 'pop') {
