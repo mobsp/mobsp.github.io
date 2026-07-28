@@ -70,14 +70,14 @@
 </div>
 
 <script>
-    /* 註冊 Service Worker (放置於根目錄) */
+    /* 註冊 Service Worker (指向根目錄的 sw.js) */
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('../sw.js')
             .then(() => console.log('Service Worker 註冊成功！'))
             .catch(err => console.log('Service Worker 註冊失敗:', err));
     }
 
-    /* 莫比空間 網站導覽清單 (因為檔案在 beta/tst.html，子頁面路徑需往上一層 '../') */
+    /* 莫比空間 網站導覽清單 (位於 beta/ 內，路徑需退回上一層 '../') */
     const websites = [
         { id: 'site_entry1', name: '①號導覽入口', sub: '莫比空間主導覽', icon: '🌐', bg: '#0a84ff', url: '../index.html' },
         { id: 'site_entry2', name: '❷號導覽入口', sub: '新版入口 - 工程師努力建設中 (不停機同步更新)', icon: '🚀', bg: '#30d158', url: '../Mobsp-System/index.html' },
@@ -126,7 +126,7 @@
                         </div>
                     `;
                 } else {
-                    // 子頁面：右側滑入後，利用 Fetch 載入對應頁面並渲染，同時自動執行內部 <script>
+                    // 子頁面：Fetch 載入 + 自動執行 Script
                     el.innerHTML = `
                         <div class="nav">
                             <div class="nav-back" data-action="pop"><div class="nav-back-arrow"></div><span>返回</span></div>
