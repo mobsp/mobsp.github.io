@@ -9,6 +9,8 @@
     <title>緹緹的秘密藏書閣</title>
     <link rel="manifest" href="./manifest.json">
     <script src="./marked.js"></script>
+    <!-- 引入 DOMPurify 進行 XSS 安全淨化 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.8/purify.min.js"></script>
     <style>
         /* ======================== iOS 全局 CSS 重設與防拷貝設定 ======================== */
         * {
@@ -341,7 +343,7 @@
     }, 500);
 
     /* =========================================================================
-       2️⃣ Base64 書庫解密與列表加載處理
+       2️⃣ Base64 書庫解密與列表加載處理 (整合非同步串流大檔案解密 & DOMPurify XSS 淨化)
        ========================================================================= */
     let currentArticleId = null;
 
@@ -368,21 +370,29 @@
         document.getElementById('list-container').style.display = 'none';
         document.getElementById('reader-box').style.display = 'block';
         document.getElementById('nav-left-btn').style.display = 'inline';
-        document.getElementById('header-title').innerText = '正在解密中...';
+        document.getElementById('header-title').innerText = '正在安全解密中...';
 
         try {
             const response = await fetch(`info/${filename}`);
             const base64Text = await response.text();
-            // 清理斷行字元並以 UTF-8 TextDecoder 解密
             const cleaned = base64Text.trim().replace(/[\r\n]+/g, '');
-            const binary = atob(cleaned);
-            const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
-            const decodedMd = new TextDecoder('utf-8').decode(bytes);
 
-            // 如果開啟了純文字模式則渲染原字串，否則利用 marked.js 渲染 Markdown
+            // 💡 方案一：非同步串流解碼，防止大檔案卡死主執行緒
+            const decodedMd = await base64ToUtf8Async(cleaned);
+
+            // 如果開啟了純文字模式則渲染原字串，否則利用 marked.js 渲染 Markdown 並經由 DOMPurify 淨化
             const isPure = document.body.classList.contains('pure-text-mode');
             document.getElementById('article-title').innerText = title;
-            document.getElementById('article-body').innerHTML = isPure ? decodedMd : marked.parse(decodedMd);
+            
+            if (isPure) {
+                document.getElementById('article-body').innerText = decodedMd;
+            } else {
+                const rawHtml = marked.parse(decodedMd);
+                // 💡 方案二：DOMPurify 徹底清洗 HTML，杜絕 XSS
+                const safeHtml = DOMPurify.sanitize(rawHtml);
+                document.getElementById('article-body').innerHTML = safeHtml;
+            }
+            
             document.getElementById('header-title').innerText = title;
 
             // 緩存最近一則至純文字以提供 offline.html 離線應急閱讀
@@ -390,6 +400,24 @@
         } catch (e) {
             document.getElementById('article-body').innerHTML = `<p style="color:#ff453a;">解密失敗，檔案不可讀取！</p>`;
         }
+    }
+
+    // 非同步分段/Blob Base64 轉 UTF-8 輔助函式
+    function base64ToUtf8Async(base64Str) {
+        return new Promise((resolve, reject) => {
+            try {
+                fetch(`data:application/octet-stream;base64,${base64Str}`)
+                    .then(res => res.blob())
+                    .then(blob => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = error => reject(error);
+                        reader.readAsText(blob, 'utf-8');
+                    });
+            } catch (err) {
+                reject(err);
+            }
+        });
     }
 
     function goBackToList() {
@@ -412,7 +440,10 @@
         // 保存狀態進 localStorage 並關閉
         localStorage.setItem('titi_user_settings', JSON.stringify({
             fontSize: document.documentElement.style.getPropertyValue('--font-size'),
-            fontFamily: document.documentElement.style.getPropertyValue('--font-family')
+            fontFamily: document.documentElement.style.getPropertyValue('--font-family'),
+            textColor: document.documentElement.style.getPropertyValue('--text-color'),
+            isLightMode: document.body.classList.contains('light-mode'),
+            isPureText: document.body.classList.contains('pure-text-mode')
         }));
         closeModal();
     }
@@ -424,7 +455,7 @@
         backBtn.style.visibility = (viewId === 'main-settings') ? 'hidden' : 'visible';
     }
 
-    // 頂部手柄按住拖拽高度邏輯
+    // 頂部手柄按住拖曳高度邏輯
     let isDragging = false, startY = 0, startHeight = 0;
 
     const startDrag = (y) => {
@@ -450,7 +481,7 @@
     window.addEventListener('touchend', () => isDragging = false);
 
     /* =========================================================================
-       4️⃣ Apple Cupertino 系統設定連線
+       4️⃣ Apple Cupertino 系統設定連線 (附帶設定讀回載入)
        ========================================================================= */
     function toggleSwitch(id) {
         const sw = document.getElementById(id);
@@ -472,9 +503,39 @@
         }
     }
 
+    // 💡 額外附贈：讀回並初始化使用者儲存的設定（解決設定重新整理遺失 Bug）
+    function loadUserSettings() {
+        const saved = localStorage.getItem('titi_user_settings');
+        if (saved) {
+            try {
+                const settings = JSON.parse(saved);
+                if (settings.fontSize) {
+                    document.documentElement.style.setProperty('--font-size', settings.fontSize);
+                }
+                if (settings.fontFamily) {
+                    document.documentElement.style.setProperty('--font-family', settings.fontFamily);
+                }
+                if (settings.textColor) {
+                    document.documentElement.style.setProperty('--text-color', settings.textColor);
+                }
+                if (settings.isLightMode) {
+                    document.body.classList.add('light-mode');
+                    document.getElementById('theme-switch').classList.add('on');
+                }
+                if (settings.isPureText) {
+                    document.body.classList.add('pure-text-mode');
+                    document.getElementById('pure-text-switch').classList.add('on');
+                }
+            } catch (e) {
+                console.error('載入使用者設定失敗', e);
+            }
+        }
+    }
+
     // 初始化 App
     window.onload = () => {
         initBookList();
+        loadUserSettings(); // 👈 確保啟動時載入儲存的偏好設定
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('./sw.js');
         }
@@ -482,4 +543,3 @@
 </script>
 </body>
 </html>
-
