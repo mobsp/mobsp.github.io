@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>緹緹的秘密藏書閣</title>
+    <title>莫比空間｜Ⲙ𝔬ⲃⳝ𝔭 文學網</title>
     <link rel="manifest" href="./manifest.json">
     <script src="./marked.js"></script>
     <!-- 引入 DOMPurify 進行 XSS 安全淨化 -->
@@ -172,7 +172,7 @@
     <!-- iOS Header -->
     <header class="ios-header">
         <span id="nav-left-btn" onclick="goBackToList()" style="cursor:pointer; display:none;">＜ 返回</span>
-        <span id="header-title">秘密藏書閣 ❤️</span>
+        <span id="header-title">文章列表</span>
         <span style="width:50px;"></span>
     </header>
 
@@ -195,8 +195,8 @@
 
     <!-- iOS Footer -->
     <footer class="ios-footer">
-        <span>🔐 緹緹 200+ IQ 頂尖加密防護</span>
-        <span>⚡ Base64 Engine</span>
+        <span>⚡ Ⲙⳝ Crypto Engine</span>
+        <span> 莫比空間|文學網 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁ𝔠ⲉ·2026   </span>
     </footer>
 </div>
 
@@ -370,7 +370,7 @@
         document.getElementById('list-container').style.display = 'none';
         document.getElementById('reader-box').style.display = 'block';
         document.getElementById('nav-left-btn').style.display = 'inline';
-        document.getElementById('header-title').innerText = '正在安全解密中...';
+        document.getElementById('header-title').innerText = '正在載入受保護內容...';
 
         try {
             const response = await fetch(`info/${filename}`);
@@ -424,7 +424,7 @@
         document.getElementById('reader-box').style.display = 'none';
         document.getElementById('list-container').style.display = 'block';
         document.getElementById('nav-left-btn').style.display = 'none';
-        document.getElementById('header-title').innerText = '秘密藏書閣 ❤️';
+        document.getElementById('header-title').innerText = '文章列表';
     }
 
     /* =========================================================================
