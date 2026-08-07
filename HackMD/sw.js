@@ -5,7 +5,7 @@ const CACHE_ASSETS = [
     './manifest.json',
     './marked.js',
     './info/list.json'
-     './HackMD/info/莫比文學001.md'
+    './HackMD/info/莫比文學001.md'
 ];
 
 self.addEventListener('install', (event) => {
