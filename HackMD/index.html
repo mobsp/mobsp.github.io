@@ -1,1 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <!-- iOS 頂守狀態列防縮放防晃動設定 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>緹緹的秘密藏書閣</title>
+    <link rel="manifest" href="./manifest.json">
+    <script src="./marked.js"></script>
+    <style>
+        /* ======================== iOS 全局 CSS 重設與防拷貝設定 ======================== */
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+        :root {
+            --bg-color: #000000;
+            --card-bg: #1c1c1e;
+            --text-color: #f2f2f7;
+            --text-secondary: #8e8e93;
+            --accent-color: #0a84ff;
+            --danger-color: #ff453a;
+            --nav-bg: rgba(28, 28, 30, 0.85);
+            --border-color: rgba(255, 255, 255, 0.15);
+            --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", sans-serif;
+            --font-size: 17px;
+        }
+        body.light-mode {
+            --bg-color: #f2f2f7;
+            --card-bg: #ffffff;
+            --text-color: #000000;
+            --text-secondary: #6c6c70;
+            --accent-color: #007aff;
+            --nav-bg: rgba(245, 245, 247, 0.85);
+            --border-color: rgba(0, 0, 0, 0.1);
+        }
+        html, body {
+            margin: 0; padding: 0; width: 100vw; height: 100vh;
+            overflow: hidden; background: var(--bg-color); color: var(--text-color);
+            font-family: var(--font-family);
+        }
+
+        /* ======================== 原生 APP 結構 (上/下固定，中間捲動) ======================== */
+        .app-layout {
+            display: flex; flex-direction: column; width: 100%; height: 100%;
+        }
+        .ios-header {
+            height: 54px; padding-top: env(safe-area-inset-top);
+            background: var(--nav-bg); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+            border-bottom: 0.5px solid var(--border-color);
+            display: flex; align-items: center; justify-content: space-between; padding-left: 16px; padding-right: 16px;
+            font-weight: 600; font-size: 17px; z-index: 100;
+        }
+        .ios-content {
+            flex: 1; overflow-y: auto; overflow-x: hidden;
+            -webkit-overflow-scrolling: touch; padding: 16px;
+            overscroll-behavior: none; /* 防止 Safari 彈跳回彈晃動 */
+        }
+        .ios-footer {
+            height: 50px; padding-bottom: env(safe-area-inset-bottom);
+            background: var(--nav-bg); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+            border-top: 0.5px solid var(--border-color);
+            display: flex; align-items: center; justify-content: space-around;
+            font-size: 12px; color: var(--text-secondary); z-index: 100;
+        }
+
+        /* ======================== 列表與閱讀區域 iOS 設計 ======================== */
+        .article-item {
+            background: var(--card-bg); border-radius: 14px; padding: 16px;
+            margin-bottom: 12px; border: 0.5px solid var(--border-color);
+            cursor: pointer; transition: transform 0.15s ease, opacity 0.15s ease;
+        }
+        .article-item:active { transform: scale(0.98); opacity: 0.85; }
+        .article-item h3 { margin: 0 0 6px 0; font-size: 18px; color: var(--text-color); }
+        .article-item p { margin: 0; font-size: 13px; color: var(--text-secondary); }
+
+        #reader-box { display: none; }
+        #article-body {
+            font-size: var(--font-size); line-height: 1.75; color: var(--text-color);
+            word-wrap: break-word; font-family: var(--font-family);
+        }
+        /* 純文字模式覆蓋樣式 */
+        body.pure-text-mode #article-body {
+            font-family: monospace, sans-serif !important;
+            white-space: pre-wrap !important;
+            line-height: 1.6 !important;
+        }
+
+        /* ======================== 浮動設定按鈕 ======================== */
+        .fab-settings {
+            position: fixed; right: 20px; bottom: 80px; width: 50px; height: 50px;
+            background: var(--accent-color); border-radius: 25px;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 24px rgba(10, 132, 255, 0.4);
+            cursor: pointer; z-index: 500; font-size: 24px; color: #fff;
+        }
+
+        /* ======================== 模態彈窗 (高度拖曳 + 全屏子頁面系統) ======================== */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            z-index: 1000; display: none; align-items: flex-end;
+        }
+        .modal-drawer {
+            width: 100%; height: 60vh; background: var(--card-bg);
+            border-top-left-radius: 20px; border-top-right-radius: 20px;
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column; overflow: hidden;
+            border-top: 0.5px solid var(--border-color); position: relative;
+        }
+        .modal-drag-bar {
+            width: 100%; height: 32px; display: flex; align-items: center; justify-content: center;
+            cursor: ns-resize; background: rgba(255, 255, 255, 0.05);
+        }
+        .drag-pill { width: 40px; height: 5px; background: var(--text-secondary); border-radius: 3px; }
+        .modal-top-nav {
+            height: 48px; display: flex; align-items: center; justify-content: space-between;
+            padding: 0 16px; border-bottom: 0.5px solid var(--border-color);
+        }
+        .btn-icon { background: none; border: none; color: var(--accent-color); font-size: 18px; cursor: pointer; font-weight: 600; }
+        .modal-views-container { flex: 1; overflow-y: auto; position: relative; }
+        .modal-view {
+            width: 100%; height: 100%; padding: 20px; position: absolute; inset: 0;
+            background: var(--card-bg); display: none; overflow-y: auto;
+        }
+        .modal-view.active { display: block; }
+        
+        /* iOS 設定選單卡片 */
+        .ios-menu-card {
+            background: rgba(142, 142, 147, 0.1); border-radius: 12px; overflow: hidden; margin-bottom: 16px;
+        }
+        .ios-menu-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 16px; border-bottom: 0.5px solid var(--border-color); cursor: pointer;
+        }
+        .ios-menu-row:last-child { border-bottom: none; }
+        .ios-menu-row:active { background: rgba(255, 255, 255, 0.05); }
+
+        /* Cupertino 開關 */
+        .ios-switch {
+            width: 51px; height: 31px; background: #39393d; border-radius: 16px;
+            position: relative; transition: 0.3s; cursor: pointer;
+        }
+        .ios-switch.on { background: #34c759; }
+        .ios-switch::after {
+            content: ""; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px;
+            background: #ffffff; border-radius: 50%; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: 0.3s;
+        }
+        .ios-switch.on::after { transform: translateX(20px); }
+
+        .modal-footer {
+            height: 60px; border-top: 0.5px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center; padding: 0 20px;
+        }
+        .btn-save {
+            width: 100%; height: 44px; background: var(--accent-color); color: #fff;
+            border: none; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer;
+        }
+    </style>
+</head>
+<body class="dark-mode">
+
+<div class="app-layout" id="appLayout">
+    <!-- iOS Header -->
+    <header class="ios-header">
+        <span id="nav-left-btn" onclick="goBackToList()" style="cursor:pointer; display:none;">＜ 返回</span>
+        <span id="header-title">秘密藏書閣 ❤️</span>
+        <span style="width:50px;"></span>
+    </header>
+
+    <!-- iOS 捲動區域 -->
+    <main class="ios-content">
+        <!-- 列表容器 -->
+        <div id="list-container">
+            <div id="loading-hint" style="text-align: center; color: var(--text-secondary); padding: 40px;">
+                正在載入 Base64 藏書書目...
+            </div>
+        </div>
+
+        <!-- 閱讀器容器 -->
+        <div id="reader-box">
+            <h2 id="article-title" style="margin-top:0; color: var(--accent-color);"></h2>
+            <hr style="border-color: var(--border-color); margin-bottom: 20px;">
+            <div id="article-body"></div>
+        </div>
+    </main>
+
+    <!-- iOS Footer -->
+    <footer class="ios-footer">
+        <span>🔐 緹緹 200+ IQ 頂尖加密防護</span>
+        <span>⚡ Base64 Engine</span>
+    </footer>
+</div>
+
+<!-- 浮動設定按鈕 -->
+<div class="fab-settings" onclick="openModal()">⚙️</div>
+
+<!-- 全屏拖曳模態彈窗 -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-drawer" id="modalDrawer">
+        <!-- 可拖曳調高矮頂部控制條 -->
+        <div class="modal-drag-bar" id="dragBar">
+            <div class="drag-pill"></div>
+        </div>
+        
+        <!-- 彈窗頂部導覽列 -->
+        <div class="modal-top-nav">
+            <button class="btn-icon" id="modal-back-btn" onclick="switchModalView('main-settings')" style="visibility: hidden;">＜</button>
+            <span id="modal-title" style="font-weight: bold;">閱讀與系統設定</span>
+            <button class="btn-icon" onclick="closeModal()">✕</button>
+        </div>
+
+        <!-- 全屏切換視圖容器 -->
+        <div class="modal-views-container">
+            <!-- 主設定畫面 -->
+            <div class="modal-view active" id="main-settings">
+                <div class="ios-menu-card">
+                    <div class="ios-menu-row" onclick="toggleSwitch('theme-switch')">
+                        <span>光暗模式切換（預設暗）</span>
+                        <div class="ios-switch" id="theme-switch"></div>
+                    </div>
+                    <div class="ios-menu-row" onclick="switchModalView('sub-fontsize')">
+                        <span>文章文字大小</span>
+                        <span style="color:var(--text-secondary);">設定 ＞</span>
+                    </div>
+                    <div class="ios-menu-row" onclick="switchModalView('sub-fontfamily')">
+                        <span>文章文字字體</span>
+                        <span style="color:var(--text-secondary);">設定 ＞</span>
+                    </div>
+                    <div class="ios-menu-row" onclick="switchModalView('sub-fontcolor')">
+                        <span>文章文字顏色</span>
+                        <span style="color:var(--text-secondary);">設定 ＞</span>
+                    </div>
+                </div>
+
+                <div class="ios-menu-card">
+                    <div class="ios-menu-row">
+                        <span onclick="switchModalView('sub-puretext-settings')" style="text-decoration: underline; color: var(--accent-color);">
+                            純文字閱讀模式 (點此進入子設定)
+                        </span>
+                        <div class="ios-switch" id="pure-text-switch" onclick="toggleSwitch('pure-text-switch')"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 子設定：文章文字大小 -->
+            <div class="modal-view" id="sub-fontsize">
+                <h3>選擇文字大小</h3>
+                <div class="ios-menu-card">
+                    <div class="ios-menu-row" onclick="applySetting('fontSize', '15px')"><span>小號 (15px)</span></div>
+                    <div class="ios-menu-row" onclick="applySetting('fontSize', '17px')"><span>系統預設 (17px)</span></div>
+                    <div class="ios-menu-row" onclick="applySetting('fontSize', '20px')"><span>大號 (20px)</span></div>
+                    <div class="ios-menu-row" onclick="applySetting('fontSize', '24px')"><span>超大號 (24px)</span></div>
+                </div>
+            </div>
+
+            <!-- 子設定：文章文字字體 -->
+            <div class="modal-view" id="sub-fontfamily">
+                <h3>選擇文章字體</h3>
+                <div class="ios-menu-card">
+                    <div class="ios-menu-row" onclick="applySetting('fontFamily', '-apple-system, sans-serif')"><span>Apple 系統黑體</span></div>
+                    <div class="ios-menu-row" onclick="applySetting('fontFamily', 'Georgia, serif')"><span>古典優雅明體</span></div>
+                    <div class="ios-menu-row" onclick="applySetting('fontFamily', 'monospace')"><span>開發者等寬字體</span></div>
+                </div>
+            </div>
+
+            <!-- 子設定：文章文字顏色 -->
+            <div class="modal-view" id="sub-fontcolor">
+                <h3>選擇文字調色</h3>
+                <div class="ios-menu-card">
+                    <div class="ios-menu-row" onclick="applySetting('fontColor', '#f2f2f7')"><span>雪白色</span></div>
+                    <div class="ios-menu-row" onclick="applySetting('fontColor', '#e2e8f0')"><span>柔和白</span></div>
+                    <div class="ios-menu-row" onclick="applySetting('fontColor', '#ffd60a')"><span>溫暖夜讀黃</span></div>
+                    <div class="ios-menu-row" onclick="applySetting('fontColor', '#34c759')"><span>終端機護眼綠</span></div>
+                </div>
+            </div>
+
+            <!-- 子設定：純文字閱讀模式設定 -->
+            <div class="modal-view" id="sub-puretext-settings">
+                <h3>純文字模式專屬設定</h3>
+                <div class="ios-menu-card">
+                    <div class="ios-menu-row" onclick="toggleSwitch('pure-theme-switch')">
+                        <span>純文字模式 - 光暗控制</span>
+                        <div class="ios-switch" id="pure-theme-switch"></div>
+                    </div>
+                    <div class="ios-menu-row" onclick="applySetting('pureFontSize', '18px')"><span>純文字大小調整</span></div>
+                    <div class="ios-menu-row" onclick="applySetting('pureFontFamily', 'monospace')"><span>純文字固定等寬字體</span></div>
+                    <div class="ios-menu-row" onclick="applySetting('pureFontColor', '#ff9f0a')"><span>純文字標註顏色</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部儲存按鈕 -->
+        <div class="modal-footer">
+            <button class="btn-save" onclick="saveAndCloseModal()">儲存設定</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* =========================================================================
+       1️⃣ 頂密安全防護層 (全面防護：右鍵/F12/Ctrl+U/選取複製/開發者工具偵測/Frame嵌套)
+       ========================================================================= */
+    // 防止 IFrame 嵌套嵌入 (Frame Busting)
+    if (window.top !== window.self) { window.top.location = window.self.location; }
+
+    // 禁用選取、右鍵 contextmenu 與拖拽
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.addEventListener('selectstart', e => e.preventDefault());
+    document.addEventListener('dragstart', e => e.preventDefault());
+    document.addEventListener('copy', e => e.preventDefault());
+    document.addEventListener('cut', e => e.preventDefault());
+
+    // 禁用任何與除錯相關的鍵盤快捷鍵
+    document.addEventListener('keydown', (e) => {
+        if (
+            e.key === 'F12' ||
+            (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'C' || e.key === 'J')) ||
+            (e.ctrlKey && (e.key === 'U' || e.key === 'S' || e.key === 'C')) ||
+            (e.metaKey && e.altKey && e.key === 'I')
+        ) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
+        }
+    }, true);
+
+    // 嚴密防護 DevTools 偵測核心 (無限 Debug 輪迴)
+    setInterval(() => {
+        const start = performance.now();
+        debugger;
+        if (performance.now() - start > 100) {
+            document.body.innerHTML = '<h1 style="color:#ff453a;text-align:center;margin-top:40vh;">🚨 警告：檢測到開發者除錯行為，系統已鎖定！</h1>';
+        }
+    }, 500);
+
+    /* =========================================================================
+       2️⃣ Base64 書庫解密與列表加載處理
+       ========================================================================= */
+    let currentArticleId = null;
+
+    async function initBookList() {
+        const container = document.getElementById('list-container');
+        try {
+            const response = await fetch('./info/list.json');
+            if (!response.ok) throw new Error();
+            const listData = await response.json();
+            container.innerHTML = '';
+            listData.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'article-item';
+                card.innerHTML = `<h3>${item.title}</h3><p>作者：${item.author} · 分類：${item.category}</p>`;
+                card.onclick = () => loadSecretArticle(item.filename, item.title);
+                container.appendChild(card);
+            });
+        } catch {
+            container.innerHTML = `<div style="text-align:center;color:#ff453a;">讀取 info/list.json 失敗或離線</div>`;
+        }
+    }
+
+    async function loadSecretArticle(filename, title) {
+        document.getElementById('list-container').style.display = 'none';
+        document.getElementById('reader-box').style.display = 'block';
+        document.getElementById('nav-left-btn').style.display = 'inline';
+        document.getElementById('header-title').innerText = '正在解密中...';
+
+        try {
+            const response = await fetch(`info/${filename}`);
+            const base64Text = await response.text();
+            // 清理斷行字元並以 UTF-8 TextDecoder 解密
+            const cleaned = base64Text.trim().replace(/[\r\n]+/g, '');
+            const binary = atob(cleaned);
+            const bytes = Uint8Array.from(binary, c => c.charCodeAt(0));
+            const decodedMd = new TextDecoder('utf-8').decode(bytes);
+
+            // 如果開啟了純文字模式則渲染原字串，否則利用 marked.js 渲染 Markdown
+            const isPure = document.body.classList.contains('pure-text-mode');
+            document.getElementById('article-title').innerText = title;
+            document.getElementById('article-body').innerHTML = isPure ? decodedMd : marked.parse(decodedMd);
+            document.getElementById('header-title').innerText = title;
+
+            // 緩存最近一則至純文字以提供 offline.html 離線應急閱讀
+            localStorage.setItem('last_read_pure_text', decodedMd);
+        } catch (e) {
+            document.getElementById('article-body').innerHTML = `<p style="color:#ff453a;">解密失敗，檔案不可讀取！</p>`;
+        }
+    }
+
+    function goBackToList() {
+        document.getElementById('reader-box').style.display = 'none';
+        document.getElementById('list-container').style.display = 'block';
+        document.getElementById('nav-left-btn').style.display = 'none';
+        document.getElementById('header-title').innerText = '秘密藏書閣 ❤️';
+    }
+
+    /* =========================================================================
+       3️⃣ 模態彈窗 (動態拖拽調整高度 + 子頁面切換控制)
+       ========================================================================= */
+    const overlay = document.getElementById('modalOverlay');
+    const drawer = document.getElementById('modalDrawer');
+    const dragBar = document.getElementById('dragBar');
+
+    function openModal() { overlay.style.display = 'flex'; }
+    function closeModal() { overlay.style.display = 'none'; }
+    function saveAndCloseModal() {
+        // 保存狀態進 localStorage 並關閉
+        localStorage.setItem('titi_user_settings', JSON.stringify({
+            fontSize: document.documentElement.style.getPropertyValue('--font-size'),
+            fontFamily: document.documentElement.style.getPropertyValue('--font-family')
+        }));
+        closeModal();
+    }
+
+    function switchModalView(viewId) {
+        document.querySelectorAll('.modal-view').forEach(el => el.classList.remove('active'));
+        document.getElementById(viewId).classList.add('active');
+        const backBtn = document.getElementById('modal-back-btn');
+        backBtn.style.visibility = (viewId === 'main-settings') ? 'hidden' : 'visible';
+    }
+
+    // 頂部手柄按住拖拽高度邏輯
+    let isDragging = false, startY = 0, startHeight = 0;
+
+    const startDrag = (y) => {
+        isDragging = true;
+        startY = y;
+        startHeight = drawer.getBoundingClientRect().height;
+    };
+    const moveDrag = (y) => {
+        if (!isDragging) return;
+        const diff = startY - y;
+        let newHeight = startHeight + diff;
+        if (newHeight > window.innerHeight * 0.95) newHeight = window.innerHeight * 0.95;
+        if (newHeight < 250) newHeight = 250;
+        drawer.style.height = `${newHeight}px`;
+    };
+
+    dragBar.addEventListener('mousedown', e => startDrag(e.clientY));
+    window.addEventListener('mousemove', e => moveDrag(e.clientY));
+    window.addEventListener('mouseup', () => isDragging = false);
+
+    dragBar.addEventListener('touchstart', e => startDrag(e.touches[0].clientY), { passive: true });
+    window.addEventListener('touchmove', e => moveDrag(e.touches[0].clientY), { passive: true });
+    window.addEventListener('touchend', () => isDragging = false);
+
+    /* =========================================================================
+       4️⃣ Apple Cupertino 系統設定連線
+       ========================================================================= */
+    function toggleSwitch(id) {
+        const sw = document.getElementById(id);
+        sw.classList.toggle('on');
+        if (id === 'theme-switch') {
+            document.body.classList.toggle('light-mode');
+        } else if (id === 'pure-text-switch') {
+            document.body.classList.toggle('pure-text-mode');
+        }
+    }
+
+    function applySetting(type, val) {
+        if (type === 'fontSize') {
+            document.documentElement.style.setProperty('--font-size', val);
+        } else if (type === 'fontFamily') {
+            document.documentElement.style.setProperty('--font-family', val);
+        } else if (type === 'fontColor') {
+            document.documentElement.style.setProperty('--text-color', val);
+        }
+    }
+
+    // 初始化 App
+    window.onload = () => {
+        initBookList();
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js');
+        }
+    };
+</script>
+</body>
+</html>
 
