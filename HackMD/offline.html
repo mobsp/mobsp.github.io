@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>莫比空間｜文學網</title>
+    <title>莫比空間｜Ⲙ𝔬ⲃⳝ𝔭 文學網</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
@@ -20,10 +20,10 @@
     </style>
 </head>
 <body>
-    <div class="offline-header">⚠️ 目前為離線狀態 —— 已切換至純文字快取閱讀模式</div>
-    <div id="offline-content">正在由瀏覽器 Cache 讀取最近存取的純文字內容...</div>
+    <div class="offline-header">⚠️ 狀態: 離線中 🔴  - 切換至純文字快取閱讀模式</div>
+    <div id="offline-content">讀取 Cache 內容中...</div>
     <script>
-        const cachedText = localStorage.getItem('last_read_pure_text') || "目前離線且沒有找到最近讀取的快取文章喔，頭兒！";
+        const cachedText = localStorage.getItem('last_read_pure_text') || "🔴 離線中，無法載入緩存的內容";
         document.getElementById('offline-content').innerText = cachedText;
     </script>
 </body>
