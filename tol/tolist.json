@@ -23,7 +23,7 @@
 ,
   {"name": "Publisher", "path": "/tol/Publisher/"}
 ,
-  {"name": "tourl", "path": "/tol/tourl/"}
+  {"name": "toURL", "path": "/tol/toURL/"}
 ,
   {"name": "ve", "path": "/tol/ve/"}
 ,
