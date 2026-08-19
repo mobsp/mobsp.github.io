@@ -23,9 +23,9 @@
 ,
   {"name": "Publisher", "path": "/tol/Publisher/"}
 ,
-  {"name": "toURL", "path": "/tol/toURL/"}
+  {"name": "iDE-MaxPro", "path": "/tol/iDE-MaxPro/"}
 ,
-  {"name": "ve", "path": "/tol/ve/"}
+  {"name": "toURL", "path": "/tol/toURL/"}
 ,
   {"name": "x-harv", "path": "/tol/x-harv/"}
 ]
