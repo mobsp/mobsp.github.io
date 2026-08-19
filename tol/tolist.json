@@ -21,7 +21,7 @@
 ,
   {"name": "MobspOS", "path": "/tol/MobspOS/"}
 ,
-  {"name": "publisher", "path": "/tol/publisher/"}
+  {"name": "Publisher", "path": "/tol/Publisher/"}
 ,
   {"name": "tourl", "path": "/tol/tourl/"}
 ,
