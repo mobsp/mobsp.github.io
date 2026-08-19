@@ -1,0 +1,28 @@
+name: Auto Sync and Purge CDN Cache
+
+on:
+  push:
+    branches:
+      - main  # 當 main 分支有任何檔案被修改或推送時觸發
+
+jobs:
+  sync-to-cdn:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. 檢出儲存庫程式碼
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2  # 需要抓取前一次 commit 才能用 git diff 比對變動
+
+      - name: 2. 設定 Python 環境
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: 3. 安裝相依套件 (requests)
+        run: |
+          pip install requests
+
+      - name: 4. 執行 Python 同步與快取清除腳本
+        run: |
+          python scripts/sync_helper.py
