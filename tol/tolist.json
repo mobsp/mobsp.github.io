@@ -1,6 +1,8 @@
 [
   {"name": "AdvancEditor", "path": "/tol/AdvancEditor/"}
 ,
+  {"name": "Convert", "path": "/tol/Convert/"}
+,
   {"name": "Editor", "path": "/tol/Editor/"}
 ,
   {"name": "Editors", "path": "/tol/Editors/"}
@@ -8,8 +10,6 @@
   {"name": "FileStores", "path": "/tol/FileStores/"}
 ,
   {"name": "MobspOS", "path": "/tol/MobspOS/"}
-,
-  {"name": "convert", "path": "/tol/convert/"}
 ,
   {"name": "gh-idx", "path": "/tol/gh-idx/"}
 ,
