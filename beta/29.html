@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>GitHub 遠端即時檔案載入與執行器 (29.html)</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 900px; margin: 30px auto; padding: 20px; background: #f4f6f8; color: #333; }
+        .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        pre { background: #1e1e1e; color: #dcdcdc; padding: 15px; border-radius: 6px; overflow-x: auto; font-family: Consolas, monospace; }
+        img, video { max-width: 100%; border-radius: 6px; margin-top: 10px; display: block; }
+        input, button { padding: 10px 14px; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; }
+        input { width: 65%; margin-right: 8px; }
+        button { background: #2ea44f; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #2c974b; }
+        .status { margin-top: 10px; font-size: 14px; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>📂 GitHub 任意副檔名即時載入器 (beta/29.html)</h2>
+        <p>請輸入 <code>mobsp/mobsp.github.io</code> 內的檔案相對路徑（支援 .json, .md, .js, .png, .mp3 等）：</p>
+        
+        <input type="text" id="filePath" value="setting/config.json" placeholder="例如: setting/config.json 或 images/banner.png">
+        <button onclick="loadRepoFile()">載入並執行</button>
+        <div class="status" id="statusMsg"></div>
+    </div>
+
+    <div class="card">
+        <h3>📊 內容輸出與執行結果：</h3>
+        <div id="resultContainer">尚無資料，請點擊上方按鈕載入。</div>
+    </div>
+
+    <script>
+        async function loadRepoFile() {
+            const path = document.getElementById("filePath").value.trim();
+            const container = document.getElementById("resultContainer");
+            const statusMsg = document.getElementById("statusMsg");
+            
+            if (!path) {
+                alert("請輸入檔案路徑！");
+                return;
+            }
+
+            container.innerHTML = "載入中...";
+            statusMsg.innerText = "正在向 CDN 請求最新資料...";
+
+            const timestamp = new Date().getTime();
+            const owner = "mobsp";
+            const repo = "mobsp.github.io";
+            const branch = "main";
+            const cdnUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${path}?t=${timestamp}`;
+
+            const extension = path.split('.').pop().toLowerCase();
+
+            try {
+                if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(extension)) {
+                    container.innerHTML = `<p><b>檔案類型：圖片 (${extension})</b></p><img src="${cdnUrl}" alt="Loaded Image">`;
+                } else if (['mp4', 'webm', 'ogg'].includes(extension)) {
+                    container.innerHTML = `<p><b>檔案類型：影片 (${extension})</b></p><video controls src="${cdnUrl}"></video>`;
+                } else if (['mp3', 'wav'].includes(extension)) {
+                    container.innerHTML = `<p><b>檔案類型：音訊 (${extension})</b></p><audio controls src="${cdnUrl}"></audio>`;
+                } else if (['js'].includes(extension)) {
+                    const response = await fetch(cdnUrl);
+                    if (!response.ok) throw new Error("檔案讀取失敗 (HTTP " + response.status + ")");
+                    const jsCode = await response.text();
+                    
+                    container.innerHTML = `<p><b>檔案類型：JavaScript (已在前端自動執行)</b></p><pre>${escapeHtml(jsCode)}</pre>`;
+                    
+                    try {
+                        const dynamicFunc = new Function(jsCode);
+                        dynamicFunc();
+                    } catch (err) {
+                        console.error("JS 執行錯誤：", err);
+                    }
+                } else if (['json'].includes(extension)) {
+                    const response = await fetch(cdnUrl);
+                    if (!response.ok) throw new Error("檔案讀取失敗 (HTTP " + response.status + ")");
+                    const jsCode = await response.text();
+                    let jsonData;
+                    try {
+                        jsonData = JSON.parse(jsCode);
+                    } catch (e) {
+                        throw new Error("JSON 解析失敗，內容可能包含非標準格式。原始內容:\n" + jsCode);
+                    }
+                    container.innerHTML = `<p><b>檔案類型：JSON 設定檔</b></p><pre>${escapeHtml(JSON.stringify(jsonData, null, 2))}</pre>`;
+                } else {
+                    const response = await fetch(cdnUrl);
+                    if (!response.ok) throw new Error("檔案讀取失敗 (HTTP " + response.status + ")");
+                    const textData = await response.text();
+                    container.innerHTML = `<p><b>檔案類型：純文字/通用檔案 (.${extension})</b></p><pre>${escapeHtml(textData)}</pre>`;
+                }
+                
+                statusMsg.innerText = "載入成功！已同步最新資料。";
+            } catch (error) {
+                container.innerHTML = `<p style="color: red;">❌ 錯誤：${escapeHtml(error.message)}</p>`;
+                statusMsg.innerText = "載入失敗。";
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+</html>
