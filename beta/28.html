@@ -1,0 +1,2999 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, viewport-fit=cover"
+>
+
+<meta name="theme-color" content="#f2f2f7">
+
+<title>莫比空間｜本機檔案瀏覽器 & 編輯器</title>
+
+<style>
+/* =========================================================
+   MOBSP LOCAL FILE BROWSER / EDITOR
+   GitHub Pages / Local Browser Edition
+   ---------------------------------------------------------
+   本版本：
+   1. 不需要後端
+   2. 不需要 GitHub Token
+   3. 不具備 GitHub Push / Commit 功能
+   4. 編輯內容只存在瀏覽器記憶體
+   5. 可複製 / 下載
+   ========================================================= */
+
+:root {
+  --bg: #f2f2f7;
+  --card: rgba(255,255,255,.78);
+  --card-solid: #ffffff;
+  --text: #1c1c1e;
+  --secondary: #6e6e73;
+  --border: rgba(60,60,67,.14);
+  --separator: rgba(60,60,67,.12);
+  --blue: #007aff;
+  --green: #34c759;
+  --orange: #ff9500;
+  --red: #ff3b30;
+  --purple: #af52de;
+  --shadow:
+    0 8px 30px rgba(0,0,0,.08);
+  --radius-xl: 22px;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 10px;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  font-family:
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Display",
+    "SF Pro Text",
+    "PingFang TC",
+    "Noto Sans TC",
+    Arial,
+    sans-serif;
+
+  color: var(--text);
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(255,255,255,.9),
+      transparent 35%
+    ),
+    var(--bg);
+
+  line-height: 1.5;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* =========================================================
+   APP SHELL
+   ========================================================= */
+
+.app {
+  width: min(100%, 980px);
+  margin: 0 auto;
+  padding:
+    max(18px, env(safe-area-inset-top))
+    18px
+    max(30px, env(safe-area-inset-bottom));
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  margin-bottom: 16px;
+  padding: 12px 0 14px;
+
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+
+  background: rgba(242,242,247,.72);
+}
+
+.header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title {
+  min-width: 0;
+}
+
+.title h1 {
+  margin: 0;
+  font-size: 25px;
+  letter-spacing: -.5px;
+}
+
+.title p {
+  margin: 3px 0 0;
+  color: var(--secondary);
+  font-size: 13px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.icon-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  display: grid;
+  place-items: center;
+
+  background: rgba(255,255,255,.78);
+  color: var(--blue);
+
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+
+  transition:
+    transform .15s ease,
+    background .15s ease;
+}
+
+.icon-button:active {
+  transform: scale(.92);
+}
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+.search-wrap {
+  margin-top: 13px;
+}
+
+.search {
+  width: 100%;
+  height: 44px;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  padding: 0 15px;
+
+  outline: none;
+
+  background: rgba(255,255,255,.74);
+
+  color: var(--text);
+
+  transition:
+    border-color .2s ease,
+    box-shadow .2s ease;
+}
+
+.search:focus {
+  border-color: rgba(0,122,255,.45);
+  box-shadow: 0 0 0 4px rgba(0,122,255,.10);
+}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  margin: 14px 0;
+}
+
+.tool {
+  padding: 9px 13px;
+
+  border-radius: 999px;
+
+  background: rgba(255,255,255,.76);
+  border: 1px solid var(--border);
+
+  color: var(--text);
+
+  font-size: 13px;
+
+  transition:
+    transform .15s ease,
+    background .15s ease;
+}
+
+.tool:active {
+  transform: scale(.96);
+}
+
+.tool.primary {
+  color: white;
+  background: var(--blue);
+  border-color: var(--blue);
+}
+
+.tool.danger {
+  color: var(--red);
+}
+
+.tool.active {
+  background: #1c1c1e;
+  color: white;
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+
+  margin-bottom: 18px;
+}
+
+.stat {
+  padding: 13px;
+
+  background: var(--card);
+  border: 1px solid var(--border);
+
+  border-radius: var(--radius-md);
+
+  box-shadow: 0 4px 18px rgba(0,0,0,.04);
+}
+
+.stat-label {
+  color: var(--secondary);
+  font-size: 11px;
+}
+
+.stat-value {
+  margin-top: 2px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   FOLDER SECTION
+   ========================================================= */
+
+.folder {
+  margin-bottom: 18px;
+}
+
+.folder-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 5px 7px;
+
+  color: var(--secondary);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.folder-count {
+  font-weight: 500;
+}
+
+/* =========================================================
+   FILE CARD
+   ========================================================= */
+
+.file-card {
+  overflow: hidden;
+
+  margin-bottom: 10px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: var(--radius-lg);
+
+  background: var(--card);
+
+  box-shadow: 0 5px 20px rgba(0,0,0,.045);
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.file-header {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px;
+
+  background: transparent;
+
+  text-align: left;
+}
+
+.file-header:active {
+  background: rgba(0,0,0,.04);
+}
+
+.file-icon {
+  width: 42px;
+  height: 42px;
+
+  flex: 0 0 42px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 11px;
+
+  background: rgba(0,122,255,.10);
+
+  color: var(--blue);
+
+  font-size: 20px;
+}
+
+.file-main {
+  min-width: 0;
+  flex: 1;
+}
+
+.file-name {
+  overflow: hidden;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.file-type {
+  margin-top: 2px;
+
+  color: var(--secondary);
+
+  font-size: 11px;
+}
+
+.chevron {
+  color: #8e8e93;
+  font-size: 18px;
+
+  transition: transform .2s ease;
+}
+
+.file-card.open .chevron {
+  transform: rotate(90deg);
+}
+
+/* =========================================================
+   DETAIL
+   ========================================================= */
+
+.file-detail {
+  display: none;
+
+  padding: 0 14px 14px;
+
+  border-top: 1px solid var(--separator);
+}
+
+.file-card.open .file-detail {
+  display: block;
+}
+
+.detail-group {
+  margin-top: 13px;
+}
+
+.detail-label {
+  margin-bottom: 5px;
+
+  color: var(--secondary);
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.detail-value {
+  word-break: break-all;
+
+  padding: 10px 11px;
+
+  border-radius: 10px;
+
+  background: rgba(118,118,128,.10);
+
+  color: var(--text);
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace;
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   LINKS
+   ========================================================= */
+
+.link-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+
+  margin-top: 13px;
+}
+
+.link-button {
+  min-height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 8px 10px;
+
+  border-radius: 11px;
+
+  background: rgba(0,122,255,.10);
+
+  color: var(--blue);
+
+  font-size: 12px;
+  font-weight: 600;
+
+  text-align: center;
+}
+
+.link-button.github {
+  background: rgba(0,0,0,.08);
+  color: var(--text);
+}
+
+.link-button.raw {
+  background: rgba(52,199,89,.11);
+  color: #248a3d;
+}
+
+.link-button.visit {
+  background: rgba(175,82,222,.11);
+  color: var(--purple);
+}
+
+.link-button.edit {
+  background: rgba(255,149,0,.13);
+  color: #b36b00;
+}
+
+.link-button:active {
+  transform: scale(.97);
+}
+
+/* =========================================================
+   EDITOR OVERLAY
+   ========================================================= */
+
+.editor-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+
+  display: none;
+
+  background:
+    rgba(242,242,247,.82);
+
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+}
+
+.editor-overlay.show {
+  display: flex;
+  flex-direction: column;
+}
+
+.editor {
+  width: min(100%, 1100px);
+  height: 100%;
+
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================================================
+   EDITOR HEADER
+   ========================================================= */
+
+.editor-header {
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding:
+    max(12px, env(safe-area-inset-top))
+    14px
+    12px;
+
+  border-bottom: 1px solid var(--border);
+
+  background: rgba(255,255,255,.76);
+}
+
+.editor-title {
+  min-width: 0;
+}
+
+.editor-title strong {
+  display: block;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+
+  font-size: 15px;
+}
+
+.editor-title span {
+  display: block;
+
+  margin-top: 2px;
+
+  color: var(--secondary);
+
+  font-size: 11px;
+}
+
+.editor-header-actions {
+  display: flex;
+  gap: 7px;
+}
+
+.editor-btn {
+  padding: 9px 11px;
+
+  border-radius: 10px;
+
+  background: rgba(118,118,128,.12);
+
+  color: var(--text);
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.editor-btn.primary {
+  color: white;
+  background: var(--blue);
+}
+
+.editor-btn.green {
+  color: white;
+  background: var(--green);
+}
+
+.editor-btn.close {
+  color: var(--red);
+}
+
+/* =========================================================
+   EDITOR BODY
+   ========================================================= */
+
+.editor-body {
+  flex: 1;
+
+  min-height: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  padding: 12px;
+  gap: 10px;
+}
+
+.editor-info {
+  flex: 0 0 auto;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 6px;
+}
+
+.editor-tag {
+  padding: 5px 8px;
+
+  border-radius: 999px;
+
+  background: rgba(118,118,128,.12);
+
+  color: var(--secondary);
+
+  font-size: 10px;
+}
+
+.editor-status {
+  margin-left: auto;
+
+  color: var(--green);
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   TEXTAREA
+   ========================================================= */
+
+.editor-textarea {
+  width: 100%;
+  min-height: 0;
+  flex: 1;
+
+  resize: none;
+
+  padding: 15px;
+
+  border:
+    1px solid rgba(60,60,67,.18);
+
+  border-radius: 15px;
+
+  outline: none;
+
+  background:
+    rgba(255,255,255,.88);
+
+  color: #1c1c1e;
+
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    "Liberation Mono",
+    monospace;
+
+  font-size: 13px;
+
+  line-height: 1.65;
+
+  tab-size: 2;
+
+  box-shadow:
+    inset 0 1px 3px rgba(0,0,0,.04);
+}
+
+.editor-textarea:focus {
+  border-color: rgba(0,122,255,.45);
+
+  box-shadow:
+    0 0 0 3px rgba(0,122,255,.10),
+    inset 0 1px 3px rgba(0,0,0,.04);
+}
+
+/* =========================================================
+   EDITOR FOOTER
+   ========================================================= */
+
+.editor-footer {
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding:
+    10px
+    12px
+    max(12px, env(safe-area-inset-bottom));
+
+  border-top: 1px solid var(--border);
+
+  background: rgba(255,255,255,.78);
+}
+
+.editor-footer-left,
+.editor-footer-right {
+  display: flex;
+  gap: 7px;
+}
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+.empty {
+  padding: 40px 20px;
+
+  text-align: center;
+
+  color: var(--secondary);
+}
+
+.empty-icon {
+  font-size: 34px;
+  margin-bottom: 8px;
+}
+
+.empty-title {
+  font-weight: 600;
+  color: var(--text);
+}
+
+.empty-text {
+  margin-top: 3px;
+  font-size: 12px;
+}
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.toast {
+  position: fixed;
+
+  left: 50%;
+  bottom: 25px;
+
+  z-index: 500;
+
+  transform:
+    translate(-50%, 20px);
+
+  opacity: 0;
+  pointer-events: none;
+
+  padding: 10px 15px;
+
+  border-radius: 999px;
+
+  background: rgba(28,28,30,.92);
+
+  color: white;
+
+  font-size: 12px;
+
+  transition:
+    opacity .2s ease,
+    transform .2s ease;
+}
+
+.toast.show {
+  opacity: 1;
+
+  transform:
+    translate(-50%, 0);
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+  .app {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .stats {
+    gap: 7px;
+  }
+
+  .stat {
+    padding: 10px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .link-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .editor-header {
+    align-items: flex-start;
+  }
+
+  .editor-header-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .editor-btn {
+    padding: 8px 9px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <header class="header">
+
+    <div class="header-top">
+
+      <div class="title">
+        <h1>檔案瀏覽器</h1>
+        <p>本機檢視・本機編輯・不寫回 GitHub</p>
+      </div>
+
+      <div class="header-actions">
+
+        <button
+          class="icon-button"
+          id="expandAllBtn"
+          title="全部展開"
+          aria-label="全部展開"
+        >
+          ⤢
+        </button>
+
+        <button
+          class="icon-button"
+          id="collapseAllBtn"
+          title="全部收合"
+          aria-label="全部收合"
+        >
+          ⤡
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="search-wrap">
+
+      <input
+        id="searchInput"
+        class="search"
+        type="search"
+        placeholder="搜尋檔名、路徑、網站名稱..."
+        autocomplete="off"
+        spellcheck="false"
+      >
+
+    </div>
+
+  </header>
+
+
+  <!-- =====================================================
+       TOOLBAR
+       ===================================================== -->
+
+  <div class="toolbar">
+
+    <button
+      class="tool active"
+      data-filter="all"
+    >
+      全部
+    </button>
+
+    <button
+      class="tool"
+      data-filter="folder"
+    >
+      資料夾
+    </button>
+
+    <button
+      class="tool"
+      data-filter="file"
+    >
+      檔案
+    </button>
+
+    <button
+      class="tool primary"
+      id="loadLocalBtn"
+    >
+      載入本機檔案
+    </button>
+
+    <input
+      id="localFileInput"
+      type="file"
+      hidden
+      multiple
+    >
+
+  </div>
+
+
+  <!-- =====================================================
+       STATS
+       ===================================================== -->
+
+  <section class="stats">
+
+    <div class="stat">
+      <div class="stat-label">項目</div>
+      <div
+        class="stat-value"
+        id="totalCount"
+      >
+        0
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">資料夾</div>
+      <div
+        class="stat-value"
+        id="folderCount"
+      >
+        0
+      </div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-label">檔案</div>
+      <div
+        class="stat-value"
+        id="fileCount"
+      >
+        0
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- =====================================================
+       FILE LIST
+       ===================================================== -->
+
+  <main id="fileList"></main>
+
+</div>
+
+
+<!-- =======================================================
+     EDITOR
+     ======================================================= -->
+
+<div
+  class="editor-overlay"
+  id="editorOverlay"
+>
+
+  <div class="editor">
+
+    <header class="editor-header">
+
+      <div class="editor-title">
+
+        <strong id="editorFileName">
+          未選擇檔案
+        </strong>
+
+        <span id="editorFilePath">
+          本機編輯器
+        </span>
+
+      </div>
+
+      <div class="editor-header-actions">
+
+        <button
+          class="editor-btn"
+          id="copyBtn"
+        >
+          複製
+        </button>
+
+        <button
+          class="editor-btn green"
+          id="downloadBtn"
+        >
+          下載
+        </button>
+
+        <button
+          class="editor-btn close"
+          id="closeEditorBtn"
+        >
+          關閉
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <section class="editor-body">
+
+      <div class="editor-info">
+
+        <span
+          class="editor-tag"
+          id="editorType"
+        >
+          TEXT
+        </span>
+
+        <span
+          class="editor-tag"
+        >
+          LOCAL ONLY
+        </span>
+
+        <span
+          class="editor-tag"
+        >
+          NO PUSH
+        </span>
+
+        <span
+          class="editor-status"
+          id="editorStatus"
+        >
+          未修改
+        </span>
+
+      </div>
+
+      <textarea
+        id="editorTextarea"
+        class="editor-textarea"
+        spellcheck="false"
+      ></textarea>
+
+    </section>
+
+
+    <footer class="editor-footer">
+
+      <div class="editor-footer-left">
+
+        <button
+          class="editor-btn"
+          id="restoreBtn"
+        >
+          還原
+        </button>
+
+        <button
+          class="editor-btn"
+          id="clearEditorBtn"
+        >
+          清空
+        </button>
+
+      </div>
+
+      <div class="editor-footer-right">
+
+        <button
+          class="editor-btn primary"
+          id="saveLocalBtn"
+        >
+          暫存於本機
+        </button>
+
+      </div>
+
+    </footer>
+
+  </div>
+
+</div>
+
+
+<!-- =======================================================
+     TOAST
+     ======================================================= -->
+
+<div
+  class="toast"
+  id="toast"
+></div>
+
+
+<script>
+/* =========================================================
+   MOBSP LOCAL FILE BROWSER / EDITOR
+   ========================================================= */
+
+"use strict";
+
+
+/* =========================================================
+   GitHub Repository Configuration
+   ========================================================= */
+
+const REPO_OWNER = "mobsp";
+const REPO_NAME = "mobsp.github.io";
+const REPO_BRANCH = "main";
+
+const SITE_BASE =
+  "https://mobsp.qzz.io";
+
+const GITHUB_BASE =
+  "https://github.com/" +
+  REPO_OWNER +
+  "/" +
+  REPO_NAME;
+
+const RAW_BASE =
+  "https://raw.githubusercontent.com/" +
+  REPO_OWNER +
+  "/" +
+  REPO_NAME +
+  "/" +
+  REPO_BRANCH;
+
+
+/* =========================================================
+   DATA
+   ---------------------------------------------------------
+   已使用完整補全修正之檔案清單資料
+   ========================================================= */
+
+const FILE_DATA = [
+
+  /* 根目錄 (root) */
+  { name: ".github", type: "folder", path: ".github/" },
+  { name: ".htaccess", type: "file", path: ".htaccess" },
+  { name: "CNAME", type: "file", path: "CNAME" },
+  { name: "HackMD", type: "folder", path: "HackMD/" },
+  { name: "Mobsp-System", type: "folder", path: "Mobsp-System/" },
+  { name: "Mobsp", type: "folder", path: "Mobsp/" },
+  { name: "README.md", type: "file", path: "README.md" },
+  { name: "README2.md", type: "file", path: "README2.md" },
+  { name: "README3.md", type: "file", path: "README3.md" },
+  { name: "README4.md", type: "file", path: "README4.md" },
+  { name: "_layouts", type: "folder", path: "_layouts/" },
+  { name: "app", type: "folder", path: "app/" },
+  { name: "articles.json", type: "file", path: "articles.json" },
+  { name: "assets", type: "folder", path: "assets/" },
+  { name: "auto-update-readme4.py", type: "file", path: "auto-update-readme4.py" },
+  { name: "beta", type: "folder", path: "beta/" },
+  { name: "blog", type: "folder", path: "blog/" },
+  { name: "browser", type: "folder", path: "browser/" },
+  { name: "data", type: "folder", path: "data/" },
+  { name: "file-list", type: "folder", path: "file-list/" },
+  { name: "generate-index.js", type: "file", path: "generate-index.js" },
+  { name: "index.html", type: "file", path: "index.html" },
+  { name: "manifest.json", type: "file", path: "manifest.json" },
+  { name: "music", type: "folder", path: "music/" },
+  { name: "offline.html", type: "file", path: "offline.html" },
+  { name: "package-lock.json", type: "file", path: "package-lock.json" },
+  { name: "package.json", type: "file", path: "package.json" },
+  { name: "robots.txt", type: "file", path: "robots.txt" },
+  { name: "scripts", type: "folder", path: "scripts/" },
+  { name: "setting", type: "folder", path: "setting/" },
+  { name: "shorts", type: "folder", path: "shorts/" },
+  { name: "sitemap.xml", type: "file", path: "sitemap.xml" },
+  { name: "svg-editor", type: "folder", path: "svg-editor/" },
+  { name: "sw.js", type: "file", path: "sw.js" },
+  { name: "sync-readme4-tables.py", type: "file", path: "sync-readme4-tables.py" },
+  { name: "sync_scanner.py", type: "file", path: "sync_scanner.py" },
+  { name: "tol", type: "folder", path: "tol/" },
+  { name: "update_icons.js", type: "file", path: "update_icons.js" },
+  { name: "wiki", type: "folder", path: "wiki/" },
+
+  /* .github */
+  { name: ".github/workflows", type: "folder", path: ".github/workflows/" },
+  { name: "auto-fix-comments.yml", type: "file", path: ".github/workflows/auto-fix-comments.yml" },
+  { name: "auto-sync.yml", type: "file", path: ".github/workflows/auto-sync.yml" },
+  { name: "auto-update-json.yml", type: "file", path: ".github/workflows/auto-update-json.yml" },
+  { name: "beta-deploy.yml", type: "file", path: ".github/workflows/beta-deploy.yml" },
+  { name: "emergency-rollback.yml", type: "file", path: ".github/workflows/emergency-rollback.yml" },
+  { name: "full_codebase_collective_report.yml", type: "file", path: ".github/workflows/full_codebase_collective_report.yml" },
+  { name: "generate-list.yml", type: "file", path: ".github/workflows/generate-list.yml" },
+  { name: "scan-pages.yml", type: "file", path: ".github/workflows/scan-pages.yml" },
+  { name: "scan-tools.yml", type: "file", path: ".github/workflows/scan-tools.yml" },
+  { name: "tol-auto-sync.yml", type: "file", path: ".github/workflows/tol-auto-sync.yml" },
+  { name: "update_readme.yml", type: "file", path: ".github/workflows/update_readme.yml" },
+  { name: "webp-magic.yml", type: "file", path: ".github/workflows/webp-magic.yml" },
+
+  /* HackMD */
+  { name: "HackMD/index.html", type: "file", path: "HackMD/index.html" },
+  { name: "HackMD/info", type: "folder", path: "HackMD/info/" },
+  { name: "HackMD/manifest.json", type: "file", path: "HackMD/manifest.json" },
+  { name: "HackMD/offline.html", type: "file", path: "HackMD/offline.html" },
+  { name: "HackMD/sw.js", type: "file", path: "HackMD/sw.js" },
+
+  /* HackMD/info */
+  { name: "HackMD/info/README.md", type: "file", path: "HackMD/info/README.md" },
+  { name: "HackMD/info/list.json", type: "file", path: "HackMD/info/list.json" },
+  { name: "HackMD/info/莫比文學001.md", type: "file", path: "HackMD/info/%E8%8E%AB%E6%AF%94%E6%96%87%E5%AD%B8001.md" },
+
+  /* Mobsp-System */
+  { name: "Mobsp-System/index.html", type: "file", path: "Mobsp-System/index.html" },
+
+  /* Mobsp */
+  { name: "Mobsp/theme", type: "folder", path: "Mobsp/theme/" },
+  { name: "Mobsp/theme/README.md", type: "file", path: "Mobsp/theme/README.md" },
+  { name: "Mobsp/theme/ms-bacge.js", type: "file", path: "Mobsp/theme/ms-bacge.js" },
+  { name: "Mobsp/theme/ms-button.js", type: "file", path: "Mobsp/theme/ms-button.js" },
+  { name: "Mobsp/theme/ms-card.js", type: "file", path: "Mobsp/theme/ms-card.js" },
+  { name: "Mobsp/theme/ms-input.js", type: "file", path: "Mobsp/theme/ms-input.js" },
+  { name: "Mobsp/theme/ms-nav.js", type: "file", path: "Mobsp/theme/ms-nav.js" },
+  { name: "Mobsp/theme/ms-sidebar.js", type: "file", path: "Mobsp/theme/ms-sidebar.js" },
+  { name: "Mobsp/theme/ms-styles.js", type: "file", path: "Mobsp/theme/ms-styles.js" },
+
+  /* _layouts */
+  { name: "_layouts/mobi-space-article.html", type: "file", path: "_layouts/mobi-space-article.html" },
+
+  /* app */
+  { name: "app/index.html", type: "file", path: "app/index.html" },
+
+  /* assets */
+  { name: "assets/brand", type: "folder", path: "assets/brand/" },
+  { name: "assets/brand/IMG_4802.png", type: "file", path: "assets/brand/IMG_4802.png" },
+  { name: "assets/brand/IMG_4901.jpeg", type: "file", path: "assets/brand/IMG_4901.jpeg" },
+  { name: "assets/brand/README.md", type: "file", path: "assets/brand/README.md" },
+  { name: "assets/brand/ScreenRecording_02-11-2026%2007-51-30_1.mov", type: "file", path: "assets/brand/ScreenRecording_02-11-2026%2007-51-30_1.mov" },
+  { name: "assets/brand/apple-mobsp-icon.png", type: "file", path: "assets/brand/apple-mobsp-icon.png" },
+  { name: "assets/brand/favicon-mobsp-icon.png", type: "file", path: "assets/brand/favicon-mobsp-icon.png" },
+  { name: "assets/brand/mobsp-icon.png", type: "file", path: "assets/brand/mobsp-icon.png" },
+  { name: "assets/brand/mobsp-icon.svg", type: "file", path: "assets/brand/mobsp-icon.svg" },
+  { name: "assets/brand/mobsp-logo.png", type: "file", path: "assets/brand/mobsp-logo.png" },
+  { name: "assets/brand/ms-blog-title.JPEG", type: "file", path: "assets/brand/ms-blog-title.JPEG" },
+  { name: "assets/brand/ms-blog.JPEG", type: "file", path: "assets/brand/ms-blog.JPEG" },
+  { name: "assets/brand/ms-guide-title.JPEG", type: "file", path: "assets/brand/ms-guide-title.JPEG" },
+  { name: "assets/brand/ms-guide.JPEG", type: "file", path: "assets/brand/ms-guide.JPEG" },
+  { name: "assets/brand/ms-history-title.JPEG", type: "file", path: "assets/brand/ms-history-title.JPEG" },
+  { name: "assets/brand/ms-logo.JPEG", type: "file", path: "assets/brand/ms-logo.JPEG" },
+  { name: "assets/brand/ms-logo1.JPEG", type: "file", path: "assets/brand/ms-logo1.JPEG" },
+  { name: "assets/brand/ms-music-title.JPEG", type: "file", path: "assets/brand/ms-music-title.JPEG" },
+  { name: "assets/brand/ms-music.JPEG", type: "file", path: "assets/brand/ms-music.JPEG" },
+  { name: "assets/brand/ms-post.JPEG", type: "file", path: "assets/brand/ms-post.JPEG" },
+  { name: "assets/brand/ms-setting-title.JPEG", type: "file", path: "assets/brand/ms-setting-title.JPEG" },
+  { name: "assets/brand/ms-shorts-title.JPEG", type: "file", path: "assets/brand/ms-shorts-title.JPEG" },
+  { name: "assets/brand/ms-shorts.JPEG", type: "file", path: "assets/brand/ms-shorts.JPEG" },
+  { name: "assets/brand/ms-svg-view-title.JPEG", type: "file", path: "assets/brand/ms-svg-view-title.JPEG" },
+  { name: "assets/brand/ms-tools-title.JPEG", type: "file", path: "assets/brand/ms-tools-title.JPEG" },
+  { name: "assets/brand/ms-tools.JPEG", type: "file", path: "assets/brand/ms-tools.JPEG" },
+  { name: "assets/brand/ms-wiki-title.JPEG", type: "file", path: "assets/brand/ms-wiki-title.JPEG" },
+  { name: "assets/brand/ms-wiki.JPEG", type: "file", path: "assets/brand/ms-wiki.JPEG" },
+  { name: "assets/brand/%E8%8E%AB%E6%AF%94%E9%9F%B3%E6%A8%82Logo.jpeg", type: "file", path: "assets/brand/%E8%8E%AB%E6%AF%94%E9%9F%B3%E6%A8%82Logo.jpeg" },
+  { name: "assets/icon", type: "folder", path: "assets/icon/" },
+  { name: "assets/icon/svg", type: "folder", path: "assets/icon/svg/" },
+  { name: "assets/icon/viewer", type: "folder", path: "assets/icon/viewer/" },
+  { name: "assets/icon/viewer/index.html", type: "file", path: "assets/icon/viewer/index.html" },
+
+  /* assets/icon/svg */
+  { name: "assets/icon/svg/alarm_off.svg", type: "file", path: "assets/icon/svg/alarm_off.svg" },
+  { name: "assets/icon/svg/alarm_on.svg", type: "file", path: "assets/icon/svg/alarm_on.svg" },
+  { name: "assets/icon/svg/badge_dollar.svg", type: "file", path: "assets/icon/svg/badge_dollar.svg" },
+  { name: "assets/icon/svg/bank.svg", type: "file", path: "assets/icon/svg/bank.svg" },
+  { name: "assets/icon/svg/barcode.svg", type: "file", path: "assets/icon/svg/barcode.svg" },
+  { name: "assets/icon/svg/battery_charging.svg", type: "file", path: "assets/icon/svg/battery_charging.svg" },
+  { name: "assets/icon/svg/battery_empty.svg", type: "file", path: "assets/icon/svg/battery_empty.svg" },
+  { name: "assets/icon/svg/battery_full.svg", type: "file", path: "assets/icon/svg/battery_full.svg" },
+  { name: "assets/icon/svg/bell_off.svg", type: "file", path: "assets/icon/svg/bell_off.svg" },
+  { name: "assets/icon/svg/bell_on.svg", type: "file", path: "assets/icon/svg/bell_on.svg" },
+  { name: "assets/icon/svg/bezier.svg", type: "file", path: "assets/icon/svg/bezier.svg" },
+  { name: "assets/icon/svg/bluetooth.svg", type: "file", path: "assets/icon/svg/bluetooth.svg" },
+  { name: "assets/icon/svg/bookmark.svg", type: "file", path: "assets/icon/svg/bookmark.svg" },
+  { name: "assets/icon/svg/bookmark_check.svg", type: "file", path: "assets/icon/svg/bookmark_check.svg" },
+  { name: "assets/icon/svg/bookmark_minus.svg", type: "file", path: "assets/icon/svg/bookmark_minus.svg" },
+  { name: "assets/icon/svg/bookmark_plus.svg", type: "file", path: "assets/icon/svg/bookmark_plus.svg" },
+  { name: "assets/icon/svg/bookmark_remove.svg", type: "file", path: "assets/icon/svg/bookmark_remove.svg" },
+  { name: "assets/icon/svg/box_list.svg", type: "file", path: "assets/icon/svg/box_list.svg" },
+  { name: "assets/icon/svg/boxes.svg", type: "file", path: "assets/icon/svg/boxes.svg" },
+  { name: "assets/icon/svg/brightness_down.svg", type: "file", path: "assets/icon/svg/brightness_down.svg" },
+  { name: "assets/icon/svg/brightness_up.svg", type: "file", path: "assets/icon/svg/brightness_up.svg" },
+  { name: "assets/icon/svg/bullhorn.svg", type: "file", path: "assets/icon/svg/bullhorn.svg" },
+  { name: "assets/icon/svg/calculator_1.svg", type: "file", path: "assets/icon/svg/calculator_1.svg" },
+  { name: "assets/icon/svg/calculator_2.svg", type: "file", path: "assets/icon/svg/calculator_2.svg" },
+  { name: "assets/icon/svg/calendar.svg", type: "file", path: "assets/icon/svg/calendar.svg" },
+  { name: "assets/icon/svg/calendar_date.svg", type: "file", path: "assets/icon/svg/calendar_date.svg" },
+  { name: "assets/icon/svg/camera.svg", type: "file", path: "assets/icon/svg/camera.svg" },
+  { name: "assets/icon/svg/chat_1.svg", type: "file", path: "assets/icon/svg/chat_1.svg" },
+  { name: "assets/icon/svg/chat_2.svg", type: "file", path: "assets/icon/svg/chat_2.svg" },
+  { name: "assets/icon/svg/circle_alert.svg", type: "file", path: "assets/icon/svg/circle_alert.svg" },
+  { name: "assets/icon/svg/circle_check.svg", type: "file", path: "assets/icon/svg/circle_check.svg" },
+  { name: "assets/icon/svg/circle_chev_down.svg", type: "file", path: "assets/icon/svg/circle_chev_down.svg" },
+  { name: "assets/icon/svg/circle_chev_left.svg", type: "file", path: "assets/icon/svg/circle_chev_left.svg" },
+  { name: "assets/icon/svg/circle_chev_right.svg", type: "file", path: "assets/icon/svg/circle_chev_right.svg" },
+  { name: "assets/icon/svg/circle_chev_up.svg", type: "file", path: "assets/icon/svg/circle_chev_up.svg" },
+  { name: "assets/icon/svg/circle_info.svg", type: "file", path: "assets/icon/svg/circle_info.svg" },
+  { name: "assets/icon/svg/circle_list.svg", type: "file", path: "assets/icon/svg/circle_list.svg" },
+  { name: "assets/icon/svg/circle_minus.svg", type: "file", path: "assets/icon/svg/circle_minus.svg" },
+  { name: "assets/icon/svg/circle_more.svg", type: "file", path: "assets/icon/svg/circle_more.svg" },
+  { name: "assets/icon/svg/circle_plus.svg", type: "file", path: "assets/icon/svg/circle_plus.svg" },
+  { name: "assets/icon/svg/circle_question.svg", type: "file", path: "assets/icon/svg/circle_question.svg" },
+  { name: "assets/icon/svg/circle_remove.svg", type: "file", path: "assets/icon/svg/circle_remove.svg" },
+  { name: "assets/icon/svg/clock_1.svg", type: "file", path: "assets/icon/svg/clock_1.svg" },
+  { name: "assets/icon/svg/clock_2.svg", type: "file", path: "assets/icon/svg/clock_2.svg" },
+  { name: "assets/icon/svg/cloud.svg", type: "file", path: "assets/icon/svg/cloud.svg" },
+  { name: "assets/icon/svg/cloud_drizzle.svg", type: "file", path: "assets/icon/svg/cloud_drizzle.svg" },
+  { name: "assets/icon/svg/cloud_moon.svg", type: "file", path: "assets/icon/svg/cloud_moon.svg" },
+  { name: "assets/icon/svg/cloud_off.svg", type: "file", path: "assets/icon/svg/cloud_off.svg" },
+  { name: "assets/icon/svg/cloud_on.svg", type: "file", path: "assets/icon/svg/cloud_on.svg" },
+  { name: "assets/icon/svg/cloud_rainbow.svg", type: "file", path: "assets/icon/svg/cloud_rainbow.svg" },
+  { name: "assets/icon/svg/cloud_sun.svg", type: "file", path: "assets/icon/svg/cloud_sun.svg" },
+  { name: "assets/icon/svg/compass_1.svg", type: "file", path: "assets/icon/svg/compass_1.svg" },
+  { name: "assets/icon/svg/crop.svg", type: "file", path: "assets/icon/svg/crop.svg" },
+  { name: "assets/icon/svg/dark.svg", type: "file", path: "assets/icon/svg/dark.svg" },
+  { name: "assets/icon/svg/database.svg", type: "file", path: "assets/icon/svg/database.svg" },
+  { name: "assets/icon/svg/desktop.svg", type: "file", path: "assets/icon/svg/desktop.svg" },
+  { name: "assets/icon/svg/discount_1.svg", type: "file", path: "assets/icon/svg/discount_1.svg" },
+  { name: "assets/icon/svg/dollar.svg", type: "file", path: "assets/icon/svg/dollar.svg" },
+  { name: "assets/icon/svg/droplet.svg", type: "file", path: "assets/icon/svg/droplet.svg" },
+  { name: "assets/icon/svg/edit.svg", type: "file", path: "assets/icon/svg/edit.svg" },
+  { name: "assets/icon/svg/eraser.svg", type: "file", path: "assets/icon/svg/eraser.svg" },
+  { name: "assets/icon/svg/export.svg", type: "file", path: "assets/icon/svg/export.svg" },
+  { name: "assets/icon/svg/face_frown.svg", type: "file", path: "assets/icon/svg/face_frown.svg" },
+  { name: "assets/icon/svg/face_meh.svg", type: "file", path: "assets/icon/svg/face_meh.svg" },
+  { name: "assets/icon/svg/face_smile.svg", type: "file", path: "assets/icon/svg/face_smile.svg" },
+
+  /* beta */
+  { name: "beta/01.html", type: "file", path: "beta/01.html" },
+  { name: "beta/02.html", type: "file", path: "beta/02.html" },
+  { name: "beta/03.html", type: "file", path: "beta/03.html" },
+  { name: "beta/04.html", type: "file", path: "beta/04.html" },
+  { name: "beta/05.html", type: "file", path: "beta/05.html" },
+  { name: "beta/06.html", type: "file", path: "beta/06.html" },
+  { name: "beta/07.html", type: "file", path: "beta/07.html" },
+  { name: "beta/08.html", type: "file", path: "beta/08.html" },
+  { name: "beta/09.html", type: "file", path: "beta/09.html" },
+  { name: "beta/10.html", type: "file", path: "beta/10.html" },
+  { name: "beta/11.html", type: "file", path: "beta/11.html" },
+  { name: "beta/12.html", type: "file", path: "beta/12.html" },
+  { name: "beta/13.html", type: "file", path: "beta/13.html" },
+  { name: "beta/14.html", type: "file", path: "beta/14.html" },
+  { name: "beta/15.html", type: "file", path: "beta/15.html" },
+  { name: "beta/16.html", type: "file", path: "beta/16.html" },
+  { name: "beta/17.html", type: "file", path: "beta/17.html" },
+  { name: "beta/18.html", type: "file", path: "beta/18.html" },
+  { name: "beta/19.html", type: "file", path: "beta/19.html" },
+  { name: "beta/20.html", type: "file", path: "beta/20.html" },
+  { name: "beta/21.html", type: "file", path: "beta/21.html" },
+  { name: "beta/22.html", type: "file", path: "beta/22.html" },
+  { name: "beta/23.html", type: "file", path: "beta/23.html" },
+  { name: "beta/24.html", type: "file", path: "beta/24.html" },
+  { name: "beta/25.html", type: "file", path: "beta/25.html" },
+  { name: "beta/gix-test.html", type: "file", path: "beta/gix-test.html" },
+  { name: "beta/index.html", type: "file", path: "beta/index.html" },
+  { name: "beta/test.html", type: "file", path: "beta/test.html" },
+  { name: "beta/test1.html", type: "file", path: "beta/test1.html" },
+  { name: "beta/test2.html", type: "file", path: "beta/test2.html" },
+  { name: "beta/test3.html", type: "file", path: "beta/test3.html" },
+  { name: "beta/test4.html", type: "file", path: "beta/test4.html" },
+  { name: "beta/test5.html", type: "file", path: "beta/test5.html" },
+  { name: "beta/test6.html", type: "file", path: "beta/test6.html" },
+  { name: "beta/test7.html", type: "file", path: "beta/test7.html" },
+  { name: "beta/test8.html", type: "file", path: "beta/test8.html" },
+  { name: "beta/test9.html", type: "file", path: "beta/test9.html" },
+  { name: "beta/test10.html", type: "file", path: "beta/test10.html" },
+  { name: "beta/tst.html", type: "file", path: "beta/tst.html" },
+  { name: "beta/README.md", type: "file", path: "beta/README.md" },
+  { name: "beta/js-read", type: "folder", path: "beta/js-read/" },
+  { name: "beta/js-read/README.md", type: "file", path: "beta/js-read/README.md" },
+  { name: "beta/js-read/index.html", type: "file", path: "beta/js-read/index.html" },
+  { name: "beta/js-read/rendengine.js", type: "file", path: "beta/js-read/rendengine.js" },
+  { name: "beta/mod", type: "folder", path: "beta/mod/" },
+  { name: "beta/mod/README.md", type: "file", path: "beta/mod/README.md" },
+  { name: "beta/mod/bottom-nav.js", type: "file", path: "beta/mod/bottom-nav.js" },
+  { name: "beta/mod/brand-layout.js", type: "file", path: "beta/mod/brand-layout.js" },
+  { name: "beta/mod/footer-sys.js", type: "file", path: "beta/mod/footer-sys.js" },
+  { name: "beta/mod/grid-slider.js", type: "file", path: "beta/mod/grid-slider.js" },
+  { name: "beta/mod/ios-type.js", type: "file", path: "beta/mod/ios-type.js" },
+  { name: "beta/mod/notice-sync.js", type: "file", path: "beta/mod/notice-sync.js" },
+  { name: "beta/mod/splash-screen.js", type: "file", path: "beta/mod/splash-screen.js" },
+  { name: "beta/mod/theme-engine.js", type: "file", path: "beta/mod/theme-engine.js" },
+
+  /* blog */
+  { name: "blog/p", type: "folder", path: "blog/p/" },
+  { name: "blog/README.md", type: "file", path: "blog/README.md" },
+  { name: "blog/index.html", type: "file", path: "blog/index.html" },
+
+  /* blog/p/list */
+  { name: "blog/p/list", type: "folder", path: "blog/p/list/" },
+  { name: "blog/p/list/bloglist.json", type: "file", path: "blog/p/list/bloglist.json" },
+  { name: "blog/p/list/content_placeholder.md", type: "file", path: "blog/p/list/content_placeholder.md" },
+  { name: "blog/p/list/github-pages-%E8%A8%BB%E5%86%8A.html", type: "file", path: "blog/p/list/github-pages-%E8%A8%BB%E5%86%8A.html" },
+  { name: "blog/p/list/theme.html", type: "file", path: "blog/p/list/theme.html" },
+  { name: "blog/p/list/%E5%85%AC%E5%85%AC%E6%93%8D%E5%85%92%E5%AA%B3.html", type: "file", path: "blog/p/list/%E5%85%AC%E5%85%AC%E6%93%8D%E5%85%92%E5%AA%B3.html" },
+  { name: "blog/p/list/%E5%85%AC%E5%85%AC%E8%88%87%E5%AA%B3%E5%A9%A6.html", type: "file", path: "blog/p/list/%E5%85%AC%E5%85%AC%E8%88%87%E5%AA%B3%E5%A9%A6.html" },
+  { name: "blog/p/list/%E5%A4%A7%E5%AB%82%E8%88%87%E4%BA%8C%E5%93%A5.html", type: "file", path: "blog/p/list/%E5%A4%A7%E5%AB%82%E8%88%87%E4%BA%8C%E5%93%A5.html" },
+  { name: "blog/p/list/%E5%B0%8F%E5%A7%A8%E5%AD%90%E7%9A%84%E8%82%9B%E9%96%80.html", type: "file", path: "blog/p/list/%E5%B0%8F%E5%A7%A8%E5%AD%90%E7%9A%84%E8%82%9B%E9%96%80.html" },
+  { name: "blog/p/list/%E5%BC%B7%E5%A7%A6%E5%AA%BD%E5%AA%BD%E7%9B%B4%E5%88%B0%E6%87%B7%E5%AD%95%E7%82%BA%E6%AD%A2.html", type: "file", path: "blog/p/list/%E5%BC%B7%E5%A7%A6%E5%AA%BD%E5%AA%BD%E7%9B%B4%E5%88%B0%E6%87%B7%E5%AD%95%E7%82%BA%E6%AD%A2.html" },
+  { name: "blog/p/list/%E6%93%8D%E5%A7%90%E5%A7%90%E7%9A%84%E8%8F%8A%E7%A9%B4.html", type: "file", path: "blog/p/list/%E6%93%8D%E5%A7%90%E5%A7%90%E7%9A%84%E8%8F%8A%E7%A9%B4.html" },
+  { name: "blog/p/list/%E6%AF%8D%E5%A7%A6%E8%87%B4%E5%AD%95%E8%A8%88%E5%8A%83.html", type: "file", path: "blog/p/list/%E6%AF%8D%E5%A7%A6%E8%87%B4%E5%AD%95%E8%A8%88%E5%8A%83.html" },
+  { name: "blog/p/list/%E6%B5%B4%E5%AE%A4%E5%A7%A6%E6%B7%AB%E5%AA%BD%E5%AA%BD.html", type: "file", path: "blog/p/list/%E6%B5%B4%E5%AE%A4%E5%A7%A6%E6%B7%AB%E5%AA%BD%E5%AA%BD.html" },
+  { name: "blog/p/list/%E8%88%87%E5%A4%A7%E5%A7%90%E7%9A%84%E8%83%8C%E5%BE%B7%E9%97%9C%E4%BF%82.html", type: "file", path: "blog/p/list/%E8%88%87%E5%A4%A7%E5%A7%90%E7%9A%84%E8%83%8C%E5%BE%B7%E9%97%9C%E4%BF%82.html" },
+  { name: "blog/p/list/%E9%98%BF%E5%A7%A8%E7%9A%84%E8%8F%8A%E7%A9%B4.html", type: "file", path: "blog/p/list/%E9%98%BF%E5%A7%A8%E7%9A%84%E8%8F%8A%E7%A9%B4.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B81.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B81.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B810.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B810.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B811.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B811.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B812.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B812.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B813.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B813.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B814.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B814.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B815.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B815.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B816.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B816.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B817.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B817.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B818.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B818.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B819.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B819.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B82.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B82.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B820.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B820.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B821.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B821.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B822.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B822.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B823.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B823.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B824.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B824.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B825.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B825.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B826.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B826.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B83.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B83.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B84.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B84.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B85.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B85.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B86.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B86.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B87.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B87.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B88.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B88.html" },
+  { name: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B89.html", type: "file", path: "blog/p/list/%E9%A2%A8%E6%9C%88%E6%96%87%E5%AD%B89.html" },
+
+  /* browser */
+  { name: "browser/README.md", type: "file", path: "browser/README.md" },
+  { name: "browser/sf", type: "folder", path: "browser/sf/" },
+  { name: "browser/sf/index.html", type: "file", path: "browser/sf/index.html" },
+  { name: "browser/sf/data", type: "folder", path: "browser/sf/data/" },
+
+  /* data */
+  { name: "data/config.json", type: "file", path: "data/config.json" },
+  { name: "data/editor_config.json", type: "file", path: "data/editor_config.json" },
+  { name: "data/notice.md", type: "file", path: "data/notice.md" },
+  { name: "data/style.css", type: "file", path: "data/style.css" },
+  { name: "data/svg.json", type: "file", path: "data/svg.json" },
+  { name: "data/wiki-info.json", type: "file", path: "data/wiki-info.json" },
+
+  /* file-list */
+  { name: "file-list/README.md", type: "file", path: "file-list/README.md" },
+  { name: "file-list/all-links.html", type: "file", path: "file-list/all-links.html" },
+  { name: "file-list/assets", type: "folder", path: "file-list/assets/" },
+  { name: "file-list/assets/css", type: "folder", path: "file-list/assets/css/" },
+  { name: "file-list/assets/js", type: "folder", path: "file-list/assets/js/" },
+  { name: "file-list/data", type: "folder", path: "file-list/data/" },
+  { name: "file-list/detail.html", type: "file", path: "file-list/detail.html" },
+  { name: "file-list/index.html", type: "file", path: "file-list/index.html" },
+  { name: "file-list/manifest.json", type: "file", path: "file-list/manifest.json" },
+  { name: "file-list/offline.html", type: "file", path: "file-list/offline.html" },
+  { name: "file-list/saved.html", type: "file", path: "file-list/saved.html" },
+  { name: "file-list/settings.html", type: "file", path: "file-list/settings.html" },
+  { name: "file-list/sw.js", type: "file", path: "file-list/sw.js" },
+  { name: "file-list/data/files.json", type: "file", path: "file-list/data/files.json" },
+  { name: "file-list/scripts/generate_files_json.py", type: "file", path: "file-list/scripts/generate_files_json.py" },
+  { name: "file-list/scripts/sync_from_repo.py", type: "file", path: "file-list/scripts/sync_from_repo.py" },
+
+  /* music */
+  { name: "music/README.md", type: "file", path: "music/README.md" },
+  { name: "music/css", type: "folder", path: "music/css/" },
+  { name: "music/css/README.md", type: "file", path: "music/css/README.md" },
+  { name: "music/css/global.css", type: "file", path: "music/css/global.css" },
+  { name: "music/data", type: "folder", path: "music/data/" },
+  { name: "music/data/README.md", type: "file", path: "music/data/README.md" },
+  { name: "music/data/music.json", type: "file", path: "music/data/music.json" },
+  { name: "music/index.html", type: "file", path: "music/index.html" },
+  { name: "music/js", type: "folder", path: "music/js/" },
+  { name: "music/js/README.md", type: "file", path: "music/js/README.md" },
+  { name: "music/js/app.js", type: "file", path: "music/js/app.js" },
+  { name: "music/js/player.js", type: "file", path: "music/js/player.js" },
+  { name: "music/js/state.js", type: "file", path: "music/js/state.js" },
+  { name: "music/js/ui.js", type: "file", path: "music/js/ui.js" },
+  { name: "music/sw.js", type: "file", path: "music/sw.js" },
+
+  /* scripts */
+  { name: "scripts/auto_index.py", type: "file", path: "scripts/auto_index.py" },
+  { name: "scripts/master-optimizer-final.js", type: "file", path: "scripts/master-optimizer-final.js" },
+  { name: "scripts/parse_csv.py", type: "file", path: "scripts/parse_csv.py" },
+  { name: "scripts/tol_update.py", type: "file", path: "scripts/tol_update.py" },
+
+  /* setting */
+  { name: "setting/index.html", type: "file", path: "setting/index.html" },
+
+  /* shorts */
+  { name: "shorts/index.html", type: "file", path: "shorts/index.html" },
+
+  /* svg-editor */
+  { name: "svg-editor/index.html", type: "file", path: "svg-editor/index.html" },
+
+  /* tol */
+  { name: "tol/README.md", type: "file", path: "tol/README.md" },
+  { name: "tol/AdvancEditor/", type: "folder", path: "tol/AdvancEditor/" },
+  { name: "tol/AdvancEditor/index.html", type: "file", path: "tol/AdvancEditor/index.html" },
+  { name: "tol/Editor/", type: "folder", path: "tol/Editor/" },
+  { name: "tol/Editor/index.html", type: "file", path: "tol/Editor/index.html" },
+  { name: "tol/FileStores/", type: "folder", path: "tol/FileStores/" },
+  { name: "tol/FileStores/index.html", type: "file", path: "tol/FileStores/index.html" },
+  { name: "tol/MobspOS/", type: "folder", path: "tol/MobspOS/" },
+  { name: "tol/MobspOS/index.html", type: "file", path: "tol/MobspOS/index.html" },
+  { name: "tol/convert/", type: "folder", path: "tol/convert/" },
+  { name: "tol/convert/index.html", type: "file", path: "tol/convert/index.html" },
+  { name: "tol/editot/", type: "folder", path: "tol/editot/" },
+  { name: "tol/editot/index.html", type: "file", path: "tol/editot/index.html" },
+  { name: "tol/gh-idx/", type: "folder", path: "tol/gh-idx/" },
+  { name: "tol/gh-idx/index.html", type: "file", path: "tol/gh-idx/index.html" },
+  { name: "tol/ghexort/", type: "folder", path: "tol/ghexort/" },
+  { name: "tol/ghexort/index.html", type: "file", path: "tol/ghexort/index.html" },
+  { name: "tol/ghexort/script.js", type: "file", path: "tol/ghexort/script.js" },
+  { name: "tol/ghexort/style.css", type: "file", path: "tol/ghexort/style.css" },
+  { name: "tol/k-zero/", type: "folder", path: "tol/k-zero/" },
+  { name: "tol/k-zero/index.html", type: "file", path: "tol/k-zero/index.html" },
+  { name: "tol/keep/", type: "folder", path: "tol/keep/" },
+  { name: "tol/keep/index.html", type: "file", path: "tol/keep/index.html" },
+  { name: "tol/lab/", type: "folder", path: "tol/lab/" },
+  { name: "tol/lab/index.html", type: "file", path: "tol/lab/index.html" },
+  { name: "tol/data.json", type: "file", path: "tol/data.json" },
+  { name: "tol/index.html", type: "file", path: "tol/index.html" },
+  { name: "tol/manifest.json", type: "file", path: "tol/manifest.json" },
+  { name: "tol/publisher/", type: "folder", path: "tol/publisher/" },
+  { name: "tol/publisher/index.html", type: "file", path: "tol/publisher/index.html" },
+  { name: "tol/rss-generator.html", type: "file", path: "tol/rss-generator.html" },
+  { name: "tol/tolist.json", type: "file", path: "tol/tolist.json" },
+  { name: "tol/tourl/", type: "folder", path: "tol/tourl/" },
+  { name: "tol/tourl/index.html", type: "file", path: "tol/tourl/index.html" },
+  { name: "tol/ve/", type: "folder", path: "tol/ve/" },
+  { name: "tol/ve/index.html", type: "file", path: "tol/ve/index.html" },
+  { name: "tol/x-harv/", type: "folder", path: "tol/x-harv/" },
+  { name: "tol/x-harv/index.html", type: "file", path: "tol/x-harv/index.html" },
+
+  /* wiki */
+  { name: "wiki/index.html", type: "file", path: "wiki/index.html" }
+
+];
+
+
+/* =========================================================
+   STATE
+   ========================================================= */
+
+let currentFilter = "all";
+
+let currentSearch = "";
+
+let currentEditorItem = null;
+
+let originalEditorContent = "";
+
+let localModified = false;
+
+
+/* =========================================================
+   DOM
+   ========================================================= */
+
+const fileList =
+  document.getElementById("fileList");
+
+const searchInput =
+  document.getElementById("searchInput");
+
+const totalCount =
+  document.getElementById("totalCount");
+
+const folderCount =
+  document.getElementById("folderCount");
+
+const fileCount =
+  document.getElementById("fileCount");
+
+const editorOverlay =
+  document.getElementById("editorOverlay");
+
+const editorTextarea =
+  document.getElementById("editorTextarea");
+
+const editorFileName =
+  document.getElementById("editorFileName");
+
+const editorFilePath =
+  document.getElementById("editorFilePath");
+
+const editorType =
+  document.getElementById("editorType");
+
+const editorStatus =
+  document.getElementById("editorStatus");
+
+const toast =
+  document.getElementById("toast");
+
+
+/* =========================================================
+   UTILITIES
+   ========================================================= */
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+}
+
+
+function encodePath(path) {
+
+  return path
+    .split("/")
+    .map(part => encodeURIComponent(part))
+    .join("/");
+
+}
+
+
+/* 修正後的getPageURL：直接拼接 SITE_BASE + "/" + 路徑與檔名含副檔名 */
+function getPageURL(path) {
+
+  return SITE_BASE +
+    "/" +
+    encodePath(path);
+
+}
+
+
+function getGitHubURL(path) {
+
+  return GITHUB_BASE +
+    "/blob/" +
+    REPO_BRANCH +
+    "/" +
+    encodePath(path);
+
+}
+
+
+function getGitHubEditURL(path) {
+
+  return GITHUB_BASE +
+    "/edit/" +
+    REPO_BRANCH +
+    "/" +
+    encodePath(path);
+
+}
+
+
+function getRawURL(path) {
+
+  return RAW_BASE +
+    "/" +
+    encodePath(path);
+
+}
+
+
+function getIcon(item) {
+
+  if (item.type === "folder") {
+    return "📁";
+  }
+
+  const ext =
+    item.path
+      .split(".")
+      .pop()
+      .toLowerCase();
+
+  const map = {
+
+    html: "🌐",
+    htm: "🌐",
+
+    css: "🎨",
+
+    js: "📜",
+    mjs: "📜",
+
+    json: "🧩",
+
+    py: "🐍",
+
+    yml: "⚙️",
+    yaml: "⚙️",
+
+    md: "📝",
+
+    txt: "📄",
+
+    xml: "🗂️",
+
+    svg: "🖼️",
+
+    png: "🖼️",
+    jpg: "🖼️",
+    jpeg: "🖼️",
+    webp: "🖼️",
+
+    mp3: "🎵",
+    wav: "🎵",
+
+    mp4: "🎬",
+    mov: "🎬",
+
+    ico: "🖼️"
+
+  };
+
+  return map[ext] || "📄";
+
+}
+
+
+function getFileType(path) {
+
+  if (path.endsWith("/")) {
+    return "資料夾";
+  }
+
+  const dot =
+    path.lastIndexOf(".");
+
+  if (dot === -1) {
+    return "檔案";
+  }
+
+  return (
+    path
+      .slice(dot + 1)
+      .toUpperCase() +
+    " 檔案"
+  );
+
+}
+
+
+function isEditable(item) {
+
+  if (item.type !== "file") {
+    return false;
+  }
+
+  const ext =
+    item.path
+      .split(".")
+      .pop()
+      .toLowerCase();
+
+  return [
+
+    "html",
+    "htm",
+    "css",
+    "js",
+    "mjs",
+    "json",
+    "py",
+    "yml",
+    "yaml",
+    "md",
+    "txt",
+    "xml",
+    "svg",
+    "txt",
+    "csv"
+
+  ].includes(ext);
+
+}
+
+
+function showToast(message) {
+
+  toast.textContent = message;
+
+  toast.classList.add("show");
+
+  clearTimeout(
+    showToast.timer
+  );
+
+  showToast.timer =
+    setTimeout(() => {
+
+      toast.classList.remove("show");
+
+    }, 1800);
+
+}
+
+
+/* =========================================================
+   FILTER
+   ========================================================= */
+
+function matchesSearch(item) {
+
+  if (!currentSearch) {
+    return true;
+  }
+
+  const target =
+    (
+      item.name +
+      " " +
+      item.path
+    ).toLowerCase();
+
+  return target.includes(
+    currentSearch.toLowerCase()
+  );
+
+}
+
+
+function matchesFilter(item) {
+
+  if (currentFilter === "all") {
+    return true;
+  }
+
+  return item.type === currentFilter;
+
+}
+
+
+/* =========================================================
+   GROUP BY FOLDER
+   ========================================================= */
+
+function getFolderName(path) {
+
+  const clean =
+    path.replace(/\/$/, "");
+
+  const parts =
+    clean.split("/");
+
+  if (parts.length <= 1) {
+    return "根目錄";
+  }
+
+  return parts
+    .slice(0, -1)
+    .join("/");
+
+}
+
+
+function buildGroups(items) {
+
+  const groups = new Map();
+
+  items.forEach(item => {
+
+    const folder =
+      item.type === "folder"
+        ? getFolderName(item.path)
+        : getFolderName(item.path);
+
+    if (!groups.has(folder)) {
+      groups.set(folder, []);
+    }
+
+    groups
+      .get(folder)
+      .push(item);
+
+  });
+
+  return groups;
+
+}
+
+
+/* =========================================================
+   RENDER
+   ========================================================= */
+
+function render() {
+
+  const filtered =
+    FILE_DATA
+      .filter(matchesSearch)
+      .filter(matchesFilter)
+      .sort((a, b) =>
+        a.path.localeCompare(
+          b.path,
+          "zh-Hant",
+          {
+            numeric: true
+          }
+        )
+      );
+
+  totalCount.textContent =
+    filtered.length;
+
+  folderCount.textContent =
+    filtered.filter(
+      item => item.type === "folder"
+    ).length;
+
+  fileCount.textContent =
+    filtered.filter(
+      item => item.type === "file"
+    ).length;
+
+
+  if (!filtered.length) {
+
+    fileList.innerHTML = `
+      <div class="empty">
+
+        <div class="empty-icon">
+          🔎
+        </div>
+
+        <div class="empty-title">
+          找不到符合項目
+        </div>
+
+        <div class="empty-text">
+          請嘗試其他搜尋關鍵字或切換篩選條件。
+        </div>
+
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  const groups =
+    buildGroups(filtered);
+
+  let html = "";
+
+  for (const [
+    folder,
+    items
+  ] of groups) {
+
+    html += `
+
+      <section
+        class="folder"
+        data-folder="${escapeHTML(folder)}"
+      >
+
+        <div class="folder-title">
+
+          <span>
+            ${escapeHTML(folder)}
+          </span>
+
+          <span class="folder-count">
+            ${items.length}
+          </span>
+
+        </div>
+
+    `;
+
+    items.forEach(item => {
+
+      html += renderItem(item);
+
+    });
+
+    html += `
+      </section>
+    `;
+
+  }
+
+  fileList.innerHTML = html;
+
+}
+
+
+function renderItem(item) {
+
+  const pageURL =
+    getPageURL(item.path);
+
+  const githubURL =
+    getGitHubURL(item.path);
+
+  const editURL =
+    getGitHubEditURL(item.path);
+
+  const rawURL =
+    getRawURL(item.path);
+
+  const editable =
+    isEditable(item);
+
+  const type =
+    getFileType(item.path);
+
+
+  return `
+
+    <article
+      class="file-card"
+      data-path="${escapeHTML(item.path)}"
+      data-type="${item.type}"
+    >
+
+      <!-- =============================================
+           第一層：
+           只有檔名 / 網站名稱
+           ============================================= -->
+
+      <button
+        class="file-header"
+        type="button"
+        data-action="toggle"
+      >
+
+        <div class="file-icon">
+          ${getIcon(item)}
+        </div>
+
+        <div class="file-main">
+
+          <div class="file-name">
+            ${escapeHTML(item.name)}
+          </div>
+
+          <div class="file-type">
+            ${type}
+          </div>
+
+        </div>
+
+        <div class="chevron">
+          ›
+        </div>
+
+      </button>
+
+
+      <!-- =============================================
+           第二層：
+           點擊後才顯示完整資料
+           ============================================= -->
+
+      <div class="file-detail">
+
+        <div class="detail-group">
+
+          <div class="detail-label">
+            相對路徑
+          </div>
+
+          <div class="detail-value">
+            ${escapeHTML(item.path)}
+          </div>
+
+        </div>
+
+
+        <div class="detail-group">
+
+          <div class="detail-label">
+            絕對路徑 (快速訪問網址)
+          </div>
+
+          <div class="detail-value">
+            ${escapeHTML(pageURL)}
+          </div>
+
+        </div>
+
+
+        <div class="detail-group">
+
+          <div class="detail-label">
+            GitHub 儲存庫路徑
+          </div>
+
+          <div class="detail-value">
+            ${escapeHTML(
+              GITHUB_BASE +
+              "/tree/" +
+              REPO_BRANCH +
+              "/" +
+              encodePath(item.path)
+            )}
+          </div>
+
+        </div>
+
+
+        <div class="detail-group">
+
+          <div class="detail-label">
+            RAW URL
+          </div>
+
+          <div class="detail-value">
+            ${escapeHTML(rawURL)}
+          </div>
+
+        </div>
+
+
+        <div class="link-actions">
+
+          <a
+            class="link-button visit"
+            href="${pageURL}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            快速訪問
+          </a>
+
+
+          <a
+            class="link-button github"
+            href="${githubURL}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub 查看
+          </a>
+
+
+          <a
+            class="link-button"
+            href="${editURL}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            GitHub 編輯
+          </a>
+
+
+          <a
+            class="link-button raw"
+            href="${rawURL}"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            RAW
+          </a>
+
+
+          ${
+            editable
+              ? `
+                <button
+                  class="link-button edit"
+                  type="button"
+                  data-action="local-edit"
+                >
+                  網頁編輯
+                </button>
+              `
+              : ""
+          }
+
+        </div>
+
+      </div>
+
+    </article>
+
+  `;
+
+}
+
+
+/* =========================================================
+   EVENT DELEGATION
+   ========================================================= */
+
+fileList.addEventListener(
+  "click",
+  event => {
+
+    const card =
+      event.target.closest(
+        ".file-card"
+      );
+
+    if (!card) {
+      return;
+    }
+
+
+    const action =
+      event.target.closest(
+        "[data-action]"
+      );
+
+
+    if (!action) {
+      return;
+    }
+
+
+    const type =
+      action.dataset.action;
+
+
+    if (type === "toggle") {
+
+      card.classList.toggle("open");
+
+      return;
+
+    }
+
+
+    if (type === "local-edit") {
+
+      const path =
+        card.dataset.path;
+
+      const item =
+        FILE_DATA.find(
+          x => x.path === path
+        );
+
+      if (item) {
+        openEditor(item);
+      }
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+searchInput.addEventListener(
+  "input",
+  event => {
+
+    currentSearch =
+      event.target.value.trim();
+
+    render();
+
+  }
+);
+
+
+/* =========================================================
+   FILTER BUTTONS
+   ========================================================= */
+
+document
+  .querySelectorAll(
+    "[data-filter]"
+  )
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        currentFilter =
+          button.dataset.filter;
+
+        document
+          .querySelectorAll(
+            "[data-filter]"
+          )
+          .forEach(
+            b => b.classList.remove(
+              "active"
+            )
+          );
+
+        button.classList.add(
+          "active"
+        );
+
+        render();
+
+      }
+    );
+
+  });
+
+
+/* =========================================================
+   EXPAND / COLLAPSE
+   ========================================================= */
+
+document
+  .getElementById("expandAllBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      document
+        .querySelectorAll(
+          ".file-card"
+        )
+        .forEach(card => {
+
+          card.classList.add(
+            "open"
+          );
+
+        });
+
+    }
+  );
+
+
+document
+  .getElementById("collapseAllBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      document
+        .querySelectorAll(
+          ".file-card"
+        )
+        .forEach(card => {
+
+          card.classList.remove(
+            "open"
+          );
+
+        });
+
+    }
+  );
+
+
+/* =========================================================
+   LOCAL FILE LOADER
+   ========================================================= */
+
+document
+  .getElementById("loadLocalBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      document
+        .getElementById(
+          "localFileInput"
+        )
+        .click();
+
+    }
+  );
+
+
+document
+  .getElementById("localFileInput")
+  .addEventListener(
+    "change",
+    event => {
+
+      const files =
+        Array.from(
+          event.target.files || []
+        );
+
+      if (!files.length) {
+        return;
+      }
+
+
+      files.forEach(file => {
+
+        const item = {
+
+          name:
+            file.name,
+
+          path:
+            file.webkitRelativePath ||
+            file.name,
+
+          type:
+            "file",
+
+          localFile:
+            file
+
+        };
+
+
+        const exists =
+          FILE_DATA.some(
+            x =>
+              x.path === item.path
+          );
+
+
+        if (!exists) {
+
+          FILE_DATA.push(item);
+
+        }
+
+      });
+
+
+      render();
+
+      showToast(
+        `已載入 ${files.length} 個本機檔案`
+      );
+
+      event.target.value = "";
+
+    }
+  );
+
+
+/* =========================================================
+   EDITOR
+   ========================================================= */
+
+async function openEditor(item) {
+
+  currentEditorItem =
+    item;
+
+  editorFileName.textContent =
+    item.name;
+
+  editorFilePath.textContent =
+    item.path;
+
+  editorType.textContent =
+    getFileType(item.path);
+
+
+  editorTextarea.value =
+    "正在載入檔案內容……";
+
+
+  editorStatus.textContent =
+    "載入中";
+
+  localModified =
+    false;
+
+
+  editorOverlay.classList.add(
+    "show"
+  );
+
+
+  try {
+
+    let content = "";
+
+
+    /* ================================================
+       如果是本機 File API 檔案
+       ================================================ */
+
+    if (item.localFile) {
+
+      content =
+        await item.localFile.text();
+
+    }
+
+    /* ================================================
+       如果不是本機檔案
+       嘗試讀取 GitHub RAW
+       ================================================ */
+
+    else {
+
+      const response =
+        await fetch(
+          getRawURL(item.path),
+          {
+            cache: "no-store"
+          }
+        );
+
+      if (!response.ok) {
+
+        throw new Error(
+          "HTTP " +
+          response.status
+        );
+
+      }
+
+      content =
+        await response.text();
+
+    }
+
+
+    originalEditorContent =
+      content;
+
+    editorTextarea.value =
+      content;
+
+    editorStatus.textContent =
+      "未修改";
+
+
+  } catch (error) {
+
+    editorTextarea.value =
+      [
+        "無法自動載入檔案內容。",
+        "",
+        "錯誤：",
+        String(error),
+        "",
+        "你仍然可以直接在此編輯器中輸入內容。",
+        "完成後可使用「複製」或「下載」。"
+      ].join("\n");
+
+    originalEditorContent =
+      editorTextarea.value;
+
+    editorStatus.textContent =
+      "載入失敗";
+
+  }
+
+}
+
+
+/* =========================================================
+   EDITOR INPUT
+   ========================================================= */
+
+editorTextarea.addEventListener(
+  "input",
+  () => {
+
+    localModified =
+      editorTextarea.value !==
+      originalEditorContent;
+
+    editorStatus.textContent =
+      localModified
+        ? "● 已修改"
+        : "未修改";
+
+  }
+);
+
+
+/* =========================================================
+   CLOSE EDITOR
+   ========================================================= */
+
+document
+  .getElementById("closeEditorBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (
+        localModified &&
+        !confirm(
+          "目前內容尚未下載或複製。\n\n確定要關閉編輯器嗎？"
+        )
+      ) {
+        return;
+      }
+
+      editorOverlay.classList.remove(
+        "show"
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   COPY
+   ========================================================= */
+
+document
+  .getElementById("copyBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      const content =
+        editorTextarea.value;
+
+      try {
+
+        await navigator.clipboard.writeText(
+          content
+        );
+
+        showToast(
+          "已複製編輯後內容"
+        );
+
+      } catch {
+
+        editorTextarea.select();
+
+        document.execCommand(
+          "copy"
+        );
+
+        showToast(
+          "已複製編輯後內容"
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   DOWNLOAD
+   ========================================================= */
+
+document
+  .getElementById("downloadBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (!currentEditorItem) {
+        return;
+      }
+
+
+      const content =
+        editorTextarea.value;
+
+
+      const blob =
+        new Blob(
+          [content],
+          {
+            type:
+              "text/plain;charset=utf-8"
+          }
+        );
+
+
+      const url =
+        URL.createObjectURL(
+          blob
+        );
+
+
+      const anchor =
+        document.createElement(
+          "a"
+        );
+
+
+      anchor.href =
+        url;
+
+
+      anchor.download =
+        currentEditorItem.name ||
+        "download.txt";
+
+
+      document.body.appendChild(
+        anchor
+      );
+
+
+      anchor.click();
+
+
+      anchor.remove();
+
+
+      URL.revokeObjectURL(
+        url
+      );
+
+
+      showToast(
+        "已下載本機修改版本"
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   RESTORE
+   ========================================================= */
+
+document
+  .getElementById("restoreBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (
+        !confirm(
+          "確定要還原到原始載入內容嗎？"
+        )
+      ) {
+        return;
+      }
+
+
+      editorTextarea.value =
+        originalEditorContent;
+
+      localModified =
+        false;
+
+      editorStatus.textContent =
+        "未修改";
+
+      showToast(
+        "已還原"
+      );
+
+    }
+  );
+
+
+/* =========================================================
+   CLEAR
+   ========================================================= */
+
+document
+  .getElementById("clearEditorBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (
+        !confirm(
+          "確定要清空目前編輯器內容嗎？"
+        )
+      ) {
+        return;
+      }
+
+
+      editorTextarea.value =
+        "";
+
+      localModified =
+        true;
+
+      editorStatus.textContent =
+        "● 已修改";
+
+    }
+  );
+
+
+/* =========================================================
+   LOCAL SAVE
+   ---------------------------------------------------------
+   注意：
+   這裡的「暫存」只存在瀏覽器 localStorage。
+   不會寫入 GitHub。
+   ========================================================= */
+
+document
+  .getElementById("saveLocalBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      if (!currentEditorItem) {
+        return;
+      }
+
+
+      const key =
+        "mobsp-local-edit:" +
+        currentEditorItem.path;
+
+
+      try {
+
+        localStorage.setItem(
+          key,
+          editorTextarea.value
+        );
+
+
+        showToast(
+          "已暫存於本機瀏覽器"
+        );
+
+      } catch {
+
+        showToast(
+          "瀏覽器暫存失敗"
+        );
+
+      }
+
+    }
+  );
+
+
+/* =========================================================
+   LOAD LOCAL SAVED VERSION
+   ========================================================= */
+
+function loadLocalSavedVersion(item) {
+
+  const key =
+    "mobsp-local-edit:" +
+    item.path;
+
+
+  try {
+
+    return localStorage.getItem(
+      key
+    );
+
+  } catch {
+
+    return null;
+
+  }
+
+}
+
+
+/* =========================================================
+   INIT
+   ========================================================= */
+
+render();
+
+
+/* =========================================================
+   KEYBOARD SHORTCUTS
+   ========================================================= */
+
+document.addEventListener(
+  "keydown",
+  event => {
+
+    if (
+      event.key === "Escape" &&
+      editorOverlay.classList.contains(
+        "show"
+      )
+    ) {
+
+      document
+        .getElementById(
+          "closeEditorBtn"
+        )
+        .click();
+
+      return;
+
+    }
+
+
+    if (
+      (event.metaKey ||
+       event.ctrlKey) &&
+      event.key.toLowerCase() === "s" &&
+      editorOverlay.classList.contains(
+        "show"
+      )
+    ) {
+
+      event.preventDefault();
+
+      document
+        .getElementById(
+          "saveLocalBtn"
+        )
+        .click();
+
+    }
+
+  }
+);
+
+
+/* =========================================================
+   END
+   ========================================================= */
+</script>
+
+</body>
+</html>
