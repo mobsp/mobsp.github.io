@@ -403,7 +403,7 @@
         document.getElementById('downloadBtn').onclick = () => {
             const link = document.createElement('a');
             link.href = generatedImageBase64;
-            link.download = `${originalFileName}_processed.webp`;
+            link.download = `${originalFileName}_processed.png`;
             link.click();
         };
 
