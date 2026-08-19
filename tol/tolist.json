@@ -9,9 +9,9 @@
 ,
   {"name": "FileStores", "path": "/tol/FileStores/"}
 ,
-  {"name": "MobspOS", "path": "/tol/MobspOS/"}
+  {"name": "GH-iDx", "path": "/tol/GH-iDx/"}
 ,
-  {"name": "gh-idx", "path": "/tol/gh-idx/"}
+  {"name": "MobspOS", "path": "/tol/MobspOS/"}
 ,
   {"name": "ghexort", "path": "/tol/ghexort/"}
 ,
