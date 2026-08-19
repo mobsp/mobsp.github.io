@@ -3,13 +3,13 @@
 ,
   {"name": "Editor", "path": "/tol/Editor/"}
 ,
+  {"name": "Editors", "path": "/tol/Editors/"}
+,
   {"name": "FileStores", "path": "/tol/FileStores/"}
 ,
   {"name": "MobspOS", "path": "/tol/MobspOS/"}
 ,
   {"name": "convert", "path": "/tol/convert/"}
-,
-  {"name": "editot", "path": "/tol/editot/"}
 ,
   {"name": "gh-idx", "path": "/tol/gh-idx/"}
 ,
