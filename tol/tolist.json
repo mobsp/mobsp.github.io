@@ -15,11 +15,11 @@
 ,
   {"name": "K-Zero", "path": "/tol/K-Zero/"}
 ,
+  {"name": "Lab", "path": "/tol/Lab/"}
+,
   {"name": "MS-Pad", "path": "/tol/MS-Pad/"}
 ,
   {"name": "MobspOS", "path": "/tol/MobspOS/"}
-,
-  {"name": "lab", "path": "/tol/lab/"}
 ,
   {"name": "publisher", "path": "/tol/publisher/"}
 ,
