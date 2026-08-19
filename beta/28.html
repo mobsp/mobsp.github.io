@@ -1211,7 +1211,7 @@ const RAW_BASE =
 /* =========================================================
    DATA
    ---------------------------------------------------------
-   已使用 [附檔2] 完整補全修正之檔案清單資料
+   已使用完整補全修正之檔案清單資料
    ========================================================= */
 
 const FILE_DATA = [
@@ -1702,14 +1702,12 @@ function encodePath(path) {
 }
 
 
+/* 修正後的getPageURL：直接拼接 SITE_BASE + "/" + 路徑與檔名含副檔名 */
 function getPageURL(path) {
 
   return SITE_BASE +
     "/" +
-    encodePath(
-      path.replace(/\/$/, "")
-    ) +
-    (path.endsWith("/") ? "/" : "");
+    encodePath(path);
 
 }
 
@@ -2157,7 +2155,7 @@ function renderItem(item) {
         <div class="detail-group">
 
           <div class="detail-label">
-            絕對路徑
+            絕對路徑 (快速訪問網址)
           </div>
 
           <div class="detail-value">
