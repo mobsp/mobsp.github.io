@@ -1,504 +1,106 @@
 <!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="description" content="mobsp/mobsp.github.io CDN by jsDelivr - A free, fast, and reliable Open Source CDN for npm and GitHub">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>mobsp/mobsp.github.io CDN by jsDelivr - A free, fast, and reliable Open Source CDN</title>
-		<style>
-			body {
-				font: 15px/1.4em Arial, "Helvetica Neue", Helvetica, sans-serif;
-				margin: 0;
-				padding: 20px 20px 30px;
-				background-color: #ffffff;
-			}
-
-			.container {
-				max-width: 960px;
-				margin: 0 auto;
-				padding: 10px 0;
-				background-color: #fff;
-			}
-
-			.header {
-				display: -webkit-box;
-				display: -ms-flexbox;
-				display: flex;
-				-webkit-box-align: center;
-				-ms-flex-align: center;
-				align-items: center;
-				-webkit-box-pack: justify;
-				-ms-flex-pack: justify;
-				justify-content: space-between;
-				flex-wrap: wrap;
-			}
-
-			h1 {
-				font-size: 28px;
-				line-height: 38px;
-				margin: 0 0 15px;
-			}
-
-			h2 {
-				font-size: 18px;
-				font-weight: 400;
-				margin: 0;
-			}
-
-			.versions {
-				max-width: 400px;
-				padding: 2px 12px 2px 6px;
-			}
-
-			.description {
-				margin: 10px 0;
-				font-size: 16px;
-				color: #666;
-			}
-
-			.path {
-				display: -webkit-box;
-				display: -ms-flexbox;
-				display: flex;
-				-webkit-box-align: center;
-				-ms-flex-align: center;
-				align-items: center;
-				-webkit-box-pack: justify;
-				-ms-flex-pack: justify;
-				justify-content: space-between;
-				flex-wrap: wrap;
-				margin: 15px 0 0;
-				padding: 15px 0 30px;
-				border-top: 1px solid #e5e5e5;
-			}
-
-			.path .versions,
-			.path ol {
-				margin: 15px 0 0;
-			}
-
-			.path ol {
-				padding: 0;
-				list-style: none;
-				font-size: 18px;
-				font-weight: 400;
-			}
-
-			.path ol li {
-				display: inline;
-			}
-
-			.listing {
-				border: 1px solid #dfe3e7;
-				border-radius: 6px;
-				-webkit-box-shadow: 0 5px 10px -5px #dfe3e7;
-				box-shadow: 0 5px 10px -5px #dfe3e7;
-			}
-
-			table {
-				width: 100%;
-				border-spacing: 0;
-			}
-
-			th, td {
-				padding: 8px 20px;
-				border-bottom: 1px solid #dfe3e7;
-			}
-
-			tr:last-child td {
-				border-bottom: 0;
-			}
-
-			.name.level-up {
-				border-bottom: 1px solid #dfe3e7;
-			}
-
-			.name.level-up a {
-				padding-left: 0;
-			}
-
-			.name {
-				width: auto;
-				text-align: left;
-				padding-right: 20px;
-			}
-
-			.name a {
-				color: #17233b;
-				padding-left: 5px;
-				position: relative;
-				cursor: pointer;
-			}
-
-			.name svg {
-				display: inline-block;
-				margin-bottom: -4px;
-			}
-
-			.size {
-				max-width: 80px;
-				text-align: right;
-				color: #444;
-			}
-
-			th.name, th.size {
-				color: #999;
-				text-transform: uppercase;
-				font-size: 12px;
-				letter-spacing: 1px;
-			}
-
-			a {
-				color: #ff5627;
-				text-decoration: none;
-			}
-
-			a:hover, a:focus {
-				color: #ff5627;
-				text-decoration: underline;
-			}
-
-			.landing {
-				margin-top: 30px;
-				text-align: center;
-			}
-
-			.landing p {
-				margin: 0 0 15px;
-			}
-
-			.landing a {
-				display: block;
-				text-overflow: ellipsis;
-				overflow: hidden;
-			}
-
-			footer {
-				max-width: 960px;
-				display: -webkit-box;
-				display: -ms-flexbox;
-				display: flex;
-				-webkit-box-orient: vertical;
-				-webkit-box-direction: normal;
-				-ms-flex-direction: column;
-				flex-direction: column;
-				-webkit-box-pack: justify;
-				-ms-flex-pack: justify;
-				justify-content: space-between;
-				margin: 0 auto;
-				padding: 20px 0 0 0;
-				text-align: center;
-				font-size: 14px;
-				color: #666;
-				border-top: 1px solid #edf0f2;
-			}
-
-			.footer-left, .footer-right {
-				display: -webkit-box;
-				display: -ms-flexbox;
-				display: flex;
-				-webkit-box-orient: vertical;
-				-webkit-box-direction: normal;
-				-ms-flex-direction: column;
-				flex-direction: column;
-				-webkit-box-align: center;
-				-ms-flex-align: center;
-				align-items: center;
-				margin-bottom: 20px;
-			}
-
-			.logo {
-				width: 115px;
-			}
-
-			.copyright {
-				color: #79849a;
-				margin: 0;
-			}
-
-			@media (min-width: 576px) {
-				.footer-left, .footer-right {
-					-ms-flex-pack: distribute;
-					justify-content: space-around;
-					-webkit-box-orient: horizontal;
-					-webkit-box-direction: normal;
-					-ms-flex-direction: row;
-					flex-direction: row;
-				}
-			}
-
-			@media (min-width: 768px) {
-				body {
-					padding-top: 40px;
-				}
-
-				footer {
-					-webkit-box-orient: horizontal;
-					-webkit-box-direction: normal;
-					-ms-flex-direction: row;
-					flex-direction: row;
-					padding-top: 30px;
-				}
-
-				.container {
-					padding-bottom: 20px;
-				}
-
-				.footer-right a:first-child, .logo {
-					margin-right: 20px;
-				}
-
-				.landing {
-					display: -webkit-box;
-					display: -ms-flexbox;
-					display: flex;
-					-webkit-box-align: start;
-					-ms-flex-align: start;
-					align-items: flex-start;
-					-webkit-box-pack: justify;
-					-ms-flex-pack: justify;
-					justify-content: space-between;
-					margin-top: 40px;
-				}
-
-				.landing .right {
-					text-align: right;
-				}
-			}
-
-			.select-css {
-				display: block;
-				padding: 8px 20px 8px 12px;
-				box-sizing: border-box;
-				margin: 0;
-				border: 1px solid #aaa;
-				border-radius: .5em;
-				-moz-appearance: none;
-				-webkit-appearance: none;
-				appearance: none;
-				background-color: #fff;
-				background-image: url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/icons/caret-down-fill.svg');
-				background-repeat: no-repeat, repeat;
-				background-position: right 8px top 50%, 0 0;
-				background-size: 10px auto, 100%;
-				outline: none;
-			}
-
-			.select-css::-ms-expand {
-				display: none;
-			}
-
-			.select-css:hover {
-				border-color: #888;
-			}
-
-			.select-css option {
-				font-weight: normal;
-			}
-
-			/* 新增：自定義彈窗樣式 */
-			#customModal {
-				display: none;
-				position: fixed;
-				z-index: 9999;
-				left: 0;
-				top: 0;
-				width: 100%;
-				height: 100%;
-				background-color: rgba(0,0,0,0.5);
-				justify-content: center;
-				align-items: center;
-			}
-			.modal-content {
-				background-color: #fff;
-				padding: 25px;
-				border-radius: 8px;
-				width: 90%;
-				max-width: 450px;
-				box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-				text-align: center;
-			}
-			.modal-content h3 { margin-top: 0; color: #17233b; }
-			.modal-content p { color: #666; word-break: break-all; margin-bottom: 20px; }
-			.modal-buttons {
-				display: flex;
-				flex-direction: column;
-				gap: 10px;
-			}
-			.modal-btn {
-				padding: 12px 15px;
-				border: none;
-				border-radius: 5px;
-				font-size: 15px;
-				font-weight: bold;
-				cursor: pointer;
-				text-decoration: none;
-				display: block;
-				text-align: center;
-			}
-			.btn-jsdelivr { background-color: #ff5627; color: white; }
-			.btn-jsdelivr:hover { background-color: #e0481f; }
-			.btn-qzz { background-color: #2ea44f; color: white; }
-			.btn-qzz:hover { background-color: #2c974b; }
-			.btn-close { background-color: #e1e4e8; color: #333; margin-top: 5px; }
-			.btn-close:hover { background-color: #d1d5da; }
-		</style>
-	</head>
-
-	<body>
-		<div class="container">
-			<div class="header">
-				<h1>mobsp/mobsp.github.io CDN files</h1>
-
-				<a class="badge" href="https://www.jsdelivr.com/package/gh/mobsp/mobsp.github.io" title="jsDelivr monthly hits">
-					<img alt="jsDelivr monthly hits badge" src="https://data.jsdelivr.com/v1/package/gh/mobsp/mobsp.github.io/badge">
-				</a>
-			</div>
-
-
-			<div class="path">
-				<ol itemscope itemtype="https://schema.org/BreadcrumbList">
-					<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-						<a itemscope itemtype="https://schema.org/WebPage" itemprop="item"
-						   itemid="/gh/mobsp/mobsp.github.io@main/"
-						   href="/gh/mobsp/mobsp.github.io@main/" rel="nofollow">
-							<span itemprop="name">mobsp/mobsp.github.io@main</span></a> /
-						<meta itemprop="position" content="0">
-					</li>
-					<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
-						<span itemprop="name">tol</span>
-						<meta itemprop="position" content="1">
-					</li>
-				</ol>
-
-				<select class="versions select-css">
-					<option value="mobsp/mobsp.github.io@main">mobsp/mobsp.github.io@main</option>
-				</select>
-			</div>
-
-			<div class="listing">
-				<table>
-					<tbody>
-					<tr>
-						<td class="name level-up" colspan="2"><a href="../">...</a></td>
-					</tr>
-
-					<tr>
-						<td class="name">
-							<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 5C2 3.89543 2.89543 3 4 3H8.46482C8.79917 3 9.1114 3.1671 9.29687 3.4453L10.7031 5.5547C10.8886 5.8329 11.2008 6 11.5352 6H16C17.1046 6 18 6.89543 18 8V15C18 16.1046 17.1046 17 16 17H4C2.89543 17 2 16.1046 2 15V5Z" fill="#5C667A"/></svg>
-							<a rel="nofollow" href="/gh/mobsp/mobsp.github.io@main/tol/AdvancEditor/">AdvancEditor</a>
-						</td>
-						<td class="size"></td>
-					</tr>
-					<tr>
-						<td class="name">
-							<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 5C2 3.89543 2.89543 3 4 3H8.46482C8.79917 3 9.1114 3.1671 9.29687 3.4453L10.7031 5.5547C10.8886 5.8329 11.2008 6 11.5352 6H16C17.1046 6 18 6.89543 18 8V15C18 16.1046 17.1046 17 16 17H4C2.89543 17 2 16.1046 2 15V5Z" fill="#5C667A"/></svg>
-							<a rel="nofollow" href="/gh/mobsp/mobsp.github.io@main/tol/convert/">convert</a>
-						</td>
-						<td class="size"></td>
-					</tr>
-					<tr>
-						<td class="name">
-							<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H11L16 7V16C16 17.1046 15.1046 18 14 18H6C4.89543 18 4 17.1046 4 16V4Z" stroke="#5C667A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-							<a rel="nofollow" href="/gh/mobsp/mobsp.github.io@main/tol/data.json">data.json</a>
-						</td>
-						<td class="size">1 B</td>
-					</tr>
-					<tr>
-						<td class="name">
-							<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 4C4 2.89543 4.89543 2 6 2H11L16 7V16C16 17.1046 15.1046 18 14 18H6C4.89543 18 4 17.1046 4 16V4Z" stroke="#5C667A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-							<a rel="nofollow" href="/gh/mobsp/mobsp.github.io@main/tol/index.html">index.html</a>
-						</td>
-						<td class="size">32.39 KB</td>
-					</tr>
-					</tbody>
-				</table>
-			</div>
-
-			<div class="landing">
-				<p class="left">Free Open Source CDN for <strong>mobsp/mobsp.github.io</strong></p>
-			</div>
-		</div>
-
-		<!-- 新增：彈窗 HTML 結構 -->
-		<div id="customModal">
-			<div class="modal-content">
-				<h3>選擇開啟方式</h3>
-				<p id="modalFileName">檔案名稱</p>
-				<div class="modal-buttons">
-					<a id="btnJsdelivr" href="#" class="modal-btn btn-jsdelivr" target="_blank">前往 jsDelivr CDN</a>
-					<a id="btnQzz" href="#" class="modal-btn btn-qzz" target="_blank">前往 mobsp.qzz.io</a>
-					<button class="modal-btn btn-close" onclick="closeModal()">取消</button>
-				</div>
-			</div>
-		</div>
-
-		<footer>
-			<div class="footer-left">
-				<p class="copyright">&copy; jsdelivr.com, 2012 - 2026</p>
-			</div>
-		</footer>
-
-		<script>
-			var versions = document.querySelector('.versions');
-
-			[].slice.call(versions.querySelectorAll('option')).forEach(function(option) {
-				if (option.value === 'mobsp/mobsp.github.io@main') {
-					option.selected = true;
-				}
-			});
-
-			versions.addEventListener('change', function() {
-				location.pathname = '/gh/' + this.value + '/tol/';
-			});
-
-			// 新增：攔截檔案/資料夾點擊事件並顯示彈窗
-			const modal = document.getElementById('customModal');
-			const modalFileName = document.getElementById('modalFileName');
-			const btnJsdelivr = document.getElementById('btnJsdelivr');
-			const btnQzz = document.getElementById('btnQzz');
-
-			// 取得表格內除了返回上一層「...」以外的所有連結
-			const fileLinks = document.querySelectorAll('.listing table tr td.name a');
-
-			fileLinks.forEach(link => {
-				// 略過返回上一層的連結
-				if (link.getAttribute('href') === '../') return;
-
-				link.addEventListener('click', function(e) {
-					e.preventDefault(); // 阻止原本的直接跳轉
-
-					const originalHref = this.getAttribute('href'); // 例如: /gh/mobsp/mobsp.github.io@main/tol/data.json
-					
-					// 透過 decodeURIComponent 確保中文或其他特殊檔名不會被 % 碼取代
-					const rawPath = originalHref.replace(/^\/gh\/[^\/]+\/[^\/]+@([^\/]+)\//, '');
-					const decodedPath = decodeURIComponent(rawPath);
-					const displayName = decodedPath || originalFileName(this.innerText);
-
-					// 設定 jsDelivr 網址 (維持原樣)
-					btnJsdelivr.href = originalHref;
-
-					// 設定 qzz 網址: https://mobsp.qzz.io/ + 原本的路徑檔名
-					// 同時確保 qzz 的網址也不會把中文轉成 % 編碼
-					const cleanPath = decodedPath;
-					btnQzz.href = "https://mobsp.qzz.io/" + cleanPath;
-
-					// 顯示彈窗與檔名
-					modalFileName.innerText = "目標：" + displayName;
-					modal.style.display = 'flex';
-				});
-			});
-
-			function closeModal() {
-				modal.style.display = 'none';
-			}
-
-			// 點擊彈窗外部也可以關閉
-			window.addEventListener('click', function(e) {
-				if (e.target === modal) {
-					closeModal();
-				}
-			});
-		</script>
-	</body>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>GitHub 遠端即時檔案載入與執行器 (29.html)</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 900px; margin: 30px auto; padding: 20px; background: #f4f6f8; color: #333; }
+        .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        pre { background: #1e1e1e; color: #dcdcdc; padding: 15px; border-radius: 6px; overflow-x: auto; font-family: Consolas, monospace; }
+        img, video { max-width: 100%; border-radius: 6px; margin-top: 10px; display: block; }
+        input, button { padding: 10px 14px; font-size: 15px; border: 1px solid #ccc; border-radius: 4px; }
+        input { width: 65%; margin-right: 8px; }
+        button { background: #2ea44f; color: white; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #2c974b; }
+        .status { margin-top: 10px; font-size: 14px; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h2>📂 GitHub 任意副檔名即時載入器 (beta/29.html)</h2>
+        <p>請輸入 <code>mobsp/mobsp.github.io</code> 內的檔案相對路徑（支援 .json, .md, .js, .png, .mp3 等）：</p>
+        
+        <input type="text" id="filePath" value="setting/config.json" placeholder="例如: setting/config.json 或 images/banner.png">
+        <button onclick="loadRepoFile()">載入並執行</button>
+        <div class="status" id="statusMsg"></div>
+    </div>
+
+    <div class="card">
+        <h3>📊 內容輸出與執行結果：</h3>
+        <div id="resultContainer">尚無資料，請點擊上方按鈕載入。</div>
+    </div>
+
+    <script>
+        async function loadRepoFile() {
+            const path = document.getElementById("filePath").value.trim();
+            const container = document.getElementById("resultContainer");
+            const statusMsg = document.getElementById("statusMsg");
+            
+            if (!path) {
+                alert("請輸入檔案路徑！");
+                return;
+            }
+
+            container.innerHTML = "載入中...";
+            statusMsg.innerText = "正在向 CDN 請求最新資料...";
+
+            const timestamp = new Date().getTime();
+            const owner = "mobsp";
+            const repo = "mobsp.github.io";
+            const branch = "main";
+            const cdnUrl = `https://cdn.jsdelivr.net/gh/${owner}/${repo}@${branch}/${path}?t=${timestamp}`;
+
+            const extension = path.split('.').pop().toLowerCase();
+
+            try {
+                if (['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'].includes(extension)) {
+                    container.innerHTML = `<p><b>檔案類型：圖片 (${extension})</b></p><img src="${cdnUrl}" alt="Loaded Image">`;
+                } else if (['mp4', 'webm', 'ogg'].includes(extension)) {
+                    container.innerHTML = `<p><b>檔案類型：影片 (${extension})</b></p><video controls src="${cdnUrl}"></video>`;
+                } else if (['mp3', 'wav'].includes(extension)) {
+                    container.innerHTML = `<p><b>檔案類型：音訊 (${extension})</b></p><audio controls src="${cdnUrl}"></audio>`;
+                } else if (['js'].includes(extension)) {
+                    const response = await fetch(cdnUrl);
+                    if (!response.ok) throw new Error("檔案讀取失敗 (HTTP " + response.status + ")");
+                    const jsCode = await response.text();
+                    
+                    container.innerHTML = `<p><b>檔案類型：JavaScript (已在前端自動執行)</b></p><pre>${escapeHtml(jsCode)}</pre>`;
+                    
+                    try {
+                        const dynamicFunc = new Function(jsCode);
+                        dynamicFunc();
+                    } catch (err) {
+                        console.error("JS 執行錯誤：", err);
+                    }
+                } else if (['json'].includes(extension)) {
+                    const response = await fetch(cdnUrl);
+                    if (!response.ok) throw new Error("檔案讀取失敗 (HTTP " + response.status + ")");
+                    const jsCode = await response.text();
+                    let jsonData;
+                    try {
+                        jsonData = JSON.parse(jsCode);
+                    } catch (e) {
+                        throw new Error("JSON 解析失敗，內容可能包含非標準格式。原始內容:\n" + jsCode);
+                    }
+                    container.innerHTML = `<p><b>檔案類型：JSON 設定檔</b></p><pre>${escapeHtml(JSON.stringify(jsonData, null, 2))}</pre>`;
+                } else {
+                    const response = await fetch(cdnUrl);
+                    if (!response.ok) throw new Error("檔案讀取失敗 (HTTP " + response.status + ")");
+                    const textData = await response.text();
+                    container.innerHTML = `<p><b>檔案類型：純文字/通用檔案 (.${extension})</b></p><pre>${escapeHtml(textData)}</pre>`;
+                }
+                
+                statusMsg.innerText = "載入成功！已同步最新資料。";
+            } catch (error) {
+                container.innerHTML = `<p style="color: red;">❌ 錯誤：${escapeHtml(error.message)}</p>`;
+                statusMsg.innerText = "載入失敗。";
+            }
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
 </html>
