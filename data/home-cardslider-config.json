@@ -1,0 +1,8 @@
+[
+  { "id": "blog", "title": "部落格", "url": "/blog/", "image": "/assets/brand/ms-blog.webp" },
+  { "id": "tol", "title": "工具庫", "url": "/tol/", "image": "/assets/brand/ms-tol.webp" },
+  { "id": "music", "title": "音樂頻道", "url": "/music/", "image": "/assets/brand/ms-music.webp" },
+  { "id": "shorts", "title": "Shorts", "url": "/shorts/", "image": "/assets/brand/ms-shorts.webp" },
+  { "id": "wiki", "title": "支援中心", "url": "/wiki/", "image": "/assets/brand/ms-wiki.webp" },
+  { "id": "setting", "title": "設定", "url": "/setting/", "image": "/assets/brand/ms-setting.webp" }
+]
