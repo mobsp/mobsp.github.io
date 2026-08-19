@@ -294,6 +294,88 @@
 			.select-css option {
 				font-weight: normal;
 			}
+
+			/* 彈窗 CSS 樣式 */
+			#custom-modal {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.5);
+				z-index: 9999;
+				justify-content: center;
+				align-items: center;
+			}
+			.modal-content {
+				background-color: #fff;
+				padding: 25px;
+				border-radius: 8px;
+				max-width: 400px;
+				width: 90%;
+				box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+				text-align: center;
+				position: relative;
+			}
+			.modal-content h3 {
+				margin-top: 0;
+				font-size: 18px;
+				color: #17233b;
+			}
+			.modal-content p {
+				color: #666;
+				word-break: break-all;
+				font-size: 14px;
+				margin-bottom: 20px;
+			}
+			.modal-buttons {
+				display: flex;
+				gap: 10px;
+				justify-content: center;
+			}
+			.modal-btn {
+				flex: 1;
+				padding: 10px 15px;
+				border: none;
+				border-radius: 4px;
+				font-size: 14px;
+				cursor: pointer;
+				text-decoration: none;
+				font-weight: bold;
+				display: inline-block;
+			}
+			.btn-jsdelivr {
+				background-color: #ff5627;
+				color: #fff;
+			}
+			.btn-jsdelivr:hover {
+				background-color: #e0481f;
+				text-decoration: none;
+				color: #fff;
+			}
+			.btn-qzz {
+				background-color: #17233b;
+				color: #fff;
+			}
+			.btn-qzz:hover {
+				background-color: #0f1726;
+				text-decoration: none;
+				color: #fff;
+			}
+			.modal-close {
+				position: absolute;
+				top: 10px;
+				right: 15px;
+				font-size: 20px;
+				color: #999;
+				cursor: pointer;
+				background: none;
+				border: none;
+			}
+			.modal-close:hover {
+				color: #333;
+			}
 		</style>
 	</head>
 
@@ -729,6 +811,19 @@
 			</div>
 		</footer>
 
+		<!-- 自訂彈窗 HTML 結構 -->
+		<div id="custom-modal">
+			<div class="modal-content">
+				<button class="modal-close" id="modal-close-btn">&times;</button>
+				<h3>選擇要前往的網址</h3>
+				<p id="modal-item-name"></p>
+				<div class="modal-buttons">
+					<a id="modal-jsdelivr-link" href="#" class="modal-btn btn-jsdelivr" target="_blank">jsDelivr CDN</a>
+					<a id="modal-qzz-link" href="#" class="modal-btn btn-qzz" target="_blank">https://mobsp.qzz.io/</a>
+				</div>
+			</div>
+		</div>
+
 		<script>
 			var versions = document.querySelector('.versions');
 
@@ -740,6 +835,68 @@
 
 			versions.addEventListener('change', function() {
 				location.pathname = '/gh/' + this.value + '/blog/p/list/';
+			});
+
+			// 互動彈窗與超連結攔截邏輯
+			document.addEventListener('DOMContentLoaded', function() {
+				const modal = document.getElementById('custom-modal');
+				const modalName = document.getElementById('modal-item-name');
+				const btnJsDelivr = document.getElementById('modal-jsdelivr-link');
+				const btnQzz = document.getElementById('modal-qzz-link');
+				const closeBtn = document.getElementById('modal-close-btn');
+
+				// 選取表格中的所有檔案與資料夾連結（包含上一層 "../"）
+				const links = document.querySelectorAll('.listing table a');
+
+				links.forEach(function(link) {
+					link.addEventListener('click', function(e) {
+						e.preventDefault(); // 阻止預設直接跳轉
+
+						const originalHref = this.getAttribute('href');
+						const displayName = this.textContent.trim();
+
+						// 計算相對於目前路徑 (blog/p/list/) 的相對路徑，用來組 qzz 網址
+						// 原本頁面是在 /gh/mobsp/mobsp.github.io@main/blog/p/list/
+						// 目標 qzz 需要對應到 https://mobsp.qzz.io/blog/p/list/檔名
+						let relativePath = originalHref;
+						if (relativePath.startsWith('/gh/mobsp/mobsp.github.io@main/')) {
+							relativePath = relativePath.replace('/gh/mobsp/mobsp.github.io@main/', '');
+						}
+
+						// 組合 jsDelivr CDN 網址 (保留原本的編碼或結構)
+						const jsDelivrUrl = originalHref;
+
+						// 組合 mobsp.qzz.io 網址 (直接拼接原始檔名，不進行任何 encodeURI 轉換)
+						// 先取得當前網頁路徑在 github pages 中的基礎資料夾結構 (例如 blog/p/list/)
+						// 這裡我們直接對應目標資料夾：blog/p/list/ + displayName (若為 "../" 則特別處理)
+						let qzzUrl = '';
+						if (originalHref === '../') {
+							qzzUrl = 'https://mobsp.qzz.io/blog/p/';
+						} else {
+							qzzUrl = 'https://mobsp.qzz.io/blog/p/list/' + displayName;
+						}
+
+						// 設定彈窗內容
+						modalName.textContent = displayName;
+						btnJsDelivr.setAttribute('href', jsDelivrUrl);
+						btnQzz.setAttribute('href', qzzUrl);
+
+						// 顯示彈窗
+						modal.style.display = 'flex';
+					});
+				});
+
+				// 關閉彈窗事件
+				function closeModal() {
+					modal.style.display = 'none';
+				}
+
+				closeBtn.addEventListener('click', closeModal);
+				modal.addEventListener('click', function(e) {
+					if (e.target === modal) {
+						closeModal();
+					}
+				});
 			});
 		</script>
 	</body>
