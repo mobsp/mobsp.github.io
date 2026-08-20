@@ -209,7 +209,6 @@
         .ios-btn { background: var(--primary-color); color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; width: 100%; margin-top: 5px; transition: opacity 0.2s; cursor: pointer; }
         .ios-btn:active { opacity: 0.8; }
 
-        /* 懸浮縮放式指令對話彈窗樣式 */
         #floating-chat-trigger {
             position: fixed; bottom: 85px; right: 20px; width: 50px; height: 50px;
             background: var(--primary-color); color: #000; border-radius: 50%;
@@ -292,10 +291,8 @@
     </footer>
 </div>
 
-<!-- 懸浮縮放式對話彈窗觸發鈕 -->
 <div id="floating-chat-trigger" title="開啟自動化指令助理">🤖</div>
 
-<!-- 懸浮縮放式對話框主體 -->
 <div id="floating-chat-box">
     <div class="chat-box-header">
         <span>莫比 AI 智能控制台 (<span id="msk-status-badge" style="color:var(--status-red);">LOCKED</span>)</span>
@@ -442,6 +439,14 @@
             </div>
         </div>
 
+        <div class="setting-group">
+            <div class="setting-label">6. 雲端資料同步與備份 (JSON Push)</div>
+            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                <span class="setting-name">全站卡片與設定推送備份</span>
+                <button type="button" id="btn-push-config-json" class="ios-btn" style="background:var(--status-blue); color:#fff;">☁️ 推送卡片與設定至 data/home-cardslider-config.json</button>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -502,6 +507,8 @@ const MobiConfig = {
     }
 };
 
+let currentCardsData = [];
+
 function generate999Token() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
     let res = 'KYTK-999-';
@@ -527,7 +534,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function initMobiSpace() {
-    const config = MobiConfig.load();
+    let config = MobiConfig.load();
     const mainContainer = document.getElementById('main-container');
     const iosAlert = document.getElementById('ios-alert');
     const alertTitle = document.getElementById('alert-title');
@@ -565,10 +572,10 @@ async function initMobiSpace() {
         }
         updateMSKBadge();
     };
-    applyRealtimeUI(config);
 
     const renderCards = (cardsArray) => {
         if (!cardsArray || cardsArray.length === 0) return;
+        currentCardsData = cardsArray;
         mainContainer.innerHTML = '';
         cardsArray.forEach(card => {
             const a = document.createElement('a');
@@ -590,13 +597,26 @@ async function initMobiSpace() {
         });
     };
 
-    let cardsData = [];
+    // 優先調取雲端 JSON 檔案 (適用於跨裝置同步)
     try {
         const res = await fetch(CONFIG_FILE_PATH + '?t=' + Date.now());
-        if (res.ok) cardsData = await res.json();
-    } catch(e) { console.warn("未發現本地快取 JSON"); }
-    
-    if (cardsData.length > 0) renderCards(cardsData);
+        if (res.ok) {
+            const remoteData = await res.json();
+            if (Array.isArray(remoteData)) {
+                currentCardsData = remoteData;
+                renderCards(remoteData);
+            } else if (remoteData.cards) {
+                currentCardsData = remoteData.cards;
+                renderCards(remoteData.cards);
+                if (remoteData.settings) {
+                    config = { ...config, ...remoteData.settings };
+                    MobiConfig.save(config);
+                }
+            }
+        }
+    } catch(e) { console.warn("未發現雲端 JSON 檔，採用預設版面。"); }
+
+    applyRealtimeUI(config);
 
     if (!config.alertHasShown) {
         alertTitle.innerText = config.alertTitle;
@@ -636,7 +656,6 @@ async function initMobiSpace() {
     };
     initNoticeLine();
 
-    // 懸浮對話框與 30+ 指令對話引擎
     const chatTrigger = document.getElementById('floating-chat-trigger');
     const chatBox = document.getElementById('floating-chat-box');
     const chatClose = document.getElementById('chat-close-btn');
@@ -653,6 +672,55 @@ async function initMobiSpace() {
         div.innerHTML = text;
         chatMessages.appendChild(div);
         chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    const pushConfigJsonToRepo = async () => {
+        const auth = MobiConfig.getAuth();
+        if (!auth) {
+            alert('🔒 權限預設為關閉狀態，請先於對話框登入驗證啟用 <MSK>！');
+            return false;
+        }
+
+        const payload = {
+            updated_at: new Date().toISOString(),
+            updated_by: auth.user,
+            settings: config,
+            cards: currentCardsData
+        };
+
+        const jsonString = JSON.stringify(payload, null, 2);
+
+        try {
+            let sha = '';
+            const getRes = await fetch(`https://api.github.com/repos/${TARGET_REPO}/contents/${CONFIG_FILE_PATH}`);
+            if (getRes.ok) {
+                const fileData = await getRes.json();
+                sha = fileData.sha;
+            }
+
+            const putRes = await fetch(`https://api.github.com/repos/${TARGET_REPO}/contents/${CONFIG_FILE_PATH}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: `[MSK Sync] Auto push config & cards by ${auth.user}`,
+                    content: btoa(unescape(encodeURIComponent(jsonString))),
+                    sha: sha || undefined
+                })
+            });
+
+            if (putRes.ok || putRes.status === 200 || putRes.status === 201) {
+                alert('☁️ 同步成功！卡片與設定已寫入 data/home-cardslider-config.json，其他裝置再次開啟將自動載入最新數據。');
+                return true;
+            } else {
+                alert(`推送失敗，請檢視 API 回傳狀態: ${putRes.status}`);
+                return false;
+            }
+        } catch(err) {
+            alert('推送過程發生網路異常。');
+            return false;
+        }
     };
 
     const triggerActionsWorkflow = async (workflowName) => {
@@ -673,7 +741,6 @@ async function initMobiSpace() {
         appendMsg(raw, 'user');
         chatInput.value = '';
 
-        // 登入與註冊邏輯
         if (raw.startsWith('register:')) {
             const user = raw.replace('register:', '').trim();
             if (!user) { appendMsg('註冊失敗，用戶名不能為空。', 'system'); return; }
@@ -704,11 +771,10 @@ async function initMobiSpace() {
         const auth = MobiConfig.getAuth();
         const lower = raw.toLowerCase();
 
-        // 30+ 自然語言與指令判定
         if (lower === 'push' || lower === '同步配置') {
             if (!auth) { appendMsg('🔒 權限已被鎖定。請先進行會員驗證解鎖 <MSK>。', 'system'); return; }
-            appendMsg('📤 正在封裝當前 UI 配置，透過 <MSK> 送往 `data/home-cardslider-config.json`...', 'system');
-            await triggerActionsWorkflow('mbsp-kytk.yml');
+            appendMsg('📤 正在同步資料至 `data/home-cardslider-config.json`...', 'system');
+            await pushConfigJsonToRepo();
         } else if (lower === 'scan' || lower === '掃描') {
             document.getElementById('btn-sync-now').click();
             appendMsg('🔍 已啟動全站 HTML 深度掃描流程。', 'system');
@@ -743,7 +809,6 @@ async function initMobiSpace() {
     chatSend.addEventListener('click', () => handleCommand(chatInput.value));
     chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleCommand(chatInput.value); });
 
-    // 控制中心邏輯
     const openBtn = document.getElementById('open-control-btn');
     const closeBtnHeader = document.getElementById('sheet-header-close');
     const closeBtnHandle = document.getElementById('sheet-handle-close');
@@ -839,7 +904,6 @@ async function initMobiSpace() {
         applyRealtimeUI(config);
     });
 
-    // 5. 儲存庫進階管理控制邏輯
     document.getElementById('btn-trigger-action').addEventListener('click', () => {
         const wf = document.getElementById('cfg-action-select').value;
         triggerActionsWorkflow(wf);
@@ -870,7 +934,11 @@ async function initMobiSpace() {
         }
     });
 
-    // 全站深度掃描
+    // 6. 雲端 JSON 推送按鈕點擊事件
+    document.getElementById('btn-push-config-json').addEventListener('click', () => {
+        pushConfigJsonToRepo();
+    });
+
     document.getElementById('btn-sync-now').addEventListener('click', async () => {
         const btn = document.getElementById('btn-sync-now');
         btn.innerText = '正在全站深度掃描中...';
@@ -899,7 +967,7 @@ async function initMobiSpace() {
 
                 if (dynamicCards.length > 0) {
                     renderCards(dynamicCards);
-                    alert(`深度掃描成功！共找到 ${dynamicCards.length} 個 HTML 頁面。`);
+                    alert(`深度掃描成功！共找到 ${dynamicCards.length} 個 HTML 頁面。可以前往第 6 區塊將資料推送至雲端進行跨裝置同步！`);
                 }
             } else {
                 alert('API 請求頻率限制或掃描失敗。');
