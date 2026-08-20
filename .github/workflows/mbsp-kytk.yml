@@ -1,0 +1,26 @@
+name: Mobsp KYTK Automated Sync Core
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  run-python-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run Automation Python Script
+        env:
+          MSK: ${{ secrets.MSK }}
+        run: |
+          python scripts/mbsp-kytk.py
