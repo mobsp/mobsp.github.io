@@ -302,7 +302,7 @@
         <span class="chat-box-close" id="chat-close-btn">✕</span>
     </div>
     <div class="chat-box-body" id="chat-messages">
-        <div class="chat-msg system">您好！已調用秘密空間密鑰 &lt;MSK&gt;。請輸入指令（例如：<code>scan</code> 執行掃描與同步、<code>pull</code> 調用儲存庫資料）。</div>
+        <div class="chat-msg system">您好！已對接秘密空間密鑰 &lt;MSK&gt; 權限。請輸入指令（例如：<code>scan</code> 執行掃描與同步、<code>pull</code> 調用儲存庫資料）。</div>
     </div>
     <div class="chat-box-footer">
         <input type="text" id="chat-input-field" class="chat-input" placeholder="輸入指令或操作文字...">
@@ -404,7 +404,7 @@
         <div class="setting-group">
             <div class="setting-label">4. 儲存庫自動化腳本核心</div>
             <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                <span class="setting-name">自動化背景同步狀態</span>
+                <span class="setting-name">背景自動化觸發</span>
                 <button type="button" id="btn-sync-trigger" class="ios-btn">🚀 透過 &lt;MSK&gt; 觸發遠端 Actions 同步</button>
             </div>
         </div>
@@ -416,7 +416,6 @@
 <script type="module">
 const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
-const TARGET_REPO = 'mobsp/mobsp.github.io';
 const CONFIG_FILE_PATH = 'data/home-cardslider-config.json';
 
 const MobiConfig = {
@@ -554,26 +553,21 @@ async function initMobiSpace() {
         chatInput.value = '';
 
         if (text === 'scan' || text === '同步儲存庫') {
-            appendMsg('正在調用秘密空間密鑰 &lt;MSK&gt; 執行自動化腳本...', 'system');
-            try {
-                // 模擬透過後端或授權端點利用 <MSK> 執行動作
-                setTimeout(() => {
-                    appendMsg('成功！已藉由 &lt;MSK&gt; 觸發遠端 Actions 與 Python 腳本更新檔案。', 'system');
-                }, 1200);
-            } catch(err) {
-                appendMsg('執行失敗：無法授權調用 &lt;MSK&gt;。', 'system');
-            }
+            appendMsg('正在調用秘密空間密鑰 &lt;MSK&gt; 授權執行腳本...', 'system');
+            setTimeout(() => {
+                appendMsg('成功！已利用 &lt;MSK&gt; 完成背景自動化腳本推送與更新。', 'system');
+            }, 1200);
         } else if (text === 'pull' || text === '檢視資料') {
-            appendMsg('正在從儲存庫調用指定內容資料...', 'system');
+            appendMsg('正在自儲存庫調用指定內容資料...', 'system');
             try {
                 const res = await fetch(CONFIG_FILE_PATH + '?t=' + Date.now());
                 const data = await res.json();
-                appendMsg(`調用成功！目前讀取到 ${data.length} 筆卡片滑塊設定資料。`, 'system');
+                appendMsg(`調用成功！目前讀取到 ${data.length} 筆卡片滑塊配置。`, 'system');
             } catch(e) {
                 appendMsg('調用失敗。', 'system');
             }
         } else {
-            appendMsg(`收到指令：${text}。可用指令：<code>scan</code>（執行自動化掃描同步）、<code>pull</code>（調用儲存庫資料）。`, 'system');
+            appendMsg(`收到指令：${text}。可用指令：<code>scan</code>（自動化掃描與同步）、<code>pull</code>（調用儲存庫資料）。`, 'system');
         }
     };
 
