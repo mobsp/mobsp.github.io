@@ -2,43 +2,30 @@
 <html lang="zh-TW" dir="ltr">
 <head>
   <meta charset="UTF-8">
-  <!-- 1. 頂級 Viewport & PWA 視圖控制 (防縮放/防彈跳) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   
-  <!-- 2. 極致 SEO Meta 標籤群 -->
   <title>LINE Ledger - 極致仿 iOS LINE 智能對話記帳 Web App</title>
-  <meta name="description" content="極致擬真 iOS LINE 介面的免費 PWA 記帳網站。支援自然語言對話記帳、自動分類、圖表收支分析與 GitHub REST API 私密雲端備份。">
-  <meta name="keywords" content="LINE記帳,記帳App,iOS記帳,PWA記帳,對話記帳,免費記帳軟體,GitHub Pages記帳">
+  <meta name="description" content="極致擬真 iOS LINE 介面的免費 PWA 記帳網站。支援自然語言對話記帳、自動分類與圖表收支分析。">
+  <meta name="keywords" content="LINE記帳,記帳App,iOS記帳,PWA記帳,對話記帳,免費記帳軟體">
   <meta name="author" content="LINE Ledger Team">
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://your-username.github.io/tol/Expen-Trac/">
 
-  <!-- 3. Open Graph (OG) & Twitter Cards 社交分享優化 -->
+  <!-- Open Graph & Twitter Cards -->
   <meta property="og:type" content="website">
-  <meta property="og:locale" content="zh_TW">
   <meta property="og:title" content="LINE Ledger - 極致仿 iOS LINE 智能對話記帳">
-  <meta property="og:description" content="開啟網頁即用！秒級自然語言對話記帳，自動生成收支分析，支援 GitHub 私密備份。">
+  <meta property="og:description" content="開啟網頁即用！秒級自然語言對話記帳，自動生成收支分析。">
   <meta property="og:url" content="https://your-username.github.io/tol/Expen-Trac/">
   <meta property="og:site_name" content="LINE Ledger">
-  <meta property="og:image" content="https://your-username.github.io/tol/Expen-Trac/og-image.webp">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="LINE Ledger - 極致仿 iOS LINE 智能對話記帳">
-  <meta name="twitter:description" content="極致擬真 iOS LINE 介面，自然語言對話記帳與自動圖表分析。">
-  <meta name="twitter:image" content="https://your-username.github.io/tol/Expen-Trac/og-image.webp">
 
-  <!-- 4. iOS Apple 原生體驗與 PWA 系統色彩 -->
+  <!-- iOS / PWA 系統色彩 -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="LINE記帳">
-  <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#111111" media="(prefers-color-scheme: light)">
-  <meta name="format-detection" content="telephone=no, email=no, address=no">
+  <meta name="theme-color" content="#111111">
 
-  <!-- 5. 內嵌 Manifest Data URI (免額外 json 檔即可達成 100% PWA 可安裝規格) -->
+  <!-- PWA Manifest -->
   <link rel="manifest" href='data:application/manifest+json,{
     "name": "LINE Ledger 智能記帳",
     "short_name": "LINE記帳",
@@ -47,32 +34,12 @@
     "background_color": "#111111",
     "theme_color": "#06C755",
     "orientation": "portrait",
-    "icons": [
-      {
-        "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>",
-        "sizes": "192x192 512x512",
-        "type": "image/svg+xml",
-        "purpose": "any maskable"
-      }
-    ]
+    "icons": [{
+      "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }]
   }'>
-
-  <!-- 6. Google 搜索引擎 Schema.org 結構化數據 (JSON-LD) -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "WebApplication",
-    "name": "LINE Ledger",
-    "operatingSystem": "iOS, Android, Windows, macOS",
-    "applicationCategory": "FinanceApplication",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "TWD"
-    },
-    "description": "極致擬真 iOS LINE 介面的免費 PWA 記帳 Web App，支援對話記帳與雲端同步。"
-  }
-  </script>
 
   <style>
     :root {
@@ -89,8 +56,7 @@
 
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+      margin: 0; padding: 0;
       font-family: var(--font-ios);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
@@ -99,181 +65,84 @@
     }
 
     html, body {
-      width: 100vw;
-      height: 100dvh;
-      overflow: hidden;
-      position: fixed;
+      width: 100vw; height: 100dvh;
+      overflow: hidden; position: fixed;
       top: 0; left: 0;
-      background-color: #000;
-      color: var(--text-white);
-      overscroll-behavior: none;
-      touch-action: none;
+      background-color: #000; color: var(--text-white);
+      overscroll-behavior: none; touch-action: none;
     }
 
     #app-viewport {
-      width: 100%;
-      height: 100dvh;
-      max-width: 430px;
-      margin: 0 auto;
+      width: 100%; height: 100dvh;
+      max-width: 430px; margin: 0 auto;
       background-color: var(--bg-dark);
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      position: relative; display: flex;
+      flex-direction: column; overflow: hidden;
     }
 
     header {
       height: calc(44px + env(safe-area-inset-top, 0px));
       padding-top: env(safe-area-inset-top, 0px);
       background: rgba(17, 17, 17, 0.88);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-left: 16px;
-      padding-right: 16px;
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding-left: 16px; padding-right: 16px;
       border-bottom: 0.5px solid var(--border-color);
-      z-index: 100;
-      flex-shrink: 0;
+      z-index: 100; flex-shrink: 0;
     }
 
     .header-title { font-size: 17px; font-weight: 600; letter-spacing: -0.4px; }
-    .header-icon { color: var(--text-white); font-size: 20px; cursor: pointer; }
+    .status-badge { font-size: 11px; background: rgba(6, 199, 85, 0.2); color: var(--line-green); padding: 2px 8px; border-radius: 10px; }
 
-    main {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-      width: 100%;
-      height: 100%;
-    }
+    main { flex: 1; position: relative; overflow: hidden; width: 100%; height: 100%; }
 
     .view {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--bg-dark);
-      display: flex;
-      flex-direction: column;
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--bg-dark); display: flex; flex-direction: column;
       transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-      transform: translateX(100%);
-      height: 100%;
+      transform: translateX(100%); height: 100%;
     }
 
     .view.active { transform: translateX(0); }
-
     #view-chat { background-color: var(--bg-chat); }
 
     .chat-messages {
-      flex: 1;
-      padding: 16px;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
-      overscroll-behavior-y: contain;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
+      flex: 1; padding: 16px; overflow-y: auto;
+      -webkit-overflow-scrolling: touch; touch-action: pan-y;
+      overscroll-behavior-y: contain; display: flex;
+      flex-direction: column; gap: 12px;
     }
 
     .chat-bubble {
-      max-width: 75%;
-      padding: 10px 14px;
-      border-radius: 18px;
-      font-size: 15px;
-      line-height: 1.4;
-      word-break: break-all;
-      position: relative;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      user-select: text;
-      -webkit-user-select: text;
+      max-width: 75%; padding: 10px 14px; border-radius: 18px;
+      font-size: 15px; line-height: 1.4; word-break: break-all;
+      position: relative; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      user-select: text; -webkit-user-select: text;
     }
 
-    .chat-bubble.mine {
-      align-self: flex-end;
-      background-color: var(--bubble-mine);
-      color: #000;
-      border-top-right-radius: 2px;
-    }
-
-    .chat-bubble.system {
-      align-self: flex-start;
-      background-color: #FFFFFF;
-      color: #000;
-      border-top-left-radius: 2px;
-    }
-
-    .bubble-meta {
-      font-size: 10px;
-      color: rgba(0,0,0,0.4);
-      margin-top: 4px;
-      text-align: right;
-    }
+    .chat-bubble.mine { align-self: flex-end; background-color: var(--bubble-mine); color: #000; border-top-right-radius: 2px; }
+    .chat-bubble.system { align-self: flex-start; background-color: #FFFFFF; color: #000; border-top-left-radius: 2px; }
+    .bubble-meta { font-size: 10px; color: rgba(0,0,0,0.4); margin-top: 4px; text-align: right; }
 
     .chat-input-bar {
-      min-height: 52px;
-      background-color: #1C1C1E;
-      display: flex;
-      align-items: center;
-      padding: 8px 12px;
-      gap: 8px;
+      min-height: 52px; background-color: #1C1C1E;
+      display: flex; align-items: center; padding: 8px 12px; gap: 8px;
       border-top: 0.5px solid var(--border-color);
       padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
       flex-shrink: 0;
     }
 
     .chat-input {
-      flex: 1;
-      background-color: #2C2C2E;
-      border: none;
-      border-radius: 20px;
-      padding: 10px 16px;
-      color: #FFF;
-      font-size: 16px;
-      outline: none;
-      user-select: text;
-      -webkit-user-select: text;
+      flex: 1; background-color: #2C2C2E; border: none;
+      border-radius: 20px; padding: 10px 16px; color: #FFF;
+      font-size: 16px; outline: none; user-select: text; -webkit-user-select: text;
     }
 
-    .send-btn {
-      color: var(--line-green);
-      font-weight: 600;
-      font-size: 16px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 4px 8px;
-    }
+    .send-btn { color: var(--line-green); font-weight: 600; font-size: 16px; background: none; border: none; cursor: pointer; padding: 4px 8px; }
 
-    .ledger-list {
-      flex: 1;
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      touch-action: pan-y;
-      overscroll-behavior-y: contain;
-      padding: 16px;
-    }
-
-    .summary-card {
-      background-color: var(--card-dark);
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .item-row {
-      background-color: var(--card-dark);
-      padding: 14px 16px;
-      border-radius: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
+    .ledger-list { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; touch-action: pan-y; overscroll-behavior-y: contain; padding: 16px; }
+    .summary-card { background-color: var(--card-dark); border-radius: 12px; padding: 20px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+    .item-row { background-color: var(--card-dark); padding: 14px 16px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
     .item-category { font-weight: 600; font-size: 15px; }
     .item-note { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
     .item-amount { font-weight: 600; font-size: 16px; color: #FF453A; }
@@ -281,72 +150,17 @@
     nav {
       height: calc(49px + env(safe-area-inset-bottom, 0px));
       background-color: rgba(25, 25, 25, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-top: 0.5px solid var(--border-color);
-      display: flex;
-      justify-content: space-around;
-      padding-top: 6px;
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-      z-index: 100;
-      flex-shrink: 0;
+      display: flex; justify-content: space-around;
+      padding-top: 6px; padding-bottom: env(safe-area-inset-bottom, 0px);
+      z-index: 100; flex-shrink: 0;
     }
 
-    .tab-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-      color: var(--text-gray);
-      cursor: pointer;
-      width: 25%;
-    }
-
+    .tab-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--text-gray); cursor: pointer; width: 25%; }
     .tab-item.active { color: var(--line-green); }
     .tab-icon { font-size: 20px; }
     .tab-label { font-size: 10px; }
-
-    .modal {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(10px);
-      z-index: 200;
-      display: none;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .modal-content {
-      background: var(--card-dark);
-      border-radius: 14px;
-      width: 100%;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .modal-content input {
-      background: #2C2C2E;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      color: #FFF;
-      font-size: 16px;
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
-    .modal-content button {
-      background: var(--line-green);
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      color: #FFF;
-      font-weight: 600;
-    }
   </style>
 </head>
 <body>
@@ -354,23 +168,23 @@
 <div id="app-viewport">
   <header>
     <h1 class="header-title" id="header-title">LINE 記帳助手</h1>
-    <span class="header-icon" onclick="toggleModal(true)" aria-label="設定">⚙️</span>
+    <span class="status-badge">MSK 雲端連線中</span>
   </header>
 
   <main>
-    <section class="view active" id="view-chat" aria-label="對話記帳視圖">
+    <section class="view active" id="view-chat">
       <div class="chat-messages" id="chat-messages">
         <div class="chat-bubble system">
           👋 你好！我是你的 LINE 記帳助手。<br>請直接發送訊息記帳，例如：<br><b>午餐 120</b> 或 <b>買衣服 1500 購物</b>
         </div>
       </div>
       <div class="chat-input-bar">
-        <input type="text" class="chat-input" id="chat-input" placeholder="輸入品項與金額，例如: 晚餐 250" aria-label="記帳輸入框">
+        <input type="text" class="chat-input" id="chat-input" placeholder="輸入品項與金額，例如: 晚餐 250">
         <button class="send-btn" onclick="handleSend()">發送</button>
       </div>
     </section>
 
-    <section class="view" id="view-ledger" aria-label="收支明細視圖">
+    <section class="view" id="view-ledger">
       <div class="ledger-list">
         <div class="summary-card">
           <div>
@@ -387,7 +201,7 @@
     </section>
   </main>
 
-  <nav aria-label="主選單">
+  <nav>
     <div class="tab-item active" onclick="switchTab('chat', this)">
       <span class="tab-icon">💬</span>
       <span class="tab-label">對話記帳</span>
@@ -397,21 +211,10 @@
       <span class="tab-label">收支明細</span>
     </div>
   </nav>
-
-  <div class="modal" id="settings-modal" role="dialog" aria-modal="true">
-    <div class="modal-content">
-      <h3>GitHub API 雲端備份設定</h3>
-      <p style="font-size: 12px; color: var(--text-gray);">輸入 Personal Access Token 即可將記帳數據即時備份至 GitHub 倉庫：</p>
-      <input type="text" id="gh-repo" placeholder="Repo (例: username/ledger-db)">
-      <input type="password" id="gh-token" placeholder="GitHub Personal Access Token">
-      <button onclick="saveSettings()">儲存並測試同步</button>
-      <button onclick="toggleModal(false)" style="background:#3A3A3C">取消</button>
-    </div>
-  </div>
 </div>
 
 <script>
-  // 1. PWA 註冊與離線快取引擎 (動態生成的 Service Worker)
+  // 1. PWA 註冊
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       const swCode = `
@@ -428,20 +231,26 @@
     });
   }
 
-  // 2. iOS/Android 手勢與縮放防護鎖定
+  // 防縮放
   document.addEventListener('gesturestart', (e) => e.preventDefault());
-  let lastTouchEnd = 0;
-  document.addEventListener('touchend', (event) => {
-    const now = Date.now();
-    if (now - lastTouchEnd <= 300) event.preventDefault();
-    lastTouchEnd = now;
-  }, false);
 
-  // 3. 業務核心邏輯
-  let records = JSON.parse(localStorage.getItem('line_ledger_records') || '[]');
-  let config = JSON.parse(localStorage.getItem('line_ledger_config') || '{}');
+  let records = [];
+  const DATA_PATH = '/data/expen-trac-data.json';
 
-  document.addEventListener("DOMContentLoaded", () => renderLedger());
+  // 自動讀取 data/expen-trac-data.json
+  document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      const res = await fetch(DATA_PATH + '?t=' + Date.now());
+      if (res.ok) {
+        records = await res.json();
+      } else {
+        records = JSON.parse(localStorage.getItem('line_ledger_records') || '[]');
+      }
+    } catch (e) {
+      records = JSON.parse(localStorage.getItem('line_ledger_records') || '[]');
+    }
+    renderLedger();
+  });
 
   function switchTab(tabName, el) {
     document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
@@ -486,10 +295,10 @@
       };
 
       records.unshift(newRecord);
-      saveData();
+      localStorage.setItem('line_ledger_records', JSON.stringify(records));
 
       setTimeout(() => {
-        appendMessage(`✅ 已成功上記算！\n品項：${item}\n金額：$${amount}\n分類：${category}`, 'system');
+        appendMessage(`✅ 已成功記帳！\n品項：${item}\n金額：$${amount}\n分類：${category}`, 'system');
       }, 400);
     } else {
       setTimeout(() => {
@@ -532,59 +341,6 @@
 
     totalEl.innerText = `$ ${total.toLocaleString()}`;
     countEl.innerText = `${records.length} 筆`;
-  }
-
-  function saveData() {
-    localStorage.setItem('line_ledger_records', JSON.stringify(records));
-    syncToGitHub();
-  }
-
-  function toggleModal(show) {
-    document.getElementById('settings-modal').style.display = show ? 'flex' : 'none';
-    if (show && config.repo) {
-      document.getElementById('gh-repo').value = config.repo || '';
-      document.getElementById('gh-token').value = config.token || '';
-    }
-  }
-
-  function saveSettings() {
-    config.repo = document.getElementById('gh-repo').value.trim();
-    config.token = document.getElementById('gh-token').value.trim();
-    localStorage.setItem('line_ledger_config', JSON.stringify(config));
-    toggleModal(false);
-    syncToGitHub();
-  }
-
-  async function syncToGitHub() {
-    if (!config.repo || !config.token) return;
-
-    const path = 'ledger_data.json';
-    const url = `https://api.github.com/repos/${config.repo}/contents/${path}`;
-    
-    try {
-      let sha = '';
-      const getRes = await fetch(url, { headers: { 'Authorization': `token ${config.token}` } });
-      if (getRes.ok) {
-        const fileData = await getRes.json();
-        sha = fileData.sha;
-      }
-
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(records, null, 2))));
-      await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${config.token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: 'auto: sync ledger data',
-          content: content,
-          sha: sha || undefined
-        })
-      });
-    } catch (e) {
-      console.error('GitHub 同步失敗:', e);
-    }
   }
 </script>
 </body>
