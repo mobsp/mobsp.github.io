@@ -1,11 +1,79 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-TW" dir="ltr">
 <head>
   <meta charset="UTF-8">
+  <!-- 1. 頂級 Viewport & PWA 視圖控制 (防縮放/防彈跳) -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  
+  <!-- 2. 極致 SEO Meta 標籤群 -->
+  <title>LINE Ledger - 極致仿 iOS LINE 智能對話記帳 Web App</title>
+  <meta name="description" content="極致擬真 iOS LINE 介面的免費 PWA 記帳網站。支援自然語言對話記帳、自動分類、圖表收支分析與 GitHub REST API 私密雲端備份。">
+  <meta name="keywords" content="LINE記帳,記帳App,iOS記帳,PWA記帳,對話記帳,免費記帳軟體,GitHub Pages記帳">
+  <meta name="author" content="LINE Ledger Team">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://your-username.github.io/tol/Expen-Trac/">
+
+  <!-- 3. Open Graph (OG) & Twitter Cards 社交分享優化 -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="zh_TW">
+  <meta property="og:title" content="LINE Ledger - 極致仿 iOS LINE 智能對話記帳">
+  <meta property="og:description" content="開啟網頁即用！秒級自然語言對話記帳，自動生成收支分析，支援 GitHub 私密備份。">
+  <meta property="og:url" content="https://your-username.github.io/tol/Expen-Trac/">
+  <meta property="og:site_name" content="LINE Ledger">
+  <meta property="og:image" content="https://your-username.github.io/tol/Expen-Trac/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LINE Ledger - 極致仿 iOS LINE 智能對話記帳">
+  <meta name="twitter:description" content="極致擬真 iOS LINE 介面，自然語言對話記帳與自動圖表分析。">
+  <meta name="twitter:image" content="https://your-username.github.io/tol/Expen-Trac/og-image.png">
+
+  <!-- 4. iOS Apple 原生體驗與 PWA 系統色彩 -->
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>LINE Ledger</title>
+  <meta name="apple-mobile-web-app-title" content="LINE記帳">
+  <meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#111111" media="(prefers-color-scheme: light)">
+  <meta name="format-detection" content="telephone=no, email=no, address=no">
+
+  <!-- 5. 內嵌 Manifest Data URI (免額外 json 檔即可達成 100% PWA 可安裝規格) -->
+  <link rel="manifest" href='data:application/manifest+json,{
+    "name": "LINE Ledger 智能記帳",
+    "short_name": "LINE記帳",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#111111",
+    "theme_color": "#06C755",
+    "orientation": "portrait",
+    "icons": [
+      {
+        "src": "data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💬</text></svg>",
+        "sizes": "192x192 512x512",
+        "type": "image/svg+xml",
+        "purpose": "any maskable"
+      }
+    ]
+  }'>
+
+  <!-- 6. Google 搜索引擎 Schema.org 結構化數據 (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "LINE Ledger",
+    "operatingSystem": "iOS, Android, Windows, macOS",
+    "applicationCategory": "FinanceApplication",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "TWD"
+    },
+    "description": "極致擬真 iOS LINE 介面的免費 PWA 記帳 Web App，支援對話記帳與雲端同步。"
+  }
+  </script>
+
   <style>
     :root {
       --line-green: #06C755;
@@ -16,7 +84,7 @@
       --text-gray: #8E8E93;
       --bubble-mine: #85E249;
       --border-color: #2C2C2E;
-      --font-ios: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-ios: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
     * {
@@ -25,29 +93,27 @@
       padding: 0;
       font-family: var(--font-ios);
       -webkit-tap-highlight-color: transparent;
-      user-select: none; /* 全域防止文字被長按選取 */
+      user-select: none;
       -webkit-user-select: none;
-      -webkit-touch-callout: none; /* 防選單彈出 */
+      -webkit-touch-callout: none;
     }
 
-    /* 2. 徹底禁止全頁彈跳與滑動晃動 */
     html, body {
       width: 100vw;
-      height: 100dvh; /* 動態 Viewport 高度，徹底解決 iOS 網址列遮蔽 */
+      height: 100dvh;
       overflow: hidden;
-      position: fixed; /* 鎖死 Body 避免橡皮筋拉動 */
+      position: fixed;
       top: 0; left: 0;
       background-color: #000;
       color: var(--text-white);
-      overscroll-behavior: none; /* 防邊緣晃動彈跳 */
-      touch-action: none; /* 預設禁用所有瀏覽器手勢 */
+      overscroll-behavior: none;
+      touch-action: none;
     }
 
-    /* App 視圖容器 */
     #app-viewport {
       width: 100%;
       height: 100dvh;
-      max-width: 430px; /* 模擬 Pro Max 寬度，在大螢幕桌機自動置中 */
+      max-width: 430px;
       margin: 0 auto;
       background-color: var(--bg-dark);
       position: relative;
@@ -56,7 +122,6 @@
       overflow: hidden;
     }
 
-    /* 3. 頂部固定 Header (安全區域適應) */
     header {
       height: calc(44px + env(safe-area-inset-top, 0px));
       padding-top: env(safe-area-inset-top, 0px);
@@ -70,22 +135,12 @@
       padding-right: 16px;
       border-bottom: 0.5px solid var(--border-color);
       z-index: 100;
-      flex-shrink: 0; /* 禁止被擠壓 */
+      flex-shrink: 0;
     }
 
-    .header-title {
-      font-size: 17px;
-      font-weight: 600;
-      letter-spacing: -0.4px;
-    }
+    .header-title { font-size: 17px; font-weight: 600; letter-spacing: -0.4px; }
+    .header-icon { color: var(--text-white); font-size: 20px; cursor: pointer; }
 
-    .header-icon {
-      color: var(--text-white);
-      font-size: 20px;
-      cursor: pointer;
-    }
-
-    /* 4. 主要視圖 (確保只有中間區域可滾動) */
     main {
       flex: 1;
       position: relative;
@@ -105,23 +160,17 @@
       height: 100%;
     }
 
-    .view.active {
-      transform: translateX(0);
-    }
+    .view.active { transform: translateX(0); }
 
-    /* 聊天視圖滾動鎖定 */
-    #view-chat {
-      background-color: var(--bg-chat);
-    }
+    #view-chat { background-color: var(--bg-chat); }
 
-    /* 5. 獨立可滾動區域 (解鎖單向縱向滑動與彈性質感) */
     .chat-messages {
       flex: 1;
       padding: 16px;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch; /* iOS 原生滑動順暢度 */
-      touch-action: pan-y; /* 僅允許垂直滑動 */
-      overscroll-behavior-y: contain; /* 滾動到頂/底部時不影響外層 */
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior-y: contain;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -136,7 +185,7 @@
       word-break: break-all;
       position: relative;
       box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-      user-select: text; /* 允許對話框文字選取 */
+      user-select: text;
       -webkit-user-select: text;
     }
 
@@ -161,7 +210,6 @@
       text-align: right;
     }
 
-    /* 6. 輸入欄防 UI 遮蔽處理 */
     .chat-input-bar {
       min-height: 52px;
       background-color: #1C1C1E;
@@ -181,7 +229,7 @@
       border-radius: 20px;
       padding: 10px 16px;
       color: #FFF;
-      font-size: 16px; /* 防止 iOS 輸入時自動放大畫面 (需 >= 16px) */
+      font-size: 16px;
       outline: none;
       user-select: text;
       -webkit-user-select: text;
@@ -197,7 +245,6 @@
       padding: 4px 8px;
     }
 
-    /* 收支明細滾動區 */
     .ledger-list {
       flex: 1;
       overflow-y: auto;
@@ -231,7 +278,6 @@
     .item-note { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
     .item-amount { font-weight: 600; font-size: 16px; color: #FF453A; }
 
-    /* 7. 底部 TabBar 鎖死與 HomeBar 適應 */
     nav {
       height: calc(49px + env(safe-area-inset-bottom, 0px));
       background-color: rgba(25, 25, 25, 0.95);
@@ -260,7 +306,6 @@
     .tab-icon { font-size: 20px; }
     .tab-label { font-size: 10px; }
 
-    /* Modal 設定彈窗 */
     .modal {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -308,24 +353,24 @@
 
 <div id="app-viewport">
   <header>
-    <span class="header-title" id="header-title">LINE 記帳助手</span>
-    <span class="header-icon" onclick="toggleModal(true)">⚙️</span>
+    <h1 class="header-title" id="header-title">LINE 記帳助手</h1>
+    <span class="header-icon" onclick="toggleModal(true)" aria-label="設定">⚙️</span>
   </header>
 
   <main>
-    <div class="view active" id="view-chat">
+    <section class="view active" id="view-chat" aria-label="對話記帳視圖">
       <div class="chat-messages" id="chat-messages">
         <div class="chat-bubble system">
           👋 你好！我是你的 LINE 記帳助手。<br>請直接發送訊息記帳，例如：<br><b>午餐 120</b> 或 <b>買衣服 1500 購物</b>
         </div>
       </div>
       <div class="chat-input-bar">
-        <input type="text" class="chat-input" id="chat-input" placeholder="輸入品項與金額，例如: 晚餐 250">
+        <input type="text" class="chat-input" id="chat-input" placeholder="輸入品項與金額，例如: 晚餐 250" aria-label="記帳輸入框">
         <button class="send-btn" onclick="handleSend()">發送</button>
       </div>
-    </div>
+    </section>
 
-    <div class="view" id="view-ledger">
+    <section class="view" id="view-ledger" aria-label="收支明細視圖">
       <div class="ledger-list">
         <div class="summary-card">
           <div>
@@ -339,10 +384,10 @@
         </div>
         <div id="records-container"></div>
       </div>
-    </div>
+    </section>
   </main>
 
-  <nav>
+  <nav aria-label="主選單">
     <div class="tab-item active" onclick="switchTab('chat', this)">
       <span class="tab-icon">💬</span>
       <span class="tab-label">對話記帳</span>
@@ -353,7 +398,7 @@
     </div>
   </nav>
 
-  <div class="modal" id="settings-modal">
+  <div class="modal" id="settings-modal" role="dialog" aria-modal="true">
     <div class="modal-content">
       <h3>GitHub API 雲端備份設定</h3>
       <p style="font-size: 12px; color: var(--text-gray);">輸入 Personal Access Token 即可將記帳數據即時備份至 GitHub 倉庫：</p>
@@ -366,28 +411,37 @@
 </div>
 
 <script>
-  // 8. JS 防縮放與手勢雙重鎖定 (針對 Safari / Chrome)
-  document.addEventListener('gesturestart', function (e) {
-    e.preventDefault();
-  });
+  // 1. PWA 註冊與離線快取引擎 (動態生成的 Service Worker)
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      const swCode = `
+        const CACHE_NAME = 'line-ledger-v1';
+        self.addEventListener('install', (e) => {
+          e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./index.html'])));
+        });
+        self.addEventListener('fetch', (e) => {
+          e.respondWith(caches.match(e.request).then(res => res || fetch(e.request)));
+        });
+      `;
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
+    });
+  }
 
-  // 防止 iOS 雙點擊畫面被放大
+  // 2. iOS/Android 手勢與縮放防護鎖定
+  document.addEventListener('gesturestart', (e) => e.preventDefault());
   let lastTouchEnd = 0;
-  document.addEventListener('touchend', function (event) {
-    const now = (new Date()).getTime();
-    if (now - lastTouchEnd <= 300) {
-      event.preventDefault();
-    }
+  document.addEventListener('touchend', (event) => {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) event.preventDefault();
     lastTouchEnd = now;
   }, false);
 
-  // 業務邏輯
+  // 3. 業務核心邏輯
   let records = JSON.parse(localStorage.getItem('line_ledger_records') || '[]');
   let config = JSON.parse(localStorage.getItem('line_ledger_config') || '{}');
 
-  document.addEventListener("DOMContentLoaded", () => {
-    renderLedger();
-  });
+  document.addEventListener("DOMContentLoaded", () => renderLedger());
 
   function switchTab(tabName, el) {
     document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
@@ -418,7 +472,6 @@
     input.value = '';
 
     const match = text.match(/^(.+?)\s*(\d+)\s*(.*)$/);
-    
     if (match) {
       const item = match[1];
       const amount = parseInt(match[2], 10);
@@ -438,7 +491,6 @@
       setTimeout(() => {
         appendMessage(`✅ 已成功上記算！\n品項：${item}\n金額：$${amount}\n分類：${category}`, 'system');
       }, 400);
-
     } else {
       setTimeout(() => {
         appendMessage(`⚠️ 格式不理解，請輸入例如：「午餐 100」或「電影 300 娛樂」`, 'system');
@@ -450,10 +502,8 @@
     const container = document.getElementById('chat-messages');
     const bubble = document.createElement('div');
     bubble.className = `chat-bubble ${type}`;
-    
     const timeStr = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
     bubble.innerHTML = `${text.replace(/\n/g, '<br>')}<div class="bubble-meta">${timeStr}</div>`;
-    
     container.appendChild(bubble);
     container.scrollTop = container.scrollHeight;
   }
@@ -513,9 +563,7 @@
     
     try {
       let sha = '';
-      const getRes = await fetch(url, {
-        headers: { 'Authorization': `token ${config.token}` }
-      });
+      const getRes = await fetch(url, { headers: { 'Authorization': `token ${config.token}` } });
       if (getRes.ok) {
         const fileData = await getRes.json();
         sha = fileData.sha;
