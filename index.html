@@ -402,10 +402,10 @@
         </div>
 
         <div class="setting-group">
-            <div class="setting-label">4. 儲存庫自動化腳本核心</div>
+            <div class="setting-label">4. 儲存庫自動化掃描核心</div>
             <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
-                <span class="setting-name">背景自動化觸發</span>
-                <button type="button" id="btn-sync-trigger" class="ios-btn">🚀 透過 &lt;MSK&gt; 觸發遠端 Actions 同步</button>
+                <span class="setting-name">全站深度遞迴掃描</span>
+                <button type="button" id="btn-sync-now" class="ios-btn">🔄 立即全站深度掃描儲存庫</button>
             </div>
         </div>
 
@@ -416,6 +416,7 @@
 <script type="module">
 const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+const TARGET_REPO = 'mobsp/mobsp.github.io';
 const CONFIG_FILE_PATH = 'data/home-cardslider-config.json';
 
 const MobiConfig = {
@@ -512,9 +513,11 @@ async function initMobiSpace() {
     try {
         const res = await fetch(CONFIG_FILE_PATH + '?t=' + Date.now());
         if (res.ok) cardsData = await res.json();
-    } catch(e) { console.warn("未發現本地快取 JSON"); }
+    } catch(e) { console.warn("未發現本地快取 JSON，轉用原版備份結構"); }
     
-    if (cardsData.length > 0) renderCards(cardsData);
+    if (cardsData.length > 0) {
+        renderCards(cardsData);
+    }
 
     if (!config.alertHasShown) {
         alertTitle.innerText = config.alertTitle;
@@ -526,6 +529,34 @@ async function initMobiSpace() {
         config.alertHasShown = true;
         MobiConfig.save(config);
     });
+
+    const initNoticeLine = async () => {
+        const vTag = document.getElementById('v-tag');
+        const mqText = document.getElementById('mq-text');
+        
+        if (config.mqSource === 'custom') {
+            vTag.innerText = 'LOCAL | CUSTOM';
+            mqText.innerText = config.customMqText;
+            return;
+        }
+
+        try {
+            if (typeof supabase !== 'undefined') {
+                const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+                const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
+                if (!error && data.length > 0) {
+                    const randomItem = data[Math.floor(Math.random() * data.length)];
+                    const category = randomItem.type || "NEWS";
+                    vTag.innerText = `v2.5 | ${category}`;
+                    mqText.innerText = randomItem.message || "";
+                }
+            }
+        } catch(err) {
+            vTag.innerText = 'OFFLINE | STABLE';
+            mqText.innerText = '正在從本機快取提供安全環境安全防線常駐中...';
+        }
+    };
+    initNoticeLine();
 
     // 懸浮對話框互動邏輯
     const chatTrigger = document.getElementById('floating-chat-trigger');
@@ -574,7 +605,6 @@ async function initMobiSpace() {
     chatSend.addEventListener('click', () => handleCommand(chatInput.value));
     chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleCommand(chatInput.value); });
 
-    // 控制中心開關
     const openBtn = document.getElementById('open-control-btn');
     const closeBtnHeader = document.getElementById('sheet-header-close');
     const closeBtnHandle = document.getElementById('sheet-handle-close');
@@ -592,6 +622,9 @@ async function initMobiSpace() {
             document.getElementById('cfg-indicator-toggle').checked = config.indicatorActive;
             document.getElementById('cfg-indicator-color').value = config.indicatorColor;
             document.getElementById('cfg-indicator-speed').value = config.indicatorSpeed;
+
+            document.getElementById('custom-mq-row').style.display = config.mqSource === 'custom' ? 'flex' : 'none';
+
             controlSheet.classList.add('active');
         } else {
             controlSheet.classList.remove('active');
@@ -602,11 +635,132 @@ async function initMobiSpace() {
     closeBtnHeader.addEventListener('click', () => toggleSheet(false));
     closeBtnHandle.addEventListener('click', () => toggleSheet(false));
 
-    document.getElementById('btn-sync-trigger').addEventListener('click', () => {
-        alert('已透過秘密空間密鑰 <MSK> 觸發 GitHub Actions 背景自動化同步工作流程！');
+    document.getElementById('cfg-alert-title').addEventListener('input', (e) => { config.alertTitle = e.target.value; MobiConfig.save(config); });
+    document.getElementById('cfg-alert-desc').addEventListener('input', (e) => { config.alertDesc = e.target.value; config.alertHasShown = false; MobiConfig.save(config); });
+    
+    document.getElementById('cfg-layout').addEventListener('change', (e) => {
+        config.layout = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-theme').addEventListener('change', (e) => {
+        config.theme = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-mq-source').addEventListener('change', (e) => {
+        config.mqSource = e.target.value;
+        document.getElementById('custom-mq-row').style.display = config.mqSource === 'custom' ? 'flex' : 'none';
+        MobiConfig.save(config);
+        initNoticeLine();
+    });
+
+    document.getElementById('cfg-mq-text').addEventListener('input', (e) => {
+        config.customMqText = e.target.value;
+        MobiConfig.save(config);
+        if(config.mqSource === 'custom') initNoticeLine();
+    });
+
+    document.getElementById('cfg-mq-speed').addEventListener('input', (e) => {
+        config.mqSpeed = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-mq-color').addEventListener('input', (e) => {
+        config.mqColor = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-indicator-toggle').addEventListener('change', (e) => {
+        config.indicatorActive = e.target.checked;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-indicator-color').addEventListener('change', (e) => {
+        config.indicatorColor = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('cfg-indicator-speed').addEventListener('change', (e) => {
+        config.indicatorSpeed = e.target.value;
+        MobiConfig.save(config);
+        applyRealtimeUI(config);
+    });
+
+    document.getElementById('btn-sync-now').addEventListener('click', async () => {
+        const btn = document.getElementById('btn-sync-now');
+        btn.innerText = '正在全站深度掃描中...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch(`https://api.github.com/repos/${TARGET_REPO}/git/trees/HEAD?recursive=1`);
+            
+            if (response.ok) {
+                const data = await response.json();
+                const items = data.tree || [];
+                
+                const htmlFiles = items.filter(item => {
+                    if (item.type !== 'blob') return false;
+                    const path = item.path.toLowerCase();
+                    if (!path.endsWith('.html')) return false;
+                    if (path === 'index.html') return false;
+                    return true;
+                });
+
+                const presetMeta = {
+                    "blog": "部落格", "tol": "工具庫", "music": "音樂頻道",
+                    "shorts": "Shorts", "wiki": "支援中心", "setting": "設定"
+                };
+
+                const dynamicCards = htmlFiles.map(file => {
+                    const parts = file.path.split('/');
+                    let id, url;
+                    
+                    if (parts.length > 1 && parts[parts.length - 1] === 'index.html') {
+                        id = parts[parts.length - 2];
+                        url = `/${parts.slice(0, -1).join('/')}/`;
+                    } else {
+                        id = parts[parts.length - 1].replace('.html', '');
+                        url = `/${file.path}`;
+                    }
+
+                    return {
+                        id: id,
+                        title: presetMeta[id] || id.toUpperCase(),
+                        url: url,
+                        image: `/assets/brand/ms-${id}.webp`
+                    };
+                });
+
+                if (dynamicCards.length > 0) {
+                    renderCards(dynamicCards);
+                    alert(`深度掃描成功！共找到 ${dynamicCards.length} 個 HTML 頁面並完成渲染。`);
+                } else {
+                    alert('未在儲存庫中找到其他有效的 HTML 頁面。');
+                }
+            } else {
+                if (response.status === 403) {
+                    alert('API 請求次數超限（GitHub 限制同 IP 每小時 60 次），請稍後再試。');
+                } else {
+                    alert(`深度掃描失敗 (錯誤代碼: ${response.status})`);
+                }
+            }
+        } catch (err) {
+            alert('網路異常，無法連接至 GitHub API。');
+        } finally {
+            btn.innerText = '🔄 立即全站深度掃描儲存庫';
+            btn.disabled = false;
+        }
     });
 }
 </script>
+
 <script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); }</script>
 </body>
 </html>
