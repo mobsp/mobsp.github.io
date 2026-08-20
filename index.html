@@ -462,7 +462,7 @@ async function initMobiSpace() {
 
     let cardsData = [];
     try {
-        const res = await fetch('pages-config.json');
+        const res = await fetch('data/home-cardslider-config.json');
         if (res.ok) cardsData = await res.json();
     } catch(e) { console.warn("未發現本地快取 JSON，轉用原版備份結構"); }
     
