@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>LINE Ledger</title>
+  <style>
+    :root {
+      --line-green: #06C755;
+      --bg-chat: #8CABD9;
+      --bg-dark: #111111;
+      --card-dark: #1D1D1F;
+      --text-white: #FFFFFF;
+      --text-gray: #8E8E93;
+      --bubble-mine: #85E249;
+      --border-color: #2C2C2E;
+      --font-ios: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-ios);
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      background-color: #000;
+      color: var(--text-white);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* 全螢幕模擬器外皮 */
+    #app-viewport {
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      background-color: var(--bg-dark);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Header 導覽列 */
+    header {
+      height: 88px;
+      padding-top: 40px;
+      background: rgba(17, 17, 17, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 16px;
+      padding-right: 16px;
+      border-bottom: 0.5px solid var(--border-color);
+      z-index: 10;
+    }
+
+    .header-title {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.4px;
+    }
+
+    .header-icon {
+      color: var(--text-white);
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    /* 主要視圖區域 */
+    main {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .view {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+      transform: translateX(100%);
+    }
+
+    .view.active {
+      transform: translateX(0);
+    }
+
+    .view.parent-out {
+      transform: translateX(-30%);
+    }
+
+    /* 視圖 1: 聊天對話模式 (LINE 聊天介面) */
+    #view-chat {
+      background-color: var(--bg-chat);
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 16px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-bubble {
+      max-width: 70%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 15px;
+      line-height: 1.4;
+      word-break: break-all;
+      position: relative;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .chat-bubble.mine {
+      align-self: flex-end;
+      background-color: var(--bubble-mine);
+      color: #000;
+      border-top-right-radius: 2px;
+    }
+
+    .chat-bubble.system {
+      align-self: flex-start;
+      background-color: #FFFFFF;
+      color: #000;
+      border-top-left-radius: 2px;
+    }
+
+    .bubble-meta {
+      font-size: 10px;
+      color: rgba(0,0,0,0.4);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .chat-input-bar {
+      min-height: 60px;
+      background-color: #1C1C1E;
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      gap: 8px;
+      border-top: 0.5px solid var(--border-color);
+      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+    }
+
+    .chat-input {
+      flex: 1;
+      background-color: #2C2C2E;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 16px;
+      color: #FFF;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .send-btn {
+      color: var(--line-green);
+      font-weight: 600;
+      font-size: 16px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    /* 視圖 2: 明細統計分析 */
+    .ledger-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .summary-card {
+      background-color: var(--card-dark);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item-row {
+      background-color: var(--card-dark);
+      padding: 14px 16px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .item-category {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .item-note {
+      font-size: 12px;
+      color: var(--text-gray);
+      margin-top: 2px;
+    }
+
+    .item-amount {
+      font-weight: 600;
+      font-size: 16px;
+      color: #FF453A;
+    }
+
+    /* 底部 TabBar */
+    nav {
+      height: 83px;
+      background-color: rgba(25, 25, 25, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 0.5px solid var(--border-color);
+      display: flex;
+      justify-content: space-around;
+      padding-top: 10px;
+      z-index: 10;
+    }
+
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--text-gray);
+      cursor: pointer;
+      width: 20%;
+    }
+
+    .tab-item.active {
+      color: var(--line-green);
+    }
+
+    .tab-icon {
+      font-size: 22px;
+    }
+
+    .tab-label {
+      font-size: 10px;
+    }
+
+    /* GitHub PAT 綁定模態框 */
+    .modal {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal-content {
+      background: var(--card-dark);
+      border-radius: 14px;
+      width: 100%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .modal-content input {
+      background: #2C2C2E;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      color: #FFF;
+    }
+
+    .modal-content button {
+      background: var(--line-green);
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      color: #FFF;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+<div id="app-viewport">
+  <!-- 頂部 iOS 狀態導覽列 -->
+  <header>
+    <span class="header-title" id="header-title">LINE 記帳助手</span>
+    <span class="header-icon" onclick="toggleModal(true)">⚙️</span>
+  </header>
+
+  <!-- 內容頁面堆疊區 -->
+  <main>
+    <!-- Tab 1: LINE 聊天智能記帳頁 -->
+    <div class="view active" id="view-chat">
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-bubble system">
+          👋 你好！我是你的 LINE 記帳助手。<br>請直接發送訊息記帳，例如：<br><b>午餐 120</b> 或 <b>買衣服 1500 購物</b>
+        </div>
+      </div>
+      <div class="chat-input-bar">
+        <input type="text" class="chat-input" id="chat-input" placeholder="輸入品項與金額，例如: 晚餐 250">
+        <button class="send-btn" onclick="handleSend()">發送</button>
+      </div>
+    </div>
+
+    <!-- Tab 2: 記帳總覽明細頁 -->
+    <div class="view" id="view-ledger">
+      <div class="ledger-list">
+        <div class="summary-card">
+          <div>
+            <div style="font-size:12px; color:var(--text-gray)">本月累積總支出</div>
+            <div style="font-size:28px; font-weight:700; margin-top:4px" id="total-amount">$ 0</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:12px; color:var(--text-gray)">筆數</div>
+            <div style="font-size:20px; font-weight:600;" id="total-count">0 筆</div>
+          </div>
+        </div>
+        <div id="records-container"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 底部 iOS LINE 五大 TabBar -->
+  <nav>
+    <div class="tab-item active" onclick="switchTab('chat', this)">
+      <span class="tab-icon">💬</span>
+      <span class="tab-label">對話記帳</span>
+    </div>
+    <div class="tab-item" onclick="switchTab('ledger', this)">
+      <span class="tab-icon">📊</span>
+      <span class="tab-label">收支明細</span>
+    </div>
+  </nav>
+
+  <!-- GitHub API 同步設定 Modal -->
+  <div class="modal" id="settings-modal">
+    <div class="modal-content">
+      <h3>GitHub API 雲端備份設定</h3>
+      <p style="font-size: 12px; color: var(--text-gray);">輸入 Personal Access Token 即可將記帳數據即時備份至 GitHub 倉庫：</p>
+      <input type="text" id="gh-repo" placeholder="Repo (例: username/ledger-db)">
+      <input type="password" id="gh-token" placeholder="GitHub Personal Access Token">
+      <button onclick="saveSettings()">儲存並測試同步</button>
+      <button onclick="toggleModal(false)" style="background:#3A3A3C">取消</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 狀態管理
+  let records = JSON.parse(localStorage.getItem('line_ledger_records') || '[]');
+  let config = JSON.parse(localStorage.getItem('line_ledger_config') || '{}');
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderLedger();
+  });
+
+  // 視圖切換 (模擬 iOS 頁面滑動)
+  function switchTab(tabName, el) {
+    document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
+    el.classList.add('active');
+
+    const chatView = document.getElementById('view-chat');
+    const ledgerView = document.getElementById('view-ledger');
+    const title = document.getElementById('header-title');
+
+    if (tabName === 'chat') {
+      chatView.classList.add('active');
+      ledgerView.classList.remove('active');
+      title.innerText = "LINE 記帳助手";
+    } else {
+      ledgerView.classList.add('active');
+      chatView.classList.remove('active');
+      title.innerText = "收支明細分析";
+      renderLedger();
+    }
+  }
+
+  // 自然語言解析與發送邏輯
+  function handleSend() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    // 1. 渲染使用者對話框
+    appendMessage(text, 'mine');
+    input.value = '';
+
+    // 2. 解析文本 (比對數字與品項)
+    const match = text.match(/^(.+?)\s*(\d+)\s*(.*)$/);
+    
+    if (match) {
+      const item = match[1];
+      const amount = parseInt(match[2], 10);
+      const category = match[3] || '一般消費';
+
+      const newRecord = {
+        id: Date.now(),
+        item,
+        amount,
+        category,
+        date: new Date().toLocaleDateString('zh-TW', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+      };
+
+      records.unshift(newRecord);
+      saveData();
+
+      // 3. 機器人回覆
+      setTimeout(() => {
+        appendMessage(`✅ 已成功上記算！\n品項：${item}\n金額：$${amount}\n分類：${category}`, 'system');
+      }, 400);
+
+    } else {
+      setTimeout(() => {
+        appendMessage(`⚠️ 格式不理解，請輸入例如：「午餐 100」或「電影 300 娛樂」`, 'system');
+      }, 400);
+    }
+  }
+
+  function appendMessage(text, type) {
+    const container = document.getElementById('chat-messages');
+    const bubble = document.createElement('div');
+    bubble.className = `chat-bubble ${type}`;
+    
+    const timeStr = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
+    bubble.innerHTML = `${text.replace(/\n/g, '<br>')}<div class="bubble-meta">${timeStr}</div>`;
+    
+    container.appendChild(bubble);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  // 渲染明細頁
+  function renderLedger() {
+    const container = document.getElementById('records-container');
+    const totalEl = document.getElementById('total-amount');
+    const countEl = document.getElementById('total-count');
+
+    container.innerHTML = '';
+    let total = 0;
+
+    records.forEach(r => {
+      total += r.amount;
+      const row = document.createElement('div');
+      row.className = 'item-row';
+      row.innerHTML = `
+        <div>
+          <div class="item-category">${r.item} <span style="font-size:11px; font-weight:normal; color:var(--text-gray)">(${r.category})</span></div>
+          <div class="item-note">${r.date}</div>
+        </div>
+        <div class="item-amount">-$${r.amount}</div>
+      `;
+      container.appendChild(row);
+    });
+
+    totalEl.innerText = `$ ${total.toLocaleString()}`;
+    countEl.innerText = `${records.length} 筆`;
+  }
+
+  // 本地儲存與 GitHub API 同步邏輯
+  function saveData() {
+    localStorage.setItem('line_ledger_records', JSON.stringify(records));
+    syncToGitHub();
+  }
+
+  function toggleModal(show) {
+    document.getElementById('settings-modal').style.display = show ? 'flex' : 'none';
+    if (show && config.repo) {
+      document.getElementById('gh-repo').value = config.repo || '';
+      document.getElementById('gh-token').value = config.token || '';
+    }
+  }
+
+  function saveSettings() {
+    config.repo = document.getElementById('gh-repo').value.trim();
+    config.token = document.getElementById('gh-token').value.trim();
+    localStorage.setItem('line_ledger_config', JSON.stringify(config));
+    toggleModal(false);
+    syncToGitHub();
+  }
+
+  // 利用 GitHub REST API 自動備份至使用者指定 Repository
+  async function syncToGitHub() {
+    if (!config.repo || !config.token) return;
+
+    const path = 'ledger_data.json';
+    const url = `https://api.github.com/repos/${config.repo}/contents/${path}`;
+    
+    try {
+      // 先取得原本檔案的 SHA (如果存在)
+      let sha = '';
+      const getRes = await fetch(url, {
+        headers: { 'Authorization': `token ${config.token}` }
+      });
+      if (getRes.ok) {
+        const fileData = await getRes.json();
+        sha = fileData.sha;
+      }
+
+      // 寫入/更新 JSON
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(records, null, 2))));
+      await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `token ${config.token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          message: 'auto: sync ledger data',
+          content: content,
+          sha: sha || undefined
+        })
+      });
+      console.log('GitHub API 同步成功');
+    } catch (e) {
+      console.error('GitHub 同步失敗:', e);
+    }
+  }
+</script>
+</body>
+</html>
