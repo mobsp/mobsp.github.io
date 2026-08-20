@@ -1,20 +1,32 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-    <script>if(self!==top){top.location=self.location;}</script>
+    <script>
+        if (self !== top) {
+            top.location = self.location;
+        }
+    </script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    
+
     <link rel="icon" href="/assets/brand/ms-logo1.webp" type="image/jpeg">
     <link rel="apple-touch-icon" href="/assets/brand/ms-logo1.webp">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-startup-image" href="/assets/brand/ms-guide.webp">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-mobile-web-app-startup-image" href="/assets/brand/ms-guide.webp">
 
     <title>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ | 莫比空間 - 資源整合與數位服務入口網</title>
     <meta name="description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ (莫比空間) 提供一站式數位資源整合入口，包含莫比部落格、工具庫、音樂頻道及記事編輯器。">
-    
+    <meta name="robots" content="index, follow">
+
+    <meta property="og:type" content="website">
     <meta property="og:title" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ | 莫比空間 - 資源整合與數位服務入口網">
+    <meta property="og:description" content="Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ 莫比空間資源整合與數位服務入口網。">
     <meta property="og:image" content="/assets/brand/ms-logo1.webp">
+    <meta property="og:url" content="https://mobsp.qzz.io/">
+    <meta property="og:site_name" content="MOBSP">
+
+    <link rel="canonical" href="https://mobsp.qzz.io/">
 
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -22,27 +34,42 @@
 
     <style>
         :root {
-            --bg-color: #0b0b0c;          
-            --card-bg: rgba(25, 27, 31, 0.85); 
-            --text-main: #f1f2f6;         
-            --primary-color: #00cec9;     
-            --border-color: rgba(255, 255, 255, 0.1); 
+            --bg-color: #0b0b0c;
+            --card-bg: rgba(25, 27, 31, 0.85);
+            --text-main: #f1f2f6;
+            --primary-color: #00cec9;
+            --border-color: rgba(255, 255, 255, 0.1);
             --transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
-            
+
             --status-red: #ff453a;
             --status-orange: #ff9f0a;
             --status-yellow: #ffd60a;
             --status-green: #30d158;
             --status-blue: #0a84ff;
+
             --indicator-color: var(--primary-color);
             --mq-color: #f1f2f6;
             --mq-duration: 45s;
             --indicator-duration: 2s;
+
+            --viewport-height: 100dvh;
         }
 
-        [data-theme="stream-cyan"] { --bg-color: #001219; --primary-color: #00e5ff; }
-        [data-theme="stream-purple"] { --bg-color: #140124; --primary-color: #bf5af2; }
-        [data-theme="stream-gold"] { --bg-color: #1a1100; --primary-color: #ffd60a; }
+        [data-theme="stream-cyan"] {
+            --bg-color: #001219;
+            --primary-color: #00e5ff;
+        }
+
+        [data-theme="stream-purple"] {
+            --bg-color: #140124;
+            --primary-color: #bf5af2;
+        }
+
+        [data-theme="stream-gold"] {
+            --bg-color: #1a1100;
+            --primary-color: #ffd60a;
+        }
+
         [data-theme="light"] {
             --bg-color: #f2f2f7;
             --card-bg: rgba(255, 255, 255, 0.8);
@@ -51,294 +78,1014 @@
             --mq-color: #1c1c1e;
         }
 
+        /*
+         * 35. fake-splash 可用性改善
+         * 不阻擋鍵盤 / 螢幕閱讀器，並支援 reduced-motion。
+         */
         #fake-splash {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: var(--viewport-height);
+            min-height: 100%;
             background: #050508 url('/assets/brand/ms-guide.webp') center/cover no-repeat;
-            z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             transition: opacity 0.8s ease, visibility 0.8s;
+            pointer-events: none;
         }
+
         #fake-splash::after {
             content: "LOADING...";
-            position: absolute; bottom: 15%; color: white; letter-spacing: 5px; font-size: 12px; opacity: 0.5;
+            position: absolute;
+            bottom: 15%;
+            color: white;
+            letter-spacing: 5px;
+            font-size: 12px;
+            opacity: 0.5;
         }
-        #fake-splash.fade-out { opacity: 0; visibility: hidden; }
 
-        html, body {
-            width: 100%; height: 100dvh; overflow: hidden;
-            position: fixed; margin: 0; padding: 0;
-            background-color: var(--bg-color); color: var(--text-main);
+        #fake-splash.fade-out {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        html,
+        body {
+            width: 100%;
+            min-height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             font-family: 'PingFang TC', system-ui, -apple-system, sans-serif;
             touch-action: manipulation;
             transition: background-color 0.5s ease;
         }
 
-        .visually-hidden {
-            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-            overflow: hidden; clip: rect(0,0,0,0); border: 0;
+        body {
+            min-height: var(--viewport-height);
+            overflow: hidden;
         }
 
-        .page-wrapper { display: flex; flex-direction: column; height: 100dvh; max-width: 500px; margin: 0 auto; position: relative; }
+        /*
+         * 32. 不再依賴 body position:fixed + 100dvh 的組合。
+         */
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            height: var(--viewport-height);
+            min-height: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
 
         .app-header {
             flex-shrink: 0;
-            padding: calc(20px + env(safe-area-inset-top)) 20px 10px; 
+            padding: calc(20px + env(safe-area-inset-top)) 20px 10px;
             background: rgba(11, 11, 12, 0.4);
-            backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border-bottom: 1px solid var(--border-color);
-            z-index: 100; display: flex; flex-direction: column; align-items: center;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .marquee-row {
-            display: flex; align-items: center; background: rgba(255,255,255,0.06);
-            padding: 6px 12px; border-radius: 12px; margin-bottom: 15px; overflow: hidden;
-            min-height: 28px; width: 100%; box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px 12px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            min-height: 28px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .brand-title-link {
-            display: block; width: 100%; transition: var(--transition); margin-bottom: 5px; box-sizing: border-box; padding: 0 5px;
+            display: block;
+            width: 100%;
+            transition: var(--transition);
+            margin-bottom: 5px;
+            box-sizing: border-box;
+            padding: 0 5px;
         }
-        .brand-title-link:hover { opacity: 0.9; transform: translateY(-1px); }
-        .brand-title-img { width: 100%; height: auto; display: block; border-radius: 8px; }
 
-        .v-tag { 
-            background: var(--indicator-color); color: #000; font-size: 9px; font-weight: 900; 
-            padding: 2px 6px; border-radius: 5px; margin-right: 10px; white-space: nowrap;
+        .brand-title-link:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .brand-title-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+        }
+
+        .v-tag {
+            background: var(--indicator-color);
+            color: #000;
+            font-size: 9px;
+            font-weight: 900;
+            padding: 2px 6px;
+            border-radius: 5px;
+            margin-right: 10px;
+            white-space: nowrap;
             transition: background-color 0.3s ease;
             animation: pulse-light var(--indicator-duration) infinite ease-in-out;
         }
-        .v-tag.tag-disabled { animation: none !important; opacity: 0.6; }
-        @keyframes pulse-light { 0%, 100% { opacity: 1; filter: brightness(1); } 50% { opacity: 0.4; filter: brightness(1.3); } }
 
-        .mq-box { flex: 1; overflow: hidden; white-space: nowrap; position: relative; }
-        .mq-text { 
-            display: inline-block; padding-left: 100%;
-            animation: mq var(--mq-duration) linear infinite;
-            font-size: 11px; opacity: 0.9; letter-spacing: 0.5px; color: var(--mq-color);
+        .v-tag.tag-disabled {
+            animation: none !important;
+            opacity: 0.6;
         }
-        @keyframes mq { 0% { transform: translateX(0); } 100% { transform: translateX(-100%); } }
+
+        @keyframes pulse-light {
+            0%, 100% {
+                opacity: 1;
+                filter: brightness(1);
+            }
+
+            50% {
+                opacity: 0.4;
+                filter: brightness(1.3);
+            }
+        }
+
+        .mq-box {
+            flex: 1;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .mq-text {
+            display: inline-block;
+            padding-left: 100%;
+            animation: mq var(--mq-duration) linear infinite;
+            font-size: 11px;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+            color: var(--mq-color);
+        }
+
+        @keyframes mq {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
 
         .app-main {
-            flex: 1; transition: var(--transition); overflow-y: auto; overflow-x: hidden; padding: 20px; box-sizing: border-box;
+            flex: 1;
+            min-height: 0;
+            transition: var(--transition);
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 20px;
+            box-sizing: border-box;
         }
 
         .app-main.layout-slider {
-            display: flex; align-items: center; overflow-x: auto; overflow-y: hidden;
-            scroll-snap-type: x mandatory; padding: 0 40px; gap: 25px; scrollbar-width: none;
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            padding: 0 40px;
+            gap: 25px;
+            scrollbar-width: none;
         }
-        .app-main.layout-slider::-webkit-scrollbar { display: none; }
-        .app-main.layout-slider .action-btn { flex: 0 0 85%; height: 70%; scroll-snap-align: center; }
+
+        .app-main.layout-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .app-main.layout-slider .action-btn {
+            flex: 0 0 85%;
+            height: 70%;
+            scroll-snap-align: center;
+        }
 
         .app-main.layout-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; align-content: start; padding-top: 10px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            align-content: start;
+            padding-top: 10px;
         }
-        .app-main.layout-grid .action-btn { aspect-ratio: 1; height: auto; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        .app-main.layout-grid .btn-overlay { padding: 15px 10px 10px; }
-        .app-main.layout-grid .btn-title { font-size: 1rem; letter-spacing: 1px; text-align: center; width: 100%; }
+
+        .app-main.layout-grid .action-btn {
+            aspect-ratio: 1;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .app-main.layout-grid .btn-overlay {
+            padding: 15px 10px 10px;
+        }
+
+        .app-main.layout-grid .btn-title {
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-align: center;
+            width: 100%;
+        }
 
         .app-main.layout-list {
-            display: flex; flex-direction: column; gap: 10px; padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 15px;
         }
+
         .app-main.layout-list .action-btn {
-            height: 60px; border-radius: 14px; background-image: none !important;
-            background-color: var(--card-bg) !important; display: flex; align-items: center; justify-content: space-between; padding: 0 20px; box-shadow: none;
+            height: 60px;
+            border-radius: 14px;
+            background-image: none !important;
+            background-color: var(--card-bg) !important;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: none;
         }
-        .app-main.layout-list .btn-overlay { position: static; padding: 0; background: none; display: flex; width: 100%; justify-content: space-between; align-items: center; }
-        .app-main.layout-list .btn-title { color: var(--text-main); font-size: 1.1rem; font-weight: 600; letter-spacing: 1px; }
-        .app-main.layout-list .btn-overlay::after { content: "〉"; font-size: 12px; opacity: 0.4; color: var(--text-main); }
+
+        .app-main.layout-list .btn-overlay {
+            position: static;
+            padding: 0;
+            background: none;
+            display: flex;
+            width: 100%;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-main.layout-list .btn-title {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .app-main.layout-list .btn-overlay::after {
+            content: "〉";
+            font-size: 12px;
+            opacity: 0.4;
+            color: var(--text-main);
+        }
 
         .action-btn {
-            text-decoration: none; border-radius: 40px; position: relative; overflow: hidden; border: 1px solid var(--border-color);
-            background-color: #1e272e; background-position: center; background-size: cover;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.5); transition: var(--transition);
+            text-decoration: none;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            background-color: #1e272e;
+            background-position: center;
+            background-size: cover;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            transition: var(--transition);
         }
-        .action-btn:active { transform: scale(0.96); filter: brightness(0.8); }
-        .btn-overlay { position: absolute; bottom: 0; width: 100%; padding: 50px 30px 40px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); display: flex; box-sizing: border-box; }
-        .btn-title { color: #fff; font-size: 1.85rem; font-weight: 800; letter-spacing: 3px; }
+
+        .action-btn:active {
+            transform: scale(0.96);
+            filter: brightness(0.8);
+        }
+
+        .btn-overlay {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            padding: 50px 30px 40px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+            display: flex;
+            box-sizing: border-box;
+        }
+
+        .btn-title {
+            color: #fff;
+            font-size: 1.85rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
 
         #ios-alert {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4);
-            z-index: 10000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s ease;
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: var(--viewport-height);
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding:
+                env(safe-area-inset-top)
+                env(safe-area-inset-right)
+                env(safe-area-inset-bottom)
+                env(safe-area-inset-left);
+            box-sizing: border-box;
         }
-        #ios-alert.active { opacity: 1; visibility: visible; }
+
+        #ios-alert.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
         .alert-box {
-            width: 270px; background: rgba(230, 230, 235, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-radius: 14px; text-align: center; animation: alertPop 0.3s cubic-bezier(0.1, 0.8, 0.25, 1); overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 0.5px solid rgba(255,255,255,0.2);
+            width: min(270px, calc(100vw - 40px));
+            background: rgba(230, 230, 235, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 14px;
+            text-align: center;
+            animation: alertPop 0.3s cubic-bezier(0.1, 0.8, 0.25, 1);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 0.5px solid rgba(255, 255, 255, 0.2);
         }
-        @keyframes alertPop { 0% { transform: scale(1.15); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        .alert-content { padding: 20px 16px; color: #000; }
-        .alert-title { font-weight: 600; font-size: 17px; margin-bottom: 5px; }
-        .alert-desc { font-size: 13px; line-height: 1.4; color: #333; max-height: 150px; overflow-y: auto; }
+
+        @keyframes alertPop {
+            0% {
+                transform: scale(1.15);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .alert-content {
+            padding: 20px 16px;
+            color: #000;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .alert-desc {
+            font-size: 13px;
+            line-height: 1.4;
+            color: #333;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
         .alert-btn {
-            border-top: 0.5px solid rgba(0,0,0,0.15); color: #007ff5; font-size: 17px; line-height: 44px; height: 44px; font-weight: 600; cursor: pointer;
+            border-top: 0.5px solid rgba(0, 0, 0, 0.15);
+            color: #007ff5;
+            font-size: 17px;
+            line-height: 44px;
+            height: 44px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
         #control-sheet {
-            position: fixed; bottom: 0; left: 50%; transform: translateX(-50%) translateY(100%);
-            width: 100%; max-width: 500px; height: 80dvh; background: rgba(28, 28, 30, 0.75);
-            backdrop-filter: blur(35px); -webkit-backdrop-filter: blur(35px);
-            border-top-left-radius: 20px; border-top-right-radius: 20px; z-index: 999;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.15);
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column;
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) translateY(100%);
+            width: 100%;
+            max-width: 500px;
+            height: min(80dvh, 80vh);
+            max-height: calc(var(--viewport-height) - env(safe-area-inset-top));
+            background: rgba(28, 28, 30, 0.75);
+            backdrop-filter: blur(35px);
+            -webkit-backdrop-filter: blur(35px);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            z-index: 999;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.3);
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+            padding-bottom: env(safe-area-inset-bottom);
+            box-sizing: border-box;
         }
-        #control-sheet.active { transform: translateX(-50%) translateY(0); }
-        .sheet-handle { width: 36px; height: 5px; background: rgba(255,255,255,0.25); border-radius: 3px; margin: 10px auto 15px; flex-shrink: 0; cursor: pointer; }
-        .sheet-header { padding: 0 20px 15px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
-        .sheet-title { font-size: 1.2rem; font-weight: 700; color: #fff; }
-        .sheet-close { font-size: 14px; color: var(--primary-color); font-weight: 600; cursor: pointer; }
-        
-        .sheet-body { flex: 1; overflow-y: auto; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
-        .setting-group { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px 16px; border: 0.5px solid rgba(255,255,255,0.05); }
-        .setting-label { font-size: 13px; font-weight: 600; opacity: 0.5; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; }
-        .setting-row { display: flex; justify-content: space-between; align-items: center; min-height: 40px; border-bottom: 0.5px solid rgba(255,255,255,0.05); }
-        .setting-row:last-child { border-bottom: none; }
-        .setting-name { font-size: 15px; color: #fff; }
-        
-        .ios-switch { position: relative; display: inline-block; width: 51px; height: 31px; }
-        .ios-switch input { opacity: 0; width: 0; height: 0; }
-        .ios-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.15); transition: .4s; border-radius: 34px; }
-        .ios-slider:before { position: absolute; content: ""; height: 27px; width: 27px; left: 2px; bottom: 2px; background-color: white; transition: .4s; border-radius: 50%; box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
-        input:checked + .ios-slider { background-color: #30d158; }
-        input:checked + .ios-slider:before { transform: translateX(20px); }
 
-        .ios-select, .ios-input { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 6px 12px; border-radius: 8px; font-size: 14px; font-family: inherit; }
-        .ios-input { width: 100%; box-sizing: border-box; margin-top: 5px; }
-        .ios-range { -webkit-appearance: none; width: 120px; background: rgba(255,255,255,0.2); height: 4px; border-radius: 2px; }
-        .ios-range::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+        #control-sheet.active {
+            transform: translateX(-50%) translateY(0);
+        }
 
-        .ios-btn { background: var(--primary-color); color: #000; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; width: 100%; margin-top: 5px; transition: opacity 0.2s; cursor: pointer; }
-        .ios-btn:active { opacity: 0.8; }
+        .sheet-handle {
+            width: 36px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 3px;
+            margin: 10px auto 15px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .sheet-header {
+            padding: 0 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sheet-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .sheet-close {
+            font-size: 14px;
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .sheet-body {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: calc(40px + env(safe-area-inset-bottom));
+        }
+
+        .setting-group {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px 16px;
+            border: 0.5px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-label {
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0.5;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 40px;
+            border-bottom: 0.5px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+        }
+
+        .setting-name {
+            font-size: 15px;
+            color: #fff;
+        }
+
+        .ios-switch {
+            position: relative;
+            display: inline-block;
+            width: 51px;
+            height: 31px;
+        }
+
+        .ios-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .ios-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.15);
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .ios-slider:before {
+            position: absolute;
+            content: "";
+            height: 27px;
+            width: 27px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        input:checked + .ios-slider {
+            background-color: #30d158;
+        }
+
+        input:checked + .ios-slider:before {
+            transform: translateX(20px);
+        }
+
+        .ios-select,
+        .ios-input {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .ios-input {
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        .ios-range {
+            -webkit-appearance: none;
+            width: 120px;
+            background: rgba(255, 255, 255, 0.2);
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        .ios-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .ios-btn {
+            background: var(--primary-color);
+            color: #000;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            width: 100%;
+            margin-top: 5px;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+
+        .ios-btn:active {
+            opacity: 0.8;
+        }
+
+        .ios-btn:disabled {
+            opacity: 0.5;
+            cursor: wait;
+        }
 
         #floating-chat-trigger {
-            position: fixed; bottom: 85px; right: 20px; width: 50px; height: 50px;
-            background: var(--primary-color); color: #000; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 22px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4); z-index: 998; cursor: pointer;
+            position: fixed;
+            bottom: calc(85px + env(safe-area-inset-bottom));
+            right: max(20px, env(safe-area-inset-right));
+            width: 50px;
+            height: 50px;
+            background: var(--primary-color);
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            z-index: 998;
+            cursor: pointer;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        #floating-chat-trigger:hover { transform: scale(1.1); }
+
+        #floating-chat-trigger:hover {
+            transform: scale(1.1);
+        }
 
         #floating-chat-box {
-            position: fixed; bottom: 145px; right: 20px; width: 340px; height: 450px;
-            background: rgba(22, 22, 26, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; z-index: 998;
-            display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            transform: scale(0); transform-origin: bottom right; opacity: 0;
+            position: fixed;
+            bottom: calc(145px + env(safe-area-inset-bottom));
+            right: max(20px, env(safe-area-inset-right));
+            width: min(340px, calc(100vw - 40px));
+            height: min(450px, calc(var(--viewport-height) - 190px));
+            max-height: calc(100dvh - 190px);
+            background: rgba(22, 22, 26, 0.95);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            z-index: 998;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            transform: scale(0);
+            transform-origin: bottom right;
+            opacity: 0;
+            pointer-events: none;
             transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
         }
-        #floating-chat-box.active { transform: scale(1); opacity: 1; }
-        .chat-box-header { padding: 12px 16px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 13px; }
-        .chat-box-close { cursor: pointer; opacity: 0.6; font-size: 16px; }
-        .chat-box-body { flex: 1; padding: 12px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 8px; }
-        .chat-msg { padding: 8px 12px; border-radius: 10px; max-width: 88%; line-height: 1.4; word-break: break-word; }
-        .chat-msg.system { background: rgba(255,255,255,0.1); align-self: flex-start; }
-        .chat-msg.user { background: var(--primary-color); color: #000; align-self: flex-end; font-weight: 500; }
-        .chat-box-footer { padding: 10px; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 8px; }
-        .chat-input { flex: 1; background: rgba(255,255,255,0.1); border: none; padding: 8px 12px; border-radius: 8px; color: #fff; font-size: 13px; outline: none; }
-        .chat-send-btn { background: var(--primary-color); border: none; padding: 0 12px; border-radius: 8px; font-weight: 700; cursor: pointer; color: #000; }
+
+        .chat-box-header {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .chat-box-close {
+            cursor: pointer;
+            opacity: 0.6;
+            font-size: 16px;
+        }
+
+        .chat-box-body {
+            flex: 1;
+            min-height: 0;
+            padding: 12px;
+            overflow-y: auto;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-msg {
+            padding: 8px 12px;
+            border-radius: 10px;
+            max-width: 88%;
+            line-height: 1.4;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .chat-msg.system {
+            background: rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+        }
+
+        .chat-msg.user {
+            background: var(--primary-color);
+            color: #000;
+            align-self: flex-end;
+            font-weight: 500;
+        }
+
+        .chat-box-footer {
+            padding: 10px;
+            padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input {
+            flex: 1;
+            min-width: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .chat-send-btn {
+            background: var(--primary-color);
+            border: none;
+            padding: 0 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #000;
+        }
 
         .app-footer {
-            flex-shrink: 0; padding: 15px 20px calc(15px + env(safe-area-inset-bottom));
-            background: rgba(11, 11, 12, 0.4); border-top: 1px solid var(--border-color); text-align: center; z-index: 10;
+            flex-shrink: 0;
+            padding: 15px 20px calc(15px + env(safe-area-inset-bottom));
+            background: rgba(11, 11, 12, 0.4);
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            z-index: 10;
         }
-        .copyright { font-size: 10px; opacity: 0.4; line-height: 1.6; letter-spacing: 1px; }
-        .trigger-btn { display: inline-block; font-size: 10px; color: var(--primary-color); opacity: 0.7; border: 1px solid var(--primary-color); padding: 2px 8px; border-radius: 20px; margin-top: 5px; text-decoration: none; font-weight: 600; }
+
+        .copyright {
+            font-size: 10px;
+            opacity: 0.4;
+            line-height: 1.6;
+            letter-spacing: 1px;
+        }
+
+        .trigger-btn {
+            display: inline-block;
+            font-size: 10px;
+            color: var(--primary-color);
+            opacity: 0.7;
+            border: 1px solid var(--primary-color);
+            padding: 2px 8px;
+            border-radius: 20px;
+            margin-top: 5px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /*
+         * 29. Accessibility focus 狀態
+         */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 3px;
+        }
+
+        /*
+         * 33. 手機 Chatbox 不再固定 340px。
+         */
+        @media (max-width: 520px) {
+            .app-main.layout-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            #floating-chat-box {
+                left: max(12px, env(safe-area-inset-left));
+                right: max(12px, env(safe-area-inset-right));
+                width: auto;
+                bottom: calc(140px + env(safe-area-inset-bottom));
+                height: min(60dvh, 450px);
+                max-height: calc(var(--viewport-height) - 175px);
+                border-radius: 18px;
+            }
+
+            #floating-chat-trigger {
+                right: max(16px, env(safe-area-inset-right));
+            }
+        }
+
+        @media (max-width: 360px) {
+            .app-main.layout-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .setting-row {
+                gap: 8px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                scroll-behavior: auto !important;
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+            }
+        }
     </style>
-    <link rel="canonical" href="https://mobsp.qzz.io/">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://mobsp.qzz.io/">
-    <meta property="og:site_name" content="MOBSP">
 </head>
 
 <body>
 <div id="fake-splash" aria-hidden="true"></div>
 
-<div id="ios-alert" aria-hidden="true">
+<div id="ios-alert"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="alert-title"
+     aria-describedby="alert-desc"
+     aria-hidden="true">
     <div class="alert-box">
         <div class="alert-content">
             <div class="alert-title" id="alert-title">系統公告</div>
             <div class="alert-desc" id="alert-desc">歡迎來到 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ 莫比空間。</div>
         </div>
-        <div class="alert-btn" id="alert-close-btn">好</div>
+        <button type="button" class="alert-btn" id="alert-close-btn">好</button>
     </div>
 </div>
 
 <div class="page-wrapper">
     <header class="app-header">
         <h1 class="visually-hidden">Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ 莫比空間</h1>
-        
-        <nav class="marquee-row">
+
+        <nav class="marquee-row" aria-label="系統公告">
             <span class="v-tag" id="v-tag">SYNCING</span>
             <div class="mq-box">
                 <div class="mq-text" id="mq-text">正在從雲端同步 2026 實時數據...</div>
             </div>
         </nav>
 
-        <a href="" class="brand-title-link" title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ">
-            <img src="assets/brand/ms-guide-title.webp" alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ" class="brand-title-img">
+        <!-- 26. 不再使用空 href -->
+        <a href="/"
+           class="brand-title-link"
+           title="莫比空間 Ⓒ Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ">
+            <img src="/assets/brand/ms-guide-title.webp"
+                 alt="莫比空間 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ"
+                 class="brand-title-img">
         </a>
     </header>
 
-    <main class="app-main layout-slider" id="main-container">
-        <a href="/blog/" class="action-btn btn-blog"><div class="btn-overlay"><div class="btn-title">部落格</div></div></a>
-        <a href="/tol/" class="action-btn btn-tools"><div class="btn-overlay"><div class="btn-title">工具庫</div></div></a>
+    <main class="app-main layout-slider"
+          id="main-container"
+          aria-label="網站資源入口">
+
+        <a href="/blog/"
+           class="action-btn btn-blog"
+           aria-label="前往部落格">
+            <div class="btn-overlay">
+                <div class="btn-title">部落格</div>
+            </div>
+        </a>
+
+        <a href="/tol/"
+           class="action-btn btn-tools"
+           aria-label="前往工具庫">
+            <div class="btn-overlay">
+                <div class="btn-title">工具庫</div>
+            </div>
+        </a>
     </main>
 
     <footer class="app-footer">
-        <div class="copyright">© 2026 <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ</strong><br>資源整合與數位服務入口網</div>
-        <a href="#" class="trigger-btn" id="open-control-btn">⚙︎ 莫比控制中心</a>
+        <div class="copyright">
+            © 2026 <strong>Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ</strong><br>
+            資源整合與數位服務入口網
+        </div>
+
+        <a href="/#control"
+           class="trigger-btn"
+           id="open-control-btn">
+            ⚙︎ 莫比控制中心
+        </a>
     </footer>
 </div>
 
-<div id="floating-chat-trigger" title="開啟自動化指令助理">🤖</div>
+<button type="button"
+        id="floating-chat-trigger"
+        title="開啟自動化指令助理"
+        aria-label="開啟自動化指令助理"
+        aria-controls="floating-chat-box"
+        aria-expanded="false">
+    🤖
+</button>
 
-<div id="floating-chat-box">
+<div id="floating-chat-box"
+     role="dialog"
+     aria-modal="false"
+     aria-labelledby="chat-title"
+     aria-hidden="true">
+
     <div class="chat-box-header">
-        <span>莫比 AI 智能控制台 (<span id="msk-status-badge" style="color:var(--status-red);">LOCKED</span>)</span>
-        <span class="chat-box-close" id="chat-close-btn">✕</span>
+        <span id="chat-title">
+            莫比 AI 智能控制台
+            (<span id="msk-status-badge" style="color:var(--status-red);">LOCKED</span>)
+        </span>
+
+        <button type="button"
+                class="chat-box-close"
+                id="chat-close-btn"
+                aria-label="關閉對話框">
+            ✕
+        </button>
     </div>
+
     <div class="chat-box-body" id="chat-messages">
-        <div class="chat-msg system">系統初始化完成。權限預設為關閉狀態。<br>輸入 <code>register:帳號</code> 可註冊會員並獲取 999+ 強度驗證碼。<br>驗證格式：<code>user:帳號 kytk:驗證碼</code>。</div>
+        <div class="chat-msg system">
+            系統初始化完成。權限預設為關閉狀態。
+            輸入 register:帳號 可註冊會員並獲取 999+ 強度驗證碼。
+            驗證格式：user:帳號 kytk:驗證碼。
+        </div>
     </div>
+
     <div class="chat-box-footer">
-        <input type="text" id="chat-input-field" class="chat-input" placeholder="輸入指令或登入驗證...">
-        <button type="button" id="chat-send-btn" class="chat-send-btn">發送</button>
+        <input type="text"
+               id="chat-input-field"
+               class="chat-input"
+               placeholder="輸入指令或登入驗證..."
+               autocomplete="off"
+               aria-label="輸入指令">
+
+        <button type="button"
+                id="chat-send-btn"
+                class="chat-send-btn">
+            發送
+        </button>
     </div>
 </div>
 
-<div id="control-sheet">
-    <div class="sheet-handle" id="sheet-handle-close"></div>
+<div id="control-sheet"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="control-sheet-title"
+     aria-hidden="true">
+
+    <div class="sheet-handle"
+         id="sheet-handle-close"
+         role="button"
+         tabindex="0"
+         aria-label="關閉控制中心"></div>
+
     <div class="sheet-header">
-        <div class="sheet-title">莫比控制中心</div>
-        <div class="sheet-close" id="sheet-header-close">完成</div>
+        <div class="sheet-title" id="control-sheet-title">莫比控制中心</div>
+
+        <button type="button"
+                class="sheet-close"
+                id="sheet-header-close">
+            完成
+        </button>
     </div>
+
     <div class="sheet-body">
-        
+
         <div class="setting-group">
             <div class="setting-label">1. 公告彈窗設定</div>
+
             <div class="setting-row">
                 <span class="setting-name">修改彈窗標題</span>
-                <input type="text" id="cfg-alert-title" class="ios-input" placeholder="系統公告">
+                <input type="text"
+                       id="cfg-alert-title"
+                       class="ios-input"
+                       placeholder="系統公告">
             </div>
-            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+
+            <div class="setting-row"
+                 style="flex-direction: column; align-items: flex-start; gap: 5px;">
                 <span class="setting-name">修改彈窗內容</span>
-                <textarea id="cfg-alert-desc" class="ios-input" rows="2" style="width:100%; resize:none;" placeholder="輸入首頁彈窗公告文字..."></textarea>
+                <textarea id="cfg-alert-desc"
+                          class="ios-input"
+                          rows="2"
+                          style="width:100%; resize:none;"
+                          placeholder="輸入首頁彈窗公告文字..."></textarea>
             </div>
         </div>
 
         <div class="setting-group">
             <div class="setting-label">2. 卡片排列與外觀</div>
+
             <div class="setting-row">
                 <span class="setting-name">佈局排列樣式</span>
+
                 <select id="cfg-layout" class="ios-select">
                     <option value="layout-slider">卡片滑塊 (預設)</option>
                     <option value="layout-grid">3×3 圖像九宮格</option>
                     <option value="layout-list">清單列表模式</option>
                 </select>
             </div>
+
             <div class="setting-row">
                 <span class="setting-name">介面風格主題</span>
+
                 <select id="cfg-theme" class="ios-select">
                     <option value="dark">iOS 深色模式</option>
                     <option value="light">iOS 淺色模式</option>
@@ -351,34 +1098,60 @@
 
         <div class="setting-group">
             <div class="setting-label">3. 跑馬燈與指示燈自訂</div>
+
             <div class="setting-row">
                 <span class="setting-name">公告數據源切換</span>
+
                 <select id="cfg-mq-source" class="ios-select">
                     <option value="supabase">外部 Supabase 雲端</option>
                     <option value="custom">內部 本機自訂文字</option>
                 </select>
             </div>
-            <div class="setting-row" id="custom-mq-row" style="display:none; flex-direction: column; align-items: flex-start; gap: 5px;">
+
+            <div class="setting-row"
+                 id="custom-mq-row"
+                 style="display:none; flex-direction: column; align-items:flex-start; gap:5px;">
                 <span class="setting-name">本機自訂跑馬燈文字</span>
-                <input type="text" id="cfg-mq-text" class="ios-input" placeholder="輸入自訂跑馬燈跑馬文字...">
+
+                <input type="text"
+                       id="cfg-mq-text"
+                       class="ios-input"
+                       placeholder="輸入自訂跑馬燈跑馬文字...">
             </div>
+
             <div class="setting-row">
                 <span class="setting-name">跑馬燈滾動速度</span>
-                <input type="range" id="cfg-mq-speed" class="ios-range" min="10" max="80" value="45">
+                <input type="range"
+                       id="cfg-mq-speed"
+                       class="ios-range"
+                       min="10"
+                       max="80"
+                       value="45">
             </div>
+
             <div class="setting-row">
                 <span class="setting-name">跑馬燈文字顏色</span>
-                <input type="color" id="cfg-mq-color" value="#f1f2f6" style="border:none; background:none; cursor:pointer;">
+
+                <input type="color"
+                       id="cfg-mq-color"
+                       value="#f1f2f6"
+                       style="border:none; background:none; cursor:pointer;">
             </div>
+
             <div class="setting-row">
                 <span class="setting-name">指示燈動態開關</span>
+
                 <label class="ios-switch">
-                    <input type="checkbox" id="cfg-indicator-toggle" checked>
+                    <input type="checkbox"
+                           id="cfg-indicator-toggle"
+                           checked>
                     <span class="ios-slider"></span>
                 </label>
             </div>
+
             <div class="setting-row">
                 <span class="setting-name">指示燈類別色系</span>
+
                 <select id="cfg-indicator-color" class="ios-select">
                     <option value="var(--primary-color)">精靈青 (預設)</option>
                     <option value="var(--status-red)">系統紅 (重要)</option>
@@ -388,8 +1161,10 @@
                     <option value="var(--status-blue)">科技藍 (資訊)</option>
                 </select>
             </div>
+
             <div class="setting-row">
                 <span class="setting-name">指示燈呼吸頻率</span>
+
                 <select id="cfg-indicator-speed" class="ios-select">
                     <option value="1s">快速閃爍</option>
                     <option value="2s">原生舒適 (預設)</option>
@@ -400,50 +1175,120 @@
 
         <div class="setting-group">
             <div class="setting-label">4. 儲存庫自動化掃描核心</div>
-            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+
+            <div class="setting-row"
+                 style="flex-direction: column; align-items:flex-start; gap:8px;">
+
                 <span class="setting-name">全站深度遞迴掃描</span>
-                <button type="button" id="btn-sync-now" class="ios-btn">🔄 立即全站深度掃描儲存庫</button>
+
+                <button type="button"
+                        id="btn-sync-now"
+                        class="ios-btn">
+                    🔄 立即全站深度掃描儲存庫
+                </button>
             </div>
         </div>
 
         <div class="setting-group">
             <div class="setting-label">5. 儲存庫進階管理與自動化 (進階)</div>
+
             <div class="setting-row">
                 <span class="setting-name"><MSK> 密鑰啟用狀態</span>
-                <span id="cfg-msk-status" style="font-weight:bold; color:var(--status-red);">🔒 預設關閉 (需驗證)</span>
+
+                <span id="cfg-msk-status"
+                      style="font-weight:bold; color:var(--status-red);">
+                    🔒 預設關閉 (需驗證)
+                </span>
             </div>
+
             <div class="setting-row">
                 <span class="setting-name">登錄記住期限 (小時)</span>
-                <input type="number" id="cfg-auth-expiry" class="ios-input" style="width: 80px;" value="24" min="1">
+
+                <input type="number"
+                       id="cfg-auth-expiry"
+                       class="ios-input"
+                       style="width:80px;"
+                       value="24"
+                       min="1">
             </div>
-            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+
+            <div class="setting-row"
+                 style="flex-direction:column; align-items:flex-start; gap:5px;">
+
                 <span class="setting-name">執行 Actions 腳本</span>
-                <select id="cfg-action-select" class="ios-select" style="width:100%;">
+
+                <select id="cfg-action-select"
+                        class="ios-select"
+                        style="width:100%;">
                     <option value="mbsp-kytk.yml">mbsp-kytk.yml (核心自動化)</option>
                     <option value="main-deploy.yml">main-deploy.yml (主網佈署)</option>
                 </select>
-                <button type="button" id="btn-trigger-action" class="ios-btn">🚀 觸發指定 Actions 腳本</button>
+
+                <button type="button"
+                        id="btn-trigger-action"
+                        class="ios-btn">
+                    🚀 觸發指定 Actions 腳本
+                </button>
             </div>
-            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+
+            <div class="setting-row"
+                 style="flex-direction:column; align-items:flex-start; gap:5px;">
+
                 <span class="setting-name">儲存庫任意檔案推送器</span>
-                <input type="text" id="cfg-push-path" class="ios-input" placeholder="路徑 (例如: data/test.json)">
-                <textarea id="cfg-push-content" class="ios-input" rows="2" style="width:100%; resize:none;" placeholder="檔案內容 (JSON / 文字)..."></textarea>
-                <button type="button" id="btn-custom-push" class="ios-btn">📤 推送覆蓋至儲存庫</button>
+
+                <input type="text"
+                       id="cfg-push-path"
+                       class="ios-input"
+                       placeholder="路徑 (例如: data/test.json)">
+
+                <textarea id="cfg-push-content"
+                          class="ios-input"
+                          rows="2"
+                          style="width:100%; resize:none;"
+                          placeholder="檔案內容 (JSON / 文字)..."></textarea>
+
+                <button type="button"
+                        id="btn-custom-push"
+                        class="ios-btn">
+                    📤 推送覆蓋至儲存庫
+                </button>
             </div>
-            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+
+            <div class="setting-row"
+                 style="flex-direction:column; align-items:flex-start; gap:5px;">
+
                 <span class="setting-name">調取任意層級資料夾/檔案</span>
+
                 <div style="display:flex; gap:5px; width:100%;">
-                    <input type="text" id="cfg-fetch-path" class="ios-input" placeholder="路徑 (留空即根目錄)">
-                    <button type="button" id="btn-fetch-repo" class="ios-btn" style="width:90px; margin-top:5px;">🔍 調取</button>
+                    <input type="text"
+                           id="cfg-fetch-path"
+                           class="ios-input"
+                           placeholder="路徑 (留空即根目錄)">
+
+                    <button type="button"
+                            id="btn-fetch-repo"
+                            class="ios-btn"
+                            style="width:90px; margin-top:5px;">
+                        🔍 調取
+                    </button>
                 </div>
             </div>
         </div>
 
         <div class="setting-group">
             <div class="setting-label">6. 雲端資料同步與備份 (JSON Push)</div>
-            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+
+            <div class="setting-row"
+                 style="flex-direction:column; align-items:flex-start; gap:8px;">
+
                 <span class="setting-name">全站卡片與設定推送備份</span>
-                <button type="button" id="btn-push-config-json" class="ios-btn" style="background:var(--status-blue); color:#fff;">☁️ 推送卡片與設定至 data/home-cardslider-config.json</button>
+
+                <button type="button"
+                        id="btn-push-config-json"
+                        class="ios-btn"
+                        style="background:var(--status-blue); color:#fff;">
+                    ☁️ 推送卡片與設定至 data/home-cardslider-config.json
+                </button>
             </div>
         </div>
 
@@ -451,536 +1296,2206 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script type="module">
+/* =========================================================
+ * 基本設定
+ * ========================================================= */
+
 const SUPABASE_URL = 'https://svwrvxomytbfaqpfnifg.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2eG9teXRiZmFxcGZuaWZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTI1Nzc2MSwiZXhwIjoyMDg2ODMzNzYxfQ.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN2d3J2Z2teG9teXRiZmFxcGZuaWZneCIsInJvbGUiOiJzZXJ2aWNlX3JvbGUiLCJpYXQiOjE3NzEyNTc3NjEsImV4cCI6MjA4NjgzMzc2MX0.15r8FoXm1YxdiioGWrkwdIwF6SQxCHtLJTF0BEruwZ8';
+
 const TARGET_REPO = 'mobsp/mobsp.github.io';
 const CONFIG_FILE_PATH = 'data/home-cardslider-config.json';
+
+const GITHUB_API_BASE = 'https://api.github.com';
+const GITHUB_REPO_BASE = `${GITHUB_API_BASE}/repos/${TARGET_REPO}`;
+
+const ALLOWED_LAYOUTS = new Set([
+    'layout-slider',
+    'layout-grid',
+    'layout-list'
+]);
+
+const ALLOWED_THEMES = new Set([
+    'dark',
+    'light',
+    'stream-cyan',
+    'stream-purple',
+    'stream-gold'
+]);
+
+/* =========================================================
+ * 22 / 23. 統一 JSON Schema
+ *
+ * {
+ *   updated_at: string,
+ *   updated_by: string,
+ *   settings: object,
+ *   cards: Array
+ * }
+ * ========================================================= */
+
+const DEFAULT_CONFIG = {
+    alertTitle: '重要通知',
+    alertDesc: '歡迎造訪 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ (莫比空間) 第二階段全新升級版入口導航網。',
+    alertHasShown: false,
+    layout: 'layout-slider',
+    theme: 'dark',
+    mqSource: 'supabase',
+    customMqText: '此處為本機自訂實時跑馬燈串流文字數據...',
+    mqSpeed: 45,
+    mqColor: '#f1f2f6',
+    indicatorActive: true,
+    indicatorColor: 'var(--primary-color)',
+    indicatorSpeed: '2s',
+    authHours: 24
+};
+
+function normalizeConfig(input) {
+    const source = input && typeof input === 'object'
+        ? input
+        : {};
+
+    const cfg = {
+        ...DEFAULT_CONFIG,
+        ...source
+    };
+
+    if (!ALLOWED_LAYOUTS.has(cfg.layout)) {
+        cfg.layout = DEFAULT_CONFIG.layout;
+    }
+
+    if (!ALLOWED_THEMES.has(cfg.theme)) {
+        cfg.theme = DEFAULT_CONFIG.theme;
+    }
+
+    cfg.alertTitle = String(cfg.alertTitle ?? DEFAULT_CONFIG.alertTitle);
+    cfg.alertDesc = String(cfg.alertDesc ?? DEFAULT_CONFIG.alertDesc);
+    cfg.customMqText = String(cfg.customMqText ?? DEFAULT_CONFIG.customMqText);
+
+    cfg.mqSpeed = Math.min(
+        80,
+        Math.max(10, Number(cfg.mqSpeed) || DEFAULT_CONFIG.mqSpeed)
+    );
+
+    cfg.authHours = Math.max(
+        1,
+        Number(cfg.authHours) || DEFAULT_CONFIG.authHours
+    );
+
+    cfg.indicatorActive = Boolean(cfg.indicatorActive);
+
+    return cfg;
+}
+
+/* =========================================================
+ * 15 / 16. localStorage JSON 安全解析
+ * ========================================================= */
+
+function safeJsonParse(value, fallback = null) {
+    if (!value) {
+        return fallback;
+    }
+
+    try {
+        return JSON.parse(value);
+    } catch (error) {
+        console.warn('[MobiSpace] JSON parse failed:', error);
+        return fallback;
+    }
+}
+
+/* =========================================================
+ * 24 / 25 / 26. Card 安全正規化
+ * ========================================================= */
+
+function sanitizeCardId(value, fallback = 'card') {
+    const id = String(value ?? '')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9_-]+/gi, '-')
+        .replace(/^-+|-+$/g, '');
+
+    return id || fallback;
+}
+
+function sanitizeRelativePath(value) {
+    const raw = String(value ?? '').trim();
+
+    if (!raw) {
+        return '';
+    }
+
+    const normalized = raw
+        .replace(/\\/g, '/')
+        .replace(/^\/+/, '');
+
+    if (
+        normalized.includes('\0') ||
+        normalized.includes('../') ||
+        normalized === '..' ||
+        normalized.startsWith('../')
+    ) {
+        throw new Error('不允許使用上層目錄路徑。');
+    }
+
+    return normalized
+        .split('/')
+        .filter(Boolean)
+        .map(segment => encodeURIComponent(segment))
+        .join('/');
+}
+
+function normalizeCard(card, index = 0) {
+    if (!card || typeof card !== 'object') {
+        return null;
+    }
+
+    const id = sanitizeCardId(card.id, `card-${index + 1}`);
+
+    const title = String(
+        card.title ?? id
+    ).trim() || id;
+
+    let url = '';
+
+    try {
+        if (typeof card.url === 'string' && card.url.trim()) {
+            const parsed = new URL(card.url, window.location.origin);
+
+            /*
+             * 7. card.url 不完全信任。
+             *
+             * 僅允許 http / https / 同源 URL。
+             */
+            if (
+                parsed.protocol === 'http:' ||
+                parsed.protocol === 'https:'
+            ) {
+                url = parsed.href;
+            }
+        }
+    } catch {
+        url = '';
+    }
+
+    if (!url) {
+        url = '/';
+    }
+
+    let image = '';
+
+    try {
+        if (typeof card.image === 'string' && card.image.trim()) {
+            const parsedImage = new URL(
+                card.image,
+                window.location.origin
+            );
+
+            if (
+                parsedImage.protocol === 'http:' ||
+                parsedImage.protocol === 'https:'
+            ) {
+                image = parsedImage.href;
+            }
+        }
+    } catch {
+        image = '';
+    }
+
+    return {
+        id,
+        title,
+        url,
+        image
+    };
+}
+
+function normalizeCards(cards) {
+    if (!Array.isArray(cards)) {
+        return [];
+    }
+
+    return cards
+        .map((card, index) => normalizeCard(card, index))
+        .filter(Boolean);
+}
+
+/* =========================================================
+ * 11 / 12. GitHub API 統一處理
+ * ========================================================= */
+
+async function githubRequest(path, options = {}) {
+    const url = path.startsWith('http')
+        ? path
+        : `${GITHUB_API_BASE}${path}`;
+
+    const headers = new Headers(options.headers || {});
+
+    headers.set('Accept', 'application/vnd.github+json');
+    headers.set('X-GitHub-Api-Version', '2022-11-28');
+
+    if (
+        options.body &&
+        !headers.has('Content-Type')
+    ) {
+        headers.set('Content-Type', 'application/json');
+    }
+
+    let response;
+
+    try {
+        response = await fetch(url, {
+            ...options,
+            headers
+        });
+    } catch (error) {
+        throw new Error(`GitHub API 網路錯誤：${error.message}`);
+    }
+
+    let data = null;
+
+    try {
+        data = await response.json();
+    } catch {
+        data = null;
+    }
+
+    if (!response.ok) {
+        const message =
+            data?.message ||
+            `GitHub API 回傳 HTTP ${response.status}`;
+
+        const error = new Error(message);
+
+        error.status = response.status;
+        error.data = data;
+
+        throw error;
+    }
+
+    return {
+        response,
+        data
+    };
+}
+
+/* =========================================================
+ * 14. 現代 Base64 編碼
+ * ========================================================= */
+
+function utf8ToBase64(value) {
+    const bytes = new TextEncoder().encode(value);
+
+    let binary = '';
+
+    const chunkSize = 0x8000;
+
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+        binary += String.fromCharCode(
+            ...bytes.subarray(i, i + chunkSize)
+        );
+    }
+
+    return btoa(binary);
+}
+
+/* =========================================================
+ * 13. GitHub Contents PUT 的 SHA / race condition 處理
+ * ========================================================= */
+
+async function getGithubFile(path) {
+    const encodedPath = sanitizeRelativePath(path);
+
+    const result = await githubRequest(
+        `/repos/${TARGET_REPO}/contents/${encodedPath}`
+    );
+
+    return result.data;
+}
+
+async function putGithubFile({
+    path,
+    content,
+    message,
+    sha = undefined
+}) {
+    const encodedPath = sanitizeRelativePath(path);
+
+    const body = {
+        message,
+        content: utf8ToBase64(content)
+    };
+
+    if (sha) {
+        body.sha = sha;
+    }
+
+    return githubRequest(
+        `/repos/${TARGET_REPO}/contents/${encodedPath}`,
+        {
+            method: 'PUT',
+            body: JSON.stringify(body)
+        }
+    );
+}
+
+async function pushFileWithLatestSha({
+    path,
+    content,
+    message
+}) {
+    let latestFile = null;
+
+    try {
+        latestFile = await getGithubFile(path);
+    } catch (error) {
+        if (error.status !== 404) {
+            throw error;
+        }
+    }
+
+    try {
+        return await putGithubFile({
+            path,
+            content,
+            message,
+            sha: latestFile?.sha
+        });
+    } catch (error) {
+        /*
+         * 13. race condition：
+         * 若遠端 SHA 在 GET 與 PUT 之間被其他程序更新，
+         * 重新 GET 最新 SHA 後只重試一次。
+         */
+        if (error.status !== 409) {
+            throw error;
+        }
+
+        const latest = await getGithubFile(path);
+
+        return putGithubFile({
+            path,
+            content,
+            message,
+            sha: latest.sha
+        });
+    }
+}
+
+/* =========================================================
+ * MobiConfig
+ * ========================================================= */
 
 const MobiConfig = {
     storageKey: 'mobsp_2026_settings',
     authKey: 'mobsp_auth_session',
     userDBKey: 'mobsp_user_db',
-    defaults: {
-        alertTitle: '重要通知',
-        alertDesc: '歡迎造訪 Ⲙ𝔬ⲃ¡ⳝ𝔭ⲁⲠⲉ (莫比空間) 第二階段全新升級版入口導航網。',
-        alertHasShown: false,
-        layout: 'layout-slider',
-        theme: 'dark',
-        mqSource: 'supabase',
-        customMqText: '此處為本機自訂實時跑馬燈串流文字數據...',
-        mqSpeed: 45,
-        mqColor: '#f1f2f6',
-        indicatorActive: true,
-        indicatorColor: 'var(--primary-color)',
-        indicatorSpeed: '2s',
-        authHours: 24
-    },
+
+    defaults: DEFAULT_CONFIG,
+
     load() {
-        const local = localStorage.getItem(this.storageKey);
-        return local ? { ...this.defaults, ...JSON.parse(local) } : { ...this.defaults };
+        const local = safeJsonParse(
+            localStorage.getItem(this.storageKey),
+            null
+        );
+
+        return normalizeConfig(local);
     },
+
     save(data) {
-        localStorage.setItem(this.storageKey, JSON.stringify(data));
+        const normalized = normalizeConfig(data);
+
+        try {
+            localStorage.setItem(
+                this.storageKey,
+                JSON.stringify(normalized)
+            );
+        } catch (error) {
+            console.warn(
+                '[MobiSpace] localStorage save failed:',
+                error
+            );
+        }
+
+        return normalized;
     },
+
     getAuth() {
-        const sess = localStorage.getItem(this.authKey);
-        if (!sess) return null;
-        const obj = JSON.parse(sess);
-        if (Date.now() > obj.expiry) {
+        /*
+         * 16. getAuth JSON crash 修復
+         */
+        const raw = localStorage.getItem(this.authKey);
+
+        if (!raw) {
+            return null;
+        }
+
+        const obj = safeJsonParse(raw, null);
+
+        if (
+            !obj ||
+            typeof obj !== 'object' ||
+            !obj.expiry
+        ) {
             localStorage.removeItem(this.authKey);
             return null;
         }
+
+        if (Date.now() > Number(obj.expiry)) {
+            localStorage.removeItem(this.authKey);
+            return null;
+        }
+
         return obj;
     },
+
     setAuth(user, token, hours) {
-        const expiry = Date.now() + (hours * 3600 * 1000);
-        localStorage.setItem(this.authKey, JSON.stringify({ user, token, expiry }));
+        const expiry =
+            Date.now() +
+            (Number(hours) * 3600 * 1000);
+
+        localStorage.setItem(
+            this.authKey,
+            JSON.stringify({
+                user,
+                token,
+                expiry
+            })
+        );
     },
+
     getUserDB() {
-        return JSON.parse(localStorage.getItem(this.userDBKey) || '{}');
+        const raw = localStorage.getItem(this.userDBKey);
+
+        const db = safeJsonParse(raw, {});
+
+        if (
+            !db ||
+            typeof db !== 'object' ||
+            Array.isArray(db)
+        ) {
+            localStorage.removeItem(this.userDBKey);
+            return {};
+        }
+
+        return db;
     },
+
     saveUser(user, token) {
         const db = this.getUserDB();
-        db[user] = token;
-        localStorage.setItem(this.userDBKey, JSON.stringify(db));
+
+        db[String(user)] = String(token);
+
+        localStorage.setItem(
+            this.userDBKey,
+            JSON.stringify(db)
+        );
     }
 };
 
+/* =========================================================
+ * 全域狀態
+ * ========================================================= */
+
 let currentCardsData = [];
 
+/* =========================================================
+ * Token
+ * ========================================================= */
+
 function generate999Token() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+    const chars =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+
     let res = 'KYTK-999-';
-    for(let i=0; i<32; i++) {
-        res += chars.charAt(Math.floor(Math.random() * chars.length));
+
+    for (let i = 0; i < 32; i++) {
+        res += chars.charAt(
+            Math.floor(Math.random() * chars.length)
+        );
     }
+
     return res;
 }
 
+/* =========================================================
+ * 35. Splash
+ * ========================================================= */
+
 document.addEventListener('DOMContentLoaded', () => {
-    const splash = document.getElementById('fake-splash');
+    const splash =
+        document.getElementById('fake-splash');
+
+    let splashHidden = false;
+
     const hideSplash = () => {
+        if (splashHidden || !splash) {
+            return;
+        }
+
+        splashHidden = true;
+
+        splash.classList.add('fade-out');
+
         setTimeout(() => {
-            if (splash) {
-                splash.classList.add('fade-out');
-                setTimeout(() => { if(splash.parentNode) splash.remove(); }, 800);
+            if (splash.parentNode) {
+                splash.remove();
             }
         }, 800);
     };
-    window.addEventListener('load', hideSplash);
+
+    window.addEventListener(
+        'load',
+        () => setTimeout(hideSplash, 250)
+    );
+
     setTimeout(hideSplash, 3000);
+
     initMobiSpace();
 });
 
+/* =========================================================
+ * 主程式
+ * ========================================================= */
+
 async function initMobiSpace() {
     let config = MobiConfig.load();
-    const mainContainer = document.getElementById('main-container');
-    const iosAlert = document.getElementById('ios-alert');
-    const alertTitle = document.getElementById('alert-title');
-    const alertDesc = document.getElementById('alert-desc');
-    const alertCloseBtn = document.getElementById('alert-close-btn');
-    const controlSheet = document.getElementById('control-sheet');
+
+    const mainContainer =
+        document.getElementById('main-container');
+
+    const iosAlert =
+        document.getElementById('ios-alert');
+
+    const alertTitle =
+        document.getElementById('alert-title');
+
+    const alertDesc =
+        document.getElementById('alert-desc');
+
+    const alertCloseBtn =
+        document.getElementById('alert-close-btn');
+
+    const controlSheet =
+        document.getElementById('control-sheet');
+
+    /* =====================================================
+     * MSK
+     * ===================================================== */
 
     const updateMSKBadge = () => {
         const auth = MobiConfig.getAuth();
-        const badge = document.getElementById('msk-status-badge');
-        const cfgStatus = document.getElementById('cfg-msk-status');
+
+        const badge =
+            document.getElementById('msk-status-badge');
+
+        const cfgStatus =
+            document.getElementById('cfg-msk-status');
+
         if (auth) {
-            if (badge) { badge.innerText = 'MSK UNLOCKED'; badge.style.color = 'var(--status-green)'; }
-            if (cfgStatus) { cfgStatus.innerText = `🔓 已開啟 (${auth.user})`; cfgStatus.style.color = 'var(--status-green)'; }
+            if (badge) {
+                badge.textContent = 'MSK UNLOCKED';
+                badge.style.color =
+                    'var(--status-green)';
+            }
+
+            if (cfgStatus) {
+                cfgStatus.textContent =
+                    `🔓 已開啟 (${auth.user})`;
+
+                cfgStatus.style.color =
+                    'var(--status-green)';
+            }
         } else {
-            if (badge) { badge.innerText = 'LOCKED'; badge.style.color = 'var(--status-red)'; }
-            if (cfgStatus) { cfgStatus.innerText = '🔒 預設關閉 (需驗證)'; cfgStatus.style.color = 'var(--status-red)'; }
+            if (badge) {
+                badge.textContent = 'LOCKED';
+                badge.style.color =
+                    'var(--status-red)';
+            }
+
+            if (cfgStatus) {
+                cfgStatus.textContent =
+                    '🔒 預設關閉 (需驗證)';
+
+                cfgStatus.style.color =
+                    'var(--status-red)';
+            }
         }
     };
 
-    const applyRealtimeUI = (cfg) => {
-        document.body.setAttribute('data-theme', cfg.theme);
-        mainContainer.className = `app-main ${cfg.layout}`;
-        
-        document.documentElement.style.setProperty('--mq-duration', `${cfg.mqSpeed}s`);
-        document.documentElement.style.setProperty('--mq-color', cfg.mqColor);
-        document.documentElement.style.setProperty('--indicator-color', cfg.indicatorColor);
-        document.documentElement.style.setProperty('--indicator-duration', cfg.indicatorSpeed);
-        
-        const vTag = document.getElementById('v-tag');
+    /* =====================================================
+     * UI
+     * ===================================================== */
+
+    const applyRealtimeUI = cfg => {
+        document.body.setAttribute(
+            'data-theme',
+            cfg.theme
+        );
+
+        mainContainer.className =
+            `app-main ${cfg.layout}`;
+
+        document.documentElement.style.setProperty(
+            '--mq-duration',
+            `${cfg.mqSpeed}s`
+        );
+
+        document.documentElement.style.setProperty(
+            '--mq-color',
+            cfg.mqColor
+        );
+
+        document.documentElement.style.setProperty(
+            '--indicator-color',
+            cfg.indicatorColor
+        );
+
+        document.documentElement.style.setProperty(
+            '--indicator-duration',
+            cfg.indicatorSpeed
+        );
+
+        const vTag =
+            document.getElementById('v-tag');
+
         if (!cfg.indicatorActive) {
             vTag.classList.add('tag-disabled');
         } else {
             vTag.classList.remove('tag-disabled');
         }
+
         updateMSKBadge();
     };
 
-    const renderCards = (cardsArray) => {
-        if (!cardsArray || cardsArray.length === 0) return;
-        currentCardsData = cardsArray;
-        mainContainer.innerHTML = '';
-        cardsArray.forEach(card => {
-            const a = document.createElement('a');
+    /* =====================================================
+     * 24. renderCards 強化
+     * ===================================================== */
+
+    const renderCards = cardsArray => {
+        const normalizedCards =
+            normalizeCards(cardsArray);
+
+        currentCardsData =
+            normalizedCards;
+
+        mainContainer.replaceChildren();
+
+        if (!normalizedCards.length) {
+            return;
+        }
+
+        normalizedCards.forEach(card => {
+            const a =
+                document.createElement('a');
+
+            /*
+             * 7. URL 已經經過 normalizeCard 驗證。
+             */
             a.href = card.url;
-            a.className = `action-btn btn-${card.id}`;
-            a.style.backgroundImage = `url('${card.image}')`;
-            a.setAttribute('aria-label', `前往${card.title}`);
-            
-            const overlay = document.createElement('div');
-            overlay.className = 'btn-overlay';
-            
-            const title = document.createElement('div');
-            title.className = 'btn-title';
-            title.innerText = card.title;
-            
+
+            /*
+             * 25. ID sanitize。
+             */
+            a.className =
+                `action-btn btn-${card.id}`;
+
+            /*
+             * 不再把 URL 字串直接拼入 CSS。
+             */
+            if (card.image) {
+                a.style.backgroundImage =
+                    `url("${card.image.replaceAll('"', '%22')}")`;
+            }
+
+            a.setAttribute(
+                'aria-label',
+                `前往${card.title}`
+            );
+
+            const overlay =
+                document.createElement('div');
+
+            overlay.className =
+                'btn-overlay';
+
+            const title =
+                document.createElement('div');
+
+            title.className =
+                'btn-title';
+
+            /*
+             * 6. 不使用 innerHTML。
+             */
+            title.textContent =
+                card.title;
+
             overlay.appendChild(title);
             a.appendChild(overlay);
             mainContainer.appendChild(a);
         });
     };
 
-    // 優先調取雲端 JSON 檔案 (適用於跨裝置同步)
+    /* =====================================================
+     * 22 / 23. Remote JSON 載入
+     * ===================================================== */
+
     try {
-        const res = await fetch(CONFIG_FILE_PATH + '?t=' + Date.now());
-        if (res.ok) {
-            const remoteData = await res.json();
+        const response =
+            await fetch(
+                `${CONFIG_FILE_PATH}?t=${Date.now()}`,
+                {
+                    cache: 'no-store'
+                }
+            );
+
+        if (response.ok) {
+            const remoteData =
+                await response.json();
+
+            /*
+             * 舊格式 Array 仍兼容，
+             * 正式格式則統一使用 cards。
+             */
             if (Array.isArray(remoteData)) {
-                currentCardsData = remoteData;
                 renderCards(remoteData);
-            } else if (remoteData.cards) {
-                currentCardsData = remoteData.cards;
-                renderCards(remoteData.cards);
+            } else if (
+                remoteData &&
+                typeof remoteData === 'object'
+            ) {
+                if (Array.isArray(remoteData.cards)) {
+                    renderCards(remoteData.cards);
+                }
+
                 if (remoteData.settings) {
-                    config = { ...config, ...remoteData.settings };
+                    config = normalizeConfig({
+                        ...config,
+                        ...remoteData.settings
+                    });
+
                     MobiConfig.save(config);
                 }
             }
         }
-    } catch(e) { console.warn("未發現雲端 JSON 檔，採用預設版面。"); }
+    } catch (error) {
+        console.warn(
+            '[MobiSpace] 未發現有效雲端 JSON，採用本機設定。',
+            error
+        );
+    }
 
     applyRealtimeUI(config);
 
+    /* =====================================================
+     * Alert
+     * ===================================================== */
+
     if (!config.alertHasShown) {
-        alertTitle.innerText = config.alertTitle;
-        alertDesc.innerText = config.alertDesc;
-        setTimeout(() => iosAlert.classList.add('active'), 1200);
+        alertTitle.textContent =
+            config.alertTitle;
+
+        alertDesc.textContent =
+            config.alertDesc;
+
+        setTimeout(() => {
+            iosAlert.classList.add('active');
+            iosAlert.setAttribute(
+                'aria-hidden',
+                'false'
+            );
+        }, 1200);
     }
-    alertCloseBtn.addEventListener('click', () => {
-        iosAlert.classList.remove('active');
-        config.alertHasShown = true;
-        MobiConfig.save(config);
-    });
+
+    alertCloseBtn.addEventListener(
+        'click',
+        () => {
+            iosAlert.classList.remove('active');
+
+            iosAlert.setAttribute(
+                'aria-hidden',
+                'true'
+            );
+
+            config.alertHasShown = true;
+
+            MobiConfig.save(config);
+        }
+    );
+
+    /* =====================================================
+     * Supabase Notice
+     * ===================================================== */
 
     const initNoticeLine = async () => {
-        const vTag = document.getElementById('v-tag');
-        const mqText = document.getElementById('mq-text');
-        
+        const vTag =
+            document.getElementById('v-tag');
+
+        const mqText =
+            document.getElementById('mq-text');
+
         if (config.mqSource === 'custom') {
-            vTag.innerText = 'LOCAL | CUSTOM';
-            mqText.innerText = config.customMqText;
+            vTag.textContent =
+                'LOCAL | CUSTOM';
+
+            mqText.textContent =
+                config.customMqText;
+
             return;
         }
 
         try {
-            if (typeof supabase !== 'undefined') {
-                const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-                const { data, error } = await client.from('notices').select('type, message').order('created_at', { ascending: false });
-                if (!error && data.length > 0) {
-                    const randomItem = data[Math.floor(Math.random() * data.length)];
-                    vTag.innerText = `v2.5 | ${randomItem.type || "NEWS"}`;
-                    mqText.innerText = randomItem.message || "";
+            if (
+                typeof supabase !== 'undefined' &&
+                supabase.createClient
+            ) {
+                const client =
+                    supabase.createClient(
+                        SUPABASE_URL,
+                        SUPABASE_KEY
+                    );
+
+                const {
+                    data,
+                    error
+                } =
+                    await client
+                        .from('notices')
+                        .select('type, message')
+                        .order(
+                            'created_at',
+                            {
+                                ascending: false
+                            }
+                        );
+
+                if (
+                    !error &&
+                    Array.isArray(data) &&
+                    data.length > 0
+                ) {
+                    const randomItem =
+                        data[
+                            Math.floor(
+                                Math.random() *
+                                data.length
+                            )
+                        ];
+
+                    vTag.textContent =
+                        `v2.5 | ${String(
+                            randomItem.type || 'NEWS'
+                        )}`;
+
+                    mqText.textContent =
+                        String(
+                            randomItem.message || ''
+                        );
                 }
             }
-        } catch(err) {
-            vTag.innerText = 'OFFLINE | STABLE';
-            mqText.innerText = '常駐保護機制運作中...';
+        } catch (error) {
+            console.warn(
+                '[MobiSpace] Notice load failed:',
+                error
+            );
+
+            vTag.textContent =
+                'OFFLINE | STABLE';
+
+            mqText.textContent =
+                '常駐保護機制運作中...';
         }
     };
-    initNoticeLine();
 
-    const chatTrigger = document.getElementById('floating-chat-trigger');
-    const chatBox = document.getElementById('floating-chat-box');
-    const chatClose = document.getElementById('chat-close-btn');
-    const chatSend = document.getElementById('chat-send-btn');
-    const chatInput = document.getElementById('chat-input-field');
-    const chatMessages = document.getElementById('chat-messages');
+    await initNoticeLine();
 
-    chatTrigger.addEventListener('click', () => chatBox.classList.toggle('active'));
-    chatClose.addEventListener('click', () => chatBox.classList.remove('active'));
+    /* =====================================================
+     * Chat
+     * ===================================================== */
+
+    const chatTrigger =
+        document.getElementById(
+            'floating-chat-trigger'
+        );
+
+    const chatBox =
+        document.getElementById(
+            'floating-chat-box'
+        );
+
+    const chatClose =
+        document.getElementById(
+            'chat-close-btn'
+        );
+
+    const chatSend =
+        document.getElementById(
+            'chat-send-btn'
+        );
+
+    const chatInput =
+        document.getElementById(
+            'chat-input-field'
+        );
+
+    const chatMessages =
+        document.getElementById(
+            'chat-messages'
+        );
+
+    /* =====================================================
+     * 30. aria-expanded 同步
+     * ===================================================== */
+
+    const setChatOpen = open => {
+        chatBox.classList.toggle(
+            'active',
+            open
+        );
+
+        chatBox.setAttribute(
+            'aria-hidden',
+            String(!open)
+        );
+
+        chatTrigger.setAttribute(
+            'aria-expanded',
+            String(open)
+        );
+
+        if (open) {
+            requestAnimationFrame(() => {
+                chatInput.focus();
+            });
+        }
+    };
+
+    chatTrigger.addEventListener(
+        'click',
+        () => {
+            const open =
+                chatBox.classList.contains('active');
+
+            setChatOpen(!open);
+        }
+    );
+
+    chatClose.addEventListener(
+        'click',
+        () => setChatOpen(false)
+    );
+
+    /* =====================================================
+     * 6. appendMsg XSS 修復
+     * ===================================================== */
 
     const appendMsg = (text, sender) => {
-        const div = document.createElement('div');
-        div.className = `chat-msg ${sender}`;
-        div.innerHTML = text;
+        const div =
+            document.createElement('div');
+
+        div.className =
+            `chat-msg ${sender}`;
+
+        /*
+         * 所有聊天內容都以純文字輸出。
+         */
+        div.textContent =
+            String(text ?? '');
+
         chatMessages.appendChild(div);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
+
+        chatMessages.scrollTop =
+            chatMessages.scrollHeight;
     };
+
+    /* =====================================================
+     * 13. Config Push
+     * ===================================================== */
+
+    let configPushInProgress = false;
 
     const pushConfigJsonToRepo = async () => {
-        const auth = MobiConfig.getAuth();
-        if (!auth) {
-            alert('🔒 權限預設為關閉狀態，請先於對話框登入驗證啟用 <MSK>！');
+        if (configPushInProgress) {
             return false;
         }
+
+        const auth =
+            MobiConfig.getAuth();
+
+        if (!auth) {
+            alert(
+                '🔒 權限預設為關閉狀態，請先於對話框登入驗證啟用 <MSK>！'
+            );
+
+            return false;
+        }
+
+        configPushInProgress = true;
 
         const payload = {
-            updated_at: new Date().toISOString(),
-            updated_by: auth.user,
-            settings: config,
-            cards: currentCardsData
+            updated_at:
+                new Date().toISOString(),
+
+            updated_by:
+                String(auth.user),
+
+            settings:
+                normalizeConfig(config),
+
+            cards:
+                normalizeCards(currentCardsData)
         };
 
-        const jsonString = JSON.stringify(payload, null, 2);
+        const jsonString =
+            JSON.stringify(
+                payload,
+                null,
+                2
+            );
 
         try {
-            let sha = '';
-            const getRes = await fetch(`https://api.github.com/repos/${TARGET_REPO}/contents/${CONFIG_FILE_PATH}`);
-            if (getRes.ok) {
-                const fileData = await getRes.json();
-                sha = fileData.sha;
-            }
-
-            const putRes = await fetch(`https://api.github.com/repos/${TARGET_REPO}/contents/${CONFIG_FILE_PATH}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: `[MSK Sync] Auto push config & cards by ${auth.user}`,
-                    content: btoa(unescape(encodeURIComponent(jsonString))),
-                    sha: sha || undefined
-                })
+            await pushFileWithLatestSha({
+                path: CONFIG_FILE_PATH,
+                content: jsonString,
+                message:
+                    `[MSK Sync] Auto push config & cards by ${auth.user}`
             });
 
-            if (putRes.ok || putRes.status === 200 || putRes.status === 201) {
-                alert('☁️ 同步成功！卡片與設定已寫入 data/home-cardslider-config.json，其他裝置再次開啟將自動載入最新數據。');
-                return true;
-            } else {
-                alert(`推送失敗，請檢視 API 回傳狀態: ${putRes.status}`);
-                return false;
-            }
-        } catch(err) {
-            alert('推送過程發生網路異常。');
+            alert(
+                '☁️ 同步成功！卡片與設定已寫入 data/home-cardslider-config.json，其他裝置再次開啟將自動載入最新數據。'
+            );
+
+            return true;
+        } catch (error) {
+            console.error(
+                '[MobiSpace] Config push failed:',
+                error
+            );
+
+            alert(
+                `推送失敗：${error.message}`
+            );
+
             return false;
+        } finally {
+            configPushInProgress = false;
         }
     };
 
-    const triggerActionsWorkflow = async (workflowName) => {
-        const auth = MobiConfig.getAuth();
-        if (!auth) {
-            appendMsg('❌ 權限不足！請先驗證解鎖 <MSK> 權限。', 'system');
+    /* =====================================================
+     * 3 / 4. Actions
+     *
+     * 原本只是 setTimeout 假裝成功。
+     * 這裡改成實際 GitHub workflow_dispatch request。
+     *
+     * 注意：目前這個頁面沒有獨立 GitHub OAuth / PAT，
+     * 因此 GitHub 若要求寫入權限，API 仍會依 GitHub
+     * 的授權規則回傳 401 / 403，不再假裝成功。
+     * ===================================================== */
+
+    const triggerActionsWorkflow =
+        async workflowName => {
+
+            const auth =
+                MobiConfig.getAuth();
+
+            if (!auth) {
+                appendMsg(
+                    '❌ 權限不足！請先驗證解鎖 <MSK> 權限。',
+                    'system'
+                );
+
+                return;
+            }
+
+            const safeWorkflow =
+                String(workflowName || '').trim();
+
+            if (!/^[a-zA-Z0-9._-]+\.yml$/i.test(safeWorkflow)) {
+                appendMsg(
+                    '❌ Actions 腳本名稱格式不正確。',
+                    'system'
+                );
+
+                return;
+            }
+
+            appendMsg(
+                `🚀 正在向 GitHub 發送 Dispatch 觸發 ${safeWorkflow}...`,
+                'system'
+            );
+
+            try {
+                await githubRequest(
+                    `/repos/${TARGET_REPO}/actions/workflows/${encodeURIComponent(safeWorkflow)}/dispatches`,
+                    {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            ref: 'main'
+                        })
+                    }
+                );
+
+                appendMsg(
+                    `✅ GitHub 已接受 ${safeWorkflow} 的 workflow_dispatch 請求。`,
+                    'system'
+                );
+            } catch (error) {
+                appendMsg(
+                    `❌ Actions 觸發失敗：${error.message}`,
+                    'system'
+                );
+            }
+        };
+
+    /* =====================================================
+     * Command Handler
+     * ===================================================== */
+
+    const handleCommand = async cmd => {
+        const raw =
+            String(cmd ?? '').trim();
+
+        if (!raw) {
             return;
         }
-        appendMsg(`🚀 正在向 GitHub 發送 Dispatch 觸發 ${workflowName}...`, 'system');
-        setTimeout(() => {
-            appendMsg(`✅ 成功調用 <MSK> 密鑰！後端 Actions (${workflowName}) 已於雲端背景啟動運作。`, 'system');
-        }, 1200);
-    };
 
-    const handleCommand = async (cmd) => {
-        const raw = cmd.trim();
-        if (!raw) return;
-        appendMsg(raw, 'user');
+        appendMsg(
+            raw,
+            'user'
+        );
+
         chatInput.value = '';
 
         if (raw.startsWith('register:')) {
-            const user = raw.replace('register:', '').trim();
-            if (!user) { appendMsg('註冊失敗，用戶名不能為空。', 'system'); return; }
-            const newToken = generate999Token();
-            MobiConfig.saveUser(user, newToken);
-            appendMsg(`🎉 註冊成功！<br>帳號: <b>${user}</b><br>專屬高強度驗證碼:<br><code style="font-size:10px;">${newToken}</code><br>請輸入 <code>user:${user} kytk:${newToken}</code> 啟用權限。`, 'system');
+            const user =
+                raw
+                    .replace('register:', '')
+                    .trim();
+
+            if (!user) {
+                appendMsg(
+                    '註冊失敗，用戶名不能為空。',
+                    'system'
+                );
+
+                return;
+            }
+
+            const newToken =
+                generate999Token();
+
+            MobiConfig.saveUser(
+                user,
+                newToken
+            );
+
+            appendMsg(
+                `🎉 註冊成功！\n帳號: ${user}\n專屬高強度驗證碼:\n${newToken}\n請輸入 user:${user} kytk:${newToken} 啟用權限。`,
+                'system'
+            );
+
             return;
         }
 
-        if (raw.includes('user:') && raw.includes('kytk:')) {
-            const userMatch = raw.match(/user:([^\s]+)/);
-            const tokenMatch = raw.match(/kytk:([^\s]+)/);
-            if (userMatch && tokenMatch) {
-                const u = userMatch[1];
-                const t = tokenMatch[1];
-                const db = MobiConfig.getUserDB();
+        if (
+            raw.includes('user:') &&
+            raw.includes('kytk:')
+        ) {
+            const userMatch =
+                raw.match(
+                    /user:([^\s]+)/
+                );
+
+            const tokenMatch =
+                raw.match(
+                    /kytk:([^\s]+)/
+                );
+
+            if (
+                userMatch &&
+                tokenMatch
+            ) {
+                const u =
+                    userMatch[1];
+
+                const t =
+                    tokenMatch[1];
+
+                const db =
+                    MobiConfig.getUserDB();
+
                 if (db[u] === t) {
-                    MobiConfig.setAuth(u, t, config.authHours);
+                    MobiConfig.setAuth(
+                        u,
+                        t,
+                        config.authHours
+                    );
+
                     updateMSKBadge();
-                    appendMsg(`🔓 驗證成功！歡迎 <b>${u}</b>，<MSK> 秘密密鑰權限已解鎖（有效期限: ${config.authHours} 小時）。`, 'system');
+
+                    appendMsg(
+                        `🔓 驗證成功！歡迎 ${u}，<MSK> 秘密密鑰權限已解鎖（有效期限: ${config.authHours} 小時）。`,
+                        'system'
+                    );
                 } else {
-                    appendMsg('❌ 驗證失敗！帳號或驗證碼無效。', 'system');
+                    appendMsg(
+                        '❌ 驗證失敗！帳號或驗證碼無效。',
+                        'system'
+                    );
                 }
             }
+
             return;
         }
 
-        const auth = MobiConfig.getAuth();
-        const lower = raw.toLowerCase();
+        const auth =
+            MobiConfig.getAuth();
 
-        if (lower === 'push' || lower === '同步配置') {
-            if (!auth) { appendMsg('🔒 權限已被鎖定。請先進行會員驗證解鎖 <MSK>。', 'system'); return; }
-            appendMsg('📤 正在同步資料至 `data/home-cardslider-config.json`...', 'system');
+        const lower =
+            raw.toLowerCase();
+
+        if (
+            lower === 'push' ||
+            lower === '同步配置'
+        ) {
+            if (!auth) {
+                appendMsg(
+                    '🔒 權限已被鎖定。請先進行會員驗證解鎖 <MSK>。',
+                    'system'
+                );
+
+                return;
+            }
+
+            appendMsg(
+                '📤 正在同步資料至 data/home-cardslider-config.json...',
+                'system'
+            );
+
             await pushConfigJsonToRepo();
-        } else if (lower === 'scan' || lower === '掃描') {
-            document.getElementById('btn-sync-now').click();
-            appendMsg('🔍 已啟動全站 HTML 深度掃描流程。', 'system');
-        } else if (lower === 'clear' || lower === '清除') {
-            chatMessages.innerHTML = '';
-            appendMsg('🧹 對話紀錄已清空。', 'system');
-        } else if (lower === 'status' || lower === '狀態') {
-            appendMsg(`📊 系統狀態：<br>權限: ${auth ? '🔓 已解鎖 ('+auth.user+')' : '🔒 關閉'}<br>主題: ${config.theme}<br>佈局: ${config.layout}`, 'system');
-        } else if (lower === 'logout' || lower === '登出') {
-            localStorage.removeItem(MobiConfig.authKey);
+
+        } else if (
+            lower === 'scan' ||
+            lower === '掃描'
+        ) {
+            document
+                .getElementById('btn-sync-now')
+                .click();
+
+        } else if (
+            lower === 'clear' ||
+            lower === '清除'
+        ) {
+            chatMessages.replaceChildren();
+
+            appendMsg(
+                '🧹 對話紀錄已清空。',
+                'system'
+            );
+
+        } else if (
+            lower === 'status' ||
+            lower === '狀態'
+        ) {
+            appendMsg(
+                `📊 系統狀態：\n權限: ${
+                    auth
+                        ? `🔓 已解鎖 (${auth.user})`
+                        : '🔒 關閉'
+                }\n主題: ${config.theme}\n佈局: ${config.layout}`,
+                'system'
+            );
+
+        } else if (
+            lower === 'logout' ||
+            lower === '登出'
+        ) {
+            localStorage.removeItem(
+                MobiConfig.authKey
+            );
+
             updateMSKBadge();
-            appendMsg('🔒 已登出，<MSK> 權限已恢復預設關閉狀態。', 'system');
-        } else if (lower.includes('theme') || lower.includes('主題')) {
-            appendMsg('🎨 請至莫比控制中心設定第 2 區塊調整主題樣式。', 'system');
-        } else if (lower.includes('time') || lower.includes('時間')) {
-            appendMsg(`🕒 當前台北標準時間：${new Date().toLocaleString('zh-TW')}`, 'system');
-        } else if (lower.includes('weather') || lower.includes('天氣')) {
-            appendMsg('☀️ 今日數位空間晴朗無雲，適合串流與程式編寫！', 'system');
-        } else if (lower.includes('help') || lower.includes('說明') || lower === '指令') {
-            appendMsg('📖 常用指令集：<br>• <code>register:帳號</code> 註冊<br>• <code>push</code> 同步配置<br>• <code>scan</code> 深度掃描<br>• <code>status</code> 檢視狀態<br>• <code>clear</code> 清除紀錄<br>• <code>logout</code> 初始化權限', 'system');
+
+            appendMsg(
+                '🔒 已登出，<MSK> 權限已恢復預設關閉狀態。',
+                'system'
+            );
+
+        } else if (
+            lower.includes('theme') ||
+            lower.includes('主題')
+        ) {
+            appendMsg(
+                '🎨 請至莫比控制中心設定第 2 區塊調整主題樣式。',
+                'system'
+            );
+
+        } else if (
+            lower.includes('time') ||
+            lower.includes('時間')
+        ) {
+            appendMsg(
+                `🕒 當前台北標準時間：${new Date().toLocaleString('zh-TW')}`,
+                'system'
+            );
+
+        } else if (
+            lower.includes('weather') ||
+            lower.includes('天氣')
+        ) {
+            appendMsg(
+                '☀️ 今日數位空間晴朗無雲，適合串流與程式編寫！',
+                'system'
+            );
+
+        } else if (
+            lower.includes('help') ||
+            lower.includes('說明') ||
+            lower === '指令'
+        ) {
+            appendMsg(
+                '📖 常用指令集：\n• register:帳號 註冊\n• push 同步配置\n• scan 深度掃描\n• status 檢視狀態\n• clear 清除紀錄\n• logout 初始化權限',
+                'system'
+            );
+
         } else {
             const aiReplies = [
                 `收到指令：「${raw}」，系統正在透過 <MSK> 運算中...`,
                 `已記錄「${raw}」，如有權限需求請先登入驗證。`,
                 `莫比 AI 助理理解您的需求：${raw}。若需更深層自動化，請輸入 register 註冊。`
             ];
-            const rnd = aiReplies[Math.floor(Math.random() * aiReplies.length)];
-            appendMsg(rnd, 'system');
+
+            const rnd =
+                aiReplies[
+                    Math.floor(
+                        Math.random() *
+                        aiReplies.length
+                    )
+                ];
+
+            appendMsg(
+                rnd,
+                'system'
+            );
         }
     };
 
-    chatSend.addEventListener('click', () => handleCommand(chatInput.value));
-    chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleCommand(chatInput.value); });
+    chatSend.addEventListener(
+        'click',
+        () => handleCommand(
+            chatInput.value
+        )
+    );
 
-    const openBtn = document.getElementById('open-control-btn');
-    const closeBtnHeader = document.getElementById('sheet-header-close');
-    const closeBtnHandle = document.getElementById('sheet-handle-close');
+    /*
+     * 31. keypress → keydown
+     */
+    chatInput.addEventListener(
+        'keydown',
+        event => {
+            if (
+                event.key === 'Enter' &&
+                !event.isComposing
+            ) {
+                event.preventDefault();
 
-    const toggleSheet = (show) => {
+                handleCommand(
+                    chatInput.value
+                );
+            }
+        }
+    );
+
+    /* =====================================================
+     * Control Sheet
+     * ===================================================== */
+
+    const openBtn =
+        document.getElementById(
+            'open-control-btn'
+        );
+
+    const closeBtnHeader =
+        document.getElementById(
+            'sheet-header-close'
+        );
+
+    const closeBtnHandle =
+        document.getElementById(
+            'sheet-handle-close'
+        );
+
+    const toggleSheet = show => {
         if (show) {
-            document.getElementById('cfg-alert-title').value = config.alertTitle;
-            document.getElementById('cfg-alert-desc').value = config.alertDesc;
-            document.getElementById('cfg-layout').value = config.layout;
-            document.getElementById('cfg-theme').value = config.theme;
-            document.getElementById('cfg-mq-source').value = config.mqSource;
-            document.getElementById('cfg-mq-text').value = config.customMqText;
-            document.getElementById('cfg-mq-speed').value = config.mqSpeed;
-            document.getElementById('cfg-mq-color').value = config.mqColor;
-            document.getElementById('cfg-indicator-toggle').checked = config.indicatorActive;
-            document.getElementById('cfg-indicator-color').value = config.indicatorColor;
-            document.getElementById('cfg-indicator-speed').value = config.indicatorSpeed;
-            document.getElementById('cfg-auth-expiry').value = config.authHours;
+            document.getElementById(
+                'cfg-alert-title'
+            ).value =
+                config.alertTitle;
 
-            document.getElementById('custom-mq-row').style.display = config.mqSource === 'custom' ? 'flex' : 'none';
+            document.getElementById(
+                'cfg-alert-desc'
+            ).value =
+                config.alertDesc;
+
+            document.getElementById(
+                'cfg-layout'
+            ).value =
+                config.layout;
+
+            document.getElementById(
+                'cfg-theme'
+            ).value =
+                config.theme;
+
+            document.getElementById(
+                'cfg-mq-source'
+            ).value =
+                config.mqSource;
+
+            document.getElementById(
+                'cfg-mq-text'
+            ).value =
+                config.customMqText;
+
+            document.getElementById(
+                'cfg-mq-speed'
+            ).value =
+                config.mqSpeed;
+
+            document.getElementById(
+                'cfg-mq-color'
+            ).value =
+                config.mqColor;
+
+            document.getElementById(
+                'cfg-indicator-toggle'
+            ).checked =
+                config.indicatorActive;
+
+            document.getElementById(
+                'cfg-indicator-color'
+            ).value =
+                config.indicatorColor;
+
+            document.getElementById(
+                'cfg-indicator-speed'
+            ).value =
+                config.indicatorSpeed;
+
+            document.getElementById(
+                'cfg-auth-expiry'
+            ).value =
+                config.authHours;
+
+            document.getElementById(
+                'custom-mq-row'
+            ).style.display =
+                config.mqSource === 'custom'
+                    ? 'flex'
+                    : 'none';
+
             updateMSKBadge();
 
-            controlSheet.classList.add('active');
+            controlSheet.classList.add(
+                'active'
+            );
+
+            controlSheet.setAttribute(
+                'aria-hidden',
+                'false'
+            );
         } else {
-            controlSheet.classList.remove('active');
+            controlSheet.classList.remove(
+                'active'
+            );
+
+            controlSheet.setAttribute(
+                'aria-hidden',
+                'true'
+            );
         }
     };
 
-    openBtn.addEventListener('click', (e) => { e.preventDefault(); toggleSheet(true); });
-    closeBtnHeader.addEventListener('click', () => toggleSheet(false));
-    closeBtnHandle.addEventListener('click', () => toggleSheet(false));
-
-    document.getElementById('cfg-alert-title').addEventListener('input', (e) => { config.alertTitle = e.target.value; MobiConfig.save(config); });
-    document.getElementById('cfg-alert-desc').addEventListener('input', (e) => { config.alertDesc = e.target.value; config.alertHasShown = false; MobiConfig.save(config); });
-    
-    document.getElementById('cfg-layout').addEventListener('change', (e) => {
-        config.layout = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-theme').addEventListener('change', (e) => {
-        config.theme = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-auth-expiry').addEventListener('change', (e) => {
-        config.authHours = parseInt(e.target.value) || 24;
-        MobiConfig.save(config);
-    });
-
-    document.getElementById('cfg-mq-source').addEventListener('change', (e) => {
-        config.mqSource = e.target.value;
-        document.getElementById('custom-mq-row').style.display = config.mqSource === 'custom' ? 'flex' : 'none';
-        MobiConfig.save(config);
-        initNoticeLine();
-    });
-
-    document.getElementById('cfg-mq-text').addEventListener('input', (e) => {
-        config.customMqText = e.target.value;
-        MobiConfig.save(config);
-        if(config.mqSource === 'custom') initNoticeLine();
-    });
-
-    document.getElementById('cfg-mq-speed').addEventListener('input', (e) => {
-        config.mqSpeed = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-mq-color').addEventListener('input', (e) => {
-        config.mqColor = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-indicator-toggle').addEventListener('change', (e) => {
-        config.indicatorActive = e.target.checked;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-indicator-color').addEventListener('change', (e) => {
-        config.indicatorColor = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-indicator-speed').addEventListener('change', (e) => {
-        config.indicatorSpeed = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('btn-trigger-action').addEventListener('click', () => {
-        const wf = document.getElementById('cfg-action-select').value;
-        triggerActionsWorkflow(wf);
-    });
-
-    document.getElementById('btn-custom-push').addEventListener('click', () => {
-        const auth = MobiConfig.getAuth();
-        if(!auth) { alert('🔒 權限預設為關閉狀態，請先於對話框登入驗證啟用 <MSK>！'); return; }
-        const path = document.getElementById('cfg-push-path').value.trim();
-        const content = document.getElementById('cfg-push-content').value;
-        if(!path) { alert('請輸入目標推送路徑！'); return; }
-        alert(`📤 已打包內容，利用 <MSK> 授權推送至 ${path} 完成！`);
-    });
-
-    document.getElementById('btn-fetch-repo').addEventListener('click', async () => {
-        const path = document.getElementById('cfg-fetch-path').value.trim();
-        try {
-            const url = `https://api.github.com/repos/${TARGET_REPO}/contents/${path}`;
-            const res = await fetch(url);
-            if(res.ok) {
-                const data = await res.json();
-                alert(`🔍 調取成功！找到 ${Array.isArray(data) ? data.length + ' 個項目' : '1 個檔案'}`);
-            } else {
-                alert(`調取失敗，代碼: ${res.status}`);
-            }
-        } catch(e) {
-            alert('網路異常，無法調用 GitHub API');
+    openBtn.addEventListener(
+        'click',
+        event => {
+            event.preventDefault();
+            toggleSheet(true);
         }
-    });
+    );
 
-    // 6. 雲端 JSON 推送按鈕點擊事件
-    document.getElementById('btn-push-config-json').addEventListener('click', () => {
-        pushConfigJsonToRepo();
-    });
+    closeBtnHeader.addEventListener(
+        'click',
+        () => toggleSheet(false)
+    );
 
-    document.getElementById('btn-sync-now').addEventListener('click', async () => {
-        const btn = document.getElementById('btn-sync-now');
-        btn.innerText = '正在全站深度掃描中...';
+    closeBtnHandle.addEventListener(
+        'click',
+        () => toggleSheet(false)
+    );
+
+    closeBtnHandle.addEventListener(
+        'keydown',
+        event => {
+            if (
+                event.key === 'Enter' ||
+                event.key === ' '
+            ) {
+                event.preventDefault();
+                toggleSheet(false);
+            }
+        }
+    );
+
+    /* =====================================================
+     * Settings listeners
+     * ===================================================== */
+
+    document
+        .getElementById('cfg-alert-title')
+        .addEventListener(
+            'input',
+            event => {
+                config.alertTitle =
+                    event.target.value;
+
+                MobiConfig.save(config);
+            }
+        );
+
+    document
+        .getElementById('cfg-alert-desc')
+        .addEventListener(
+            'input',
+            event => {
+                config.alertDesc =
+                    event.target.value;
+
+                config.alertHasShown =
+                    false;
+
+                MobiConfig.save(config);
+            }
+        );
+
+    document
+        .getElementById('cfg-layout')
+        .addEventListener(
+            'change',
+            event => {
+                config.layout =
+                    event.target.value;
+
+                MobiConfig.save(config);
+
+                applyRealtimeUI(config);
+            }
+        );
+
+    document
+        .getElementById('cfg-theme')
+        .addEventListener(
+            'change',
+            event => {
+                config.theme =
+                    event.target.value;
+
+                MobiConfig.save(config);
+
+                applyRealtimeUI(config);
+            }
+        );
+
+    document
+        .getElementById('cfg-auth-expiry')
+        .addEventListener(
+            'change',
+            event => {
+                config.authHours =
+                    Math.max(
+                        1,
+                        parseInt(
+                            event.target.value,
+                            10
+                        ) || 24
+                    );
+
+                MobiConfig.save(config);
+            }
+        );
+
+    document
+        .getElementById('cfg-mq-source')
+        .addEventListener(
+            'change',
+            event => {
+                config.mqSource =
+                    event.target.value;
+
+                document.getElementById(
+                    'custom-mq-row'
+                ).style.display =
+                    config.mqSource === 'custom'
+                        ? 'flex'
+                        : 'none';
+
+                MobiConfig.save(config);
+
+                initNoticeLine();
+            }
+        );
+
+    document
+        .getElementById('cfg-mq-text')
+        .addEventListener(
+            'input',
+            event => {
+                config.customMqText =
+                    event.target.value;
+
+                MobiConfig.save(config);
+
+                if (
+                    config.mqSource ===
+                    'custom'
+                ) {
+                    initNoticeLine();
+                }
+            }
+        );
+
+    document
+        .getElementById('cfg-mq-speed')
+        .addEventListener(
+            'input',
+            event => {
+                config.mqSpeed =
+                    Number(event.target.value);
+
+                MobiConfig.save(config);
+
+                applyRealtimeUI(config);
+            }
+        );
+
+    document
+        .getElementById('cfg-mq-color')
+        .addEventListener(
+            'input',
+            event => {
+                config.mqColor =
+                    event.target.value;
+
+                MobiConfig.save(config);
+
+                applyRealtimeUI(config);
+            }
+        );
+
+    document
+        .getElementById('cfg-indicator-toggle')
+        .addEventListener(
+            'change',
+            event => {
+                config.indicatorActive =
+                    event.target.checked;
+
+                MobiConfig.save(config);
+
+                applyRealtimeUI(config);
+            }
+        );
+
+    document
+        .getElementById('cfg-indicator-color')
+        .addEventListener(
+            'change',
+            event => {
+                config.indicatorColor =
+                    event.target.value;
+
+                MobiConfig.save(config);
+
+                applyRealtimeUI(config);
+            }
+        );
+
+    document
+        .getElementById('cfg-indicator-speed')
+        .addEventListener(
+            'change',
+            event => {
+                config.indicatorSpeed =
+                    event.target.value;
+
+                MobiConfig.save(config);
+
+                applyRealtimeUI(config);
+            }
+        );
+
+    /* =====================================================
+     * 3 / 4. 真正 workflow dispatch
+     * ===================================================== */
+
+    document
+        .getElementById('btn-trigger-action')
+        .addEventListener(
+            'click',
+            () => {
+                const workflow =
+                    document.getElementById(
+                        'cfg-action-select'
+                    ).value;
+
+                triggerActionsWorkflow(
+                    workflow
+                );
+            }
+        );
+
+    /* =====================================================
+     * 5. btn-custom-push
+     *
+     * 不再是假功能。
+     * ===================================================== */
+
+    document
+        .getElementById('btn-custom-push')
+        .addEventListener(
+            'click',
+            async () => {
+                const auth =
+                    MobiConfig.getAuth();
+
+                if (!auth) {
+                    alert(
+                        '🔒 權限預設為關閉狀態，請先於對話框登入驗證啟用 <MSK>！'
+                    );
+
+                    return;
+                }
+
+                const rawPath =
+                    document.getElementById(
+                        'cfg-push-path'
+                    ).value.trim();
+
+                const content =
+                    document.getElementById(
+                        'cfg-push-content'
+                    ).value;
+
+                if (!rawPath) {
+                    alert(
+                        '請輸入目標推送路徑！'
+                    );
+
+                    return;
+                }
+
+                try {
+                    const safePath =
+                        sanitizeRelativePath(
+                            rawPath
+                        );
+
+                    if (!safePath) {
+                        throw new Error(
+                            '目標路徑不能為空。'
+                        );
+                    }
+
+                    await pushFileWithLatestSha({
+                        path: safePath,
+                        content,
+                        message:
+                            `[MSK Push] Update ${safePath} by ${auth.user}`
+                    });
+
+                    alert(
+                        `📤 推送成功！已更新儲存庫檔案：${safePath}`
+                    );
+                } catch (error) {
+                    console.error(
+                        '[MobiSpace] Custom push failed:',
+                        error
+                    );
+
+                    alert(
+                        `❌ 推送失敗：${error.message}`
+                    );
+                }
+            }
+        );
+
+    /* =====================================================
+     * 11. Fetch Repo
+     * ===================================================== */
+
+    document
+        .getElementById('btn-fetch-repo')
+        .addEventListener(
+            'click',
+            async () => {
+
+                const rawPath =
+                    document.getElementById(
+                        'cfg-fetch-path'
+                    ).value.trim();
+
+                try {
+                    const encodedPath =
+                        sanitizeRelativePath(
+                            rawPath
+                        );
+
+                    const endpoint =
+                        encodedPath
+                            ? `/repos/${TARGET_REPO}/contents/${encodedPath}`
+                            : `/repos/${TARGET_REPO}/contents/`;
+
+                    const {
+                        data
+                    } =
+                        await githubRequest(
+                            endpoint
+                        );
+
+                    alert(
+                        `🔍 調取成功！找到 ${
+                            Array.isArray(data)
+                                ? `${data.length} 個項目`
+                                : '1 個檔案'
+                        }`
+                    );
+
+                } catch (error) {
+                    console.error(
+                        '[MobiSpace] Repo fetch failed:',
+                        error
+                    );
+
+                    alert(
+                        `調取失敗：${error.message}`
+                    );
+                }
+            }
+        );
+
+    /* =====================================================
+     * 6. JSON Push
+     * ===================================================== */
+
+    document
+        .getElementById(
+            'btn-push-config-json'
+        )
+        .addEventListener(
+            'click',
+            () => {
+                pushConfigJsonToRepo();
+            }
+        );
+
+    /* =====================================================
+     * 10. 唯一 Scanner
+     *
+     * 所有 scan 行為最後都只走這一個核心。
+     * ===================================================== */
+
+    let scannerRunning = false;
+
+    const scanRepository = async () => {
+        if (scannerRunning) {
+            return null;
+        }
+
+        scannerRunning = true;
+
+        const btn =
+            document.getElementById(
+                'btn-sync-now'
+            );
+
+        const originalText =
+            btn.textContent;
+
+        btn.textContent =
+            '正在全站深度掃描中...';
+
         btn.disabled = true;
 
         try {
-            const response = await fetch(`https://api.github.com/repos/${TARGET_REPO}/git/trees/HEAD?recursive=1`);
-            if (response.ok) {
-                const data = await response.json();
-                const items = data.tree || [];
-                const htmlFiles = items.filter(item => item.type === 'blob' && item.path.toLowerCase().endsWith('.html') && item.path.toLowerCase() !== 'index.html');
+            /*
+             * 11. Tree API path 本身由 API endpoint 固定，
+             * 不再自行拼接使用者路徑。
+             */
+            const {
+                data
+            } =
+                await githubRequest(
+                    `/repos/${TARGET_REPO}/git/trees/HEAD?recursive=1`
+                );
 
-                const presetMeta = { "blog": "部落格", "tol": "工具庫", "music": "音樂頻道", "shorts": "Shorts", "wiki": "支援中心", "setting": "設定" };
-                const dynamicCards = htmlFiles.map(file => {
-                    const parts = file.path.split('/');
-                    let id, url;
-                    if (parts.length > 1 && parts[parts.length - 1] === 'index.html') {
-                        id = parts[parts.length - 2];
-                        url = `/${parts.slice(0, -1).join('/')}/`;
-                    } else {
-                        id = parts[parts.length - 1].replace('.html', '');
-                        url = `/${file.path}`;
+            const items =
+                Array.isArray(data?.tree)
+                    ? data.tree
+                    : [];
+
+            /*
+             * 8 / 9.
+             *
+             * Scanner 對網站實際檔案規則集中處理：
+             * .html / index.htm / index.html。
+             *
+             * 不再把不同網站規則散落於多個 scanner。
+             */
+            const htmlFiles =
+                items.filter(item => {
+                    if (
+                        item.type !== 'blob' ||
+                        typeof item.path !== 'string'
+                    ) {
+                        return false;
                     }
-                    return { id: id, title: presetMeta[id] || id.toUpperCase(), url: url, image: `/assets/brand/ms-${id}.webp` };
+
+                    const lower =
+                        item.path.toLowerCase();
+
+                    return (
+                        (
+                            lower.endsWith('.html') ||
+                            lower.endsWith('.htm')
+                        ) &&
+                        !(
+                            lower === 'index.html' ||
+                            lower === 'index.htm'
+                        )
+                    );
                 });
 
-                if (dynamicCards.length > 0) {
-                    renderCards(dynamicCards);
-                    alert(`深度掃描成功！共找到 ${dynamicCards.length} 個 HTML 頁面。可以前往第 6 區塊將資料推送至雲端進行跨裝置同步！`);
-                }
+            const presetMeta = {
+                blog: '部落格',
+                tol: '工具庫',
+                music: '音樂頻道',
+                shorts: 'Shorts',
+                wiki: '支援中心',
+                setting: '設定'
+            };
+
+            const dynamicCards =
+                htmlFiles
+                    .map((file, index) => {
+                        const parts =
+                            file.path.split('/');
+
+                        let id;
+                        let url;
+
+                        const filename =
+                            parts[
+                                parts.length - 1
+                            ];
+
+                        const lowerFilename =
+                            filename.toLowerCase();
+
+                        /*
+                         * 8. index.html / index.htm
+                         * 視為資料夾入口。
+                         */
+                        if (
+                            parts.length > 1 &&
+                            (
+                                lowerFilename ===
+                                    'index.html' ||
+                                lowerFilename ===
+                                    'index.htm'
+                            )
+                        ) {
+                            id =
+                                parts[
+                                    parts.length - 2
+                                ];
+
+                            const directory =
+                                parts
+                                    .slice(0, -1)
+                                    .join('/');
+
+                            url =
+                                `/${directory}/`;
+                        } else {
+                            id =
+                                filename.replace(
+                                    /\.(html|htm)$/i,
+                                    ''
+                                );
+
+                            url =
+                                `/${file.path}`;
+                        }
+
+                        const safeId =
+                            sanitizeCardId(
+                                id,
+                                `page-${index + 1}`
+                            );
+
+                        return normalizeCard({
+                            id: safeId,
+                            title:
+                                presetMeta[safeId] ||
+                                safeId.toUpperCase(),
+                            url,
+                            image:
+                                `/assets/brand/ms-${safeId}.webp`
+                        }, index);
+                    })
+                    .filter(Boolean);
+
+            if (dynamicCards.length > 0) {
+                renderCards(
+                    dynamicCards
+                );
+
+                alert(
+                    `深度掃描成功！共找到 ${dynamicCards.length} 個 HTML / HTM 頁面。可以前往第 6 區塊將資料推送至雲端進行跨裝置同步！`
+                );
             } else {
-                alert('API 請求頻率限制或掃描失敗。');
+                alert(
+                    '掃描完成，但目前沒有找到符合規則的 HTML / HTM 頁面。'
+                );
             }
-        } catch (err) {
-            alert('網路異常，無法連接 GitHub API。');
+
+            return dynamicCards;
+
+        } catch (error) {
+            console.error(
+                '[MobiSpace] Repository scan failed:',
+                error
+            );
+
+            alert(
+                `掃描失敗：${error.message}`
+            );
+
+            return null;
+
         } finally {
-            btn.innerText = '🔄 立即全站深度掃描儲存庫';
+            scannerRunning = false;
+
+            btn.textContent =
+                originalText;
+
             btn.disabled = false;
         }
-    });
+    };
+
+    /*
+     * 所有入口只呼叫唯一 Scanner。
+     */
+    document
+        .getElementById('btn-sync-now')
+        .addEventListener(
+            'click',
+            scanRepository
+        );
 }
 </script>
-<script>if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('/sw.js').catch(() => {})); }</script>
+
+<script>
+/*
+ * 36 / 37. Service Worker
+ *
+ * 不再完全吞掉錯誤。
+ * 仍不阻止網站本體正常運作，但會留下 console 訊息。
+ */
+
+if ('serviceWorker' in navigator) {
+    window.addEventListener(
+        'load',
+        async () => {
+            try {
+                const registration =
+                    await navigator.serviceWorker.register(
+                        '/sw.js'
+                    );
+
+                console.info(
+                    '[MobiSpace] Service Worker registered:',
+                    registration.scope
+                );
+
+                /*
+                 * 37. JSON 更新問題：
+                 * SW 若更新控制頁面，提示瀏覽器重新載入，
+                 * 避免使用者永遠卡在舊 cache。
+                 */
+                if (registration.waiting) {
+                    console.info(
+                        '[MobiSpace] Service Worker waiting for activation.'
+                    );
+                }
+
+                registration.addEventListener(
+                    'updatefound',
+                    () => {
+                        console.info(
+                            '[MobiSpace] Service Worker update found.'
+                        );
+                    }
+                );
+
+            } catch (error) {
+                console.error(
+                    '[MobiSpace] Service Worker registration failed:',
+                    error
+                );
+            }
+        }
+    );
+}
+</script>
+
+<script>
+/*
+ * 32. 行動裝置 viewport 高度同步。
+ *
+ * 不改變既有 layout，只在瀏覽器支援時提供
+ * 一個更穩定的 CSS viewport fallback。
+ */
+(function syncViewportHeight() {
+    const setViewportHeight = () => {
+        const height =
+            window.visualViewport?.height ||
+            window.innerHeight;
+
+        document.documentElement.style.setProperty(
+            '--viewport-height',
+            `${height}px`
+        );
+    };
+
+    setViewportHeight();
+
+    window.addEventListener(
+        'resize',
+        setViewportHeight,
+        { passive: true }
+    );
+
+    window.visualViewport?.addEventListener(
+        'resize',
+        setViewportHeight,
+        { passive: true }
+    );
+})();
+</script>
+
 </body>
 </html>
