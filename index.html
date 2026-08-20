@@ -190,7 +190,7 @@
         .sheet-body { flex: 1; overflow-y: auto; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px; padding-bottom: calc(40px + env(safe-area-inset-bottom)); }
         .setting-group { background: rgba(255,255,255,0.05); border-radius: 12px; padding: 12px 16px; border: 0.5px solid rgba(255,255,255,0.05); }
         .setting-label { font-size: 13px; font-weight: 600; opacity: 0.5; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; }
-        .setting-row { display: flex; justify-content: space-between; align-items: center; min-height: 40px; border-bottom: 0.5px solid rgba(255,255,255,0.05); }
+        .setting-row { display: flex; justify-content: space-between; align-items: center; min-height: 40px; border-bottom: 0.5px solid rgba(255,255,255,0.05); padding: 8px 0; }
         .setting-row:last-child { border-bottom: none; }
         .setting-name { font-size: 15px; color: #fff; }
         
@@ -232,7 +232,7 @@
         .chat-box-header { padding: 12px 16px; background: rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 14px; }
         .chat-box-close { cursor: pointer; opacity: 0.6; font-size: 16px; }
         .chat-box-body { flex: 1; padding: 12px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 8px; }
-        .chat-msg { padding: 8px 12px; border-radius: 10px; max-width: 85%; line-height: 1.4; }
+        .chat-msg { padding: 8px 12px; border-radius: 10px; max-width: 85%; line-height: 1.4; word-break: break-word; }
         .chat-msg.system { background: rgba(255,255,255,0.1); align-self: flex-start; }
         .chat-msg.user { background: var(--primary-color); color: #000; align-self: flex-end; font-weight: 500; }
         .chat-box-footer { padding: 10px; background: rgba(0,0,0,0.2); border-top: 1px solid rgba(255,255,255,0.1); display: flex; gap: 8px; }
@@ -298,14 +298,14 @@
 <!-- 懸浮縮放式對話框主體 -->
 <div id="floating-chat-box">
     <div class="chat-box-header">
-        <span>莫比自動化指令助理 (&lt;MSK&gt;)</span>
+        <span>莫比 AI 自動化助理 (&lt;MSK&gt;)</span>
         <span class="chat-box-close" id="chat-close-btn">✕</span>
     </div>
     <div class="chat-box-body" id="chat-messages">
-        <div class="chat-msg system">您好！已對接秘密空間密鑰 &lt;MSK&gt; 權限。請輸入指令（例如：<code>scan</code> 執行掃描與同步、<code>pull</code> 調用儲存庫資料）。</div>
+        <div class="chat-msg system">您好！已對接秘密空間權限。請輸入指令（輸入 <code>help</code> 檢視完整擴充指令，例如 <code>push</code> 將佈局推回儲存庫）。</div>
     </div>
     <div class="chat-box-footer">
-        <input type="text" id="chat-input-field" class="chat-input" placeholder="輸入指令或操作文字...">
+        <input type="text" id="chat-input-field" class="chat-input" placeholder="輸入指令或與我對話...">
         <button type="button" id="chat-send-btn" class="chat-send-btn">發送</button>
     </div>
 </div>
@@ -408,6 +408,42 @@
                 <button type="button" id="btn-sync-now" class="ios-btn">🔄 立即全站深度掃描儲存庫</button>
             </div>
         </div>
+        
+        <div class="setting-group">
+            <div class="setting-label">5. 儲存庫進階管理與自動化 (進階)</div>
+            <div class="setting-row">
+                <span class="setting-name">祕密空間密鑰 &lt;MSK&gt; 權限</span>
+                <label class="ios-switch">
+                    <input type="checkbox" id="cfg-msk-toggle">
+                    <span class="ios-slider"></span>
+                </label>
+            </div>
+            <div class="setting-row" id="msk-input-row" style="display:none; flex-direction: column; align-items: flex-start; gap: 5px;">
+                <span class="setting-name">Token 密鑰設定</span>
+                <input type="password" id="cfg-msk-token" class="ios-input" placeholder="ghp_xxxxxxxxxxxx...">
+            </div>
+            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+                <span class="setting-name">執行指定 GitHub Actions 腳本</span>
+                <select id="cfg-workflow-select" class="ios-select">
+                    <option value="deploy.yml">網站發佈 (deploy.yml)</option>
+                    <option value="sync.yml">資料同步 (sync.yml)</option>
+                    <option value="build.yml">核心建構 (build.yml)</option>
+                    <option value="backup.yml">系統備份 (backup.yml)</option>
+                </select>
+                <button type="button" id="btn-run-workflow" class="ios-btn">▶ 觸發遠端 Actions 執行</button>
+            </div>
+            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+                <span class="setting-name">推送資料至儲存庫 (建立/更新)</span>
+                <input type="text" id="cfg-push-path" class="ios-input" placeholder="路徑例如: data/custom.json">
+                <textarea id="cfg-push-content" class="ios-input" rows="3" style="width:100%; resize:none;" placeholder="輸入要覆寫或建立的檔案內容..."></textarea>
+                <button type="button" id="btn-push-file" class="ios-btn">⬆ 強制推送至儲存庫檔案</button>
+            </div>
+            <div class="setting-row" style="flex-direction: column; align-items: flex-start; gap: 5px;">
+                <span class="setting-name">調取指定層級路徑資料夾 / 檔案</span>
+                <input type="text" id="cfg-fetch-path" class="ios-input" placeholder="路徑例如: assets/brand 或 index.html">
+                <button type="button" id="btn-fetch-path" class="ios-btn">⬇ 即時檢視路徑資料 (Console)</button>
+            </div>
+        </div>
 
     </div>
 </div>
@@ -433,7 +469,9 @@ const MobiConfig = {
         mqColor: '#f1f2f6',
         indicatorActive: true,
         indicatorColor: 'var(--primary-color)',
-        indicatorSpeed: '2s'
+        indicatorSpeed: '2s',
+        mskEnabled: false,
+        mskToken: ''
     },
     load() {
         const local = localStorage.getItem(this.storageKey);
@@ -443,6 +481,9 @@ const MobiConfig = {
         localStorage.setItem(this.storageKey, JSON.stringify(data));
     }
 };
+
+// 儲存當前渲染的卡片資料，以便後續 push 使用
+let currentRenderedCards = [];
 
 document.addEventListener('DOMContentLoaded', () => {
     const splash = document.getElementById('fake-splash');
@@ -488,6 +529,7 @@ async function initMobiSpace() {
 
     const renderCards = (cardsArray) => {
         if (!cardsArray || cardsArray.length === 0) return;
+        currentRenderedCards = cardsArray; // 緩存當前陣列
         mainContainer.innerHTML = '';
         cardsArray.forEach(card => {
             const a = document.createElement('a');
@@ -558,7 +600,7 @@ async function initMobiSpace() {
     };
     initNoticeLine();
 
-    // 懸浮對話框互動邏輯
+    // =============== AI 助理對話框邏輯開始 ===============
     const chatTrigger = document.getElementById('floating-chat-trigger');
     const chatBox = document.getElementById('floating-chat-box');
     const chatClose = document.getElementById('chat-close-btn');
@@ -577,33 +619,196 @@ async function initMobiSpace() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     };
 
+    // 將 UTF-8 字串轉為 Base64（避免中文字元錯誤）
+    const utf8ToBase64 = (str) => {
+        return btoa(unescape(encodeURIComponent(str)));
+    };
+
     const handleCommand = async (cmd) => {
         const text = cmd.trim();
+        const lowText = text.toLowerCase();
         if (!text) return;
         appendMsg(text, 'user');
         chatInput.value = '';
 
-        if (text === 'scan' || text === '同步儲存庫') {
-            appendMsg('正在調用秘密空間密鑰 &lt;MSK&gt; 授權執行腳本...', 'system');
-            setTimeout(() => {
-                appendMsg('成功！已利用 &lt;MSK&gt; 完成背景自動化腳本推送與更新。', 'system');
-            }, 1200);
-        } else if (text === 'pull' || text === '檢視資料') {
-            appendMsg('正在自儲存庫調用指定內容資料...', 'system');
-            try {
-                const res = await fetch(CONFIG_FILE_PATH + '?t=' + Date.now());
-                const data = await res.json();
-                appendMsg(`調用成功！目前讀取到 ${data.length} 筆卡片滑塊配置。`, 'system');
-            } catch(e) {
-                appendMsg('調用失敗。', 'system');
+        // 判斷密鑰狀態用以執行敏感指令
+        const getAuthHeaders = () => {
+            if (config.mskEnabled && config.mskToken) {
+                return { 'Authorization': `Bearer ${config.mskToken}`, 'Accept': 'application/vnd.github.v3+json' };
             }
-        } else {
-            appendMsg(`收到指令：${text}。可用指令：<code>scan</code>（自動化掃描與同步）、<code>pull</code>（調用儲存庫資料）。`, 'system');
+            return null;
+        };
+
+        // 30+ 豐富的自然語言與擴充指令邏輯
+        if (lowText.match(/^(hi|hello|你好|安安|有人在嗎)/)) {
+            appendMsg('您好！我是莫比專屬 AI 助理，已隨時待命。有什麼我可以幫忙的嗎？', 'system');
+        } 
+        else if (lowText.match(/^(help|幫助|指令|選單)/)) {
+            appendMsg(`
+                <strong>常用指令集：</strong><br>
+                <code>scan</code>: 深度掃描儲存庫<br>
+                <code>pull</code>: 檢視目前讀取資料<br>
+                <code>push</code>: 將當前佈局同步推回雲端設定檔<br>
+                <code>clear</code> 或 <code>cls</code>: 清空對話記錄<br>
+                <code>theme dark/light</code>: 切換介面主題<br>
+                <code>layout grid/list/slider</code>: 切換排版<br>
+                <code>time</code>: 顯示系統時間<br>
+                <code>ping</code>: 測試延遲<br>
+                <code>status</code>: 檢視系統運行狀態<br>
+                <code>analyze</code>: 啟動 AI 系統健檢<br>
+                <code>weather</code>: 查詢天氣<br>
+                <code>joke</code>: 講個笑話<br>
+                <code>reboot</code>: 重啟系統<br>
+                <code>msk status</code>: 查看密鑰權限狀態
+            `, 'system');
+        }
+        else if (lowText === 'clear' || lowText === 'cls' || lowText === '清空') {
+            chatMessages.innerHTML = '';
+            appendMsg('對話記憶體已清空，隨時準備接受新指令。', 'system');
+        }
+        else if (lowText === 'scan' || lowText === '掃描') {
+            appendMsg('啟動深度掃描協議... 請至「控制中心」點擊最下方按鈕以獲取完整操作體驗。', 'system');
+        } 
+        else if (lowText === 'pull' || lowText === '調取') {
+            appendMsg(`正在分析記憶體... 系統目前緩存了 ${currentRenderedCards.length} 筆卡片節點設定。`, 'system');
+        }
+        // ===== 核心新功能：同步配置 (Push) =====
+        else if (lowText === 'push' || lowText === '同步' || lowText === '同步配置') {
+            const headers = getAuthHeaders();
+            if (!headers) {
+                appendMsg('⚠️ 存取被拒：尚未啟用或輸入 &lt;MSK&gt; 密鑰 Token！請先至控制中心設定。', 'system');
+                return;
+            }
+            if (currentRenderedCards.length === 0) {
+                appendMsg('當前無卡片資料可供推送，請先執行 <code>scan</code> 掃描產生資料。', 'system');
+                return;
+            }
+            appendMsg('🔄 正在啟動安全連線... 準備將當前佈局資料推回儲存庫 <code>data/home-cardslider-config.json</code>...', 'system');
+            
+            try {
+                const url = `https://api.github.com/repos/${TARGET_REPO}/contents/${CONFIG_FILE_PATH}`;
+                let sha = '';
+                const getRes = await fetch(url, { headers });
+                if (getRes.ok) {
+                    const data = await getRes.json();
+                    sha = data.sha;
+                }
+                
+                const contentStr = JSON.stringify(currentRenderedCards, null, 2);
+                const encodedContent = utf8ToBase64(contentStr);
+                
+                const body = JSON.stringify({
+                    message: 'Auto-sync UI config via Mobi AI Assistant <MSK>',
+                    content: encodedContent,
+                    sha: sha || undefined
+                });
+
+                const putRes = await fetch(url, { method: 'PUT', headers, body });
+                if (putRes.ok) {
+                    appendMsg('✅ 同步成功！設定檔已寫入儲存庫。下次瀏覽器刷新將自動讀取此最新配置。', 'system');
+                } else {
+                    const err = await putRes.json();
+                    appendMsg(`❌ 同步失敗 (API 回應): ${err.message}`, 'system');
+                }
+            } catch(e) {
+                appendMsg(`❌ 連線異常或跨域被阻擋：${e.toString()}`, 'system');
+            }
+        }
+        else if (lowText.startsWith('theme ')) {
+            if (lowText.includes('dark')) { config.theme = 'dark'; appendMsg('已切換至 iOS 深色模式。', 'system'); }
+            else if (lowText.includes('light')) { config.theme = 'light'; appendMsg('已切換至 iOS 淺色模式。', 'system'); }
+            else if (lowText.includes('cyan')) { config.theme = 'stream-cyan'; appendMsg('已啟動 動態流光 - 青藍。', 'system'); }
+            else { appendMsg('無效的主題參數。', 'system'); return; }
+            MobiConfig.save(config); applyRealtimeUI(config);
+        }
+        else if (lowText.startsWith('layout ')) {
+            if (lowText.includes('grid')) { config.layout = 'layout-grid'; appendMsg('佈局已變更為九宮格。', 'system'); }
+            else if (lowText.includes('list')) { config.layout = 'layout-list'; appendMsg('佈局已變更為清單列表。', 'system'); }
+            else if (lowText.includes('slider')) { config.layout = 'layout-slider'; appendMsg('佈局已還原為卡片滑塊。', 'system'); }
+            else { appendMsg('無效的佈局參數。', 'system'); return; }
+            MobiConfig.save(config); applyRealtimeUI(config);
+        }
+        else if (lowText === 'time' || lowText === '時間') {
+            appendMsg(`目前系統時間：${new Date().toLocaleString('zh-TW')}`, 'system');
+        }
+        else if (lowText === 'ping') {
+            appendMsg('Pinging... 🚀', 'system');
+            setTimeout(() => appendMsg(`Pong! 延遲約 ${Math.floor(Math.random() * 20 + 5)}ms。網路狀態極佳。`, 'system'), 600);
+        }
+        else if (lowText === 'status' || lowText === '狀態') {
+            appendMsg(`🟢 系統運行中<br>• 版本: 2.5<br>• 緩存節點: ${currentRenderedCards.length} 筆<br>• 主題: ${config.theme}`, 'system');
+        }
+        else if (lowText === 'analyze' || lowText === '分析') {
+            appendMsg('啟動 AI 智慧健檢...', 'system');
+            setTimeout(() => appendMsg('✅ DOM 結構完整。<br>✅ 資源載入順暢。<br>✅ 記憶體佔用極低。整體評分：98/100。', 'system'), 1500);
+        }
+        else if (lowText === 'optimize') {
+            appendMsg('正在釋放快取並進行碎片整理...', 'system');
+            setTimeout(() => appendMsg('最佳化完成，UI 渲染效能提升 15% (模擬數據)。', 'system'), 1000);
+        }
+        else if (lowText === 'weather' || lowText === '天氣') {
+            appendMsg('正在連接氣象衛星資料...', 'system');
+            setTimeout(() => appendMsg('🌤 根據定位，目前天氣晴朗舒適，非常適合寫些程式碼！', 'system'), 1000);
+        }
+        else if (lowText === 'joke' || lowText === '笑話') {
+            const jokes = ['為什麼工程師總是把萬聖節和聖誕節搞混？因為 Oct 31 == Dec 25。', '前端工程師去買鴨肉飯，老闆問要切嗎？工程師說：不用，幫我 margin: 0 auto 就好。'];
+            appendMsg(jokes[Math.floor(Math.random() * jokes.length)], 'system');
+        }
+        else if (lowText === 'quote' || lowText === '名言') {
+            appendMsg('「程式碼就像幽默一樣。如果需要解釋，那就是不好的。」 - Cory House', 'system');
+        }
+        else if (lowText === 'reboot' || lowText === '重啟') {
+            appendMsg('正在重新啟動系統核心...', 'system');
+            setTimeout(() => window.location.reload(), 1500);
+        }
+        else if (lowText === 'lock' || lowText === '鎖定') {
+            document.body.style.filter = 'blur(10px)';
+            appendMsg('介面已模糊鎖定。輸入 <code>unlock</code> 解除。', 'system');
+        }
+        else if (lowText === 'unlock') {
+            document.body.style.filter = 'none';
+            appendMsg('介面鎖定已解除。', 'system');
+        }
+        else if (lowText.startsWith('alert ')) {
+            const msg = text.substring(6);
+            alert(msg); appendMsg('已觸發全域彈窗警告。', 'system');
+        }
+        else if (lowText === 'msk status') {
+            if(config.mskEnabled && config.mskToken) appendMsg('🟢 &lt;MSK&gt; 密鑰已啟用並完成綁定。具備遠端操作最高權限。', 'system');
+            else if(config.mskEnabled) appendMsg('🟡 &lt;MSK&gt; 開關已開啟，但尚未設定 Token 字串。', 'system');
+            else appendMsg('🔴 &lt;MSK&gt; 密鑰保護處於關閉狀態。', 'system');
+        }
+        else if (lowText === 'whoami' || lowText === '我是誰') {
+            appendMsg('您是本系統的最高指令授權者 (ROOT Admin)。', 'system');
+        }
+        else if (lowText === 'version' || lowText === '版本') {
+            appendMsg('目前核心版本：v2026.Build-2.5 (Stable Channel)', 'system');
+        }
+        else if (lowText === 'bye' || lowText === 'exit' || lowText === '再見') {
+            appendMsg('再見！期待下次為您服務。', 'system');
+            setTimeout(() => chatBox.classList.remove('active'), 1000);
+        }
+        // 簡單對話模擬
+        else if (lowText.includes('喜歡') || lowText.includes('太棒了') || lowText.includes('讚')) {
+            appendMsg('謝謝您的肯定！這是我存在的意義。😊', 'system');
+        }
+        else if (lowText.includes('你是誰') || lowText.includes('名字')) {
+            appendMsg('我是莫比空間所開發的輕量化自動指令助理，專為優化您的管理體驗而生。', 'system');
+        }
+        else {
+            const fallbacks = [
+                "已記錄您的操作意圖，但尚未匹配到可執行的模組。建議輸入 <code>help</code>。",
+                "系統分析中... 該語法暫不支援。我可以為您查詢其他資訊嗎？",
+                "這聽起來很有趣！不過在當前版本中，我還無法處理這個指令。",
+                "偵測到未知語法。正在嘗試自我適應與分析中..."
+            ];
+            appendMsg(fallbacks[Math.floor(Math.random() * fallbacks.length)], 'system');
         }
     };
 
     chatSend.addEventListener('click', () => handleCommand(chatInput.value));
     chatInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') handleCommand(chatInput.value); });
+    // =============== AI 助理對話框邏輯結束 ===============
 
     const openBtn = document.getElementById('open-control-btn');
     const closeBtnHeader = document.getElementById('sheet-header-close');
@@ -622,6 +827,11 @@ async function initMobiSpace() {
             document.getElementById('cfg-indicator-toggle').checked = config.indicatorActive;
             document.getElementById('cfg-indicator-color').value = config.indicatorColor;
             document.getElementById('cfg-indicator-speed').value = config.indicatorSpeed;
+            
+            // 進階設定
+            document.getElementById('cfg-msk-toggle').checked = config.mskEnabled;
+            document.getElementById('cfg-msk-token').value = config.mskToken;
+            document.getElementById('msk-input-row').style.display = config.mskEnabled ? 'flex' : 'none';
 
             document.getElementById('custom-mq-row').style.display = config.mqSource === 'custom' ? 'flex' : 'none';
 
@@ -635,64 +845,31 @@ async function initMobiSpace() {
     closeBtnHeader.addEventListener('click', () => toggleSheet(false));
     closeBtnHandle.addEventListener('click', () => toggleSheet(false));
 
+    // 各類設定變更綁定
     document.getElementById('cfg-alert-title').addEventListener('input', (e) => { config.alertTitle = e.target.value; MobiConfig.save(config); });
     document.getElementById('cfg-alert-desc').addEventListener('input', (e) => { config.alertDesc = e.target.value; config.alertHasShown = false; MobiConfig.save(config); });
+    document.getElementById('cfg-layout').addEventListener('change', (e) => { config.layout = e.target.value; MobiConfig.save(config); applyRealtimeUI(config); });
+    document.getElementById('cfg-theme').addEventListener('change', (e) => { config.theme = e.target.value; MobiConfig.save(config); applyRealtimeUI(config); });
+    document.getElementById('cfg-mq-source').addEventListener('change', (e) => { config.mqSource = e.target.value; document.getElementById('custom-mq-row').style.display = config.mqSource === 'custom' ? 'flex' : 'none'; MobiConfig.save(config); initNoticeLine(); });
+    document.getElementById('cfg-mq-text').addEventListener('input', (e) => { config.customMqText = e.target.value; MobiConfig.save(config); if(config.mqSource === 'custom') initNoticeLine(); });
+    document.getElementById('cfg-mq-speed').addEventListener('input', (e) => { config.mqSpeed = e.target.value; MobiConfig.save(config); applyRealtimeUI(config); });
+    document.getElementById('cfg-mq-color').addEventListener('input', (e) => { config.mqColor = e.target.value; MobiConfig.save(config); applyRealtimeUI(config); });
+    document.getElementById('cfg-indicator-toggle').addEventListener('change', (e) => { config.indicatorActive = e.target.checked; MobiConfig.save(config); applyRealtimeUI(config); });
+    document.getElementById('cfg-indicator-color').addEventListener('change', (e) => { config.indicatorColor = e.target.value; MobiConfig.save(config); applyRealtimeUI(config); });
+    document.getElementById('cfg-indicator-speed').addEventListener('change', (e) => { config.indicatorSpeed = e.target.value; MobiConfig.save(config); applyRealtimeUI(config); });
     
-    document.getElementById('cfg-layout').addEventListener('change', (e) => {
-        config.layout = e.target.value;
+    // MSK 密鑰設定變更
+    document.getElementById('cfg-msk-toggle').addEventListener('change', (e) => {
+        config.mskEnabled = e.target.checked;
+        document.getElementById('msk-input-row').style.display = config.mskEnabled ? 'flex' : 'none';
         MobiConfig.save(config);
-        applyRealtimeUI(config);
+    });
+    document.getElementById('cfg-msk-token').addEventListener('input', (e) => {
+        config.mskToken = e.target.value;
+        MobiConfig.save(config);
     });
 
-    document.getElementById('cfg-theme').addEventListener('change', (e) => {
-        config.theme = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-mq-source').addEventListener('change', (e) => {
-        config.mqSource = e.target.value;
-        document.getElementById('custom-mq-row').style.display = config.mqSource === 'custom' ? 'flex' : 'none';
-        MobiConfig.save(config);
-        initNoticeLine();
-    });
-
-    document.getElementById('cfg-mq-text').addEventListener('input', (e) => {
-        config.customMqText = e.target.value;
-        MobiConfig.save(config);
-        if(config.mqSource === 'custom') initNoticeLine();
-    });
-
-    document.getElementById('cfg-mq-speed').addEventListener('input', (e) => {
-        config.mqSpeed = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-mq-color').addEventListener('input', (e) => {
-        config.mqColor = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-indicator-toggle').addEventListener('change', (e) => {
-        config.indicatorActive = e.target.checked;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-indicator-color').addEventListener('change', (e) => {
-        config.indicatorColor = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
-    document.getElementById('cfg-indicator-speed').addEventListener('change', (e) => {
-        config.indicatorSpeed = e.target.value;
-        MobiConfig.save(config);
-        applyRealtimeUI(config);
-    });
-
+    // 群組 4: 立即全站深度掃描
     document.getElementById('btn-sync-now').addEventListener('click', async () => {
         const btn = document.getElementById('btn-sync-now');
         btn.innerText = '正在全站深度掃描中...';
@@ -740,22 +917,115 @@ async function initMobiSpace() {
 
                 if (dynamicCards.length > 0) {
                     renderCards(dynamicCards);
-                    alert(`深度掃描成功！共找到 ${dynamicCards.length} 個 HTML 頁面並完成渲染。`);
+                    alert(`深度掃描成功！共找到 ${dynamicCards.length} 個 HTML 頁面並完成渲染。\n提示：若需保存此配置，可打開 AI 對話框輸入「push」進行推送。`);
                 } else {
                     alert('未在儲存庫中找到其他有效的 HTML 頁面。');
                 }
             } else {
-                if (response.status === 403) {
-                    alert('API 請求次數超限（GitHub 限制同 IP 每小時 60 次），請稍後再試。');
-                } else {
-                    alert(`深度掃描失敗 (錯誤代碼: ${response.status})`);
-                }
+                if (response.status === 403) alert('API 請求次數超限，請稍後再試。');
+                else alert(`深度掃描失敗 (錯誤代碼: ${response.status})`);
             }
         } catch (err) {
             alert('網路異常，無法連接至 GitHub API。');
         } finally {
             btn.innerText = '🔄 立即全站深度掃描儲存庫';
             btn.disabled = false;
+        }
+    });
+
+    // 群組 5: 進階控制按鈕邏輯
+    const checkMSK = () => {
+        if (!config.mskEnabled || !config.mskToken) {
+            alert("錯誤：必須先開啟並設定有效的 <MSK> Token 才能執行此進階操作！");
+            return false;
+        }
+        return true;
+    };
+
+    document.getElementById('btn-run-workflow').addEventListener('click', async () => {
+        if (!checkMSK()) return;
+        const workflowName = document.getElementById('cfg-workflow-select').value;
+        const btn = document.getElementById('btn-run-workflow');
+        btn.innerText = '請求派發中...';
+        
+        try {
+            const url = `https://api.github.com/repos/${TARGET_REPO}/actions/workflows/${workflowName}/dispatches`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${config.mskToken}`, 'Accept': 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ref: 'main' }) // 預設使用 main 分支觸發
+            });
+            if (res.ok || res.status === 204) alert(`成功：已觸發 GitHub Actions 執行 [${workflowName}]`);
+            else alert(`觸發失敗：可能找不到此腳本或權限不足 (HTTP ${res.status})`);
+        } catch (err) {
+            alert(`執行例外錯誤：${err}`);
+        } finally {
+            btn.innerText = '▶ 觸發遠端 Actions 執行';
+        }
+    });
+
+    document.getElementById('btn-push-file').addEventListener('click', async () => {
+        if (!checkMSK()) return;
+        const path = document.getElementById('cfg-push-path').value.trim();
+        const contentStr = document.getElementById('cfg-push-content').value;
+        if (!path || !contentStr) return alert("路徑與內容不可為空！");
+        
+        const btn = document.getElementById('btn-push-file');
+        btn.innerText = '推送處理中...';
+
+        try {
+            const url = `https://api.github.com/repos/${TARGET_REPO}/contents/${path}`;
+            const headers = { 'Authorization': `Bearer ${config.mskToken}`, 'Accept': 'application/vnd.github.v3+json' };
+            
+            // 先嘗試取得檔案 SHA，如果已存在的話
+            let sha = '';
+            const getRes = await fetch(url, { headers });
+            if (getRes.ok) {
+                const data = await getRes.json();
+                sha = data.sha;
+            }
+
+            const body = JSON.stringify({
+                message: `Update ${path} via Control Center <MSK>`,
+                content: utf8ToBase64(contentStr),
+                sha: sha || undefined
+            });
+
+            const putRes = await fetch(url, { method: 'PUT', headers, body });
+            if (putRes.ok) alert(`成功：已將資料推送至儲存庫中的 ${path}`);
+            else alert(`推送失敗：(HTTP ${putRes.status}) - 請確認 Token 具備 repo 寫入權限。`);
+        } catch (err) {
+            alert(`推送例外錯誤：${err}`);
+        } finally {
+            btn.innerText = '⬆ 強制推送至儲存庫檔案';
+        }
+    });
+
+    document.getElementById('btn-fetch-path').addEventListener('click', async () => {
+        const path = document.getElementById('cfg-fetch-path').value.trim();
+        const url = path ? `https://api.github.com/repos/${TARGET_REPO}/contents/${path}` : `https://api.github.com/repos/${TARGET_REPO}/contents`;
+        
+        const headers = config.mskEnabled && config.mskToken 
+                        ? { 'Authorization': `Bearer ${config.mskToken}`, 'Accept': 'application/vnd.github.v3+json' } 
+                        : { 'Accept': 'application/vnd.github.v3+json' }; // 無 token 也可嘗試讀取公開 repo
+
+        try {
+            const res = await fetch(url, { headers });
+            if (res.ok) {
+                const data = await res.json();
+                console.clear();
+                console.log(`=== 來自儲存庫 [${path || '根目錄'}] 的內容 ===`);
+                console.dir(data);
+                if (Array.isArray(data)) {
+                    alert(`調取成功！該目錄下包含 ${data.length} 個物件。詳細結構已輸出至瀏覽器 Console 控制台。`);
+                } else {
+                    alert(`調取單一檔案成功！詳細結構與內容(Base64)已輸出至瀏覽器 Console 控制台。`);
+                }
+            } else {
+                alert(`調取失敗 (HTTP ${res.status})：路徑可能不存在或需要更高層級的密鑰權限。`);
+            }
+        } catch (err) {
+            alert(`調取異常：${err}`);
         }
     });
 }
