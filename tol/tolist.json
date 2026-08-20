@@ -7,6 +7,8 @@
 ,
   {"name": "Editors", "path": "/tol/Editors/"}
 ,
+  {"name": "Expen-Trac", "path": "/tol/Expen-Trac/"}
+,
   {"name": "FileStores", "path": "/tol/FileStores/"}
 ,
   {"name": "GH-iDx", "path": "/tol/GH-iDx/"}

@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>LINE Ledger</title>
   <style>
     :root {
@@ -23,24 +25,30 @@
       padding: 0;
       font-family: var(--font-ios);
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
+      user-select: none; /* 全域防止文字被長按選取 */
+      -webkit-user-select: none;
+      -webkit-touch-callout: none; /* 防選單彈出 */
     }
 
-    body {
+    /* 2. 徹底禁止全頁彈跳與滑動晃動 */
+    html, body {
+      width: 100vw;
+      height: 100dvh; /* 動態 Viewport 高度，徹底解決 iOS 網址列遮蔽 */
+      overflow: hidden;
+      position: fixed; /* 鎖死 Body 避免橡皮筋拉動 */
+      top: 0; left: 0;
       background-color: #000;
       color: var(--text-white);
-      height: 100vh;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      overscroll-behavior: none; /* 防邊緣晃動彈跳 */
+      touch-action: none; /* 預設禁用所有瀏覽器手勢 */
     }
 
-    /* 全螢幕模擬器外皮 */
+    /* App 視圖容器 */
     #app-viewport {
       width: 100%;
-      max-width: 430px;
-      height: 100vh;
+      height: 100dvh;
+      max-width: 430px; /* 模擬 Pro Max 寬度，在大螢幕桌機自動置中 */
+      margin: 0 auto;
       background-color: var(--bg-dark);
       position: relative;
       display: flex;
@@ -48,11 +56,11 @@
       overflow: hidden;
     }
 
-    /* Header 導覽列 */
+    /* 3. 頂部固定 Header (安全區域適應) */
     header {
-      height: 88px;
-      padding-top: 40px;
-      background: rgba(17, 17, 17, 0.85);
+      height: calc(44px + env(safe-area-inset-top, 0px));
+      padding-top: env(safe-area-inset-top, 0px);
+      background: rgba(17, 17, 17, 0.88);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       display: flex;
@@ -61,7 +69,8 @@
       padding-left: 16px;
       padding-right: 16px;
       border-bottom: 0.5px solid var(--border-color);
-      z-index: 10;
+      z-index: 100;
+      flex-shrink: 0; /* 禁止被擠壓 */
     }
 
     .header-title {
@@ -76,11 +85,13 @@
       cursor: pointer;
     }
 
-    /* 主要視圖區域 */
+    /* 4. 主要視圖 (確保只有中間區域可滾動) */
     main {
       flex: 1;
       position: relative;
       overflow: hidden;
+      width: 100%;
+      height: 100%;
     }
 
     .view {
@@ -91,32 +102,33 @@
       flex-direction: column;
       transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
       transform: translateX(100%);
+      height: 100%;
     }
 
     .view.active {
       transform: translateX(0);
     }
 
-    .view.parent-out {
-      transform: translateX(-30%);
-    }
-
-    /* 視圖 1: 聊天對話模式 (LINE 聊天介面) */
+    /* 聊天視圖滾動鎖定 */
     #view-chat {
       background-color: var(--bg-chat);
     }
 
+    /* 5. 獨立可滾動區域 (解鎖單向縱向滑動與彈性質感) */
     .chat-messages {
       flex: 1;
       padding: 16px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch; /* iOS 原生滑動順暢度 */
+      touch-action: pan-y; /* 僅允許垂直滑動 */
+      overscroll-behavior-y: contain; /* 滾動到頂/底部時不影響外層 */
       display: flex;
       flex-direction: column;
       gap: 12px;
     }
 
     .chat-bubble {
-      max-width: 70%;
+      max-width: 75%;
       padding: 10px 14px;
       border-radius: 18px;
       font-size: 15px;
@@ -124,6 +136,8 @@
       word-break: break-all;
       position: relative;
       box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      user-select: text; /* 允許對話框文字選取 */
+      -webkit-user-select: text;
     }
 
     .chat-bubble.mine {
@@ -147,15 +161,17 @@
       text-align: right;
     }
 
+    /* 6. 輸入欄防 UI 遮蔽處理 */
     .chat-input-bar {
-      min-height: 60px;
+      min-height: 52px;
       background-color: #1C1C1E;
       display: flex;
       align-items: center;
       padding: 8px 12px;
       gap: 8px;
       border-top: 0.5px solid var(--border-color);
-      padding-bottom: calc(8px + env(safe-area-inset-bottom));
+      padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+      flex-shrink: 0;
     }
 
     .chat-input {
@@ -165,8 +181,10 @@
       border-radius: 20px;
       padding: 10px 16px;
       color: #FFF;
-      font-size: 15px;
+      font-size: 16px; /* 防止 iOS 輸入時自動放大畫面 (需 >= 16px) */
       outline: none;
+      user-select: text;
+      -webkit-user-select: text;
     }
 
     .send-btn {
@@ -179,10 +197,13 @@
       padding: 4px 8px;
     }
 
-    /* 視圖 2: 明細統計分析 */
+    /* 收支明細滾動區 */
     .ledger-list {
       flex: 1;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      touch-action: pan-y;
+      overscroll-behavior-y: contain;
       padding: 16px;
     }
 
@@ -206,65 +227,46 @@
       margin-bottom: 8px;
     }
 
-    .item-category {
-      font-weight: 600;
-      font-size: 15px;
-    }
+    .item-category { font-weight: 600; font-size: 15px; }
+    .item-note { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
+    .item-amount { font-weight: 600; font-size: 16px; color: #FF453A; }
 
-    .item-note {
-      font-size: 12px;
-      color: var(--text-gray);
-      margin-top: 2px;
-    }
-
-    .item-amount {
-      font-weight: 600;
-      font-size: 16px;
-      color: #FF453A;
-    }
-
-    /* 底部 TabBar */
+    /* 7. 底部 TabBar 鎖死與 HomeBar 適應 */
     nav {
-      height: 83px;
+      height: calc(49px + env(safe-area-inset-bottom, 0px));
       background-color: rgba(25, 25, 25, 0.95);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border-top: 0.5px solid var(--border-color);
       display: flex;
       justify-content: space-around;
-      padding-top: 10px;
-      z-index: 10;
+      padding-top: 6px;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      z-index: 100;
+      flex-shrink: 0;
     }
 
     .tab-item {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 2px;
       color: var(--text-gray);
       cursor: pointer;
-      width: 20%;
+      width: 25%;
     }
 
-    .tab-item.active {
-      color: var(--line-green);
-    }
+    .tab-item.active { color: var(--line-green); }
+    .tab-icon { font-size: 20px; }
+    .tab-label { font-size: 10px; }
 
-    .tab-icon {
-      font-size: 22px;
-    }
-
-    .tab-label {
-      font-size: 10px;
-    }
-
-    /* GitHub PAT 綁定模態框 */
+    /* Modal 設定彈窗 */
     .modal {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0,0,0,0.7);
       backdrop-filter: blur(10px);
-      z-index: 100;
+      z-index: 200;
       display: none;
       justify-content: center;
       align-items: center;
@@ -287,6 +289,9 @@
       padding: 12px;
       border-radius: 8px;
       color: #FFF;
+      font-size: 16px;
+      user-select: text;
+      -webkit-user-select: text;
     }
 
     .modal-content button {
@@ -302,15 +307,12 @@
 <body>
 
 <div id="app-viewport">
-  <!-- 頂部 iOS 狀態導覽列 -->
   <header>
     <span class="header-title" id="header-title">LINE 記帳助手</span>
     <span class="header-icon" onclick="toggleModal(true)">⚙️</span>
   </header>
 
-  <!-- 內容頁面堆疊區 -->
   <main>
-    <!-- Tab 1: LINE 聊天智能記帳頁 -->
     <div class="view active" id="view-chat">
       <div class="chat-messages" id="chat-messages">
         <div class="chat-bubble system">
@@ -323,7 +325,6 @@
       </div>
     </div>
 
-    <!-- Tab 2: 記帳總覽明細頁 -->
     <div class="view" id="view-ledger">
       <div class="ledger-list">
         <div class="summary-card">
@@ -341,7 +342,6 @@
     </div>
   </main>
 
-  <!-- 底部 iOS LINE 五大 TabBar -->
   <nav>
     <div class="tab-item active" onclick="switchTab('chat', this)">
       <span class="tab-icon">💬</span>
@@ -353,7 +353,6 @@
     </div>
   </nav>
 
-  <!-- GitHub API 同步設定 Modal -->
   <div class="modal" id="settings-modal">
     <div class="modal-content">
       <h3>GitHub API 雲端備份設定</h3>
@@ -367,7 +366,22 @@
 </div>
 
 <script>
-  // 狀態管理
+  // 8. JS 防縮放與手勢雙重鎖定 (針對 Safari / Chrome)
+  document.addEventListener('gesturestart', function (e) {
+    e.preventDefault();
+  });
+
+  // 防止 iOS 雙點擊畫面被放大
+  let lastTouchEnd = 0;
+  document.addEventListener('touchend', function (event) {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+      event.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, false);
+
+  // 業務邏輯
   let records = JSON.parse(localStorage.getItem('line_ledger_records') || '[]');
   let config = JSON.parse(localStorage.getItem('line_ledger_config') || '{}');
 
@@ -375,7 +389,6 @@
     renderLedger();
   });
 
-  // 視圖切換 (模擬 iOS 頁面滑動)
   function switchTab(tabName, el) {
     document.querySelectorAll('.tab-item').forEach(item => item.classList.remove('active'));
     el.classList.add('active');
@@ -396,17 +409,14 @@
     }
   }
 
-  // 自然語言解析與發送邏輯
   function handleSend() {
     const input = document.getElementById('chat-input');
     const text = input.value.trim();
     if (!text) return;
 
-    // 1. 渲染使用者對話框
     appendMessage(text, 'mine');
     input.value = '';
 
-    // 2. 解析文本 (比對數字與品項)
     const match = text.match(/^(.+?)\s*(\d+)\s*(.*)$/);
     
     if (match) {
@@ -425,7 +435,6 @@
       records.unshift(newRecord);
       saveData();
 
-      // 3. 機器人回覆
       setTimeout(() => {
         appendMessage(`✅ 已成功上記算！\n品項：${item}\n金額：$${amount}\n分類：${category}`, 'system');
       }, 400);
@@ -449,7 +458,6 @@
     container.scrollTop = container.scrollHeight;
   }
 
-  // 渲染明細頁
   function renderLedger() {
     const container = document.getElementById('records-container');
     const totalEl = document.getElementById('total-amount');
@@ -476,7 +484,6 @@
     countEl.innerText = `${records.length} 筆`;
   }
 
-  // 本地儲存與 GitHub API 同步邏輯
   function saveData() {
     localStorage.setItem('line_ledger_records', JSON.stringify(records));
     syncToGitHub();
@@ -498,7 +505,6 @@
     syncToGitHub();
   }
 
-  // 利用 GitHub REST API 自動備份至使用者指定 Repository
   async function syncToGitHub() {
     if (!config.repo || !config.token) return;
 
@@ -506,7 +512,6 @@
     const url = `https://api.github.com/repos/${config.repo}/contents/${path}`;
     
     try {
-      // 先取得原本檔案的 SHA (如果存在)
       let sha = '';
       const getRes = await fetch(url, {
         headers: { 'Authorization': `token ${config.token}` }
@@ -516,7 +521,6 @@
         sha = fileData.sha;
       }
 
-      // 寫入/更新 JSON
       const content = btoa(unescape(encodeURIComponent(JSON.stringify(records, null, 2))));
       await fetch(url, {
         method: 'PUT',
@@ -530,7 +534,6 @@
           sha: sha || undefined
         })
       });
-      console.log('GitHub API 同步成功');
     } catch (e) {
       console.error('GitHub 同步失敗:', e);
     }
